@@ -10,7 +10,7 @@ import { http, createPublicClient, createWalletClient, custom, formatEther } fro
 import { celo, celoAlfajores } from 'viem/chains';
 import { injected } from "wagmi/connectors";
 
-import { walletClient, getAddr } from "./client";
+import { walletClient, publicClient, getAddr } from "./client";
 
 
 export default function Profile() {
@@ -39,11 +39,6 @@ export default function Profile() {
 
     }
   }
-
-  export const publicClient = createPublicClient({
-    chain: mainnet,  //TODO: Add alt chains
-    transport: http(),
-  })
 
 
   //a better way of getting the balance 
