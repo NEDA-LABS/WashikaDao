@@ -10,6 +10,8 @@ import { http, createPublicClient, createWalletClient, custom, formatEther } fro
 import { celo, celoAlfajores } from 'viem/chains';
 import { injected } from "wagmi/connectors";
 
+import { walletClient, getAddr } from "./client";
+
 
 export default function Profile() {
   const [hideConnectBtn, setHideConnectBtn] = useState(false);
@@ -24,35 +26,32 @@ export default function Profile() {
     }
   })
 
-  function checkForMinipay() {
+  async function checkForMinipay() {
     if (window.ethereum && window.ethereum.isMinipay)
       //User is using minipay wallet 
       setHideConnectBtn(true);
 
     connect({ connector: injected({ target: "metaMask" }) })
-  }
 
-  const walletClient = createWalletClient({
-    chain: celo,
-    //chain: celoAlfajores for testnet 
-    transport: custom(window.ethereum),
-  });
+    //if not in minipay, trigger to switch to celo
+    else if (window.ethereum && !window.ethereum.isMinipay) {
+      await walletClient.switchChain({ id: celo.id })
+
+    }
+  }
 
   export const publicClient = createPublicClient({
     chain: mainnet,  //TODO: Add alt chains
     transport: http(),
   })
 
-  export async function getClientAddr() {
-    var clientAddr = await walletClient.requestAddresses();
-    return clientAddr;
-  }
 
   //a better way of getting the balance 
   export async function getClientBal() {
     //getting balance in WEI 
+
     const _clientBal = await publicClient.getBalance({
-      address: clientAddr,
+      address: await getAddr()
     })
     //formating to ether
     const clientBal = formatEther(_clientBal)
