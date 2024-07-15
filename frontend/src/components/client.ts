@@ -1,5 +1,5 @@
 import 'viem/window'
-import { createWalletClient, custom } from 'viem'
+import { createWalletClient, createPublicClient, custom, http } from 'viem'
 import { mainnet, celo, celoAlfajores } from 'viem/chains'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 
