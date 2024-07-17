@@ -1,22 +1,9 @@
-import { createWalletClient } from "viem";
-import { celoAlfajores } from "viem/chains";
+//import client.ts 
 
-export default function createDao() {
+//Calling Contract Methods, fetching events & listening to events 
 
-  const client = createWalletClient({
-    account,
-    //passing chain is how viem knows to try serializing tx as cip42 
-    chain: celoAlfajores,
-    transport: http(),
-  })
+/*
+ * TODO: Place form to collect all data needed for dao and make calls to the /createDAO backend Route
+ */
 
-  client.writeContract({
-    abi.CONTRACT_ABI,
-    address: CONTRACT_ABI_ADDRESS,
-    functionName: "contractMethod",
-    args: [to, parseEther(value)],
-    //set the fee currency on the contract write call 
-    feeCurrency: FEE_CURRENCIES_ALFAJORES["cusd"]
-  })
 
-}

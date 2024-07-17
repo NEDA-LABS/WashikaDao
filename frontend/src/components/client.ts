@@ -1,7 +1,9 @@
 import 'viem/window'
-import { createWalletClient, createPublicClient, custom, http } from 'viem'
+import { getContract, createWalletClient, createPublicClient, custom, http } from 'viem'
 import { mainnet, celo, celoAlfajores } from 'viem/chains'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
+
+import { wagmiAbi } from './abi';
 
 //TODO: Refactor during UX Optimization stage 
 export async function getAddr() {
@@ -35,3 +37,13 @@ export const walletClientWC = createWalletClient({
   chain: mainnet,
   transport: custom(provider),
 })
+
+
+//Contract Instance 
+export const contract = getContract({
+  address: 'contractAddress',
+  abi: wagmiAbi,
+  //single client or public & or wallet clients 
+  client: { public: publicClient, wallet: walletClient }
+})
+

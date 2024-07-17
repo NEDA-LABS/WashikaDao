@@ -17,41 +17,34 @@ export default function Profile() {
   const [hideConnectBtn, setHideConnectBtn] = useState(false);
   const { connect } = useConnect();
 
-  export const contract = getContract({
-    address: clientAddr,
-    abi: wagmiAbi,//TODO: refactor to add abi 
-    client: {
-      public: publicClient,
-      wallet: walletClient,
-    }
-  })
 
   async function checkForMinipay() {
-    if (window.ethereum && window.ethereum.isMinipay)
+    if (window.ethereum && window.ethereum.isMinipay) {
       //User is using minipay wallet 
       setHideConnectBtn(true);
 
-    connect({ connector: injected({ target: "metaMask" }) })
+      connect({ connector: injected({ target: "metaMask" }) })
 
     //if not in minipay, trigger to switch to celo
     else if (window.ethereum && !window.ethereum.isMinipay) {
-      await walletClient.switchChain({ id: celo.id })
+        await walletClient.switchChain({ id: celo.id })
 
+      }
     }
+
+
+    //a better way of getting the balance 
+    export async function getClientBal() {
+      //getting balance in WEI 
+
+      const _clientBal = await publicClient.getBalance({
+        address: await getAddr()
+      })
+      //formating to ether
+      const clientBal = formatEther(_clientBal)
+      return clientBal;
+    }
+
   }
-
-
-  //a better way of getting the balance 
-  export async function getClientBal() {
-    //getting balance in WEI 
-
-    const _clientBal = await publicClient.getBalance({
-      address: await getAddr()
-    })
-    //formating to ether
-    const clientBal = formatEther(_clientBal)
-    return clientBal;
-  }
-
 
 }
