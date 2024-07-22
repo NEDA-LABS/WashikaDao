@@ -4,5 +4,5 @@ import { Request, Response } from "express";
 
 //Views -> To the React 
 //TODO: Refactor to handle returning json data so that the client can consume
-router.post('/createDao', (req, res) => createDaoController.createDao(req, res)
-); 
+router.post('/createDao', (req: Request, res: Response) => createDaoController.createDao(req, res));
+router.get('/ins ideDao:multiSigAddr', (req: Request, res: Response) => createDaoController.getDaoDetails(req, res));
