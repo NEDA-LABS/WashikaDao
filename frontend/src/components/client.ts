@@ -3,7 +3,7 @@ import { getContract, createWalletClient, createPublicClient, custom, http } fro
 import { mainnet, celo, celoAlfajores } from 'viem/chains'
 import { EthereumProvider } from '@walletconnect/ethereum-provider'
 
-import { wagmiAbi } from './abi';
+import wagmiAbi from '../../utils/contractAbi/DaoContract.json';
 
 //TODO: Refactor during UX Optimization stage 
 export async function getAddr() {
@@ -41,7 +41,7 @@ export const walletClientWC = createWalletClient({
 
 //Contract Instance 
 export const contract = getContract({
-  address: 'contractAddress',
+  address: '0x8EC4eE1A1aEccE5Df1a630ea50Aa9716549cE9Ff',
   abi: wagmiAbi,
   //single client or public & or wallet clients 
   client: { public: publicClient, wallet: walletClient }

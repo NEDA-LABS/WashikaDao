@@ -1,24 +1,8 @@
-interface IDAODetails {
-  daoName: string;
-  daoLocation: string;
-  targetAudience: string;
-  daoTitle: string;
-  daoDescription: string;
-  daoOverview: string;
-  daoImageHash: string;
-  multisigAddr: string;
-}
-interface DaoDetailsToChain {
-  daoName: string;
-  targetAudience: string;
-  daoDescription: string;
-  multisigAddr: string;
-}
-async function funguaDaoHandler() {
-  //TODO: Refactor to use url link & body params 
-  const daoName = { req.body.daoName };
-  const targetAudience = { req.body.targetAudience };
-  const daoDescription = { req.body.daoDescription }
-  const multisigAddr = { req.body.multisigAddr };
-}
+const router = require('express').Router();
+const createDaoController = require("../controllers/createDao");
+import { Request, Response } from "express";
 
+//Views -> To the React 
+//TODO: Refactor to handle returning json data so that the client can consume
+router.post('/createDao', (req, res) => createDaoController.createDao(req, res)
+); 
