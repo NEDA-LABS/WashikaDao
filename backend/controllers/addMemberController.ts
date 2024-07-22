@@ -1,5 +1,5 @@
 import { wagmiAbi } from "../utils/contractAbi/abi";
- import { daoContract, publicClient } from "./config";
+import { daoContract, publicClient } from "./config";
 import { Request, Response } from "express";
 
 export const addMember = async (req: Request, res: Response) => {

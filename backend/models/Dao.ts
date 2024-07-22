@@ -31,3 +31,4 @@ export class Dao {
   multiSigAddr: string
 
 }
+

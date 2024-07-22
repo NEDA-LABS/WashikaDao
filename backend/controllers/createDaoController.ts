@@ -1,4 +1,3 @@
-import { eventNames } from "process";
 import { daoContract, publicClient } from "./config";
 import { Request, Response } from "express";
 import { wagmiAbi } from "../utils/contractAbi/abi";
