@@ -7,10 +7,10 @@ import { DataSource } from "typeorm";
 import { Dao } from "./models/Dao";
 
 export const AppDataSource = new DataSource({
-  type: 'sqlite', //will be switched to postgres for prod
-  database: 'dao.db',
-  entities: [Dao],
-  synchronize: true
+    type: 'sqlite', //will be switched to postgres for prod
+    database: 'dao.db',
+    entities: [Dao],
+    synchronize: true
 })
 
 const app = express();
@@ -23,5 +23,5 @@ app.use("/daoToolKit", require("./routes/daoToolKitPageHandler.ts"));//daoToolKi
 app.use("/jiungeNaDao", require("./routes/jiungeNaDaoPageHandler.ts"))//jiungeNaDao Page
 
 const server = app.listen(PORT, () => {
-  console.log(`App is running on PORT ${PORT}`);
+    console.log(`App is running on PORT ${PORT}`);
 })
