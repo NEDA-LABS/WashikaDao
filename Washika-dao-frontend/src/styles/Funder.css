@@ -1,0 +1,74 @@
+.navbarFunder {
+  background-color: #4b4546;
+}
+
+.funder {
+  background: linear-gradient(to bottom, #636844 13%, #282424 84%);
+  padding: 306px 96px 0px 78px;
+}
+
+.funder .first {
+  display: flex;
+  flex-direction: column;
+  gap: 104px;
+  margin-bottom: 96px;
+}
+
+.funder .first .one h1 {
+  width: 1211px;
+  height: 222px;
+  font-size: 76px;
+  color: #ffffff;
+}
+
+.funder .first .one p {
+  width: 963px;
+  height: 139px;
+  font-size: 48px;
+  color: #ffffff;
+}
+
+.funder .first .two {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: -6px;
+  margin-right: 48px;
+}
+
+.funder .first .two div {
+  width: 444px;
+  height: 60px;
+  border-radius: 12px;
+  background-color: #d9d9d9;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.funder .first .two p {
+  font-size: 21px;
+  font-family: "Syne", sans-serif;
+}
+
+.funder .first .two div img {
+  border: 1px solid #636363;
+}
+
+.funder .groups {
+  position: initial;
+  flex-direction: row;
+  height: auto;
+  overflow-x: scroll;
+  scrollbar-width: auto;
+  margin-bottom: 96px;
+}
+
+.groups::-webkit-scrollbar {
+  display: initial;
+}
+
+.funderFooter {
+  background: transparent;
+}

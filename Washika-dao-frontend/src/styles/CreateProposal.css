@@ -1,0 +1,177 @@
+.createProposal {
+  padding-top: 240px;
+}
+
+.proposalParag {
+  margin: 0 96px 0 48px;
+}
+
+.proposalParag .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.proposalParag h1 {
+  width: 1106px;
+  height: 112px;
+  font-size: 80px;
+  color: #c8954b;
+}
+
+.proposalParag img {
+    cursor: pointer;
+}
+
+.proposalParag p {
+  width: 963px;
+  height: 139px;
+  font-size: 48px;
+  color: #ffffff;
+}
+
+.createProposal .circle-container {
+  padding-top: 84px;
+  padding-left: 154px;
+}
+
+.createProposal form {
+  margin-top: 36px;
+  margin-left: 172px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.createProposal form .label {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.createProposal form label {
+  color: #f8b859;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.createProposal .one label {
+  display: inline-block;
+  width: 187px;
+}
+.createProposal .one button {
+  margin: 24px 0 36px;
+  width: 365px;
+  height: 62px;
+  border-radius: 6px;
+  background-color: #e28b06;
+  border: 1px solid #dcb273;
+  color: #ffffff;
+  font-size: 30px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.createProposal .two input {
+  padding-left: 24px;
+  width: 705px;
+  height: 64px;
+  border-radius: 6px;
+  background-color: #d9d9d9;
+  color: #433939;
+  font-size: 24px;
+}
+
+.createProposal .three textarea {
+  padding: 24px;
+  width: 702px;
+  height: 126px;
+  border-radius: 15px;
+  background-color: #d9d9d9;
+  color: #433939;
+  font-size: 37px;
+}
+
+.createProposal .four {
+  margin-left: -16px;
+}
+
+.createProposal .four textarea::placeholder {
+  color: #aea8a8;
+  font-size: 37px;
+}
+
+.createProposal .four textarea {
+  padding: 24px;
+  width: 816px;
+  height: 349px;
+  border-radius: 20px;
+  border: 1px solid #dcb273;
+  background-color: #efefee;
+  color: #433939;
+  font-size: 37px;
+}
+
+.createProposal .four label {
+  font-size: 29px;
+  font-style: italic;
+  color: #e28b06;
+}
+
+.createProposal .five label {
+  padding-left: 24px;
+}
+
+.createProposal .five input {
+  padding-left: 24px;
+  font-size: 24px;
+  color: #433939;
+  width: 415px;
+  height: 64px;
+  border-radius: 15px;
+  background-color: #d9d9d9;
+}
+
+.createProposal .six {
+  margin: 48px 0 166px 16px;
+  display: flex;
+  gap: 56px;
+}
+
+.createProposal .six div {
+  width: 365px;
+  height: 69px;
+  padding-left: 96px;
+  border-radius: 6px;
+  background-color: #5e503a;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  color: #ffffff;
+  border: 1px solid #dcb273;
+  cursor: pointer;
+}
+
+.createProposal .six input {
+    cursor: pointer;
+}
+
+::file-selector-button {
+  background-color: #5e503a;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+}
+
+.createProposal .six button {
+  width: 365px;
+  height: 69px;
+  color: #ffffff;
+  font-weight: 500;
+  border-radius: 6px;
+  background-color: #60ce60;
+  border: 1px solid #dcb273;
+  font-size: 30px;
+  cursor: pointer;
+}

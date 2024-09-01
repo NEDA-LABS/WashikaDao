@@ -1,0 +1,672 @@
+.image-container {
+  width: 100%;
+  height: 86vh;
+  color: #ffffff;
+  padding: 16px 40px;
+  background-image: url("/images/image-container.png");
+  background-size: cover;
+  position: relative;
+  bottom: 24px;
+  left: 48px;
+}
+
+.inner-container {
+  position: absolute;
+  top: 212px;
+  width: 789px;
+}
+
+.inner-container img {
+  margin-left: 24px;
+}
+
+.image-container p {
+  width: 785px;
+  height: 100px;
+  font-size: 40px;
+  font-family: "Droid Sans", sans-serif;
+}
+
+.image-container .main {
+  margin: 12px 0 3px;
+  width: 752px;
+  height: 283px;
+  font-size: 78px;
+  color: #f8b859;
+  font-weight: bold;
+  line-height: 116%;
+}
+
+.buttons {
+  display: flex;
+  gap: 48px;
+  font-size: 37px;
+  margin-left: 84px;
+}
+
+.buttons button {
+  width: 373px;
+  height: 83px;
+  padding: 24px;
+  border: 2px solid #f8b859;
+  border-radius: 24px;
+  cursor: pointer;
+  font-family: "Tajawal", sans-serif;
+}
+
+.button-1 {
+  background-color: #24221e;
+  color: #837e7f;
+}
+
+.button-2 {
+  background-color: #ffffff;
+  color: #131111;
+}
+
+
+.parag-container {
+  width: 1236px;
+  height: 261px;
+  color: #fffefe;
+  display: flex;
+  margin: 120px 48px;
+  justify-content: center;
+  align-items: center;
+  font-size: 62px;
+  font-family: "Droid Sans", sans-serif;
+}
+
+.main-container {
+  margin: 0 90px;
+  padding: 0 36px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  gap: 44px;
+}
+
+.main-container::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 72px;
+  width: 1px;
+  background-color: #c8954b;
+}
+
+.box {
+  display: flex;
+  justify-content: space-between;
+  width: 1268px;
+  height: 569px;
+}
+
+.box.one {
+  background-color: #f6f7fa;
+  border-radius: 9px;
+}
+
+.box-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.box-left h1 {
+  width: 582px;
+  height: 85px;
+  color: #433939;
+  font-size: 67px;
+  font-weight: bold;
+  position: absolute;
+  top: 140px;
+  left: 64px;
+}
+
+.box-left p {
+  width: 568px;
+  height: 112px;
+  color: #231f20;
+  font-size: 31px;
+  font-family: "Dosis", sans-serif;
+  position: absolute;
+  top: 240px;
+  left: 64px;
+}
+
+.box-left span {
+  color: #ffbd59;
+  font-weight: bold;
+}
+
+.box.one .box-right {
+  background-color: #636844;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  border-radius: 8px;
+  width: 545px;
+  height: 571px;
+  padding-top: 24px;
+}
+
+.box.two {
+  background-color: #433939;
+  border-radius: 21px;
+}
+
+.box-left.two {
+  width: 728px;
+  height: 570px;
+  background-color: #f6f7fa;
+  border-radius: 10px;
+}
+
+.half-box {
+  width: 712px;
+  height: 586px;
+  border-radius: 13px;
+  background-color: #f6f7fa;
+}
+
+.half-box h1 {
+  height: 163px;
+  top: 64px;
+  line-height: 1;
+}
+
+.half-box p {
+  width: 594px;
+  height: 173px;
+}
+
+.groups {
+  position: absolute;
+  right: 54px;
+  top: 126px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  height: 1686px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  border-radius: 9px;
+}
+
+.groups::-webkit-scrollbar {
+  display: none;
+}
+
+.group {
+  padding: 24px 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 493px;
+  min-height: 823px;
+  background-color: #ffffff;
+  border-radius: 9px;
+}
+
+.image {
+  position: relative;
+  height: 271px;
+}
+
+.group img {
+  border-radius: 9px;
+}
+
+.image .taarifaTop {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  width: 127px;
+  height: 37px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a69d9d;
+  background-color: #defc26;
+  border-radius: 15px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.section-1 {
+  margin-left: 9px;
+  display: grid;
+  grid-template-columns: 2.5fr 3fr;
+  border-bottom: 1px solid #d9d9d9;
+  width: 456px;
+  padding-bottom: 16px;
+}
+
+.section-1 h2 {
+  margin: 16px 0 3px;
+  color: #433939;
+  font-size: 30px;
+  font-family: "DM Mono", sans-serif;
+}
+
+.left .location {
+  margin: 0 8px 9px;
+  display: flex;
+  gap: 6px;
+}
+
+.location p {
+  height: 13px;
+  color: #a39898;
+  font-size: 11px;
+}
+
+.left .email {
+  width: 109px;
+  height: 13px;
+  color: #f8b859;
+  font-weight: bold;
+  font-size: 11px;
+}
+
+.group .right {
+  margin-top: 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.group h3 {
+  padding-right: 3px;
+  width: 166px;
+  height: 20px;
+  color: #a39898;
+  font-size: 17px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.group .right div {
+  color: #433939;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.right p {
+  width: 23px;
+  height: 12px;
+  font-size: 10px;
+  font-weight: bold;
+  padding-left: 16px;
+}
+
+.right .amount, .treasury .amount {
+  padding: 0;
+  width: 248px;
+  height: 31px;
+  color: #433939;
+  font-size: 28px;
+  font-weight: 100;
+  font-family: "Druk Text Wide Web", sans-serif;
+  display: inline-block;
+  transform: scaleX(0.9) scaleY(1.2);
+}
+
+.section-2 {
+  margin-left: -16px;
+  padding: 12px 0 136px;
+  width: 432px;
+  height: 140px;
+  color: #433939;
+  font-family: "Dosis", sans-serif;
+  font-size: 18px;
+}
+
+.section-3 {
+  width: 100%;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border-top: 1px solid #d9d9d9;
+}
+
+.section-3 .top,
+.section-3 .bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-3 .taarifa {
+  width: 182px;
+  height: 29px;
+  border: 1px solid #dcb273;
+  border-radius: 9px;
+  background-color: #ffbd59;
+  font-family: "DM Mono", sans-serif;
+  font-size: 12px;
+  color: #433939;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.section-3 h2 {
+  padding-top: 3px;
+  width: 926px;
+  height: 71px;
+  color: #433939;
+  line-height: 1.2;
+  font-size: 28px;
+  font-weight: 100;
+  font-family: "Druk Text Wide Web", sans-serif;
+  display: inline-block;
+  transform: scaleY(1.2);
+}
+
+.section-3 p {
+  width: 178px;
+  height: 110px;
+  font-size: 69px;
+  color: #433939;
+  padding: 24px 12px;
+  font-family: "Druk Text Wide Web", sans-serif;
+  display: inline-block;
+  transform: scaleY(1.2);
+}
+
+.parag-container-two {
+  margin: 64px 100px;
+  width: 1043px;
+  height: 309px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.parag-container-two h2 {
+  color: #fffefe;
+  font-size: 56px;
+  font-family: "Droid Sans", sans-serif;
+}
+
+.sub-parag-container {
+  color: #fffefe;
+  font-size: 56px;
+  font-family: "Encode Sans", sans-serif;
+}
+
+.article-container {
+  display: flex;
+  padding: 16px 90px 120px;
+  justify-content: space-between;
+}
+
+.article-container article {
+  width: 392px;
+  height: 460px;
+  border-bottom: 1px solid #c8954b;
+  position: relative;
+  cursor: pointer;
+}
+
+.article-container div {
+  position: absolute;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 16px;
+}
+
+.article-container h2 {
+  color: #ffffff;
+  font-size: 43px;
+}
+
+.article-container .two h2 {
+  font-size: 56px;
+}
+
+.article-container p {
+  color: #f6f7fa;
+  font-size: 24px;
+  font-weight: lighter;
+  font-family: "Dosis", sans-serif;
+  height: 110px;
+}
+
+.article-container .one {
+  background-image: url("/images/funguaDao.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.article-container .two {
+  background-image: url("images/jifunze.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.article-container .three {
+  background-image: url("images/DAOToolkit.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+@media only screen and (max-width: 600px) {
+.image-container {
+  height: 560px;
+  padding: 0px;
+  left: 8px;
+}
+
+.inner-container {
+  width: 350px;
+  top: 120px;
+}
+.inner-container img {
+  margin: 0;
+  width: 164px;
+  height: auto;
+}
+.image-container p {
+  width: auto;
+  height: auto;
+  font-size: 24px;
+}
+
+.image-container .main {
+  margin: 16px 0;
+  font-size: 36px;
+  height: auto;
+  width: auto;
+}
+
+.buttons {
+  gap: 24px;
+  font-size: 24px;
+  margin: 0 24px;
+  flex-direction: column;
+}
+
+.buttons button {
+  width: auto;
+  height: 64px;
+  border-radius: 16px;
+}
+
+.parag-container {
+  width: auto;
+  height: auto;
+  margin: 36px 12px;
+  font-size: 36px;
+}
+
+.main-container {
+  margin: 0 0 0 24px;
+  padding: 0 24px;
+}
+
+.box {
+  margin: 0;
+  width: auto;
+  height: 360px;
+}
+
+.box-left {
+  padding: 0 12px;
+}
+
+.box-left h1 {
+  width: auto;
+  height: auto;
+  font-size: 36px;
+  position: initial;
+}
+
+.box-left p {
+  width: auto;
+  height: auto;
+  font-size: 24px;
+  position: initial;
+}
+
+.box.one .box-right {
+  display: none;
+}
+
+.box-left.two {
+  width: auto;
+  height: 360px;
+  padding: 0 12px;
+}
+
+.half-box {
+  width: auto;
+  height: 360px;
+}
+
+.groups {
+  position: initial;
+  height: 770px;
+}
+
+.group {
+  width: auto;
+  padding: 9px;
+  display: initial;
+  min-height: 770px;
+}
+
+.image {
+  height: auto;
+}
+
+.group img {
+  width: 100%;
+}
+
+.image .taarifaTop {
+  width: 64px;
+  height: 16px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.section-1 {
+  width: auto;
+  margin: 0;
+  display: initial;
+}
+
+.section-1 h2 {
+  font-size: 24px;
+}
+
+.left .location img{
+  width: auto;
+}
+
+.group .right {
+  margin-top: 16px;
+  align-items: flex-start;
+}
+
+.group h3 {
+  width: auto;
+  justify-content: flex-start;
+}
+
+.right p {
+  width: auto;
+  padding: 0 9px;
+}
+
+.right .amount, .treasury .amount {
+  font-size: 16px;
+  width: auto;
+}
+
+.section-2 {
+  padding: 9px;
+  margin: 0;
+  width: auto;
+  height: auto;
+}
+
+.section-3 img {
+  width: auto;
+  height: auto;
+}
+
+.section-3 .taarifa {
+  width: auto;
+  height: auto;
+  padding: 0 6px;
+}
+
+.section-3 h2 {
+  width: auto;
+  height: auto;
+  font-size: 16px;
+} 
+
+.section-3 p {
+  width: auto;
+  height: auto;
+  font-size: 48px;
+}
+
+.parag-container-two {
+  margin: 36px 12px;
+  width: auto;
+  height: auto;
+}
+
+.parag-container-two h2, .sub-parag-container {
+  font-size: 36px;
+}
+
+.article-container {
+  padding: 12px;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 48px;
+}
+
+.article-container article {
+  width: auto;
+  height: 560px;
+  border-radius: 9px;
+}
+
+.article-container div {
+  bottom: 0;
+}
+}
