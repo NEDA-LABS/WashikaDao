@@ -50,7 +50,6 @@ export async function WhitelistMembers() {
     }
     return (
         <>
-        {/**Form for sending dao request*/ }
         </>
     )
 
