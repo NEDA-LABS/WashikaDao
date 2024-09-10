@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-interface CDFormData {
+interface ICreateDaoFormData {
     _daoName: string;
     _daoLocation: string;
     _targetAudience: string;
@@ -66,41 +66,9 @@ const CreateDaoForm: React.FC = () => {
     return (
         <>
         <form onSubmit= { handleSubmit } >
-        <label>
-        DAO Name:
-    <input type="text" name = "daoName" value = { formData.daoName } onChange = { handleInputChange } />
-        </label>
-        <label>
-        DAO Location:
-    <input type="text" name = "daoLocation" value = { formData.daoLocation } onChange = { handleInputChange } />
-        </label>
-        <label>
-        Target Audience:
-    <textarea name="targetAudience" value = { formData.targetAudience } onChange = { handleInputChange } />
-        </label>
-        <label>
-        DAO Title:
-    <input type="text" name = "daoTitle" value = { formData.daoTitle } onChange = { handleInputChange } />
-        </label>
-        <label>
-        DAO Description:
-    <textarea name="daoDescription" value = { formData.daoDescription } onChange = { handleInputChange } />
-        </label>
-        <label>
-        DAO Overview:
-    <textarea name="daoOverview" value = { formData.daoOverview } onChange = { handleInputChange } />
-        </label>
-        <label>
-        DAO Image IPFS Hash:
-    <input type="text" name = "daoImageIpfsHash" value = { formData.daoImageIpfsHash } onChange = { handleInputChange } />
-        </label>
-        <label>
-    Multi - Sig Address:
-    <input type="text" name = "multiSigAddr" value = { formData.multiSigAddr } onChange = { handleInputChange } />
-        </label>
-        < button type = "submit" > Create DAO </button>
-            </form>
-            </> 
+
+        </form>
+        </> 
   );
 };
 

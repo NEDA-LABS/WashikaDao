@@ -1,7 +1,7 @@
 import { eventNames } from "process";
-import { daoContract, publicClient } from "./config";
+import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
-import { wagmiAbi } from "../utils/contractAbi/abi";
+import { wagmiAbi } from "../utils/contractAbi/abi.ts";
 
 export const isDaoMember = async (req: Request, res: Response) => {
     //@ destructuring values from incoming form data

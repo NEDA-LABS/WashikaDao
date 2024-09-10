@@ -1,8 +1,8 @@
-import { daoContract, publicClient } from "./config";
+import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
-import { wagmiAbi } from "../utils/contractAbi/abi";
-import { Dao } from "../models/Dao";
-import { AppDataSource } from "../app";
+import { wagmiAbi } from "../utils/contractAbi/abi.ts";
+import { Dao } from "../models/Dao.ts";
+import { AppDataSource } from "../app.ts";
 
 
 const daoRepository = AppDataSource.getRepository(Dao);
