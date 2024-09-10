@@ -24,6 +24,7 @@ const Funder: React.FC = () => {
               alt="arrow button"
               width={114}
               height={48}
+              className="image"
             />
           </div>
         </section>

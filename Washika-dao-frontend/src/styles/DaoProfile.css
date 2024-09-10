@@ -515,3 +515,306 @@ section.second::after {
   transform: scaleY(0.6);
   display: inline-block;
 }
+
+@media only screen and (max-width: 600px) {
+  nav.DaoProfile {
+    height: 136px;
+  }
+
+  main.daoMain {
+    width: auto;
+    padding-top: 206px;
+  }
+
+  .daoMain .daoImage {
+    top: 64px;
+  }
+
+  .daoImage img {
+    width: 96vw;
+    height: auto;
+  }
+
+  .daoMain .first {
+    display: flex;
+    flex-direction: column;
+    margin: 0 24px;
+  }
+
+  .daoMain .left .one {
+    padding: 0 0 16px;
+  }
+
+  .daoMain .left .one::after {
+    width: 100%;
+  }
+
+  .daoMain .one h1 {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .daoMain .location {
+    margin: 0;
+  }
+
+  .daoMain .location p {
+    width: auto;
+    height: auto;
+    font-size: 16px;
+  }
+
+  .daoMain .location img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .daoMain .email {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+    margin: 0;
+  }
+
+  .daoMain .section-2 {
+    padding: 0;
+    margin: 12px 0;
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+  
+  .DaoOperations h1 {
+    width: auto;
+    height: auto;
+    font-size: 36px;
+    padding: 24px 0;
+  }
+
+  .DaoOperations h1::after {
+    width: 100%;
+  }
+
+  .DaoOperations .button-group, .owner .button-group {
+    margin: 24px 0;
+  }
+
+  .DaoOperations .button-1, .owner .button-1, .DaoOperations .button-2, .owner .button-2 {
+    width: auto;
+    height: 56px;
+    font-size: 24px;
+  }
+
+  .details {
+    margin: 0;
+    gap: 12px;
+  }
+
+  .details .email {
+    height: auto;
+    width: auto;
+    font-size: 24px;
+  }
+
+  .details .parag {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .treasury {
+    width: auto;
+    height: auto;
+    padding: 24px 0;
+    margin: 24px 0;
+  }
+
+  .treasury .first {
+    padding: 0 0 24px;
+  }
+
+  .treasury .one {
+    gap: 48px;
+  }
+
+  .treasury .one .left {
+    padding-top: 41px;
+    width: auto;
+    height: auto;
+    font-size: 16px;
+  }
+
+  .treasury .one .right {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+   
+  .treasury .amount {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .treasury .section-3::after {
+    left: 24px;
+    width: auto;
+  }
+
+  .treasury .section-3 h2 {
+    width: auto;
+    font-size: 12px;
+    padding-top: 3px;
+  }
+
+  .section-3 .bottom p {
+    padding-left: 0;
+    font-size: 24px;
+  }
+
+  .section-3 .fundDao {
+    margin: 0;
+  }
+
+  .fundDao button {
+    width: auto;
+    padding: 0 16px;
+  }
+
+  .treasury-history h1 {
+    margin: 12px;
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .treasury-history #treasury-history {
+    width: auto;
+    margin: 12px;
+    height: 320px;
+    gap: 24px;
+  }
+
+  #treasury-history .slot {
+    padding: 0 6px;
+  }
+
+  .slot .left {
+    gap: 3px;
+  }
+
+  .slot .left div {
+    gap: 0;
+  }
+
+  .slot .left p{
+    width: auto;
+    height: auto;
+    margin-left: 12px;
+  }
+
+  .slot h1 {
+    width: auto;
+    height: auto;
+    font-size: 16px;
+  }
+
+  .slot .right div {
+    gap: 3px;
+  }
+
+  .slot .right .top {
+    width: auto;
+    height: auto;
+    font-size: 12px;
+  }
+
+  .slot .right .bottom {
+    width: auto;
+    height: auto;
+    font-size: 10px;
+  }
+
+  section.second {
+    margin-bottom: 36px;
+  }
+
+  section.second::before {
+    height: 640px;
+    left: 24px;
+  }
+
+  section.second::after {
+    display: none;
+  }
+
+  .second .main {
+    margin-left: 24px;
+    text-align: center;
+  }
+
+  .second .proposal-groups {
+    margin: 24px;
+    height: 1150px;
+  }
+
+  .second .proposal {
+    margin-left: 24px;
+    padding: 12px;
+    width: auto;
+    min-height: auto;
+  }
+
+  .proposal .one h1 {
+    margin: 0;
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .proposal .one div {
+    width: auto;
+    height: 36px;
+    font-size: 12px;padding: 0 24px;
+    margin-top: 24px;
+  }
+
+  .proposal .two {
+    margin: 12px 0 0;
+    width: auto;
+    height: auto;
+    font-size: 18px;
+  }
+
+  .proposal .three {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .proposal .three .button-group {
+    margin: 12px 0;
+    gap: 12px;
+  }
+
+  .proposal .three .button-group button {
+    width: auto;
+  }
+
+  .proposal-right h2 {
+    margin: 0;
+    width: auto;
+    height: auto;
+  }
+
+  .proposal-right p {
+    width: auto;
+    height: auto;
+    font-size: 26px;
+    justify-content: flex-start;
+    margin-left: -16px;
+  }
+
+  
+}
+

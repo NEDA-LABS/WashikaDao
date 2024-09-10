@@ -5,14 +5,16 @@ const JifunzeElimu: React.FC = () => {
   return (
     <>
       <NavBar className={""} />
-      <main>
-        <div>
+      <main className="jifunze">
+        <div className="one">
           <h2>Karibu kwa WashikaDAO</h2>
           <p>
             Tunawezesha vikundi kufanikisha malengo yao kwa usawa na usalama wa
             mali zao
           </p>
-          <div className="image"></div>
+          <div className="image">
+            <img src="images/LOGO SYMBLO(1).PNG" alt="LOGO" />
+          </div>
         </div>
 
         <div>

@@ -73,6 +73,17 @@
   background-color: #f6be6a;
 }
 
+.combinedForms::before {
+  content: "";
+  position: absolute;
+  left: 64px;
+  top: 1660px;
+  bottom: 1020px;
+  width: 1px;
+  background-color: #c8954b;
+}
+
+
 .form {
   padding: 72px 90px 20px;
   display: flex;
@@ -270,7 +281,8 @@
   align-items: center;
 }
 
-.wanakikundi .formDiv, .findAndJoin .formDiv {
+.wanakikundi .formDiv,
+.findAndJoin .formDiv {
   width: 683px;
   height: 486px;
   background-color: #4b4546;
@@ -279,29 +291,34 @@
   padding: 56px;
 }
 
-.wanakikundi label, .findAndJoin label {
+.wanakikundi label,
+.findAndJoin label {
   width: 182px;
   height: 29px;
   color: #f8b859;
   font-size: 17px;
 }
 
-.wanakikundi .first, .findAndJoin .first {
+.wanakikundi .first,
+.findAndJoin .first {
   display: flex;
   gap: 40px;
 }
 
-.wanakikundi .short, .findAndJoin .short {
+.wanakikundi .short,
+.findAndJoin .short {
   width: 159px;
 }
 
-.wanakikundi .input, .findAndJoin .input {
+.wanakikundi .input,
+.findAndJoin .input {
   display: flex;
   flex-direction: column;
   margin-bottom: 24px;
 }
 
-.wanakikundi input, .findAndJoin input {
+.wanakikundi input,
+.findAndJoin input {
   padding-left: 24px;
   font-size: 24px;
   color: #433939;
@@ -444,16 +461,6 @@
   height: 44;
 }
 
-.combinedForms::before {
-  content: "";
-  position: absolute;
-  left: 64px;
-  top: 1660px;
-  bottom: 1020px;
-  width: 1px;
-  background-color: #c8954b;
-}
-
 .button-container {
   text-align: center;
   padding: 24px 0 84px 0;
@@ -470,5 +477,295 @@ button.createDao {
 }
 
 @media only screen and (max-width: 600px) {
+  .daoRegistration {
+    padding-top: 120px;
+  }
 
+  .funguaKikundi {
+    padding: 0 24px 36px;
+    height: auto;
+    width: auto;
+    margin-bottom: 16px;
+  }
+
+  .funguaKikundi::after {
+    width: 90%;
+  }
+
+  .funguaKikundi::before {
+    left: 95%;
+  }
+
+  .funguaKikundi h1 {
+    width: auto;
+    height: auto;
+    font-size: 36px;
+    margin-bottom: 12px;
+  }
+
+  .funguaKikundi p {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .circle-container {
+    padding: 12px 24px;
+    justify-content: center;
+  }
+
+  .circle {
+    width: 40px;
+    height: 40px;
+  }
+
+  .line {
+    width: 36px;
+  }
+
+  .combinedForms::before {
+    display: none;
+  }
+
+  .form {
+    padding: 12px 24px;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .form .left {
+    width: auto;
+  }
+
+  .form .left h2,
+  .wanakikundi .left h2 {
+    width: auto;
+    font-size: 24px;
+    padding-bottom: 12px;
+  }
+
+  .form p {
+    font-size: 20px;
+  }
+
+  .form .formDiv {
+    width: auto;
+    padding: 0;
+  }
+
+  .form.one {
+    margin: 0;
+  }
+
+  .form.one::before {
+    left: 95%;
+  }
+
+  .form.one::after {
+    width: 90%;
+  }
+
+  .form.one .formDiv {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 24px;
+  }
+
+  .form.two .formDiv {
+    gap: 12px;
+  }
+
+  .form label {
+    font-size: 16px;
+    padding-left: 6px;
+  }
+
+  .form input {
+    height: 40px;
+    width: auto;
+    border-radius: 9px;
+    font-size: 16px;
+    padding: 12px;
+  }
+
+  .form textarea {
+    width: auto;
+    border-radius: 6px;
+    padding: 12px;
+    font-size: 24px;
+  }
+
+  .short-textarea {
+    height: 120px;
+  }
+
+  .long-textarea {
+    height: 240px;
+  }
+
+  .form .file-input {
+    width: auto;
+    height: 64px;
+    padding: 18px;
+    font-size: 18px;
+  }
+
+  .wanakikundi {
+    padding: 12px 24px 36px;
+    flex-direction: column;
+  }
+
+  .wanakikundi::after {
+    width: 90%;
+    left: 24px;
+  }
+
+  .wanakikundi::before {
+    left: 95%;
+  }
+
+  .wanakikundi p {
+    font-size: 24px;
+    width: auto;
+  }
+
+  .wanakikundi .two {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .wanakikundi .two img {
+    width: 140px;
+  }
+
+  .wanakikundi .right {
+    width: auto;
+    height: auto;
+    align-items: center;
+    padding: 0;
+    gap: 36px;
+  }
+
+  .wanakikundi .top {
+    width: auto;
+    height: 36px;
+    padding: 0 12px;
+    font-size: 16px;
+  }
+
+  .wanakikundi .formDiv,
+  .findAndJoin .formDiv {
+    width: 86vw;
+    height: auto;
+    padding: 12px;
+  }
+
+  .wanakikundi label,
+  .findAndJoin label {
+    width: auto;
+  }
+
+  .wanakikundi .first,
+  .findAndJoin .first {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .wanakikundi .short,
+  .findAndJoin .short {
+    width: auto;
+  }
+
+  .wanakikundi input,
+  .findAndJoin input {
+    width: auto;
+    height: 40px;
+  }
+
+  .wanakikundi .buttons {
+    gap: 24px;
+    padding: 0;
+  }
+
+  .wanakikundi .buttons button {
+    width: 260px;
+  }
+
+  .hazina {
+    padding: 18px 0;
+    gap: 0;
+  }
+
+  .hazina .left {
+    margin: 0 24px;
+  }
+
+  .hazina h2 {
+    margin-bottom: 16px;
+    width: auto;
+    height: auto;
+    font-size: 36px;
+  }
+
+  .hazina p {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .hazina .formDiv {
+    gap: 48px;
+    padding: 24px;
+    width: auto;
+    height: auto;
+    margin: 24px 24px 0;
+  }
+
+  .hazina .connect-wallet-label {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .button-group {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .button-group button {
+    width: auto;
+    height: 48px;
+    font-size: 24px;
+  }
+
+  .hazina .account-number-label {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .hazina input {
+    width: auto;
+    height: 40px;
+    font-size: 20px;
+    padding: 12px;
+  }
+
+  .hazina input::placeholder  {
+    font-size: 20px;
+  }
+
+  .button-container {
+    padding-bottom: 36px;
+  }
+
+  button.createDao {
+    width: auto;
+    height: auto;
+    padding: 12px 48px;
+    font-size: 24px;
+  }
 }

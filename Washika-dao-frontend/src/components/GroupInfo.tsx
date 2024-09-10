@@ -13,7 +13,7 @@ interface GroupData {
 const groupData: GroupData[] = [
   {
     image: "images/jukumu.png",
-    title: "KIKUNDI CHAJUKUMU",
+    title: "KIKUNDI CHA JUKUMU",
     location: "Dar es salaam, Tanzania",
     email: "@JukumuDAO.ETH",
     treasuryValue: "23,000,000",

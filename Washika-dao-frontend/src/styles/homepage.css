@@ -64,7 +64,6 @@
   color: #131111;
 }
 
-
 .parag-container {
   width: 1236px;
   height: 261px;
@@ -80,9 +79,9 @@
 .main-container {
   margin: 0 90px;
   padding: 0 36px;
+  position: relative;
   display: flex;
   flex-direction: column;
-  position: relative;
   gap: 44px;
 }
 
@@ -90,10 +89,18 @@
   content: "";
   position: absolute;
   left: 0;
-  top: 12px;
+  top: 16px;
   bottom: 72px;
   width: 1px;
   background-color: #c8954b;
+}
+
+.boxes {
+  width: 1268px;
+  display: flex;
+  flex-direction: column;
+  gap: 44px;
+  border-radius: 9px;
 }
 
 .box {
@@ -306,7 +313,8 @@
   padding-left: 16px;
 }
 
-.right .amount, .treasury .amount {
+.right .amount,
+.treasury .amount {
   padding: 0;
   width: 248px;
   height: 31px;
@@ -460,213 +468,253 @@
 }
 
 @media only screen and (max-width: 600px) {
-.image-container {
-  height: 560px;
-  padding: 0px;
-  left: 8px;
-}
+  .image-container {
+    height: 610px;
+    padding: 0 12px;
+    left: 8px;
+  }
 
-.inner-container {
-  width: 350px;
-  top: 120px;
-}
-.inner-container img {
-  margin: 0;
-  width: 164px;
-  height: auto;
-}
-.image-container p {
-  width: auto;
-  height: auto;
-  font-size: 24px;
-}
+  .inner-container {
+    width: auto;
+    top: 136px;
+  }
+  .inner-container img {
+    margin: 0;
+    width: 164px;
+    height: auto;
+  }
+  .image-container p {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+    margin-right: 24px;
+  }
 
-.image-container .main {
-  margin: 16px 0;
-  font-size: 36px;
-  height: auto;
-  width: auto;
-}
+  .image-container .main {
+    margin: 16px 24px 9px 0;
+    font-size: 36px;
+    height: auto;
+    width: auto;
+  }
 
-.buttons {
-  gap: 24px;
-  font-size: 24px;
-  margin: 0 24px;
-  flex-direction: column;
-}
+  .buttons {
+    gap: 16px;
+    font-size: 16px;
+    margin: 0 16px;
+    flex-direction: column;
+  }
 
-.buttons button {
-  width: auto;
-  height: 64px;
-  border-radius: 16px;
-}
+  .buttons button {
+    width: auto;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 16px;
+  }
 
-.parag-container {
-  width: auto;
-  height: auto;
-  margin: 36px 12px;
-  font-size: 36px;
-}
+  .parag-container {
+    width: auto;
+    height: auto;
+    margin: 36px 24px;
+    font-size: 36px;
+  }
 
-.main-container {
-  margin: 0 0 0 24px;
-  padding: 0 24px;
-}
+  .main-container {
+    margin: 0 0 0 16px;
+    padding: 0 16px;
+  }
 
-.box {
-  margin: 0;
-  width: auto;
-  height: 360px;
-}
+  .main-container .boxes {
+    width: auto;
+    flex-direction: row;
+    gap: 24px;
+    overflow-x: auto;
+  }
 
-.box-left {
-  padding: 0 12px;
-}
+  .box {
+    margin: 0;
+    width: calc(100vw - 48px);
+    height: 300px;
+    flex-shrink: 0;
+  }
 
-.box-left h1 {
-  width: auto;
-  height: auto;
-  font-size: 36px;
-  position: initial;
-}
+  .box-left {
+    padding: 0 24px;
+  }
 
-.box-left p {
-  width: auto;
-  height: auto;
-  font-size: 24px;
-  position: initial;
-}
+  .box-left h1 {
+    width: auto;
+    height: auto;
+    font-size: 36px;
+    position: initial;
+  }
 
-.box.one .box-right {
-  display: none;
-}
+  .box-left p {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+    position: initial;
+  }
 
-.box-left.two {
-  width: auto;
-  height: 360px;
-  padding: 0 12px;
-}
+  .box.one .box-right,
+  .box.two .box-right {
+    display: none;
+  }
 
-.half-box {
-  width: auto;
-  height: 360px;
-}
+  .box-left.two {
+    width: auto;
+    height: 300px;
+  }
 
-.groups {
-  position: initial;
-  height: 770px;
-}
+  .half-box {
+    min-width: calc(100vw - 48px);
+    height: 300px;
+  }
 
-.group {
-  width: auto;
-  padding: 9px;
-  display: initial;
-  min-height: 770px;
-}
+  .groups {
+    position: initial;
+    height: 640px;
+  }
 
-.image {
-  height: auto;
-}
+  .group {
+    width: auto;
+    padding: 9px;
+    display: initial;
+    min-height: 640px;
+  }
 
-.group img {
-  width: 100%;
-}
+  .image {
+    height: auto;
+  }
 
-.image .taarifaTop {
-  width: 64px;
-  height: 16px;
-  font-size: 12px;
-  border-radius: 6px;
-}
+  .group img {
+    width: 100%;
+  }
 
-.section-1 {
-  width: auto;
-  margin: 0;
-  display: initial;
-}
+  .image .taarifaTop {
+    width: 64px;
+    height: 16px;
+    font-size: 12px;
+    border-radius: 6px;
+  }
 
-.section-1 h2 {
-  font-size: 24px;
-}
+  .section-1 {
+    width: auto;
+    display: initial;
+  }
 
-.left .location img{
-  width: auto;
-}
+  .section-1 h2 {
+    margin: -16px 9px 0;
+    font-size: 24px;
+  }
 
-.group .right {
-  margin-top: 16px;
-  align-items: flex-start;
-}
+  .left .location {
+    margin: 0 9px;
+  }
 
-.group h3 {
-  width: auto;
-  justify-content: flex-start;
-}
+  .left .location img {
+    width: auto;
+  }
 
-.right p {
-  width: auto;
-  padding: 0 9px;
-}
+  .left .email {
+    margin: 0 9px;
 
-.right .amount, .treasury .amount {
-  font-size: 16px;
-  width: auto;
-}
+  }
 
-.section-2 {
-  padding: 9px;
-  margin: 0;
-  width: auto;
-  height: auto;
-}
+  .group .right {
+    margin-top: 3px;
+    align-items: flex-start;
+  }
 
-.section-3 img {
-  width: auto;
-  height: auto;
-}
+  .group h3 {
+    width: auto;
+    margin: 6px 9px 0;
+  }
 
-.section-3 .taarifa {
-  width: auto;
-  height: auto;
-  padding: 0 6px;
-}
+  .right p {
+    width: auto;
+    padding: 0 9px;
+  }
 
-.section-3 h2 {
-  width: auto;
-  height: auto;
-  font-size: 16px;
-} 
+  .right .amount,
+  .treasury .amount {
+    font-size: 16px;
+    width: auto;
+  }
 
-.section-3 p {
-  width: auto;
-  height: auto;
-  font-size: 48px;
-}
+  .section-2 {
+    padding: 0 9px 9px;
+    font-size: 16px;
+    margin: 0;
+    width: auto;
+    height: auto;
+  }
 
-.parag-container-two {
-  margin: 36px 12px;
-  width: auto;
-  height: auto;
-}
+  .section-3 {
+    padding: 9px;
+    gap: 3px;
+  }
 
-.parag-container-two h2, .sub-parag-container {
-  font-size: 36px;
-}
+  .section-3 img {
+    width: auto;
+    height: auto;
+  }
 
-.article-container {
-  padding: 12px;
-  flex-direction: column;
-  gap: 24px;
-  margin-bottom: 48px;
-}
+  .section-3 .taarifa {
+    width: auto;
+    height: auto;
+    padding: 0 6px;
+  }
 
-.article-container article {
-  width: auto;
-  height: 560px;
-  border-radius: 9px;
-}
+  .section-3 h2 {
+    width: auto;
+    height: auto;
+    font-size: 14px;
+    padding: 0;
+  }
 
-.article-container div {
-  bottom: 0;
-}
+  .section-3 p {
+    width: auto;
+    height: auto;
+    font-size: 48px;
+  }
+
+  .parag-container-two {
+    margin: 36px 24px 16px;
+    gap: 9px;
+    width: auto;
+    height: auto;
+  }
+
+  .parag-container-two h2,
+  .sub-parag-container {
+    font-size: 24px;
+  }
+
+  .article-container {
+    padding: 24px;
+    flex-direction: column;
+    gap: 24px;
+    margin-bottom: 48px;
+  }
+
+  .article-container article {
+    width: auto;
+    height: 260px;
+    border-radius: 9px;
+  }
+
+  .article-container h2, .article-container .two h2 {
+    font-size: 36px;
+  }
+
+  .article-container p {
+    font-size: 20px;
+  }
+
+  .article-container div {
+    bottom: -16px;
+  }
 }

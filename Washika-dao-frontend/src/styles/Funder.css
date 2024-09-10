@@ -72,3 +72,48 @@
 .funderFooter {
   background: transparent;
 }
+
+@media only screen and (max-width: 600px) {
+  .funder {
+    padding: 120px 0 0;
+  }
+
+  .funder .first {
+    gap: 48px;
+    margin: 0 24px 48px;
+  }
+
+  .funder .first .one h1 {
+    width: auto;
+    height: auto;
+    font-size: 36px;
+  }
+
+  .funder .first .one p {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .funder .first .two {
+    margin: 0;
+  }
+
+  .funder .first .two div {
+    width: 200px;
+  }
+
+  .funder .first .two .image {
+    width: 57px;
+    height: auto;
+  }
+
+  .funder .groups {
+    margin: 0 24px 64px;
+  }
+
+  .funder .group {
+    width: 100%;
+    flex-shrink: 0;
+  }
+}

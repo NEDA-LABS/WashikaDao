@@ -115,3 +115,94 @@ section.third {
 .ownerFooter {
     background: transparent;
 }
+
+@media only screen and (max-width: 600px) {
+  .owner {
+    padding: 120px 24px 0px;
+  }
+
+  .owner .top {
+    margin: 0;
+  }
+
+  .owner .top h1 {
+    width: auto;
+    height: auto;
+    font-size: 36px;
+  }
+
+  .owner .one p {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .owner .top img {
+    margin-bottom: 36px;
+    width: 24px;
+    height: 57px;
+  }
+
+  .owner .button-group {
+    margin-left: 0;
+  }
+
+  .owner .second .myProposals {
+    margin: 24px 0;
+  }
+
+  .owner .myProposals h2 {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .owner .proposal-groups {
+    margin: 0px;
+    gap: 24px;
+  }
+
+  .owner section.second::before {
+    left: 0;
+    height: 640px;
+  }
+
+  .owner .proposal-groups .button-group button {
+    font-weight: 400;
+  }
+
+  section.third {
+    padding: 6px 3px;
+    height: auto;
+    align-items: flex-start;
+  }
+
+  .third article {
+    gap: 12px;
+  }
+
+  .third article div {
+    gap: 3px;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .third article div img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .third article h1  {
+    width: auto;
+    height: auto;
+    font-size: 12px;
+  }
+
+  .third article p {
+    width: auto;
+    height: auto;
+    font-size: 12px;
+    text-align: center;
+  }
+}
+

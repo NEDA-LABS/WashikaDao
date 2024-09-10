@@ -175,3 +175,123 @@
   font-size: 30px;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 600px) {
+  .createProposal {
+      padding-top: 116px;
+  }
+
+  .proposalParag {
+      margin: 0 24px;
+  }
+
+  .proposalParag h1 {
+      width: auto;
+      height: auto;
+      font-size: 36px;
+  }
+
+  .proposalParag img {
+      width: 18%;
+  }
+
+  .proposalParag p {
+      margin-top: 12px;
+      width: auto;
+      height: auto;
+      font-size: 24px;
+  }
+
+  .createProposal .circle-container {
+      padding: 16px 0 0;
+  }
+
+  .createProposal form {
+      margin: 24px;
+  }
+
+  .createProposal form .label {
+      gap: 6px;
+  }
+
+  .createProposal form label {
+      font-size: 16px;
+  }
+
+  .createProposal .one label {
+      width: auto;
+  }
+
+  .createProposal .one button {
+      margin: 0;
+      width: auto;
+      height: 48px;
+      font-size: 24px
+  }
+
+  .createProposal .two input {
+      padding-left: 12px;
+      width: auto;
+      height: 40px;
+      font-size: 16px;
+  }
+
+  .createProposal .three textarea {
+    padding: 12px;
+    width: auto;
+    height: 120px;
+    font-size: 24px;
+  }
+
+  .createProposal .four {
+    margin-left: 0;
+  }
+
+  .createProposal .four textarea::placeholder {
+    font-size: 24px;
+  }
+
+  .createProposal .four textarea {
+    padding: 12px;
+    width: auto;
+    height: 240px;
+    font-size: 24px;
+  }
+
+  .createProposal .four label {
+    font-size: 24px;
+  }
+
+  .createProposal .five label {
+    padding: 0;
+  }
+
+  .createProposal .five input {
+    padding: 12px;
+    width: auto;
+    height: 40px;
+    font-size: 16px;
+    border-radius: 9px;
+  }
+
+  .createProposal .six {
+    margin: 0 24px;
+    flex-direction: column;
+    gap: 36px;
+  }
+
+  .createProposal .six div {
+    width: auto;
+    height: 56px;
+    font-size: 16px;
+    padding-left: 24px;
+    justify-content: flex-start;
+  }
+
+  .createProposal .six button {
+    width: auto;
+    height: 56px;
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+}
