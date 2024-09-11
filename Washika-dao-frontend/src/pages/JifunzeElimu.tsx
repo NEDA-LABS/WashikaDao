@@ -6,51 +6,50 @@ const JifunzeElimu: React.FC = () => {
     <>
       <NavBar className={""} />
       <main className="jifunze">
-        <div className="one">
-          <h2>Karibu kwa WashikaDAO</h2>
-          <p>
+        <div className="onee">
+          <div className="left">
+            <h2>Karibu kwa WashikaDAO</h2>
+            <p>
             Tunawezesha vikundi kufanikisha malengo yao kwa usawa na usalama wa
             mali zao
-          </p>
+            </p>
+          </div>
+          
           <div className="image">
-            <img src="images/LOGO SYMBLO(1).PNG" alt="LOGO" />
+          <img src="images/LOGO SYMBLO(1).png" alt="logo" width="175" />
           </div>
         </div>
 
-        <div>
-          <article>
-            <h2>Fungua DAO</h2>
-            <p>
-              Tumia mfumo wetu wa kisasa kuendesha na kukuza Kikundi chako cha
-              kifedha
-            </p>
+        <div className="article-container">
+          <article className="one">
+            <div>
+              <h2>Fungua DAO</h2>
+              <p>
+                Tumia mfumo wetu wa kisasa kuendesha na kukuza Kikundi chako cha
+                kifedha
+              </p>
+            </div>
           </article>
-          <article>
-            <h2>Jifunze kuhusu DAO</h2>
-            <p>
-              Pata Elimu na makala kuhusu Uchumi wa kidijitali unavyoweza
-              kukusaidia wewe na kikundi cheka kufikia malengo yenu
-            </p>
+          <article className="two">
+            <div>
+              <h2>Jifunze kuhusu DAO</h2>
+              <p>
+                Pata Elimu na makala kuhusu Uchumi wa kidijitali unavyoweza
+                kukusaidia wewe na kikundi cheka kufikia malengo yenu
+              </p>
+            </div>
           </article>
-          <article>
-            <h2>DAO Tool kit</h2>
-            <p>Kila kitu unachohitaji kujua kuhusu DAO. Anza leo kushiriki.</p>
+          <article className="three">
+            <div>
+              <h2>DAO Tool kit</h2>
+              <p>
+                Kila kitu unachohitaji kujua kuhusu DAO. Anza leo kushiriki.
+              </p>
+            </div>
           </article>
         </div>
-
-        <div>
-          <div>
-            <img src="" alt="" />
-            <p>
-              Fahamu kuhusu <span>Vikoba Vya Kidijitali</span>
-            </p>
-          </div>
-          <div>
-            <img src="" alt="" />
-            <p>
-              Empowering everyday <span>waste pickers</span>
-            </p>
-          </div>
+        <div className="imagge">
+        <img src="images/Frame 9.png" alt="" />
         </div>
       </main>
       <Footer className={""} />
