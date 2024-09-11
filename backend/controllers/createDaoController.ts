@@ -55,7 +55,8 @@ export const createNewDao = async (req: Request, res: Response) => {
 }
 
 export const getDaoDetails = async (req: Request, res: Response) => {
-    const { multiSigAddr } = req.body;
+    const funderAddr = req.params.funderAddr;
+    const  multiSigAddr  = req.params.multiSigAddr;
     //getting dao details saved from the blockchain
     try {
 
@@ -70,4 +71,44 @@ export const getDaoDetails = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ error: 'Error finding Dao' })
     }
+}
+
+export const updateDaoDetails = async (req: Request, res: Response) => {
+    const { multiSigAddr, _daoName, _daoLocation, _targetAudience, _daoTitle, _daoDescription, _daoOverview, _daoImageIpfsHash } = req.body;
+
+    try {
+        const daoDetails = await daoRepository.findOneBy({ multiSigAddr });
+        if (!daoDetails) {
+            return res.status(404).json({ message: 'DAO not found' });
+        }
+        daoDetails.daoName = _daoName;
+        daoDetails.daoLocation = _daoLocation;
+        daoDetails.targetAudience = _targetAudience;
+        daoDetails.daoTitle = _daoTitle;
+        daoDetails.daoDescription = _daoDescription;
+        daoDetails.daoOverview = _daoOverview;
+        daoDetails.daoImageIpfsHash = _daoImageIpfsHash;
+        await daoRepository.save(daoDetails);
+        res.status(200).json({ message: 'DAO details updated' });
+} catch (err){
+    res.status(500).json({ error: 'Error updating DAO' })
+}
+}
+
+export const FundDao = async (req: Request, res: Response) => {
+    const {funderAddr, multiSigAddr} = req.body; 
+
+    try {
+        //TODO:mechanisms to transfer funds goes here
+        const daoMultisig = await daoRepository.findOneBy({
+            multiSigAddr
+        })
+        if (!daoMultisig) {
+            return res.status(404).json({ message: 'DAO not found' });
+        }
+        res.status(200).json({ message: 'Funding successfully' }); 
+    } catch (error) { 
+        res.status(500).json({ error: 'Error funding DAO' })
+    }
+    
 }

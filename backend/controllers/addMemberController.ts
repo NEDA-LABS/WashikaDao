@@ -56,6 +56,7 @@ export const addMember = async (req: Request, res: Response) => {
 }
 
 export const getMemberDetails = async (req: Request, res: Response) => {
+    //TODO: This is possibly a wrong implementation debug to params
     const { _memberAddr } = req.body; //possibly passed in params but lets see how this goes
     try {
         const memberDetails = await memberDetailsRepository.findOneBy(_memberAddr);
