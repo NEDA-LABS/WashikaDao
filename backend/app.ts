@@ -6,12 +6,15 @@ import "reflect-metadata"
 import { DataSource } from "typeorm";
 import { Dao } from "./models/Dao.ts";
 import { MemberDetails } from "./models/MemberDetails.ts"; // Assuming Members model is defined in Members.ts
+import { Proposal } from "./models/Proposal.ts";
+import { Vote } from "./models/Vote.ts";
+
 
 export const AppDataSource = new DataSource({
     type: 'sqlite', //will be switched to postgres for prod
     database: 'dao.db',
-    entities: [Dao, MemberDetails],
-    synchronize: true
+    entities: [Dao, MemberDetails, Proposal, Vote],
+    synchronize: true /**This enables automatic migrations as opposed to manual ones that help with db version control, as app grows will be toggled and subsequent changes in set up made */
 })
 
 const app = express();

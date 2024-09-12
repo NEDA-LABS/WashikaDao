@@ -13,6 +13,9 @@ export class Vote{
     @Column() 
     voterAddr: number;
 
+    @Column() 
+    voteValue: boolean;  //true for upvote, false for downvote
+
     @ManyToOne(() => Proposal, proposal =>  proposal.votes) 
     @JoinColumn({ name: "proposalId" })
     proposal: Proposal;

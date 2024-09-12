@@ -2,6 +2,13 @@ import { eventNames } from "process";
 import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { wagmiAbi } from "../utils/contractAbi/abi.ts";
+import { AppDataSource } from "../app.ts";
+import { MemberDetails } from "../models/MemberDetails.ts";
+
+const memberDetailsRepository = AppDataSource.getRepository(MemberDetails); 
+
+//TODO: add registry for whitelist 
+
 
 export const whiteListMember = async (req: Request, res: Response) => {
     //@destructuring values from incoming form data
@@ -9,6 +16,7 @@ export const whiteListMember = async (req: Request, res: Response) => {
     if (!_addrToAdd || !_daoMultiSig || !_caller) {
         return res.status(400).json({ error: 'missing required' })
     }
+    /**Blockchain will be done later 
     try {
         await daoContract.write.whiteListMember([
             _addrToAdd,
@@ -26,4 +34,5 @@ export const whiteListMember = async (req: Request, res: Response) => {
     } catch (error) {
         res.status(500).json({ error: 'Error whitelisting member' })
     }
+        */ 
 }

@@ -12,7 +12,7 @@ export class MemberDetails {
     nationalIdNo: number
 
     @Column()
-    memberRole: string
+    memberRole: string//funder, owner, member 
 
     @Column()
     memberAddr: string

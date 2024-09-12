@@ -4,8 +4,11 @@ import { wagmiAbi } from "../utils/contractAbi/abi.ts";
 import { Dao } from "../models/Dao.ts";
 import { AppDataSource } from "../app.ts"; 
 import { Proposal } from "../models/Proposal.ts";
+import { Vote } from "../models/Vote.ts";
 
 const proposalRepository = AppDataSource.getRepository(Proposal); 
+const voteRepository = AppDataSource.getRepository(Vote); 
+
 export const CreateProposal = async (req: Request, res: Response) => {
     //destructuring values from incoming form data 
     const proposalData = await req.body.data; 
@@ -15,7 +18,9 @@ export const CreateProposal = async (req: Request, res: Response) => {
     const proposalTitle = proposalData.proposalTitle; 
     const proposalDescription = proposalData.proposalDescription;
     const proposalStatus = proposalData.status;
-    const daoMultiSigAddr = proposalData.daoMultiSigAddr; 
+    const daoMultiSigAddr = proposalData.daoMultiSigAddr;  
+
+    
     try {
     //find proposal by proposalId 
     const _proposal = await proposalRepository.findOneBy(proposalId); 
@@ -56,10 +61,12 @@ const proposalDetails = await proposalRepository.findOneBy({ proposalId: _propos
     }
 }
 
-export const UpvoteProposal = async (req: Request, res: Response) => {
+const UpvoteProposalById = async (req: Request, res: Response) => {
     //destructuring values from incoming form data 
     const { _proposalId, _voterAddr } = req.body;
 
+    const _vote = new Vote();//Creating a new Vote object 
+    
     if (!_proposalId ||!_voterAddr) {
         return res.status(400).json({ error: 'Missing required' })
     }
@@ -69,9 +76,72 @@ export const UpvoteProposal = async (req: Request, res: Response) => {
         if (!_proposal) {
             return res.status(404).json({ message: 'Proposal not found' })
         }
-        //check if the voter has already voted 
-        //TODO: START FROM HERE TODAY 
+        //Check if voter has already voted for this proposal
+        for (let iter in _proposal.votes) {
+            if (iter === _voterAddr) {
+                return res.status(400).json({ error: 'Voter has already voted for this proposal' })
+            } 
+            //if voter has not voted, add vote to the proposal 
+else {
+                //Dealing with the vote object and the using the voteId to update our vote on the proposal 
+                _vote.voteId = _vote.voteId; 
+                _vote.proposalId = _proposal.proposalId; //setting the proposalId to the current proposal we want to vote on  
+                _vote.voterAddr = _vote.voterAddr; //This will be put as the object from the bc  
+                _vote.voteValue = true; //this is the upvote value  
+                //this is declarative of our vote, now updating our current proposal instance to an upvote value & count 
+                //updating the proposal details in the database 
+                //_proposal.proposalStatus = 'VOTED';//user has voted -- will be set by another function  
+                _proposal.numUpvotes += 1;//increasing no of upvotes to the number of votes 
+ //TODO: Add the Blockchain Part 
+                await voteRepository.save(_vote); //saving the vote to the database
+                await proposalRepository.save(_proposal);
+                res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
+            }
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error processing vote' })
     }
-} catch (   e ) {
 }
+//write for downvote then refactor the different sections to make it easier to debug 
+export const DownVoteProposalById = async (req: Request, res: Response) => {
+    //destructuring values from incoming form data 
+    const { _proposalId, _voterAddr } = req.body;
+
+    const _vote = new Vote();//Creating a new Vote object 
+    
+    if (!_proposalId ||!_voterAddr) {
+        return res.status(400).json({ error: 'Missing required' })
+    }
+    try {
+        //find proposal by proposalId 
+        const _proposal = await proposalRepository.findOneBy({ proposalId: _proposalId });
+        if (!_proposal) {
+            return res.status(404).json({ message: 'Proposal not found' })
+        }
+        //Check if voter has already voted for this proposal
+        for (let iter in _proposal.votes) {
+            if (iter === _voterAddr) {
+                return res.status(400).json({ error: 'Voter has already voted for this proposal' })
+            } 
+            //if voter has not voted, add vote to the proposal 
+else {
+                //Dealing with the vote object and the using the voteId to update our vote on the proposal 
+                _vote.voteId = _vote.voteId; 
+                _vote.proposalId = _proposal.proposalId; //setting the proposalId to the current proposal we want to vote on  
+                _vote.voterAddr = _vote.voterAddr; //This will be put as the object from the bc  
+                _vote.voteValue = false; //this is the downvote value  
+                //this is declarative of our vote, now updating our current proposal instance to an upvote value & count 
+                //updating the proposal details in the database 
+                //_proposal.proposalStatus = 'VOTED';//user has voted -- will be set by another function  
+                _proposal.numUpvotes += 1;//increasing no of upvotes to the number of votes 
+ //TODO: Add the Blockchain Part 
+                await voteRepository.save(_vote); //saving the vote to the database
+                await proposalRepository.save(_proposal);
+                res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, a downvote' });
+            }
+        }
+    } catch (error) {
+        res.status(500).json({ error: 'Error processing vote' })
+    }
 }
+//vote management

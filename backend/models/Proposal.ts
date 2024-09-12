@@ -19,13 +19,16 @@ export class Proposal {
     proposalDescription: string; 
     
     @Column() 
-    proposalStatus: string; //closed, open
+    proposalStatus: string; //closed, open --is this proposal closed or open to voting. 
 
     @Column() 
     amountRequested: number;  
 
     @Column() 
-    daoMultiSigAddr: string;
+    daoMultiSigAddr: string; 
+
+    @Column() 
+    numUpvotes: number;
 
     @OneToMany(() => Vote, vote => vote.proposal)
     votes: Vote[];
