@@ -1,4 +1,3 @@
-export {};
 /**
 import { eventNames } from "process";
 //import { daoContract, publicClient } from "./config.ts";

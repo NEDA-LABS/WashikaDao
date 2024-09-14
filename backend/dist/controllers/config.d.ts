@@ -1,4 +1,3 @@
-export {};
 /**import { createPublicClient, createWalletClient, custom, getContract, http } from "viem";
 import { celoAlfajores, mainnet } from "viem/chains";
 import { wagmiAbi } from "../utils/contractAbi/abi.ts";

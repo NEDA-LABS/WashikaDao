@@ -1,17 +1,16 @@
 {
     "compilerOptions": {
-        "target": "es2016", /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */
-        "experimentalDecorators": true, /* Enable experimental support for legacy experimental decorators. */
-        /* Specify a file that bundles all outputs into one JavaScript file. If 'declaration' is true, also designates a file that bundles all .d.ts output. */
+        "target": "es2016", 
+        "experimentalDecorators": true, 
         "outDir": "./dist/", /* Specify an output folder for all emitted files. */
-        "esModuleInterop": true, /* Emit additional JavaScript to ease support for importing CommonJS modules. This enables 'allowSyntheticDefaultImports' for type compatibility. */
-        // "preserveSymlinks": true,                         /* Disable resolving symlinks to their realpath. This correlates to the same flag in node. */
-        "forceConsistentCasingInFileNames": true, /* Ensure that casing is correct in imports. */
-        /* Type Checking */
-        "strict": true, /* Enable all strict type-checking options. */
-        "strictPropertyInitialization": false, /* Check for class properties that are declared but not set in the constructor. */
-        "module": "NodeNext",
-        "moduleResolution": "NodeNext",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true, 
+        "strict": true, 
+        "strictPropertyInitialization": false, 
+        "module": "ES2022",
+        "moduleResolution": "Node",
+        "resolveJsonModule": true,
+        "isolatedModules": true,
         "declaration": true,
         "emitDeclarationOnly": true,
         "allowImportingTsExtensions": true
