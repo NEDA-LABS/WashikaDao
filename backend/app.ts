@@ -4,7 +4,8 @@ const PORT = process.env.PORT || 8080;
 
 import "reflect-metadata"
 import { DataSource } from "typeorm";
-import { Dao } from "./models/Dao.ts";
+//import { Dao } from "./models/Dao.ts"; 
+import { Dao } from "./models/Dao.ts"; 
 import { MemberDetails } from "./models/MemberDetails.ts"; // Assuming Members model is defined in Members.ts
 import { Proposal } from "./models/Proposal.ts";
 import { Vote } from "./models/Vote.ts";

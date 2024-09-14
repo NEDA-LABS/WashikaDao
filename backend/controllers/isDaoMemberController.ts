@@ -1,5 +1,6 @@
+/** 
 import { eventNames } from "process";
-import { daoContract, publicClient } from "./config.ts";
+//import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { wagmiAbi } from "../utils/contractAbi/abi.ts";
 
@@ -11,10 +12,10 @@ export const isDaoMember = async (req: Request, res: Response) => {
         return res.status(400).json({ error: 'missing required fields' })
     }
     try {
-        const isMember = await daoContract.write.isDaoMember([
-            _memberToCheck,
-            _daoMultisig
-        ])
+       // const isMember = await daoContract.write.isDaoMember([
+          //  _memberToCheck,
+         //   _daoMultisig
+        //])
         //@ts-ignore
         if (isMember === 'true' || isMember === 'false') {
             res.status(200).json(isMember)
@@ -25,4 +26,4 @@ export const isDaoMember = async (req: Request, res: Response) => {
         res.status(500).json({ error: 'request erroed' })
     }
 }
-
+**/

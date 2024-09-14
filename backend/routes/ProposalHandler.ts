@@ -6,3 +6,9 @@ router.post('/', (req: Request, res: Response) => ProposalController.CreatePropo
 router.get('/:proposalId', (req: Request, res: Response) => ProposalController.GetProposalDetailsById(req, res)); 
 router.put('/:proposalId/upvote', (req: Request, res: Response) => ProposalController.UpvoteProposalById(req, res));
 router.put('/:proposalId/downvote', (req: Request, res: Response) => ProposalController.DownvoteProposalById(req, res)); 
+
+
+
+
+
+

@@ -1,4 +1,4 @@
-import { daoContract, publicClient } from "./config.ts";
+//import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { wagmiAbi } from "../utils/contractAbi/abi.ts";
 import { Dao } from "../models/Dao.ts";

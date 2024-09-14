@@ -1,5 +1,5 @@
-import { wagmiAbi } from "../utils/contractAbi/abi.js";
-import { daoContract, publicClient } from "./config.ts";
+//import { wagmiAbi } from "../utils/contractAbi/abi.js";
+//import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { MemberDetails } from "../models/MemberDetails.ts";
 import { AppDataSource } from "../app.ts";
@@ -23,13 +23,13 @@ export const addMember = async (req: Request, res: Response) => {
     }
 
     try {
-        await daoContract.write.addMember([
-            _email,
-            _memberAddr,
-            _callerAddr,
-            _daoToJoinMultisig,
-            _role
-        ])
+      //  await daoContract.write.addMember([
+        //    _email,
+        //    _memberAddr,
+        //    _callerAddr,
+         //   _daoToJoinMultisig,
+         //   _role
+       // ])
         /**Saving the details we want to the db **/
         const mD = new MemberDetails();
         mD.memberAddr = _memberAddr;
@@ -43,13 +43,13 @@ export const addMember = async (req: Request, res: Response) => {
         /**Back to the Blockchain Baby**/
 
         //consume an event for the return message
-        const evLogs = await publicClient.getContractEvents({
-            address: "0x8EC4eE1A1aEccE5Df1a630ea50Aa9716549cE9Ff",
-            abi: wagmiAbi,
-            eventName: 'MemberAdded'
-        })
-        console.log(evLogs);
-        res.status(201).json(evLogs);
+       // const evLogs = await publicClient.getContractEvents({
+         //   address: "0x8EC4eE1A1aEccE5Df1a630ea50Aa9716549cE9Ff",
+          //  abi: wagmiAbi,
+          //  eventName: 'MemberAdded'
+       // })
+        //console.log(evLogs);
+        //res.status(201).json(evLogs);
     } catch (error) {
         res.status(500).json({ error: 'Error adding member' });
     }

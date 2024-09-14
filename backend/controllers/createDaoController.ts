@@ -1,4 +1,4 @@
-import { daoContract, publicClient } from "./config.ts";
+//import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { wagmiAbi } from "../utils/contractAbi/abi.ts";
 import { Dao } from "../models/Dao.ts";
@@ -21,12 +21,12 @@ export const createNewDao = async (req: Request, res: Response) => {
 
     //contract taking in whatever it needs
     try {
-        await daoContract.write._createDAO([
-            _daoName,
-            _targetAudience,
-            _daoDescription,
-            _multiSigAddr
-        ])
+      //  await daoContract.write._createDAO([
+      //      _daoName,
+      //      _targetAudience,
+      //      _daoDescription,
+      //      _multiSigAddr
+      //  ])
         //saving the DAO details to the database
         const dao = new Dao();
         dao.daoName = _daoName;
@@ -42,13 +42,13 @@ export const createNewDao = async (req: Request, res: Response) => {
         res.status(201).json({ message: 'DAO created successfully' });
 
         //consume an event here for the return message
-        const logs = await publicClient.getContractEvents({
-            address: "0x8EC4eE1A1aEccE5Df1a630ea50Aa9716549cE9Ff",
-            abi: wagmiAbi,
-            eventName: 'DAOCreated'
-        })
-        console.log(logs);
-        res.status(201).json(logs);
+       // const logs = await publicClient.getContractEvents({
+         //   address: "0x8EC4eE1A1aEccE5Df1a630ea50Aa9716549cE9Ff",
+          //  abi: wagmiAbi,
+          //  eventName: 'DAOCreated'
+        //})
+        //console.log(logs);
+        //res.status(201).json(logs);
     } catch (error) {
         res.status(500).json({ error: 'Error Creating DAO' })
     }
