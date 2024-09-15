@@ -9,6 +9,22 @@ import { ObjectLiteral } from "typeorm";
 const daoRepository = AppDataSource.getRepository(Dao);
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 
+/**
+ * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
+ * It also creates a new member detail for the creator of the DAO.
+ *
+ * @param req - The Express request object containing the DAO and member details in the request body.
+ * @param res - The Express response object to send back the HTTP response.
+ *
+ * @remarks
+ * The function extracts the DAO and member details from the request body, validates them,
+ * and saves them to the database. It handles errors and returns appropriate HTTP responses.
+ *
+ * @returns
+ * - HTTP 201: If the DAO and member details are successfully created and saved.
+ * - HTTP 400: If any required fields are missing in the request body.
+ * - HTTP 500: If an error occurs while creating or saving the DAO and member details.
+ */
 export async function CreateNewDao (req: Request, res: Response) {
     //extracting details of dao from request body 
     const { _daoName, _daoLocation, _targetAudience, _daoTitle, _daoDescription, _daoOverview, _daoImageIpfsHash, _multiSigAddr } = req.body;
@@ -22,7 +38,7 @@ export async function CreateNewDao (req: Request, res: Response) {
     if (!_memberName || !_phoneNo || !_nationalIdNo || !_memberRole || !_daoMultiSig) {
         return res.status(400).json({error: 'Missing required Member Details'})
     }
-    
+
 
     try {
         //saving the DAO details to the database
@@ -71,6 +87,23 @@ export async function GetDaoDetailsByMultisig (req: Request, res: Response):Resp
     }
 }
 
+/**
+ * Updates the details of an existing DAO (Decentralized Autonomous Organization) in the database.
+ *
+ * @param req - The Express request object containing the DAO multi-signature address and updated details in the request parameters and body.
+ * @param res - The Express response object to send back the HTTP response.
+ *
+ * @remarks
+ * The function extracts the multi-signature address and updated details from the request parameters and body.
+ * It validates the required fields, fetches the DAO details from the database, and updates them.
+ * It handles errors and returns appropriate HTTP responses.
+ *
+ * @returns
+ * - HTTP 200: If the DAO details are successfully updated.
+ * - HTTP 400: If any required fields are missing in the request parameters or body.
+ * - HTTP 404: If the DAO with the given multi-signature address is not found.
+ * - HTTP 500: If an error occurs while updating the DAO details.
+ */
 export async function UpdateDaoDetails(req: Request, res: Response): Response<Response> | Response<Error> {
     const { multiSigAddr } = req.params; 
     if (!multiSigAddr) {
@@ -99,12 +132,29 @@ export async function UpdateDaoDetails(req: Request, res: Response): Response<Re
         daoDetails.daoImageIpfsHash = _daoImageIpfsHash;
         await daoRepository.save(daoDetails);
         res.status(200).json({ message: 'DAO details updated' });
-} catch (err){
-    res.status(500).json({ error: 'Error updating DAO' })
-}
+    } catch (err){
+        res.status(500).json({ error: 'Error updating DAO' })
+    }
 }
 
-//updating list of multisigs for a particular Dao +
+
+/**
+ * Processes a fund request for a specific DAO (Decentralized Autonomous Organization).
+ *
+ * @param req - The Express request object containing the DAO multi-signature address and fund details in the request parameters and body.
+ * @param res - The Express response object to send back the HTTP response.
+ *
+ * @remarks
+ * The function extracts the multi-signature address and fund details from the request parameters and body.
+ * It validates the required fields, fetches the DAO details from the database, and processes the fund request.
+ * It handles errors and returns appropriate HTTP responses.
+ *
+ * @returns
+ * - HTTP 200: If the fund request is successfully processed.
+ * - HTTP 400: If any required fields are missing in the request parameters or body.
+ * - HTTP 404: If the DAO with the given multi-signature address is not found.
+ * - HTTP 500: If an error occurs while processing the fund request.
+ */
 export async function FundDao (req: Request, res: Response){
     const { _daoMultiSig } = req.params;//Dao to fund 
     if (!_daoMultiSig) {
@@ -112,7 +162,7 @@ export async function FundDao (req: Request, res: Response){
     }
     const {funderAddr, fundAmount} = req.body; //funder and the amount they want to fund  
     try {
-        //TODO:mechanisms to transfer funds goes here
+        //TODO: mechanisms to transfer funds goes here
         //check if fundAmount is a positive number
        // if (fundAmount <= 0) {
        //     return res.status(400).json({ error: 'Invalid fund amount' });
