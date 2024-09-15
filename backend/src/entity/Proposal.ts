@@ -1,10 +1,11 @@
-import { PrimaryColumn, Column,  Entity, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { PrimaryColumn, Column,  Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import {Vote} from "./Vote";
+import { Dao } from "./Dao";
 
 @Entity()
 export class Proposal {
     @PrimaryGeneratedColumn() 
-    proposalId: number; 
+    proposalId: string; 
 
     @Column() 
     proposalOwner: string; 
@@ -28,10 +29,17 @@ export class Proposal {
     daoMultiSigAddr: string; 
 
     @Column() 
-    numUpvotes: number;
+    numUpvotes: number; 
 
-    @OneToMany(() => Vote, vote => vote.proposal)
+    @Column()
+    numDownvotes: number; 
+
+    @OneToMany(() => Vote, vote => vote.proposalId)
     votes: Vote[];
-
+     
+    //relation where one proposal can only belong to one dao but one dao can have multiple proposals 
+    @ManyToOne(() => Dao, dao => dao.proposal)
+    @JoinColumn({ name: "daoId" })
+    dao: Dao;
 
 }
