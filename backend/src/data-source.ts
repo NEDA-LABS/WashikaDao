@@ -4,10 +4,14 @@ import { DataSource } from "typeorm"
 const Dao = require("../src/entity/Dao"); 
 const MemberDetails = require("../src/entity/MemberDetails"); 
 const Proposal = require("../src/entity/Proposal");
-const Vote = require("../src/entity/Vote"); 
+const Vote = require("../src/entity/Vote");
 
+/**
+ * Configuration for creating a DataSource object using TypeORM.
+ * This DataSource is used to connect to a MySQL database and manage entities.
+ */
 export const AppDataSource = new DataSource({
-    type: "mysql",
+    type: "mysql", /** * The type of the database. In this case, it's MySQL.*/
     host: "localhost",
     port: 3306,
     username: "root",
@@ -19,3 +23,14 @@ entities: [Dao, MemberDetails, Proposal, Vote],
     migrations: [],
     subscribers: [],
 })
+
+/** const dataSource = new DataSource({
+    type: "sqlite",
+    database: "database.sqlite",
+    synchronize: false,
+    logging: false,
+    subscribers: [],
+    entities: [Dao, MemberDetails, Proposal, Vote],
+    migrations: [],
+});
+ */
