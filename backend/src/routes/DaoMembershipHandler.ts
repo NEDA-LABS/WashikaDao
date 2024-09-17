@@ -1,6 +1,6 @@
 const express = require('express'); 
 const router = express.Router();
-const CreateDaoController = require("../controller/CreateDaoController"); 
+const DaoController = require("../controller/DaoController"); 
 const DaoMembershipController = require("../controller/DaoMembershipController");
 import { Request, Response } from "express";
 //Adding a particular user to be an owner of a particular dao too 
@@ -15,3 +15,5 @@ router.post('/daoDetails/:multiSigAddr/members/AddMember/', (req: Request, res: 
 //deleting a member from a particular dao or blacklisting them 
 router.post('/daoDetails/:multiSigAddr/members/:memberAddr', (req: Request, res: Response) => DaoMembershipController.BlackListMember(req, res)); 
 
+module.exports = router ;
+//TODO: add middleware to check if user is an owner of the dao or has sufficient permissions to access the endpoint

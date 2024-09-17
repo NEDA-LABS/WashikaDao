@@ -72,7 +72,7 @@ export async function CreateNewDao (req: Request, res: Response) {
     }
 }
 
-export async function GetDaoDetailsByMultisig (req: Request, res: Response):Response<typeof Dao> | Response<Error> {
+export async function GetDaoDetailsByMultisig (req: Request, res: Response) {
     const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
     try {
 
@@ -104,7 +104,7 @@ export async function GetDaoDetailsByMultisig (req: Request, res: Response):Resp
  * - HTTP 404: If the DAO with the given multi-signature address is not found.
  * - HTTP 500: If an error occurs while updating the DAO details.
  */
-export async function UpdateDaoDetails(req: Request, res: Response): Response<Response> | Response<Error> {
+export async function UpdateDaoDetails(req: Request, res: Response) {
     const { multiSigAddr } = req.params; 
     if (!multiSigAddr) {
         return res.status(400).json({ error: 'Missing required url params' })  //return 400 status if required fields are missing

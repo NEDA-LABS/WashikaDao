@@ -24,14 +24,16 @@ const app = express();
 //app.use("/", require("./routes/homePageHandler.ts"));//HomePage --> DashBoard 
 app.use("/FunguaDao", require("./routes/DaoHandler"));//funguaDao Page --> CreateDao
 //app.use("/Jifunze", require("./routes/JifunzePageHandler.ts"));//Elimu/Jifunze Page
-app.use("/DaoToolKit", require("./routes/DaoToolKitPageHandler"));//daoToolKit Page
-app.use("/JiungeNaDao", require("./routes/JoinDaoHandler"))//jiungeNaDao Page
+//app.use("/DaoToolKit", require("./routes/DaoToolKitPageHandler"));//daoToolKit Page
+app.use("/JiungeNaDao", require("./routes/DaoMembershipHandler"))//jiungeNaDao Page
 app.use("/CreateProposal", require("./routes/ProposalHandler"))//CreateProposalPageHandler Page 
 app.use("/ViewProposal", require("./routes/ProposalHandler"))//ViewProposalPageHandler Page 
-app.use("/FundDao", require("./routes/FundDaoHandler"))//FundDaoPageHandler Page 
+app.use("/FundDao", require("./routes/DaoHandler"))//FundDaoPageHandler Page 
 app.use("/DaoProfile", require("./routes/DaoHandler"))//DaoProfilePageHandler Page 
 
 
 const server = app.listen(PORT, () => {
     console.log(`App is running on PORT ${PORT}`);
 })
+
+module.exports = router ;

@@ -1,6 +1,7 @@
 const express = require('express') 
 const router = express.Router()
-const ProposalController = require("../controllers/proposal-controller"); 
+const ProposalController = require('../controller/ProposalController'); 
+
 import { Request, Response } from "express"; 
 
 //Creating  a new proposal 
@@ -16,3 +17,4 @@ router.get('/daoDetails/:multiSigAddr/proposals', (req: Request, res: Response) 
 
 
 
+module.exports = router ;
