@@ -5,11 +5,12 @@ const PORT = process.env.PORT || 8080;
 
 import "reflect-metadata"
 import { DataSource } from "typeorm";
-const Dao = require("./entity/Dao");  
-const MemberDetails = require("./entity/MemberDetails"); 
-const Proposal = require("./entity/Proposal");
-const Vote = require("./entity/Vote");  
+import { Dao } from "./entity/Dao";
+import { MemberDetails } from "./entity/MemberDetails";
+import { Proposal } from "./entity/Proposal";
+import { Vote } from "./entity/Vote"; 
 
+import { AppDataSource } from "./data-source";
 /*
 export const AppDataSource = new DataSource({
     type: 'sqlite', //will be switched to postgres for prod
@@ -19,7 +20,7 @@ export const AppDataSource = new DataSource({
 //}) 
 
 const app = express();
-
+app.use(express.json());// specifying we will be receiving the data in json format 
 //Endpoints to be used
 //app.use("/", require("./routes/homePageHandler.ts"));//HomePage --> DashBoard 
 app.use("/FunguaDao", require("./routes/DaoHandler"));//funguaDao Page --> CreateDao
@@ -31,9 +32,23 @@ app.use("/ViewProposal", require("./routes/ProposalHandler"))//ViewProposalPageH
 app.use("/FundDao", require("./routes/DaoHandler"))//FundDaoPageHandler Page 
 app.use("/DaoProfile", require("./routes/DaoHandler"))//DaoProfilePageHandler Page 
 
+// Initialize the data source and start the server
+AppDataSource.initialize()
+    .then(() => {
+        console.log("Data Source has been initialized!");
 
+        const server = app.listen(PORT, () => {
+            console.log(`App is running on PORT ${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error("Error during Data Source initialization:", error);
+    }); 
+
+    /*
 const server = app.listen(PORT, () => {
     console.log(`App is running on PORT ${PORT}`);
 })
+*/ 
 
 module.exports = router ;

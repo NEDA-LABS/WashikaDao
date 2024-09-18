@@ -1,13 +1,9 @@
 //import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
-const Dao = require("../entity/Dao");
+//const Dao = require("../entity/Dao");
+import { Dao } from "../entity/Dao";
 import { AppDataSource } from "../data-source"; 
 import { MemberDetails } from "../entity/MemberDetails";
-import { IDao } from "../Interfaces/EntityTypes";
-import { ObjectLiteral } from "typeorm";
-
-const daoRepository = AppDataSource.getRepository(Dao);
-const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
@@ -27,13 +23,30 @@ const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
  */
 export async function CreateNewDao (req: Request, res: Response) {
     //extracting details of dao from request body 
-    const { _daoName, _daoLocation, _targetAudience, _daoTitle, _daoDescription, _daoOverview, _daoImageIpfsHash, _multiSigAddr } = req.body;
+    const _daoName = req.body; 
+    const _daoLocation:string = req.body; 
+    const _targetAudience: string = req.body;
+    const _daoTitle: string = req.body;
+    const _daoDescription: string = req.body;
+    const _daoOverview: string = req.body;
+    const _daoImageIpfsHash: string = req.body;
+    const _multiSigAddr: string = req.body;
+
+    //logging to see the data go 
+    console.log(`Extracted the following details from the request body ${_daoName}, ${_daoLocation}, ${_targetAudience}, ${_daoTitle}, ${_daoDescription}, ${_daoOverview}, ${_daoImageIpfsHash}, ${_multiSigAddr}`);
+    console.log(JSON.stringify(req.body, null, 2));// a cleaner way? 
+    //extracting details of dao members from request body
+    //const { _daoName, _daoLocation, _targetAudience, _daoTitle, _daoDescription, _daoOverview, _daoImageIpfsHash, _multiSigAddr } = req.body;
     //check if all required fields are provided for step 1 
     if (!_daoName ||!_daoOverview || !_daoImageIpfsHash || !_daoLocation|| !_targetAudience || !_daoTitle || !_daoDescription || !_multiSigAddr) {
         return res.status(400).json({ error: 'Missing required Dao Details' })
     }
+    if (typeof _multiSigAddr === undefined) {
+        res.status(404).json({ error: 'Unable to extract correct data type' }); 
+        console.log("Failed to extract data type")
+    }
     //extracting details of dao members from request body 
-    const {_memberName, _phoneNo, _nationalIdNo, _memberRole, _daoMultiSig } = req.body; 
+    const { _memberName, _phoneNo, _nationalIdNo, _memberRole, _daoMultiSig } = req.body; 
     //checking if all required fields for memberDetails are provided 
     if (!_memberName || !_phoneNo || !_nationalIdNo || !_memberRole || !_daoMultiSig) {
         return res.status(400).json({error: 'Missing required Member Details'})
@@ -42,7 +55,7 @@ export async function CreateNewDao (req: Request, res: Response) {
 
     try {
         //saving the DAO details to the database
-        const dao: typeof Dao = new Dao();
+        const dao = new Dao();
         dao.daoName = _daoName;
         dao.daoLocation = _daoLocation;
         dao.targetAudience = _targetAudience;
@@ -51,9 +64,11 @@ export async function CreateNewDao (req: Request, res: Response) {
         dao.daoOverview = _daoOverview;
         dao.daoImageIpfsHash = _daoImageIpfsHash;
         //pushing the multisig address to the array of multisig addresses but in our case it will be the first multisig since we are creating a dao  
-        dao.daoMultiSigs = [_multiSigAddr];
+        dao.daoMultiSigs = [_multiSigAddr]; 
+
+        const daoRepository = AppDataSource.getRepository(Dao);
         //creating a new member details object and setting the dao multi sig and member address 
-        const memberDetails: MemberDetails = new MemberDetails();
+        const memberDetails = new MemberDetails();
         //memberId will autogenerate  
         memberDetails.memberName = _memberName;
         memberDetails.phoneNumber = _phoneNo;
@@ -61,13 +76,18 @@ export async function CreateNewDao (req: Request, res: Response) {
         memberDetails.memberRole = 'Owner';
         memberDetails.daoMultiSig = _multiSigAddr;
         memberDetails.memberAddr = _multiSigAddr; //requester is the person who created the dao, but in this case it is not used 
-        //saving the member details to the database
+        //saving the member details to the database 
+        const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
+        console.log(memberDetailsRepository);
         await memberDetailsRepository.save(memberDetails); //saving to db
         res.status(200).json({message: 'member saved successfully'});//member who created the dao successfully 
+        console.log(memberDetails, "Saved to member details repository")
         //now save the dao to the database
         await daoRepository.save(dao); //saving to db
         res.status(201).json({ message: 'DAO created successfully' })
+        console.log("saved to dao repository successfully")
     } catch (error) {
+        console.error(error);  // logging the error to the console
         res.status(500).json({ error: 'Error Creating DAO' })
     }
 }
@@ -76,7 +96,9 @@ export async function GetDaoDetailsByMultisig (req: Request, res: Response) {
     const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
     try {
 
-        const daoDetails: typeof Dao = await daoRepository.findOneBy({ daoMultiSigAddr });
+
+        const daoRepository = AppDataSource.getRepository(Dao);
+        const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr });
 
         if (typeof daoDetails !== undefined && daoDetails !== null) {
             res.json(daoDetails);
@@ -118,7 +140,9 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     }
 
     try {
-        const daoDetails: typeof Dao = await daoRepository.findOneBy({ multiSigAddr });
+
+        const daoRepository = AppDataSource.getRepository(Dao);
+        const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr: multiSigAddr });
         if (daoDetails.daoId === undefined) {
             return res.status(404).json({ message: 'DAO not found' });
         }
@@ -174,8 +198,10 @@ export async function FundDao (req: Request, res: Response){
         //save the updated DAO model to the database
         //send a notification to all the members in the DAO about the new fund request 
         //use a blockchain function & Transaction for ease even to check balance
-        const daoDetails: typeof Dao = await daoRepository.findOneBy({
-            _daoMultiSig
+
+        const daoRepository = AppDataSource.getRepository(Dao);
+        const daoDetails = await daoRepository.findOneBy({
+            daoMultiSigAddr: _daoMultiSig
         })
         if (typeof daoDetails === undefined || daoDetails.daoId === undefined) {
             return res.status(404).json({ message: 'DAO not found' });
