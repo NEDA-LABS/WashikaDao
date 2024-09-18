@@ -16,12 +16,12 @@ import { Request, Response } from "express";
  * @returns {void} - This function does not return a value.
  * It sends a response back to the client indicating the success or failure of the DAO creation process.
  */
-router.post('/createDao', (req: Request, res: Response) => DaoController.CreateNewDao(req, res));
+router.post('/CreateDao', (req: Request, res: Response) => DaoController.CreateNewDao(req, res));
 //user searches for dao information using multisig address, any multisig of a dao can be used to display its details. 
-router.get('/daoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
+router.get('/DaoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
 //updating dao information
-router.put('/daoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.UpdateDaoDetails(req, res));
-router.post('/daoDetails/FundDao/:multiSigAddr', (req: Request, res: Response) => DaoController.FundDao(req, res));
+router.put('/DaoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.UpdateDaoDetails(req, res));
+router.post('/DaoDetails/FundDao/:multiSigAddr', (req: Request, res: Response) => DaoController.FundDao(req, res));
 
 
 module.exports = router ;
