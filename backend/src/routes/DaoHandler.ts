@@ -18,7 +18,9 @@ import { Request, Response } from "express";
  */
 router.post('/CreateDao', (req: Request, res: Response) => DaoController.CreateNewDao(req, res));
 //user searches for dao information using multisig address, any multisig of a dao can be used to display its details. 
-router.get('/DaoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
+//router.get('/DaoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
+//implement inside url later speed for now
+router.get('/DaoDetails', (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
 //updating dao information
 router.put('/DaoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.UpdateDaoDetails(req, res));
 router.post('/DaoDetails/FundDao/:multiSigAddr', (req: Request, res: Response) => DaoController.FundDao(req, res));
