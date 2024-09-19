@@ -102,7 +102,7 @@ export async function CreateNewDao (req: Request, res: Response) {
         }
 
 export async function GetDaoDetailsByMultisig (req: Request, res: Response) {
-    const daoMultiSigAddr: string = req.body.daoMultiSigAddr; 
+    const daoMultiSigAddr: string = req.params.daoMultiSigAddr; 
     if (!daoMultiSigAddr) {
         res.status(400).json({message: 'Missing required params'});
     }
@@ -112,7 +112,9 @@ export async function GetDaoDetailsByMultisig (req: Request, res: Response) {
 
         if (daoDetails !== undefined && daoDetails !== null) {
            // res.json(daoDetails);
-            res.status(200).json({message: 'successfully found dao details',  daoDetails: {
+            res.status(200).json({
+                message: "dao found with the details below",
+                daoDetails: {
                 daoId: daoDetails.daoId,
                 daoName: daoDetails.daoName,
                 daoLocation: daoDetails.daoLocation,
@@ -123,7 +125,8 @@ export async function GetDaoDetailsByMultisig (req: Request, res: Response) {
                 daoImageIpfsHash: daoDetails.daoImageIpfsHash,
                 daoMultiSigs: daoDetails.daoMultiSigs,
                 daoMultiSigAddr: daoDetails.daoMultiSigAddr,
-            }});
+            }}
+        );
         } 
     } catch (error) {
         res.status(500).json({ error: 'Error finding Dao' })
