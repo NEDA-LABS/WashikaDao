@@ -5,7 +5,7 @@ import { Proposal } from "./Proposal";
 @Unique(["proposalId", "voterAddr"])
 export class Vote{
     @PrimaryGeneratedColumn() 
-    voteId: string; 
+    voteId: number; 
 
     @Column() 
     voterAddr: string;

@@ -41,7 +41,7 @@ export async function CreateNewDao (req: Request, res: Response) {
     if (!_daoName ||!_daoOverview || !_daoImageIpfsHash || !_daoLocation|| !_targetAudience || !_daoTitle || !_daoDescription || !_multiSigAddr) {
         return res.status(400).json({ error: 'Missing required Dao Details' })
     }
-    if (typeof _multiSigAddr === undefined) {
+    if (_multiSigAddr === undefined) {
         res.status(404).json({ error: 'Unable to extract correct data type' }); 
         console.log("Failed to extract data type")
     }
@@ -64,10 +64,22 @@ export async function CreateNewDao (req: Request, res: Response) {
         dao.daoOverview = _daoOverview;
         dao.daoImageIpfsHash = _daoImageIpfsHash;
         //pushing the multisig address to the array of multisig addresses but in our case it will be the first multisig since we are creating a dao  
-        dao.daoMultiSigs = [_multiSigAddr]; 
+        dao.daoMultiSigs = _multiSigAddr; 
+        dao.daoMultiSigAddr = _multiSigAddr;
 
         const daoRepository = AppDataSource.getRepository(Dao);
-        //creating a new member details object and setting the dao multi sig and member address 
+          //now save the dao to the database
+          await daoRepository.save(dao); //saving to db
+          res.status(201).json({ message: 'DAO created successfully' })
+          console.log("saved to dao repository successfully")
+      }  catch (error) { 
+            console.error(error);  // logging the error to the console
+            res.status(500).json({ error: 'Error Creating DAO' })
+          }
+        
+          try {
+
+                 //creating a new member details object and setting the dao multi sig and member address 
         const memberDetails = new MemberDetails();
         //memberId will autogenerate  
         memberDetails.memberName = _memberName;
@@ -80,17 +92,14 @@ export async function CreateNewDao (req: Request, res: Response) {
         const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
         console.log(memberDetailsRepository);
         await memberDetailsRepository.save(memberDetails); //saving to db
-        res.status(200).json({message: 'member saved successfully'});//member who created the dao successfully 
+        //res.status(200).json({message: 'member saved successfully'});//member who created the dao successfully 
         console.log(memberDetails, "Saved to member details repository")
-        //now save the dao to the database
-        await daoRepository.save(dao); //saving to db
-        res.status(201).json({ message: 'DAO created successfully' })
-        console.log("saved to dao repository successfully")
-    } catch (error) {
-        console.error(error);  // logging the error to the console
-        res.status(500).json({ error: 'Error Creating DAO' })
-    }
-}
+          } catch (error) {
+            console.error(error);  // logging the error to the console
+            res.status(500).json({ error: 'Error Adding member to dao' })
+          }
+        
+        }
 
 export async function GetDaoDetailsByMultisig (req: Request, res: Response) {
     const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
@@ -101,8 +110,8 @@ export async function GetDaoDetailsByMultisig (req: Request, res: Response) {
         const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr });
 
         if (typeof daoDetails !== undefined && daoDetails !== null) {
-            res.json(daoDetails);
-            res.status(200).json({message: 'successfully found dao details'});
+           // res.json(daoDetails);
+            res.status(200).json({message: 'successfully found dao details', daoDetails});
         } 
     } catch (error) {
         res.status(500).json({ error: 'Error finding Dao' })

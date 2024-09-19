@@ -1,6 +1,6 @@
 import { PrimaryColumn, Column,  Entity, PrimaryGeneratedColumn, ManyToMany, OneToOne } from "typeorm";
 import { Dao } from "./Dao";
-import { PhoneAndAddressMapping } from "./PhoneToAddress";
+//import { PhoneAndAddressMapping } from "./PhoneToAddress";
 
 @Entity()
 export class MemberDetails {
@@ -26,13 +26,15 @@ export class MemberDetails {
     @Column()
     daoMultiSig: string 
 
+    //@ManyToMany(() => Dao, dao => dao.members)
+    //daos: Dao[];
     //many to many relation where one member can have multiple daos and one dao can have multiple members
     @ManyToMany(() => Dao, dao => dao.members, {nullable: true})
-    daos: Dao[]; //array of daos that a member is in 
+    daos: any; //array of daos that a member is in 
 
     //relation where a phone number can be mapped to an address in the phone number address map class  or not 
-    @OneToOne(() => PhoneAndAddressMapping, phoneAndAddressMapping => phoneAndAddressMapping.phoneNumberToMap, {nullable: true})
-    phoneAndAddressMapping?: PhoneAndAddressMapping;
+   // @OneToOne(() => PhoneAndAddressMapping, phoneAndAddressMapping => phoneAndAddressMapping.phoneNumberToMap, {nullable: true})
+    //phoneAndAddressMapping?: PhoneAndAddressMapping;
 
     //we can have a boolean to keep track of whether a phone number is mapped to an address in the mapping for easier operations 
 }

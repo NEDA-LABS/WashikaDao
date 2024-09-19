@@ -5,7 +5,7 @@ import { Dao } from "./Dao";
 @Entity()
 export class Proposal {
     @PrimaryGeneratedColumn() 
-    proposalId: string; 
+    proposalId: number; 
 
     @Column() 
     proposalOwner: string; 
@@ -35,11 +35,11 @@ export class Proposal {
     numDownvotes: number; 
 
     @OneToMany(() => Vote, vote => vote.proposalId)
-    votes: Vote[];
+    votes: Vote;
      
     //relation where one proposal can only belong to one dao but one dao can have multiple proposals 
     @ManyToOne(() => Dao, dao => dao.proposal)
-    @JoinColumn({ name: "daoId" })
+    //@JoinColumn({ name: "daoId" })
     dao: Dao;
 
 }

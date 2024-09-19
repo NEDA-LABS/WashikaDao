@@ -31,7 +31,11 @@ app.use("/CreateProposal", require("./routes/ProposalHandler"))//CreateProposalP
 app.use("/ViewProposal", require("./routes/ProposalHandler"))//ViewProposalPageHandler Page 
 app.use("/FundDao", require("./routes/DaoHandler"))//FundDaoPageHandler Page 
 app.use("/DaoProfile", require("./routes/DaoHandler"))//DaoProfilePageHandler Page 
-
+//Global error handler 
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something broke!');
+});
 // Initialize the data source and start the server
 AppDataSource.initialize()
     .then(() => {

@@ -3,7 +3,8 @@ import { Proposal } from "./Proposal";
 import { IProposal } from "../Interfaces/EntityTypes";
 import { MemberDetails } from "./MemberDetails"; 
 //Here I want an entity relationship that represents a mapping betweeen phone numbers and multisig addresses 
-@Entity() 
+
+/**@Entity() 
 export class PhoneAndAddressMapping {
     @PrimaryGeneratedColumn()
     phoneAddrMapId: number
@@ -13,4 +14,4 @@ export class PhoneAndAddressMapping {
 
     @Column()
     AddrToMap: string;
-}
+//}*/

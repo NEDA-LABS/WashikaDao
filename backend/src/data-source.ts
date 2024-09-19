@@ -1,10 +1,10 @@
 import "reflect-metadata"
 import { DataSource } from "typeorm"
 //import { User } from "./entity/User"
-const Dao = require("../src/entity/Dao"); 
-const MemberDetails = require("../src/entity/MemberDetails"); 
-const Proposal = require("../src/entity/Proposal");
-const Vote = require("../src/entity/Vote");
+import { Dao } from "./entity/Dao";
+import { MemberDetails } from "./entity/MemberDetails";
+import { Proposal } from "./entity/Proposal";
+import { Vote } from "./entity/Vote";
 
 /**
  * Configuration for creating a DataSource object using TypeORM.
@@ -28,7 +28,7 @@ export const AppDataSource = new DataSource({
 export const AppDataSource = new DataSource({
     type: "sqlite",
     database: "../test/mydb.sqlite",
-    synchronize: false,
+    synchronize: true,
     logging: true,
     subscribers: [],
     entities: [Dao, MemberDetails, Proposal, Vote],

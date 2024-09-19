@@ -1,12 +1,11 @@
 import {  PrimaryGeneratedColumn, Column, Entity, OneToMany } from "typeorm";
 import { Proposal } from "./Proposal";
-import { IProposal } from "../Interfaces/EntityTypes";
 import { MemberDetails } from "./MemberDetails";
 
 @Entity()
 export class Dao {
   @PrimaryGeneratedColumn()
-  daoId: string
+  daoId: number
 
   @Column()
   daoName: string
@@ -36,13 +35,13 @@ export class Dao {
   proposal: Proposal[]; 
 
   //relation where one member can belong to multiple daos and one member can own multiple daos
-  //dao can have multiple members & can be owned by muiltiple members
+  //dao can have multiple members & can be owned by multiple members
   //member can have multiple daos & can be an owner of multiple daos
   //many to many relation where one member can have multiple daos and one dao can have multiple members
   @OneToMany(() => MemberDetails, memberDetails => memberDetails.daos)
   members: MemberDetails[];
 
   @Column()
-  daoMultiSigs: string[]; //array of multisigs  
+  daoMultiSigs: string; //array of multisigs  
   
 }
