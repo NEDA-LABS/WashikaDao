@@ -9,6 +9,7 @@ import { Dao } from "./entity/Dao";
 import { MemberDetails } from "./entity/MemberDetails";
 import { Proposal } from "./entity/Proposal";
 import { Vote } from "./entity/Vote"; 
+const cors = require("cors");
 
 import { AppDataSource } from "./data-source";
 /*
@@ -20,6 +21,7 @@ export const AppDataSource = new DataSource({
 //}) 
 
 const app = express();
+app.use(cors());
 app.use(express.json());// specifying we will be receiving the data in json format 
 //Endpoints to be used
 //app.use("/", require("./routes/homePageHandler.ts"));//HomePage --> DashBoard 

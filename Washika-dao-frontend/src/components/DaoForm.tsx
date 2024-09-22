@@ -8,6 +8,9 @@ interface DaoFormProps {
     name?: string;
     id?: string;
     options?: { label: string; value: string }[];
+    value?: string;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onClick?: () => void;
   }[];
 }
 
@@ -43,6 +46,8 @@ const DaoForm: React.FC<DaoFormProps> = ({
               <textarea
                 name={field.name}
                 id={field.id}
+                value={field.value}
+                onChange={field.onChange}
                 className={
                   field.label === "Maelezo mafupi/utangulizi"
                     ? "short-textarea"
@@ -56,6 +61,7 @@ const DaoForm: React.FC<DaoFormProps> = ({
                   id={field.id}
                   name={field.name}
                   className="button-1"
+                  onClick={field.onClick}
                 >
                   Connect Wallet
                 </button>
@@ -81,6 +87,8 @@ const DaoForm: React.FC<DaoFormProps> = ({
                 type={field.type}
                 name={field.name}
                 id={field.id}
+                value={field.value}
+                onChange={field.onChange}
                 placeholder={
                   field.label ===
                   "Andika akaunti namba ambayo itapokea fedha za kikundi" || field.label === "Fill in your Digital wallet ID"

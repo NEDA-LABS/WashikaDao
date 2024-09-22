@@ -3,12 +3,127 @@ import DaoForm from "../components/DaoForm";
 import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+
+interface FormData {
+  daoName: string;
+  daoLocation: string;
+  targetAudience: string;
+  daoTitle: string;
+  daoDescription: string;
+  daoOverview: string;
+  daoImageIpfsHash: string;
+  multiSigAddr: string;
+}
+
+interface Member {
+  name: string;
+  phoneNumber: string;
+  nationalIdNo: string;
+  memberRole: string;
+}
 
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/DaoProfile");
+
+  const [formData, setFormData] = useState<FormData>({
+    daoName: "",
+    daoLocation: "",
+    targetAudience: "",
+    daoTitle: "",
+    daoDescription: "",
+    daoOverview: "",
+    daoImageIpfsHash: "",
+    multiSigAddr: "",
+  });
+
+  const [members, setMembers] = useState<Member[]>([]);
+
+  // Temporary state to hold the current member's input values
+  const [currentMember, setCurrentMember] = useState<Member>({
+    name: "",
+    phoneNumber: "",
+    nationalIdNo: "",
+    memberRole: "",
+  });
+
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false; // Set to false on unmount
+    };
+  }, []);
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
+
+  // Handle change for members
+  const handleMemberChange = (field: keyof Member, value: string) => {
+    setCurrentMember((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleAddMember = () => {
+    if (
+      currentMember.name &&
+      currentMember.phoneNumber &&
+      currentMember.nationalIdNo &&
+      currentMember.memberRole
+    ) {
+      // Push the current member to the members array
+      setMembers([...members, currentMember]);
+
+      // Clear the currentMember form for new input
+      setCurrentMember({
+        name: "",
+        phoneNumber: "",
+        nationalIdNo: "",
+        memberRole: "",
+      });
+    }
+  };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // Combine form data and member data
+    const combinedData = {
+      ...formData,
+      members,
+    };
+
+    try {
+      const response = await fetch("http://localhost:8080/FunguaDao/createDao", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(combinedData), // Send combined data
+      });
+
+      if (response.ok && isMounted.current) {
+        const data = await response.json();
+        const daoId = data.dao.id;
+        console.log("DAO created successfully", data);
+        navigate(`/daoProfile/${daoId}`);
+      } else {
+        console.error("Error creating DAO:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error creating DAO:", error);
+    }
+  };
+
   return (
     <>
       <NavBar className={""} />
@@ -31,16 +146,37 @@ const DaoRegistration: React.FC = () => {
           <div className="line"></div>
           <div className="circle">5</div>
         </div>
-        <form className="combinedForms" onSubmit={handleClick}>
+        <form className="combinedForms" onSubmit={handleSubmit}>
           <DaoForm
             className="form one"
             title="Jaza fomu hii kufungua kikundi"
             description="Taarifa za awali ya kikundi chako"
             fields={[
-              { label: "Jina la kikundi", type: "text" },
-              { label: "Mahali kilipo", type: "text" },
-              { label: "Kikundi ni cha kina nani", type: "text" },
-              { label: "Kiwango cha kuanzia", type: "number" },
+              {
+                label: "Jina la kikundi",
+                type: "text",
+                name: "daoName",
+                value: formData.daoName,
+                onChange: handleChange,
+              },
+              {
+                label: "Mahali kilipo",
+                type: "text",
+                name: "daoLocation",
+                value: formData.daoLocation,
+                onChange: handleChange,
+              },
+              {
+                label: "Kikundi ni cha kina nani",
+                type: "text",
+                name: "targetAudience",
+                value: formData.targetAudience,
+                onChange: handleChange,
+              },
+              {
+                label: "Kiwango cha kuanzia",
+                type: "number",
+              },
             ]}
           />
 
@@ -49,14 +185,43 @@ const DaoRegistration: React.FC = () => {
             title="Kuhusu kikundi"
             description="Taarifa za maelezo mafupi kuhusu kikundi chako na nia yenu."
             fields={[
-              { label: "Kichwa cha Juu", type: "text" },
-              { label: "Maelezo mafupi/utangulizi", type: "textarea" },
-              { label: "Maerezo marefu", type: "textarea" },
-              { label: "", type: "file" },
+              {
+                label: "Kichwa cha Juu",
+                type: "text",
+                name: "daoTitle",
+                value: formData.daoTitle,
+                onChange: handleChange,
+              },
+              {
+                label: "Maelezo mafupi/utangulizi",
+                type: "textarea",
+                name: "daoDescription",
+                value: formData.daoDescription,
+                onChange: handleChange,
+              },
+              {
+                label: "Maerezo marefu",
+                type: "textarea",
+                name: "daoOverview",
+                value: formData.daoOverview,
+                onChange: handleChange,
+              },
+              {
+                label: "",
+                type: "file",
+                name: "daoImageIpfsHash",
+                value: formData.daoImageIpfsHash,
+                onChange: handleChange,
+              },
             ]}
           />
 
-          <MemberForm />
+          {/* Pass members state and handlers to the MemberForm */}
+          <MemberForm
+            currentMember={currentMember}
+            onMemberChange={handleMemberChange}
+            onAddMember={handleAddMember}
+          />
 
           <DaoForm
             className="hazina"
@@ -68,15 +233,21 @@ const DaoRegistration: React.FC = () => {
                 type: "button",
                 name: "connect-wallet",
                 id: "connect-wallet",
+                onClick: () => {
+                  // Handle wallet connection logic
+                },
               },
               {
                 label: "Andika akaunti namba ambayo itapokea fedha za kikundi",
                 type: "text",
+                name: "multiSigAddr",
+                value: formData.multiSigAddr,
+                onChange: handleChange,
               },
             ]}
           />
           <div className="button-container">
-            <button className="createDao">Create DAO</button>
+            <button className="createDao" type="submit">Create DAO</button>
           </div>
         </form>
       </main>

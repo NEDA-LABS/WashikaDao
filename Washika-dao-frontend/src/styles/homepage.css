@@ -7,31 +7,29 @@
   background-size: cover;
   position: relative;
   bottom: 24px;
-  left: 48px;
 }
 
 .inner-container {
   position: absolute;
-  top: 212px;
-  width: 789px;
+  top: 160px;
+  padding-left: 48px;
 }
 
 .inner-container img {
   margin-left: 24px;
+  width: 164px;
+  height: auto;
 }
 
 .image-container p {
-  width: 785px;
-  height: 100px;
-  font-size: 40px;
+  width: 56vw;
+  font-size: 36px;
   font-family: "Droid Sans", sans-serif;
 }
 
 .image-container .main {
   margin: 12px 0 3px;
-  width: 752px;
-  height: 283px;
-  font-size: 78px;
+  font-size: 48px;
   color: #f8b859;
   font-weight: bold;
   line-height: 116%;
@@ -69,7 +67,7 @@
   height: 261px;
   color: #fffefe;
   display: flex;
-  margin: 120px 48px;
+  margin: 64px 48px;
   justify-content: center;
   align-items: center;
   font-size: 62px;
@@ -96,7 +94,6 @@
 }
 
 .boxes {
-  width: 1268px;
   display: flex;
   flex-direction: column;
   gap: 44px;
@@ -106,7 +103,7 @@
 .box {
   display: flex;
   justify-content: space-between;
-  width: 1268px;
+  width: 84vw;
   height: 569px;
 }
 
@@ -131,7 +128,7 @@
   font-weight: bold;
   position: absolute;
   top: 140px;
-  left: 64px;
+  left: 36px;
 }
 
 .box-left p {
@@ -142,7 +139,7 @@
   font-family: "Dosis", sans-serif;
   position: absolute;
   top: 240px;
-  left: 64px;
+  left: 36px;
 }
 
 .box-left span {
@@ -156,7 +153,7 @@
   justify-content: center;
   align-items: start;
   border-radius: 8px;
-  width: 545px;
+  width: 36vw;
   height: 571px;
   padding-top: 24px;
 }
@@ -167,14 +164,14 @@
 }
 
 .box-left.two {
-  width: 728px;
+  width: 48vw;
   height: 570px;
   background-color: #f6f7fa;
   border-radius: 10px;
 }
 
 .half-box {
-  width: 712px;
+  width: 48vw;
   height: 586px;
   border-radius: 13px;
   background-color: #f6f7fa;
@@ -186,14 +183,9 @@
   line-height: 1;
 }
 
-.half-box p {
-  width: 594px;
-  height: 173px;
-}
-
 .groups {
   position: absolute;
-  right: 54px;
+  right: 1.5%;
   top: 126px;
   display: flex;
   flex-direction: column;
@@ -213,7 +205,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 493px;
+  width: 32.6vw;
   min-height: 823px;
   background-color: #ffffff;
   border-radius: 9px;
@@ -224,32 +216,32 @@
   height: 271px;
 }
 
-.group img {
+.group .image img {
   border-radius: 9px;
+  width: 400px;
 }
 
 .image .taarifaTop {
   position: absolute;
   top: 16px;
   right: 20px;
-  width: 127px;
-  height: 37px;
+  width: 110px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #a69d9d;
   background-color: #defc26;
-  border-radius: 15px;
+  border-radius: 10px;
   font-size: 15px;
   font-weight: 600;
 }
 
 .section-1 {
-  margin-left: 9px;
+  margin: 0 16px;
   display: grid;
   grid-template-columns: 2.5fr 3fr;
   border-bottom: 1px solid #d9d9d9;
-  width: 456px;
   padding-bottom: 16px;
 }
 
@@ -327,9 +319,7 @@
 }
 
 .section-2 {
-  margin-left: -16px;
-  padding: 12px 0 136px;
-  width: 432px;
+  padding: 12px 12px 136px;
   height: 140px;
   color: #433939;
   font-family: "Dosis", sans-serif;
@@ -467,21 +457,19 @@
   background-size: cover;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 900px) {
   .image-container {
     height: 610px;
-    padding: 0 12px;
-    left: 8px;
+    padding: 0 24px;
   }
 
   .inner-container {
     width: auto;
     top: 136px;
+    padding-left: 8px;
   }
   .inner-container img {
     margin: 0;
-    width: 164px;
-    height: auto;
   }
   .image-container p {
     width: auto;
@@ -620,7 +608,6 @@
 
   .left .email {
     margin: 0 9px;
-
   }
 
   .group .right {
@@ -706,7 +693,8 @@
     border-radius: 9px;
   }
 
-  .article-container h2, .article-container .two h2 {
+  .article-container h2,
+  .article-container .two h2 {
     font-size: 36px;
   }
 
@@ -716,5 +704,63 @@
 
   .article-container div {
     bottom: -16px;
+  }
+}
+
+@media only screen and (width: 1512px) {
+  .inner-container {
+    top: 212px;
+  }
+  .inner-container img {
+    width: 246px;
+  }
+
+  .image-container p {
+    font-size: 40px;
+  }
+
+  .image-container .main {
+    font-size: 78px;
+  }
+
+  .box-left h1 {
+    left: 64px;
+  }
+
+  .box-left p {
+    left: 64px;
+  }
+
+  .box-left.two {
+    width: 728px;
+  }
+
+  .half-box {
+    width: 712px;
+  }
+
+  .half-box p {
+    width: 594px;
+    height: 173px;
+  }
+
+  .groups {
+    right: 54px;
+  }
+
+  .group .image img {
+    width: 100%;
+  }
+
+  .image .taarifaTop {
+    width: 127px;
+    height: 37px;
+    border-radius: 15px;
+  }
+
+  .section-2 {
+    margin-left: -16px;
+    padding: 12px 0 136px;
+    width: 432px;
   }
 }
