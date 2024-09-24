@@ -51,7 +51,7 @@ Our mission is to revolutionize financial inclusion for East African communities
 ---
 
 ### 🛠️ **Installation**
-To get started with the Washika DAO development environment, visit: [https://quick-match-late.on-fleek.app](https://quick-match-late.on-fleek.app)
+To get started with the Washika DAO development environment, 
 
 ---
 
@@ -77,3 +77,5 @@ Help us build the future of financial inclusion! Whether you're a developer, com
 
 - **Visit Us**: [Washika DAO Website](#)
 - **Join the Community**: Follow us on [Twitter](#) and [LinkedIn](#)
+  
+visit: [https://quick-match-late.on-fleek.app](https://quick-match-late.on-fleek.app)
