@@ -14,21 +14,22 @@ import Owner from './pages/Owner';
 
 
 const App: React.FC = () => {
-  return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/DaoRegistration" element={<DaoRegistration />} />
-        <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
-        <Route path="/CreateProposal" element={<CreateProposal />} />
-        <Route path="/JoinPlatform" element={<JoinPlatform />} />
-        <Route path="/Funder" element={<Funder />} />
-        <Route path="/DaoProfile/:DaoId" element={<DaoProfile />} />
-        <Route path="/ViewProposal" element={<ViewProposal />} />
-        <Route path="/Owner" element={<Owner />} />
-      </Routes>
-    </Router>
-  );
+    return (
+        <Router>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/DaoRegistration" element={<DaoRegistration />} />
+                <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
+                <Route path="/CreateProposal" element={<CreateProposal />} />
+                <Route path="/JoinPlatform" element={<JoinPlatform />} />
+                <Route path="/Funder" element={<Funder />} />
+                <Route path="/DaoProfile/:DaoId" element={<DaoProfile />} />
+                <Route path="/DaoProfile" element={<DaoProfile />} />
+                <Route path="/ViewProposal" element={<ViewProposal />} />
+                <Route path="/Owner" element={<Owner />} />
+            </Routes>
+        </Router>
+    );
 };
 
 export default App;
