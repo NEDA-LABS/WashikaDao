@@ -75,7 +75,7 @@ This project is licensed under the MIT License. See the LICENSE file for details
 
 Help us build the future of financial inclusion! Whether you're a developer, community leader, or financial expert, we invite you to contribute to Washika DAO. Together, we can create a fairer, more inclusive financial system for everyone.
 
-- **Visit Us**: [Washika DAO Website](#)
+- **Visit Us**: [Washika DAO Website](https://quick-match-late.on-fleek.app)
 - **Join the Community**: Follow us on [Twitter](#) and [LinkedIn](#)
   
-visit: [https://quick-match-late.on-fleek.app](https://quick-match-late.on-fleek.app)
+
