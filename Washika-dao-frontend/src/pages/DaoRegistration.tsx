@@ -103,13 +103,16 @@ const DaoRegistration: React.FC = () => {
     };
 
     try {
-      const response = await fetch("http://localhost:8080/FunguaDao/createDao", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(combinedData), // Send combined data
-      });
+      const response = await fetch(
+        "http://localhost:8080/FunguaDao/createDao",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(combinedData), // Send combined data
+        }
+      );
 
       if (response.ok && isMounted.current) {
         const data = await response.json();
@@ -247,7 +250,9 @@ const DaoRegistration: React.FC = () => {
             ]}
           />
           <div className="button-container">
-            <button className="createDao" type="submit">Create DAO</button>
+            <button className="createDao" type="submit">
+              Create DAO
+            </button>
           </div>
         </form>
       </main>

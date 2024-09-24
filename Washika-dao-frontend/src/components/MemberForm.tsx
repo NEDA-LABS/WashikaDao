@@ -11,7 +11,11 @@ interface MemberFormProps {
   onAddMember: () => void;
 }
 
-const MemberForm: React.FC<MemberFormProps> = ({ currentMember, onMemberChange, onAddMember }) => {
+const MemberForm: React.FC<MemberFormProps> = ({
+  currentMember,
+  onMemberChange,
+  onAddMember,
+}) => {
   return (
     <div className="wanakikundi">
       <div className="left">
