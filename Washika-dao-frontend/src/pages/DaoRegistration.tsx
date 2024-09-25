@@ -24,7 +24,7 @@ interface Member {
 }
 
 const DaoRegistration: React.FC = () => {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize navigation hook
 
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
@@ -37,6 +37,7 @@ const DaoRegistration: React.FC = () => {
     multiSigAddr: "",
   });
 
+  // State to hold the list of members
   const [members, setMembers] = useState<Member[]>([]);
 
   // Temporary state to hold the current member's input values
@@ -47,13 +48,14 @@ const DaoRegistration: React.FC = () => {
     memberRole: "",
   });
 
+  // Handle changes in the main form fields
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target; // Destructure the target name and value
     setFormData((prevData) => ({
       ...prevData,
-      [name]: value,
+      [name]: value, // Update the specific field in the form data
     }));
   };
 
@@ -65,6 +67,7 @@ const DaoRegistration: React.FC = () => {
     }));
   };
 
+  // Function to add a member to the members list
   const handleAddMember = () => {
     if (
       currentMember.name &&
@@ -85,8 +88,9 @@ const DaoRegistration: React.FC = () => {
     }
   };
 
+  // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+    event.preventDefault(); // Prevent default form submission behavior
 
     // Combine form data and member data
     const combinedData = {
@@ -95,23 +99,24 @@ const DaoRegistration: React.FC = () => {
     };
 
     try {
+      // Send combined data to the backend API
       const response = await fetch(
         "http://localhost:8080/FunguaDao/createDao",
         {
-          method: "POST",
+          method: "POST", // HTTP method
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/json", // Specify JSON content type
           },
           body: JSON.stringify(combinedData), // Send combined data
         }
       );
-      const data = await response.json();
+      const data = await response.json(); // Parse the response JSON
 
-
+            // Check if the response indicates success
       if (response.ok) {
-        const daoMultisigAddr = data.daoMultisigAddr;
+        const daoMultisigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
         console.log("DAO created successfully", data);
-        navigate(`/daoProfile/${daoMultisigAddr}`);
+        navigate(`/daoProfile/${daoMultisigAddr}`); // Navigate to the DAO profile page
       } else {
         console.error("Error creating DAO:", data.message);
       }
