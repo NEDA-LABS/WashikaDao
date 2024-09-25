@@ -28,18 +28,6 @@ Fonts are placed in the ```src/fonts/``` directory and are referenced within the
 This structure ensures separation of concerns between components, styles, and pages, making it easier to manage and scale the React application. 
 
 
-# Project Structure Overview
-
-src/
-├── components/           # Contains reusable React components
-├── pages/                # Contains different page components for routing
-├── styles/               # CSS files for global and page-specific styling
-├── fonts/                # Fonts referenced in your CSS
-├── App.tsx               # Main application component
-├── Main.tsx              # Entry point for the React app
-└── vite.config.js        # Vite configuration file
-
-
 The frontend interacts with the backend’s API via HTTP requests to the defined routes.
 
 Future iterations of the frontend will integrate with the backend’s blockchain-based enhancements, including smart contract calls for specific actions.
