@@ -5,7 +5,7 @@
     "homepage": ".",
     "type": "module",
     "scripts": {
-        "dev": "vite",
+        "start": "vite",
         "dev:host": "vite --host",
         "build": "tsc -b && vite build",
         "lint": "eslint .",

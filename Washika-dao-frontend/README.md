@@ -1,50 +1,51 @@
-# React + TypeScript + Vite
+# Frontend Documentation
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## ⚙️ Vite Configuration (vite.config.js)
 
-Currently, two official plugins are available:
+Vite requires minimal configuration, making it easy to set up and run your project.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+1. **Install dependencies**: Run the command `npm i` to install and auto-configure dependencies as outlined in the `package.json` file:
 
-## Expanding the ESLint configuration
+2. **Start the development server**: Use the command `npm start` to start a development server with hot module replacement enabled by default:
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+3. **Access the application**: Once the server is running, open your browser and navigate to: `http://localhost:5173`. This will load the to access the frontend interface.
+   
+   
+## ES6 Module Imports
 
-- Configure the top-level `parserOptions` property like this:
+Files are imported using ES6 syntax, keeping the code modular and organized.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## 🧩 Importing Components 
+Components are stored in the ```src/components/``` directory and imported directly into the pages (or other components). This helps maintain a modular and reusable structure, improving maintainability.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+## 🎨 Importing Styles and Fonts
+
+Stylesheets ``(*.css)`` are located in the ```src/styles/``` directory.
+Fonts are placed in the ```src/fonts/``` directory and are referenced within the CSS files.
+
+This structure ensures separation of concerns between components, styles, and pages, making it easier to manage and scale the React application. 
+
+
+# Project Structure Overview
+
+src/
+├── components/           # Contains reusable React components
+├── pages/                # Contains different page components for routing
+├── styles/               # CSS files for global and page-specific styling
+├── fonts/                # Fonts referenced in your CSS
+├── App.tsx               # Main application component
+├── Main.tsx              # Entry point for the React app
+└── vite.config.js        # Vite configuration file
+
+
+The frontend interacts with the backend’s API via HTTP requests to the defined routes.
+
+Future iterations of the frontend will integrate with the backend’s blockchain-based enhancements, including smart contract calls for specific actions.
+
+## Current Fixes:
+
+    1. UI Improvement: Enhanced CSS responsiveness for better user experience across different screen sizes and devices.
+    
+    2. API Integration: Implementation of more API calls to fetch data from the backend
