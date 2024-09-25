@@ -8,7 +8,7 @@ import { MemberDetails } from "../entity/MemberDetails";
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
  * It also creates a new member detail for the creator of the DAO.
- *
+ * NOTE: Will Contain logic to filter out details & sending a blockchain transaction to create a Dao. 
  * @param req - The Express request object containing the DAO and member details in the request body.
  * @param res - The Express response object to send back the HTTP response.
  *
@@ -106,6 +106,24 @@ export async function CreateNewDao(req: Request, res: Response) {
   }
 }
 
+/**
+ * Retrieves the details of a DAO (Decentralized Autonomous Organization) based on the provided multi-signature address.
+ * NOTE: Break down into 2 steps, start onchain and check some details from db, the db one will be specifically for displaying daos in the frontend, say for a user to scroll through, the onchain one will be used when client searches & wants to get into the details of a certain Dao. 
+ * @param req - The Express request object containing the DAO multi-signature address in the request parameters.
+ * @param res - The Express response object to send back the HTTP response.
+ *
+ * @remarks
+ * The function extracts the multi-signature address from the request parameters.
+ * It validates the required field, fetches the DAO details from the database, and returns them in the response.
+ * If the DAO is not found, it returns a 404 status with an appropriate error message.
+ * If any error occurs during the process, it returns a 500 status with an error message.
+ *
+ * @returns
+ * - HTTP 200: If the DAO details are successfully retrieved. The response body contains the DAO details.
+ * - HTTP 400: If the required multi-signature address is missing in the request parameters.
+ * - HTTP 404: If the DAO with the given multi-signature address is not found.
+ * - HTTP 500: If an error occurs while retrieving the DAO details.
+ */
 export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
   const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
   if (!daoMultiSigAddr) {
@@ -116,7 +134,6 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
     const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr });
 
     if (daoDetails !== undefined && daoDetails !== null) {
-      // res.json(daoDetails);
       res.status(200).json({
         message: "dao found with the details below",
         daoDetails: {
@@ -140,7 +157,7 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
 
 /**
  * Updates the details of an existing DAO (Decentralized Autonomous Organization) in the database.
- *
+ * NOTE: This is purely a backend details updating & should include implementation to disallow updating details about a dao that were published onchain, especially the crucial one, however should allow things like images, descriptions etc to be updated
  * @param req - The Express request object containing the DAO multi-signature address and updated details in the request parameters and body.
  * @param res - The Express response object to send back the HTTP response.
  *
@@ -171,7 +188,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   } = req.body;
   //so you have to manually update all the details if you are updating details
   //check missing details
-  //TODO: Refactor to an extensible function to check missing required
+  //TODO: Refactor to an extensible function or helper function in utils to check missing required
   if (
     !multiSigAddr ||
     !_daoName ||

@@ -24,7 +24,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());// specifying we will be receiving the data in json format 
 //Endpoints to be used
-//app.use("/", require("./routes/homePageHandler.ts"));//HomePage --> DashBoard 
+
 app.use("/FunguaDao", require("./routes/DaoHandler"));//funguaDao Page --> CreateDao
 //app.use("/Jifunze", require("./routes/JifunzePageHandler.ts"));//Elimu/Jifunze Page
 //app.use("/DaoToolKit", require("./routes/DaoToolKitPageHandler"));//daoToolKit Page
