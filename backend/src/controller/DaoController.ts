@@ -98,7 +98,7 @@ export async function CreateNewDao(req: Request, res: Response) {
       .status(201)
       .json({
         message: "DAO and members created successfully",
-        daoId: dao.daoId,
+        daoMultisigAddr: dao.daoMultiSigAddr,
       });
   } catch (error) {
     console.error("Error creating DAO and members:", error);

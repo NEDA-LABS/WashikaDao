@@ -109,9 +109,9 @@ const DaoRegistration: React.FC = () => {
 
 
       if (response.ok) {
-        const daoId = data.daoId;
+        const daoMultisigAddr = data.daoMultisigAddr;
         console.log("DAO created successfully", data);
-        navigate(`/daoProfile/${daoId}`);
+        navigate(`/daoProfile/${daoMultisigAddr}`);
       } else {
         console.error("Error creating DAO:", data.message);
       }
