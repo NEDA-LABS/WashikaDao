@@ -3,7 +3,7 @@ import DaoForm from "../components/DaoForm";
 import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 interface FormData {
   daoName: string;
@@ -46,14 +46,6 @@ const DaoRegistration: React.FC = () => {
     nationalIdNo: "",
     memberRole: "",
   });
-
-  const isMounted = useRef(true);
-
-  useEffect(() => {
-    return () => {
-      isMounted.current = false; // Set to false on unmount
-    };
-  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -113,14 +105,15 @@ const DaoRegistration: React.FC = () => {
           body: JSON.stringify(combinedData), // Send combined data
         }
       );
+      const data = await response.json();
 
-      if (response.ok && isMounted.current) {
-        const data = await response.json();
-        const daoId = data.dao.id;
+
+      if (response.ok) {
+        const daoId = data.daoId;
         console.log("DAO created successfully", data);
         navigate(`/daoProfile/${daoId}`);
       } else {
-        console.error("Error creating DAO:", await response.json());
+        console.error("Error creating DAO:", data.message);
       }
     } catch (error) {
       console.error("Error creating DAO:", error);

@@ -22,97 +22,87 @@ import { MemberDetails } from "../entity/MemberDetails";
  * - HTTP 500: If an error occurs while creating or saving the DAO and member details.
  */
 export async function CreateNewDao(req: Request, res: Response) {
-  //extracting details of dao from request body
-  const _daoName = req.body;
-  const _daoLocation: string = req.body;
-  const _targetAudience: string = req.body;
-  const _daoTitle: string = req.body;
-  const _daoDescription: string = req.body;
-  const _daoOverview: string = req.body;
-  const _daoImageIpfsHash: string = req.body;
-  const _multiSigAddr: string = req.body;
+  // Extract DAO details from request body
+  const {
+    daoName,
+    daoLocation,
+    targetAudience,
+    daoTitle,
+    daoDescription,
+    daoOverview,
+    daoImageIpfsHash,
+    multiSigAddr,
+    members, // Assume members is an array of objects with member details
+  } = req.body;
 
-  //logging to see the data go
-  console.log(
-    `Extracted the following details from the request body ${_daoName}, ${_daoLocation}, ${_targetAudience}, ${_daoTitle}, ${_daoDescription}, ${_daoOverview}, ${_daoImageIpfsHash}, ${_multiSigAddr}`
-  );
-  console.log(JSON.stringify(req.body, null, 2)); // a cleaner way?
-  //extracting details of dao members from request body
-  //const { _daoName, _daoLocation, _targetAudience, _daoTitle, _daoDescription, _daoOverview, _daoImageIpfsHash, _multiSigAddr } = req.body;
-  //check if all required fields are provided for step 1
+  // Validate required DAO fields
   if (
-    !_daoName ||
-    !_daoOverview ||
-    !_daoImageIpfsHash ||
-    !_daoLocation ||
-    !_targetAudience ||
-    !_daoTitle ||
-    !_daoDescription ||
-    !_multiSigAddr
+    !daoName ||
+    !daoLocation ||
+    !targetAudience ||
+    !daoTitle ||
+    !daoDescription ||
+    !daoOverview ||
+    !daoImageIpfsHash ||
+    !multiSigAddr
   ) {
-    return res.status(400).json({ error: "Missing required Dao Details" });
-  }
-  if (_multiSigAddr === undefined) {
-    res.status(404).json({ error: "Unable to extract correct data type" });
-    console.log("Failed to extract data type");
-  }
-  //extracting details of dao members from request body
-  const { _memberName, _phoneNo, _nationalIdNo, _memberRole, _daoMultiSig } =
-    req.body;
-  //checking if all required fields for memberDetails are provided
-  if (
-    !_memberName ||
-    !_phoneNo ||
-    !_nationalIdNo ||
-    !_memberRole ||
-    !_daoMultiSig
-  ) {
-    return res.status(400).json({ error: "Missing required Member Details" });
+    return res.status(400).json({ error: "Missing required DAO details" });
   }
 
   try {
-    //saving the DAO details to the database
+    // Save DAO details to the database
     const dao = new Dao();
-    dao.daoName = _daoName;
-    dao.daoLocation = _daoLocation;
-    dao.targetAudience = _targetAudience;
-    dao.daoTitle = _daoTitle;
-    dao.daoDescription = _daoDescription;
-    dao.daoOverview = _daoOverview;
-    dao.daoImageIpfsHash = _daoImageIpfsHash;
-    //pushing the multisig address to the array of multisig addresses but in our case it will be the first multisig since we are creating a dao
-    dao.daoMultiSigs = _multiSigAddr;
-    dao.daoMultiSigAddr = _multiSigAddr;
+    dao.daoName = daoName;
+    dao.daoLocation = daoLocation;
+    dao.targetAudience = targetAudience;
+    dao.daoTitle = daoTitle;
+    dao.daoDescription = daoDescription;
+    dao.daoOverview = daoOverview;
+    dao.daoImageIpfsHash = daoImageIpfsHash;
+    dao.daoMultiSigAddr = multiSigAddr;
+    dao.daoMultiSigs = [multiSigAddr]; // Assuming it's an array of multisigs
 
+    // Initialize the DAO repository
     const daoRepository = AppDataSource.getRepository(Dao);
-    //now save the dao to the database
-    await daoRepository.save(dao); //saving to db
-    res.status(201).json({ message: "DAO created successfully" });
-    console.log("saved to dao repository successfully");
-  } catch (error) {
-    console.error(error); // logging the error to the console
-    res.status(500).json({ error: "Error Creating DAO" });
-  }
+    await daoRepository.save(dao);
 
-  try {
-    //creating a new member details object and setting the dao multi sig and member address
-    const memberDetails = new MemberDetails();
-    //memberId will autogenerate
-    memberDetails.memberName = _memberName;
-    memberDetails.phoneNumber = _phoneNo;
-    memberDetails.nationalIdNo = _nationalIdNo;
-    memberDetails.memberRole = "Owner";
-    memberDetails.daoMultiSig = _multiSigAddr;
-    memberDetails.memberAddr = _multiSigAddr; //requester is the person who created the dao, but in this case it is not used
-    //saving the member details to the database
-    const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
-    console.log(memberDetailsRepository);
-    await memberDetailsRepository.save(memberDetails); //saving to db
-    //res.status(200).json({message: 'member saved successfully'});//member who created the dao successfully
-    console.log(memberDetails, "Saved to member details repository");
+    // Now handle saving members and linking them to the DAO
+    if (members && Array.isArray(members)) {
+      const memberDetailsRepository =
+        AppDataSource.getRepository(MemberDetails);
+
+      for (const member of members) {
+        const { name, phoneNumber, nationalIdNo, memberRole } = member;
+
+        // Validate each member's required fields
+        if (!name || !phoneNumber || !nationalIdNo || !memberRole) {
+          return res
+            .status(400)
+            .json({ error: "Missing required member details" });
+        }
+
+        // Create and save the member
+        const memberDetails = new MemberDetails();
+        memberDetails.memberName = name;
+        memberDetails.phoneNumber = phoneNumber;
+        memberDetails.nationalIdNo = nationalIdNo;
+        memberDetails.memberRole = memberRole;
+        memberDetails.daoMultiSig = multiSigAddr;
+        memberDetails.daos = [dao]; // Link member to the created DAO
+
+        await memberDetailsRepository.save(memberDetails);
+      }
+    }
+
+    res
+      .status(201)
+      .json({
+        message: "DAO and members created successfully",
+        daoId: dao.daoId,
+      });
   } catch (error) {
-    console.error(error); // logging the error to the console
-    res.status(500).json({ error: "Error Adding member to dao" });
+    console.error("Error creating DAO and members:", error);
+    res.status(500).json({ error: "Error creating DAO and members" });
   }
 }
 
