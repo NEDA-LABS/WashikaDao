@@ -34,7 +34,7 @@ const Footer: React.FC<FooterProps> = ({className}) => {
           <i className="fab fa-facebook-f"></i>
         </a>
         <a
-          href="https://twitter.com"
+          href="https://x.com/nedalabs?s=11&t=hj2iETJOAG45JhGdjSLNcg"
           target="_blank"
           rel="noopener noreferrer"
           className="social-icon"
@@ -50,7 +50,7 @@ const Footer: React.FC<FooterProps> = ({className}) => {
           <i className="fab fa-instagram"></i>
         </a>
         <a
-          href="https://linkedin.com"
+          href="https://linkedin.com/company/nedalabs/"
           target="_blank"
           rel="noopener noreferrer"
           className="social-icon"

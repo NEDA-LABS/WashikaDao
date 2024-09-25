@@ -14,6 +14,7 @@ interface DaoFormProps {
   }[];
 }
 
+// Functional component definition for DaoForm, using React.FC with the defined props interface.
 const DaoForm: React.FC<DaoFormProps> = ({
   className,
   title,
@@ -21,13 +22,13 @@ const DaoForm: React.FC<DaoFormProps> = ({
   fields,
 }) => {
   return (
-    <div className={className}>
+    <div className={className}> {/* Main container with className for styling */}
       <div className="left">
         <h2>{title}</h2>
         <p>{description}</p>
       </div>
       <div className="formDiv">
-        {fields.map((field, index) => (
+        {fields.map((field, index) => ( // Mapping through the fields array to create inputs
           <div key={index} className="keyDiv">
             <label
               className={
@@ -42,7 +43,7 @@ const DaoForm: React.FC<DaoFormProps> = ({
             >
               {field.label}
             </label>
-            {field.type === "textarea" ? (
+            {field.type === "textarea" ? (  // Conditional rendering for textarea
               <textarea
                 name={field.name}
                 id={field.id}
@@ -74,10 +75,10 @@ const DaoForm: React.FC<DaoFormProps> = ({
                   Create New Wallet
                 </button>
               </div>
-            ) : field.type === "select" ? (
-              <select name={field.name} id={field.id}>
-                {field.options?.map((option, idx) => (
-                  <option key={idx} value={option.value}>
+            ) : field.type === "select" ? ( // Conditional rendering for select input
+              <select name={field.name} id={field.id}> {/* Dropdown for options */}
+                {field.options?.map((option, idx) => ( // Mapping through options to create <option> elements
+                  <option key={idx} value={option.value}> {/* Unique key for each option */}
                     {option.label}
                   </option>
                 ))}

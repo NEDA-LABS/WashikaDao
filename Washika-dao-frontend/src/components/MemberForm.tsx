@@ -1,3 +1,4 @@
+// Define the structure of a Member object
 interface Member {
   name: string;
   phoneNumber: string;
@@ -7,12 +8,12 @@ interface Member {
 
 interface MemberFormProps {
   currentMember: Member;
-  onMemberChange: (field: keyof Member, value: string) => void;
-  onAddMember: () => void;
+  onMemberChange: (field: keyof Member, value: string) => void; //Function to handle changes to member fields
+  onAddMember: () => void; //Function to add a new member
 }
 
 const MemberForm: React.FC<MemberFormProps> = ({
-  currentMember,
+  currentMember, // Destructure props
   onMemberChange,
   onAddMember,
 }) => {

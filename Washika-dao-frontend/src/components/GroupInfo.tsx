@@ -56,8 +56,8 @@ const groupData: GroupData[] = [
 const GroupInfo: React.FC = () => {
   return (
     <div className="groups">
-      {groupData.map((group, index) => (
-        <div className="group" key={index}>
+      {groupData.map((group, index) => ( // Iterate over the group data array
+        <div className="group" key={index}> {/* Each group's container */}
           <div className="image">
             <img src={group.image} alt={group.title} width={465} />
             <div className="taarifaTop">Taarifa</div>
