@@ -64,3 +64,26 @@ $ forge --help
 $ anvil --help
 $ cast --help
 ```
+### Smart Contract Access page: Deployed on holesky as we wait for Celo to stabilize after L2 transition
+```forge create --rpc-url "ethereum-holesky" --private-key "${CELO_PRIVATE_KEY}" --verifier-url "https://api-holesky.etherscan.io/api" -e "${ETHERSCAN_API_KEY}" --verify src/FullDaoContract.sol:FullDaoContract ```
+[⠑] Compiling...
+No files changed, compilation skipped
+Deployer: 0xfdF57a59Bc3e63a56de4682a53D57371518c7A48
+Deployed to: 0xffd26D80A70DCC05E5b0FcD57B6C104e507f8b75
+Transaction hash: 0x964e7f17cbdf3a35175f786a6045d53638ed12dc3cfdce18679fa3606c240c30
+Starting contract verification...
+Waiting for etherscan to detect contract deployment...
+Start verifying contract `0xffd26D80A70DCC05E5b0FcD57B6C104e507f8b75` deployed on holesky
+
+Submitting verification for [src/FullDaoContract.sol:FullDaoContract] 0xffd26D80A70DCC05E5b0FcD57B6C104e507f8b75.
+Submitted contract for verification:
+	Response: `OK`
+	GUID: `p8hdkdsudaurzigd9iyqded5zvyji95ewqmefjqurqfmzg71s8`
+	URL: https://holesky.etherscan.io/address/0xffd26d80a70dcc05e5b0fcd57b6c104e507f8b75
+Contract verification status:
+Response: `NOTOK`
+Details: `Pending in queue`
+Contract verification status:
+Response: `OK`
+Details: `Pass - Verified`
+Contract successfully verified
