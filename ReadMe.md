@@ -83,7 +83,7 @@ Our mission is to revolutionize financial inclusion for East African communities
 
 ## **Tech Stack**
 - **Blockchain**: Celo for secure, decentralized transactions using cUSD stablecoin.
-- **Smart Contracts**: Solidity for managing savings, lending, and governance.
+- **Smart Contracts**: Solidity for managing savings, lending, and governance, foundry framework.
 - **Frontend**: React and Web3 for the user interface and wallet integration.
 - **Backend**: Node.js for server-side logic and smart contract interaction.
 
