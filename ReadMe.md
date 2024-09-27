@@ -44,7 +44,7 @@ Washika DAO empowers underserved communities with the following key features:
        <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/lending.jpeg" width="300" alt="Lending pools for funders">
     </td>
     <td>
-      <p><strong>Creating DAO and members joining</strong></p>
+      <p><strong>Lending pools for funders</strong></p>
     </td>
   </tr>
 </table>
@@ -68,7 +68,7 @@ Washika DAO empowers underserved communities with the following key features:
        <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/governance.jpeg" width="300" title="Governance learning center, DAO Toolkit">
     </td>
     <td>
-      <p><strong>Creating DAO and members joining</strong></p>
+      <p><strong>Governance learning center, DAO Toolkit</strong></p>
     </td>
   </tr>
 </table>
