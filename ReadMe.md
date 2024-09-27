@@ -37,9 +37,19 @@ Washika DAO empowers underserved communities with the following key features:
    - Loans approved based on community governance, ensuring fairness and transparency.
    - Automated repayments managed by smart contracts.
 
-<p align="center">
-  <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/lending.jpeg" height="300" title="Lending pools for funders">
-</p>
+
+<table>
+  <tr>
+    <td>
+       <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/lending.jpeg" width="300" alt="Lending pools for funders">
+    </td>
+    <td>
+      <p><strong>Creating DAO and members joining</strong></p>
+    </td>
+  </tr>
+</table>
+
+
 
 3. **Transparent Governance**:
    - Participate in decision-making through a DAO structure.
@@ -50,9 +60,18 @@ Washika DAO empowers underserved communities with the following key features:
    - Access educational resources to improve financial literacy.
    - Participate in community workshops on savings, lending, and financial management.
 
-<p align="center">
-  <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/governance.jpeg" width="300" title="Governance learning center, DAO Toolkit">
-</p>
+
+
+<table>
+  <tr>
+    <td>
+       <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/governance.jpeg" width="300" title="Governance learning center, DAO Toolkit">
+    </td>
+    <td>
+      <p><strong>Creating DAO and members joining</strong></p>
+    </td>
+  </tr>
+</table>
 
 ---
 
