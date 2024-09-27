@@ -10,6 +10,10 @@ Leveraging decentralized finance (DeFi) technologies and community-driven models
 
 Washika DAO is a decentralized platform that provides secure, transparent, and accessible financial services for marginalized communities in East Africa, starting with Tanzania and Kenya. Built on the Celo blockchain, Washika DAO enables community groups like VICOBAs, SACCOs, and Chamas to save, lend, and manage their finances in a decentralized and efficient way.
 
+<p align="center">
+  <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/" width="600" title="Chatafisha dapp">
+</p>
+
 ---
 
 ### 🚀 **Project Overview**
@@ -25,6 +29,10 @@ Washika DAO empowers underserved communities with the following key features:
    - Loans approved based on community governance, ensuring fairness and transparency.
    - Automated repayments managed by smart contracts.
 
+<p align="center">
+  <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/lending.jpeg" width="600" title="Lending pools for funders">
+</p>
+
 3. **Transparent Governance**:
    - Participate in decision-making through a DAO structure.
    - Vote on key issues such as interest rates, loan terms, and platform upgrades.
@@ -33,6 +41,10 @@ Washika DAO empowers underserved communities with the following key features:
 4. **Education and Financial Literacy**:
    - Access educational resources to improve financial literacy.
    - Participate in community workshops on savings, lending, and financial management.
+
+<p align="center">
+  <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/governance.jpeg" width="600" title="Governance learning center, DAO Toolkit">
+</p>
 
 ---
 
@@ -51,7 +63,7 @@ Our mission is to revolutionize financial inclusion for East African communities
 ---
 
 ### 🛠️ **Installation**
-To get started with the Washika DAO development environment, 
+To get started with the Washika DAO , this repo contains all the tech stack development environments. Feel free to reach out to our socials for any enquiries and support
 
 ---
 
