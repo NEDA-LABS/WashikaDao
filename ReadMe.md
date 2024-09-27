@@ -10,9 +10,17 @@ Leveraging decentralized finance (DeFi) technologies and community-driven models
 
 Washika DAO is a decentralized platform that provides secure, transparent, and accessible financial services for marginalized communities in East Africa, starting with Tanzania and Kenya. Built on the Celo blockchain, Washika DAO enables community groups like VICOBAs, SACCOs, and Chamas to save, lend, and manage their finances in a decentralized and efficient way.
 
-<p align="center">
-  <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/create.jpeg" height="500" title="Creating DAO and members joining">
-</p>
+<table>
+  <tr>
+    <td>
+      <img src="https://github.com/chatafisha/Chatafisha/blob/main/images/create.jpeg" width="300" alt="Creating DAO">
+    </td>
+    <td>
+      <p><strong>Creating DAO and members joining</strong></p>
+    </td>
+  </tr>
+</table>
+
 
 ---
 
