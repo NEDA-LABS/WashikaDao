@@ -25,6 +25,6 @@ import './styles/Funder.css'
 // The render function takes JSX as input, rendering the <App /> component wrapped in React's StrictMode, which helps detect potential issues.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>  
-    <App />  // The root component of the React app
+    <App />  {/* The root component of the React app*/}
   </StrictMode>,
 )

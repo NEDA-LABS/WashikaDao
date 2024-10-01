@@ -459,14 +459,14 @@
 
 @media only screen and (max-width: 900px) {
   .image-container {
-    height: 610px;
+    height: 480px;
     padding: 0 24px;
   }
 
   .inner-container {
     width: auto;
-    top: 136px;
-    padding-left: 8px;
+    top: 126px;
+    padding-left: 0px;
   }
   .inner-container img {
     margin: 0;
@@ -474,27 +474,27 @@
   .image-container p {
     width: auto;
     height: auto;
-    font-size: 24px;
+    font-size: 18px;
     margin-right: 24px;
   }
 
   .image-container .main {
     margin: 16px 24px 9px 0;
-    font-size: 36px;
+    font-size: 26px;
     height: auto;
     width: auto;
   }
 
   .buttons {
     gap: 16px;
-    font-size: 16px;
-    margin: 0 16px;
+    font-size: 18px;
+    margin: 0 36px;
     flex-direction: column;
   }
 
   .buttons button {
     width: auto;
-    height: 56px;
+    height: 48px;
     border-radius: 12px;
     display: flex;
     justify-content: center;
@@ -505,8 +505,8 @@
   .parag-container {
     width: auto;
     height: auto;
-    margin: 36px 24px;
-    font-size: 36px;
+    margin: 24px;
+    font-size: 18px;
   }
 
   .main-container {
@@ -516,15 +516,13 @@
 
   .main-container .boxes {
     width: auto;
-    flex-direction: row;
-    gap: 24px;
-    overflow-x: auto;
+    gap: 20px;
   }
 
   .box {
     margin: 0;
     width: calc(100vw - 48px);
-    height: 300px;
+    height: 140px;
     flex-shrink: 0;
   }
 
@@ -535,14 +533,14 @@
   .box-left h1 {
     width: auto;
     height: auto;
-    font-size: 36px;
+    font-size: 22px;
     position: initial;
   }
 
   .box-left p {
     width: auto;
     height: auto;
-    font-size: 24px;
+    font-size: 15px;
     position: initial;
   }
 
@@ -553,24 +551,25 @@
 
   .box-left.two {
     width: auto;
-    height: 300px;
+    height: 140px;
   }
 
   .half-box {
     min-width: calc(100vw - 48px);
-    height: 300px;
+    height: 140px;
   }
 
   .groups {
     position: initial;
-    height: 640px;
+    margin-top: -20px;
+    height: 560px;
   }
 
   .group {
     width: auto;
     padding: 9px;
     display: initial;
-    min-height: 640px;
+    min-height: 560px;
   }
 
   .image {
@@ -595,7 +594,7 @@
 
   .section-1 h2 {
     margin: -16px 9px 0;
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .left .location {
@@ -633,8 +632,9 @@
 
   .section-2 {
     padding: 0 9px 9px;
-    font-size: 16px;
+    font-size: 14px;
     margin: 0;
+    margin-top: -28px;
     width: auto;
     height: auto;
   }
@@ -665,45 +665,44 @@
   .section-3 p {
     width: auto;
     height: auto;
-    font-size: 48px;
   }
 
   .parag-container-two {
-    margin: 36px 24px 16px;
-    gap: 9px;
+    margin: 24px 24px 6px;
+    gap: 6px;
     width: auto;
     height: auto;
   }
 
   .parag-container-two h2,
   .sub-parag-container {
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .article-container {
-    padding: 24px;
+    padding: 24px 28px;
     flex-direction: column;
     gap: 24px;
-    margin-bottom: 48px;
+    margin-bottom: 12px;
   }
 
   .article-container article {
     width: auto;
-    height: 260px;
+    height: 180px;
     border-radius: 9px;
   }
 
   .article-container h2,
   .article-container .two h2 {
-    font-size: 36px;
+    font-size: 26px;
   }
 
   .article-container p {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .article-container div {
-    bottom: -16px;
+    bottom: -36px;
   }
 }
 
