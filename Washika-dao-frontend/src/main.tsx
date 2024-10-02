@@ -25,6 +25,10 @@ import './styles/Funder.css'
 // The render function takes JSX as input, rendering the <App /> component wrapped in React's StrictMode, which helps detect potential issues.
 createRoot(document.getElementById('root')!).render(
   <StrictMode>  
+<<<<<<< HEAD
     <App />  {/* The root component of the React app*/}
+=======
+    <App />   {/*The root component of the React app*/}
+>>>>>>> 4d1d419 (add daoDetails frontend api)
   </StrictMode>,
 )
