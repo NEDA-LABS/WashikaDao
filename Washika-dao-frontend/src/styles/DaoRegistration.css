@@ -476,13 +476,13 @@ button.createDao {
   border-radius: 12px;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 900px) {
   .daoRegistration {
-    padding-top: 120px;
+    padding-top: 110px;
   }
 
   .funguaKikundi {
-    padding: 0 24px 36px;
+    padding: 0 24px 20px;
     height: auto;
     width: auto;
     margin-bottom: 16px;
@@ -499,18 +499,18 @@ button.createDao {
   .funguaKikundi h1 {
     width: auto;
     height: auto;
-    font-size: 36px;
+    font-size: 26px;
     margin-bottom: 12px;
   }
 
   .funguaKikundi p {
     width: auto;
     height: auto;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .circle-container {
-    padding: 12px 24px;
+    padding: 9px 24px;
     justify-content: center;
   }
 
@@ -528,9 +528,9 @@ button.createDao {
   }
 
   .form {
-    padding: 12px 24px;
+    padding: 6px 24px;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
   }
 
   .form .left {
@@ -540,12 +540,12 @@ button.createDao {
   .form .left h2,
   .wanakikundi .left h2 {
     width: auto;
-    font-size: 24px;
-    padding-bottom: 12px;
+    font-size: 20px;
+    padding-bottom: 9px;
   }
 
   .form p {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .form .formDiv {
@@ -568,12 +568,12 @@ button.createDao {
   .form.one .formDiv {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding-bottom: 24px;
+    gap: 9px;
+    padding-bottom: 12px;
   }
 
   .form.two .formDiv {
-    gap: 12px;
+    gap: 9px;
   }
 
   .form label {
@@ -593,7 +593,7 @@ button.createDao {
     width: auto;
     border-radius: 6px;
     padding: 12px;
-    font-size: 24px;
+    font-size: 16px;
   }
 
   .short-textarea {
@@ -606,13 +606,14 @@ button.createDao {
 
   .form .file-input {
     width: auto;
-    height: 64px;
+    height: 56px;
     padding: 18px;
     font-size: 18px;
+    margin: 0 24px;
   }
 
   .wanakikundi {
-    padding: 12px 24px 36px;
+    padding: 0px 24px 24px;
     flex-direction: column;
   }
 
@@ -626,12 +627,12 @@ button.createDao {
   }
 
   .wanakikundi p {
-    font-size: 24px;
+    font-size: 18px;
     width: auto;
   }
 
   .wanakikundi .two {
-    padding: 0;
+    padding: 0 0 10px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -679,23 +680,32 @@ button.createDao {
     width: auto;
   }
 
+  .wanakikundi .input,
+  .findAndJoin .input {
+    margin-bottom: 12px;
+  }
+
   .wanakikundi input,
   .findAndJoin input {
     width: auto;
     height: 40px;
+    font-size: 16px;
+    padding: 12px;
   }
 
   .wanakikundi .buttons {
-    gap: 24px;
+    margin-top: 14px;
+    gap: 12px;
     padding: 0;
   }
 
   .wanakikundi .buttons button {
-    width: 260px;
+    width: 230px;
+    height: 40px;
   }
 
   .hazina {
-    padding: 18px 0;
+    padding: 9px 0;
     gap: 0;
   }
 
@@ -704,62 +714,62 @@ button.createDao {
   }
 
   .hazina h2 {
-    margin-bottom: 16px;
+    margin-bottom: 9px;
     width: auto;
     height: auto;
-    font-size: 36px;
+    font-size: 26px;
   }
 
   .hazina p {
     width: auto;
     height: auto;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .hazina .formDiv {
-    gap: 48px;
+    gap: 20px;
     padding: 24px;
     width: auto;
     height: auto;
-    margin: 24px 24px 0;
+    margin: 16px 24px 0;
   }
 
   .hazina .connect-wallet-label {
     width: auto;
     height: auto;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .button-group {
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
   }
 
   .button-group button {
     width: auto;
     height: 48px;
-    font-size: 24px;
+    font-size: 20px;
   }
 
   .hazina .account-number-label {
     width: auto;
     height: auto;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .hazina input {
     width: auto;
     height: 40px;
-    font-size: 20px;
+    font-size: 18px;
     padding: 12px;
   }
 
   .hazina input::placeholder  {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .button-container {
-    padding-bottom: 36px;
+    padding-bottom: 32px;
   }
 
   button.createDao {

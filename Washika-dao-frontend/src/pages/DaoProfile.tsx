@@ -25,7 +25,7 @@ const DaoProfile: React.FC = () => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `/DaoProfile/${daoMultiSigAddr}`
+          `/DaoProfile/DaoDetails/${daoMultiSigAddr}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch Dao details");
