@@ -29,7 +29,7 @@ const App: React.FC = () => {
         <Route path="/CreateProposal" element={<CreateProposal />} />
         <Route path="/JoinPlatform" element={<JoinPlatform />} />
         <Route path="/Funder" element={<Funder />} />
-        <Route path="/DaoProfile/:daoMultisigAddr" element={<DaoProfile />} />
+        <Route path="/DaoProfile/:daoMultiSigAddr" element={<DaoProfile />} />
         <Route path="/DaoProfile" element={<DaoProfile />} />
         <Route path="/ViewProposal" element={<ViewProposal />} />
         <Route path="/Owner" element={<Owner />} />

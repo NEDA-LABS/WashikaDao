@@ -91,8 +91,7 @@ export async function RequestToJoinDao (req: Request, res: Response){
 
     // Adding them to the DAO members registry
     try {
-        const findDaoByMultiSig = await memberDetailsRepository.findOneBy(_daoMultiSigAddr); 
-
+        const findDaoByMultiSig = await memberDetailsRepository.findOneBy({ daoMultiSigAddr: _daoMultiSigAddr });
         // Return error if DAO not found
         if (!findDaoByMultiSig) {
             return res.status(404).json({ error: 'DAO not found' });
@@ -136,8 +135,7 @@ export async function WhiteListUser(req: Request, res: Response) {
         return res.status(400).json({ error: 'missing required' })
     } 
        try { 
-        const daoToBeAddedTo = await daoRepository.findOneBy(_daoMultiSig); 
-        if (!daoToBeAddedTo || daoToBeAddedTo === undefined || daoToBeAddedTo === null) {
+        const daoToBeAddedTo = await daoRepository.findOneBy({ daoMultiSigAddr: _daoMultiSig });        if (!daoToBeAddedTo || daoToBeAddedTo === undefined || daoToBeAddedTo === null) {
             return res.status(404).json({ error: 'DAO not found' });
         }
         //constructing the members
@@ -178,8 +176,7 @@ export async function BlackListMember(req: Request, res: Response) {
     } 
     try {
         // Retrieve the DAO first
-        const daoDetails = await daoRepository.findOneBy(multiSigAddr); 
-        if (!daoDetails ||!daoDetails.multiSigAddr === undefined) {
+        const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr: multiSigAddr });        if (!daoDetails ||!daoDetails.multiSigAddr === undefined) {
             return res.status(404).json({ error: 'DAO not found' });
         } 
 

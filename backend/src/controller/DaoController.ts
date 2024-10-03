@@ -126,16 +126,18 @@ export async function CreateNewDao(req: Request, res: Response) {
  */
 export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
   const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
+  
   if (!daoMultiSigAddr) {
-    res.status(400).json({ message: "Missing required params" });
+    return res.status(400).json({ message: "Missing required params!" });
   }
+  
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
     const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr });
-
-    if (daoDetails !== undefined && daoDetails !== null) {
-      res.status(200).json({
-        message: "dao found with the details below",
+    
+    if (daoDetails) {
+      return res.status(200).json({
+        message: "DAO found with the details below",
         daoDetails: {
           daoId: daoDetails.daoId,
           daoName: daoDetails.daoName,
@@ -146,14 +148,18 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           daoOverview: daoDetails.daoOverview,
           daoImageIpfsHash: daoDetails.daoImageIpfsHash,
           daoMultiSigs: daoDetails.daoMultiSigs,
-          daoMultiSigAddr: daoDetails.daoMultiSigAddr,
+          multiSigAddr: daoDetails.daoMultiSigAddr,
         },
       });
+    } else {
+      return res.status(404).json({ message: "DAO not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Error finding Dao" });
+    console.error("Error finding DAO:", error);
+    return res.status(500).json({ error: "Error finding DAO" });
   }
 }
+
 
 /**
  * Updates the details of an existing DAO (Decentralized Autonomous Organization) in the database.

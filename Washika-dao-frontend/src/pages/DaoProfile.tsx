@@ -18,6 +18,8 @@ interface DaoDetails {
 const DaoProfile: React.FC = () => {
   const navigate = useNavigate();
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
+  console.log({"daoMultiSigAddr": daoMultiSigAddr});
+
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
   const [loading, setLoading] = useState(true);
 
@@ -25,17 +27,19 @@ const DaoProfile: React.FC = () => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `/DaoProfile/DaoDetails/${daoMultiSigAddr}`
+          `http://localhost:8080/DaoProfile/DaoDetails/${daoMultiSigAddr}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch Dao details");
-        }
         const data = await response.json();
-        setDaoDetails(data.daoDetails);
+        if (response.ok) {
+          setLoading(false);
+          setDaoDetails(data.daoDetails);
+          console.log({ result: data });
+          console.log({ data: data.daoDetails });
+        } else {
+          console.error("Error fetching daoDetails:", data.message);
+        }
       } catch (error) {
         console.error(error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -95,10 +99,13 @@ const DaoProfile: React.FC = () => {
             </div>
 
             <div className="details">
-              <p className="email">{daoDetails.multiSigAddr || "@JukumuDAO.ETH" }</p>
+              <p className="email">
+                {daoDetails.multiSigAddr || "@JukumuDAO.ETH"}
+              </p>
               <p className="parag">
-                This is the multi-sig account for {daoDetails.daoName || "JUKUMU" }. Create a proposal to
-                get access to the JUKUMU fund.
+                This is the multi-sig account for{" "}
+                {daoDetails.daoName || "JUKUMU"}. Create a proposal to get
+                access to the JUKUMU fund.
               </p>
             </div>
           </div>

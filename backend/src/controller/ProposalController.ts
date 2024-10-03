@@ -108,8 +108,8 @@ export async function GetProposalDetailsById (req: Request, res: Response) {
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
 export async function UpvoteProposalById (req: Request, res: Response) {
-    const {multiSigAddr} = req.params.multiSigAddr;
-    const { proposalId } = req.params.proposalId; 
+    const {multiSigAddr} = req.params;
+    const { proposalId } = req.params; 
 
     if (!multiSigAddr ||!proposalId) {
         return res.status(400).json({ error: 'Missing required from url params' })
@@ -178,8 +178,8 @@ export async function UpvoteProposalById (req: Request, res: Response) {
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
 export const DownVoteProposalById = async (req: Request, res: Response) => {
-    const {multiSigAddr} = req.params.multiSigAddr;
-    const { proposalId } = req.params.proposalId; 
+    const {multiSigAddr} = req.params;
+    const { proposalId } = req.params; 
     if (!multiSigAddr ||!proposalId) {
         return res.status(400).json({ error: 'Missing required from url params' })
     }
