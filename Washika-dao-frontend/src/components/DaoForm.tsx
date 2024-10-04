@@ -9,7 +9,7 @@ interface DaoFormProps {
     id?: string;
     options?: { label: string; value: string }[];
     value?: string;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+    onChange?: (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void | Promise<void>; // Modify here
     onClick?: () => void;
   }[];
 }
@@ -83,7 +83,14 @@ const DaoForm: React.FC<DaoFormProps> = ({
                   </option>
                 ))}
               </select>
-            ) : (
+            ) : field.type === "file" ? (
+              <input
+                type="file"
+                name={field.name}
+                className="file-input"
+                onChange={(e) => field.onChange && field.onChange(e)}
+              />
+            ): (
               <input
                 type={field.type}
                 name={field.name}
@@ -96,7 +103,6 @@ const DaoForm: React.FC<DaoFormProps> = ({
                     ? "0xea987516dCE6A978473Ca5aFbaA7A392d40e56f8"
                     : ""
                 }
-                className={field.type === "file" ? "file-input" : ""}
               />
             )}
           </div>

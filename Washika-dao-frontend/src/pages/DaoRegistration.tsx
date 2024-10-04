@@ -23,6 +23,28 @@ interface Member {
   memberRole: string;
 }
 
+const uploadImageToCloudinary = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "ml_default"); 
+
+  try {
+    const response = await fetch(
+      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload", 
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+    return data.secure_url; // Return the URL of the uploaded image
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null;
+  }
+};
+
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
 
@@ -87,6 +109,23 @@ const DaoRegistration: React.FC = () => {
       });
     }
   };
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const target = e.target as HTMLInputElement;
+    const file = target.files?.[0]; // Access the file if it exists
+  
+    if (file) {
+      const imageUrl = await uploadImageToCloudinary(file); // Upload the file and get the image URL
+      if (imageUrl) {
+        setFormData((prevData) => ({
+          ...prevData,
+          daoImageIpfsHash: imageUrl, // Update the form with the image URL
+        }));
+      }
+    }
+  };
+  
+  
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -211,9 +250,8 @@ const DaoRegistration: React.FC = () => {
                 label: "",
                 type: "file",
                 name: "daoImageIpfsHash",
-                value: formData.daoImageIpfsHash,
-                onChange: handleChange,
-              },
+                onChange: (e) => handleFileChange(e as React.ChangeEvent<HTMLInputElement>),  // File input handler
+                },
             ]}
           />
 
@@ -234,10 +272,22 @@ const DaoRegistration: React.FC = () => {
                 type: "button",
                 name: "connect-wallet",
                 id: "connect-wallet",
-                onClick: () => {
-                  // Handle wallet connection logic
-                },
-              },
+                // onClick: async () => {
+                //   try {
+                //     // Logic to connect wallet using a web3 provider (e.g., MetaMask)
+                //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+                //     const accounts = await provider.send("eth_requestAccounts", []);
+                //     const walletAddress = accounts[0];
+                //     setFormData((prevData) => ({
+                //       ...prevData,
+                //       multiSigAddr: walletAddress,
+                //     }));
+                //     console.log("Wallet connected:", walletAddress);
+                //   } catch (error) {
+                //     console.error("Wallet connection failed:", error);
+                //   }
+                // },
+              },              
               {
                 label: "Andika akaunti namba ambayo itapokea fedha za kikundi",
                 type: "text",

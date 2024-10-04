@@ -317,8 +317,8 @@
   margin-bottom: 24px;
 }
 
-.wanakikundi input,
-.findAndJoin input {
+.wanakikundi input, .wanakikundi select,
+.findAndJoin input, .findAndJoin select {
   padding-left: 24px;
   font-size: 24px;
   color: #433939;
@@ -685,8 +685,8 @@ button.createDao {
     margin-bottom: 12px;
   }
 
-  .wanakikundi input,
-  .findAndJoin input {
+  .wanakikundi input, .wanakikundi select,
+  .findAndJoin input, .findAndJoin select {
     width: auto;
     height: 40px;
     font-size: 16px;

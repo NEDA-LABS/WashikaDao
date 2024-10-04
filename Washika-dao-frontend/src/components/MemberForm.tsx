@@ -8,8 +8,8 @@ interface Member {
 
 interface MemberFormProps {
   currentMember: Member;
-  onMemberChange: (field: keyof Member, value: string) => void; //Function to handle changes to member fields
-  onAddMember: () => void; //Function to add a new member
+  onMemberChange: (field: keyof Member, value: string) => void; // Function to handle changes to member fields
+  onAddMember: () => void; // Function to add a new member
 }
 
 const MemberForm: React.FC<MemberFormProps> = ({
@@ -42,12 +42,15 @@ const MemberForm: React.FC<MemberFormProps> = ({
             </div>
             <div className="input">
               <label>Nafasi yake</label>
-              <input
-                type="text"
+              <select
                 value={currentMember.memberRole}
                 onChange={(e) => onMemberChange("memberRole", e.target.value)}
                 className="short"
-              />
+              >
+                <option value="Owner">Owner</option>
+                <option value="Funder">Funder</option>
+                <option value="Member">Member</option>
+              </select>
             </div>
           </div>
           <div className="input">

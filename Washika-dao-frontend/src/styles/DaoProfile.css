@@ -14,11 +14,18 @@ main.daoMain {
 
 .daoMain .daoImage {
   width: 100%;
+  padding: 0 24px;
   position: absolute;
   top: 164px;
   z-index: 2;
   display: flex;
   justify-content: center;
+  overflow: hidden;
+}
+
+.daoImage img {
+  border-radius: 9px;
+  object-fit: cover;
 }
 
 .daoMain .first {
