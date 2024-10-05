@@ -46,7 +46,7 @@ export async function CreateProposal(req: Request, res: Response){
         //you can capture more sanitization errors here with the if else but lets go to what we want to do here instead.
         } else {
         //if proposal doesn't exist create or build a new proposal using the data from the form submission 
-        const createdProposal: typeof Proposal = await proposalRepository.create(proposalData); 
+        const createdProposal: typeof Proposal = proposalRepository.create(proposalData); 
             await proposalRepository.save(createdProposal); 
             res.status(201).json({ message: 'Proposal created successfully'});
             //TODO: BLOCKCHAIN INTEGRATION 

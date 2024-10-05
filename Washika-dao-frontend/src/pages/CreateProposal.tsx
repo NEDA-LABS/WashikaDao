@@ -1,12 +1,105 @@
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useState } from "react";
+
+// Upload function for Cloudinary (as before)
+const uploadImageToCloudinary = async (file: File) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "ml_default");
+
+  try {
+    const response = await fetch(
+      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload",
+      {
+        method: "POST",
+        body: formData,
+      }
+    );
+
+    const data = await response.json();
+    return data.secure_url; // Return the URL of the uploaded image
+  } catch (error) {
+    console.error("Error uploading image:", error);
+    return null;
+  }
+};
 
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
-  const handleClick = () => {
-    navigate('/ViewProposal')
-  }
+  const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
+  console.log(multiSigAddr);
+   // Extract multiSigAddr from URL params
+
+  // State to manage form data
+  const [proposalData, setProposalData] = useState({
+    proposalOwner: "",
+    proposalTitle: "",
+    projectSummary: "",
+    proposalDescription: "",
+    proposalStatus: "open", // default to 'open'
+    amountRequested: "",
+    daoMultiSigAddr: multiSigAddr || "", // Populate daoMultiSigAddr from URL params
+    numUpvotes: 0, // default value
+    numDownvotes: 0, // default value
+    fileUrl: "",
+  });
+
+  // Handle change for text fields and select dropdown
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
+    const { name, value } = e.target;
+    setProposalData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // Handle file upload
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const imageUrl = await uploadImageToCloudinary(file);
+      if (imageUrl) {
+        setProposalData((prevData) => ({
+          ...prevData,
+          fileUrl: imageUrl,
+        }));
+      }
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/CreateProposal/DaoDetails/${multiSigAddr}/createProposal`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(proposalData),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Proposal created successfully");
+        navigate("/ViewProposal");
+      } else {
+        console.error("Error creating proposal");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
   return (
     <>
       <NavBar className={""} />
@@ -33,38 +126,74 @@ const CreateProposal: React.FC = () => {
           <div className="circle">4</div>
         </div>
 
-        <form>
+        <form onSubmit={handleSubmit}>
           <div className="label one">
-            <label> Owner of the proposal </label>
+            <label>Owner of the proposal</label>
             <button>Connect wallet</button>
           </div>
+
           <div className="label two">
             <label>Title of proposal</label>
-            <input type="text" />
+            <input
+              type="text"
+              name="proposalTitle"
+              value={proposalData.proposalTitle}
+              onChange={handleChange}
+            />
           </div>
+
           <div className="label three">
             <label>Summary of project</label>
-            <textarea name="" id=""></textarea>
+            <textarea
+              name="projectSummary"
+              value={proposalData.projectSummary}
+              onChange={handleChange}
+            ></textarea>
           </div>
+
           <div className="label four">
             <label className="andika">
               Andika taarifa fupi ya mchango wako
             </label>
-            <textarea name="" id="" placeholder="Anza hapa..."></textarea>
+            <textarea
+              name="proposalDescription"
+              placeholder="Anza hapa..."
+              value={proposalData.proposalDescription}
+              onChange={handleChange}
+            ></textarea>
           </div>
+
           <div className="label five">
-            <label>Amount Ask</label>
-            <input type="number" />
+            <label>Amount Requested</label>
+            <input
+              type="number"
+              name="amountRequested"
+              value={proposalData.amountRequested}
+              onChange={handleChange}
+            />
           </div>
-          <div className="six">
+
+          <div className="label six">
+            <label>Proposal Status</label>
+            <select
+              name="proposalStatus"
+              value={proposalData.proposalStatus}
+              onChange={handleChange}
+            >
+              <option value="open">Open</option>
+              <option value="closed">Closed</option>
+            </select>
+          </div>
+
+          <div className="seven">
             <div>
-              <input type="file" />
+              <input type="file" onChange={handleFileChange} />
             </div>
-            <button onClick={handleClick}>SUBMIT PROPOSAL</button>
+            <button type="submit">SUBMIT PROPOSAL</button>
           </div>
         </form>
       </main>
-      <Footer className={""}/>
+      <Footer className={""} />
     </>
   );
 };
