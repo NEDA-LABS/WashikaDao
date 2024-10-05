@@ -173,7 +173,7 @@ const CreateProposal: React.FC = () => {
             />
           </div>
 
-          <div className="label six">
+          <div className="label">
             <label>Proposal Status</label>
             <select
               name="proposalStatus"
@@ -185,7 +185,7 @@ const CreateProposal: React.FC = () => {
             </select>
           </div>
 
-          <div className="seven">
+          <div className="six">
             <div>
               <input type="file" onChange={handleFileChange} />
             </div>
