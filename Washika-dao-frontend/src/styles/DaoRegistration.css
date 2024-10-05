@@ -478,11 +478,11 @@ button.createDao {
 
 @media only screen and (max-width: 900px) {
   .daoRegistration {
-    padding-top: 110px;
+    padding-top: 100px;
   }
 
   .funguaKikundi {
-    padding: 0 24px 20px;
+    padding: 0 20px 20px;
     height: auto;
     width: auto;
     margin-bottom: 16px;
@@ -500,17 +500,18 @@ button.createDao {
     width: auto;
     height: auto;
     font-size: 26px;
-    margin-bottom: 12px;
+    margin-bottom: 6px;
   }
 
   .funguaKikundi p {
     width: auto;
     height: auto;
     font-size: 18px;
+    font-size: 18px;
   }
 
   .circle-container {
-    padding: 9px 24px;
+    padding: 6px 24px 12px;
     justify-content: center;
   }
 
@@ -520,7 +521,7 @@ button.createDao {
   }
 
   .line {
-    width: 36px;
+    width: 18px;
   }
 
   .combinedForms::before {
@@ -528,6 +529,7 @@ button.createDao {
   }
 
   .form {
+    padding: 6px 24px;
     padding: 6px 24px;
     flex-direction: column;
     gap: 16px;
@@ -540,12 +542,14 @@ button.createDao {
   .form .left h2,
   .wanakikundi .left h2 {
     width: auto;
-    font-size: 20px;
+    font-size: 18px;
     padding-bottom: 9px;
+    text-align: center;
   }
 
   .form p {
     font-size: 18px;
+    margin-bottom: -16px;
   }
 
   .form .formDiv {
