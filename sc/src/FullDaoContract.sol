@@ -1,7 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 /**This Contract contains the entire application logic & will not be pushed to mainnet due to lack of privacy compliance, security & huge gas costs both to the platform & users, the backend will handle ux + privacy + scaling + gas optimization by activity optimization */
-  /** Alfajores contract address 0x50d92eA99AF339519Cd060c73d2DB24620AF2f57 **/
 contract FullDaoContract {
     enum Role {
         member,
@@ -117,7 +116,7 @@ contract FullDaoContract {
         uint256 _multiSigPhoneNo
        // bytes memory _daoIdentifier
     ) public {
-      //  bytes32 _daoIdentifier = _generateRandomIds();
+        bytes32 _daoIdentifier = _generateRandomIds();
         // Create a new instance of DaoDetails
         DaoDetails memory newDao = DaoDetails({
             daoName: _daoName,

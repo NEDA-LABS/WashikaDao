@@ -3,9 +3,6 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import GroupInfo from "../components/GroupInfo";
 
-/**Rainbow kit config for connecting wallet **/
-import { ConnectButton } from "@rainbow-me/rainbowkit";
-
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
@@ -40,8 +37,6 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/*connect Button*/}
-        <ConnectButton />
         <div className="buttons">
           <button className="button-1" onClick={handleDaoRegistration}>
             Fungua DAO
