@@ -47,9 +47,9 @@ const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
   return (
     <nav className={className}>
       <div>
-        <img src="images/LOGO SYMBLO(1).png" alt="logo" width="24" />
+        <img src="/images/LOGO SYMBLO(1).png" alt="logo" width="24" />
         <Link to="/">
-          <img src="images/words logo.png" className="wordLogo" alt="logo" />
+          <img src="/images/words logo.png" className="wordLogo" alt="logo" />
         </Link>
       </div>
       <ul>

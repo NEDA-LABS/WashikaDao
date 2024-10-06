@@ -5,7 +5,7 @@ const ProposalController = require('../controller/ProposalController');
 import { Request, Response } from "express"; 
 
 //Creating  a new proposal 
-router.post('/DaoDetails/:multiSigAddr/createProposal', (req: Request, res: Response) => ProposalController.CreateProposal(req, res)); 
+router.post('/DaoDetails/:multiSigAddr/createProposal', (req: Request, res: Response) => {ProposalController.CreateProposal(req, res)}); 
 //searching for a proposal by their id 
 router.get('/DaoDetails/:multiSigAddr/proposal/:proposalId', (req: Request, res: Response) => ProposalController.GetProposalDetailsById(req, res)); 
 //upvoting a proposal

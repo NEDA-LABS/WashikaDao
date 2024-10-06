@@ -26,11 +26,10 @@ const App: React.FC = () => {
         HomePage component
         <Route path="/DaoRegistration" element={<DaoRegistration />} />
         <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
-        <Route path="/CreateProposal" element={<CreateProposal />} />
+        <Route path="/CreateProposal/:daoMultiSigAddr" element={<CreateProposal />} />
         <Route path="/JoinPlatform" element={<JoinPlatform />} />
         <Route path="/Funder" element={<Funder />} />
         <Route path="/DaoProfile/:daoMultiSigAddr" element={<DaoProfile />} />
-        <Route path="/DaoProfile" element={<DaoProfile />} />
         <Route path="/ViewProposal" element={<ViewProposal />} />
         <Route path="/Owner" element={<Owner />} />
       </Routes>
