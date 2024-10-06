@@ -29,10 +29,6 @@ const uploadImageToCloudinary = async (file: File) => {
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
-  console.log(daoMultiSigAddr);
-  const params = useParams<{ daoMultiSigAddr: string }>();
-  console.log(params);
-
   // Extract multiSigAddr from URL params
 
   // State to manage form data
@@ -92,11 +88,16 @@ const CreateProposal: React.FC = () => {
         }
       );
 
+      const data = await response.json();
+
       if (response.ok) {
+        const proposalId = data.proposalId;
+        console.log(proposalId);
+        
         console.log("Proposal created successfully");
-        navigate("/ViewProposal");
+        navigate(`/ViewProposal/${daoMultiSigAddr}/${proposalId}`);
       } else {
-        console.error("Error creating proposal");
+        console.error("Error creating proposal:", data.message);
       }
     } catch (error) {
       console.error("Error:", error);
