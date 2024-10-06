@@ -1,39 +1,64 @@
+import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
-import {useNavigate} from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface ProposalData {
+  proposalId: number; // Assuming you have a proposalId
   title: string;
   description: string;
   amountRequested: string;
   currency: string;
   about: string;
+  daoMultiSigAddr: string;
 }
 
-
 const ViewProposal: React.FC = () => {
+  const { proposalId } = useParams<{ proposalId: string }>(); // Get proposalId from the URL
+  const { multiSigAddr } = useParams<{ multiSigAddr: string }>(); // Get multiSigAddr from the URL
   const navigate = useNavigate();
+  const [proposalData, setProposalData] = useState<ProposalData | null>(null); // State to hold proposal data
+
+  useEffect(() => {
+    const fetchProposalData = async () => {
+      try {
+        const response = await fetch(`/http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}`);        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data: ProposalData = await response.json();
+        setProposalData(data);
+      } catch (error) {
+        console.error("Error fetching proposal data:", error);
+      }
+    };
+
+    if (multiSigAddr && proposalId) {
+      fetchProposalData();
+    }
+  }, [multiSigAddr, proposalId]);
   const handleBackClick = () => {
-    navigate("/DaoProfile");
+    if (proposalData) {
+      navigate(`/DaoProfile/${multiSigAddr}`);
+    }
   };
-  const proposalData: ProposalData = {
-    title: "Proposal for Buying new spare part of machinery",
-    description: 
-      "We are Nipe Fagio, an environmental non-profit organization committed to cleaning and preserving our beaches. Our goal is to collect and remove at least 10 tons of plastic waste through community clean-up events and outreach programs."
-    ,
-    amountRequested: "3,000,000",
-    currency: "Tsh",
-    about: 
-      "We are Nipe Fagio, an environmental non-profit organization committed to cleaning and preserving our beaches. Our goal is to collect and remove at least 10 tons of plastic waste through community clean-up events and outreach programs."
-    ,
-  };
+
+  // Render loading state if proposal data is not yet available
+  if (!proposalData) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
       <NavBar className="navbarProposal" />
       <main className="viewProposal">
         <div className="one">
-          <img src="/images/arrow-back-black.png" alt="arrow-black" width={99} height={99} onClick={handleBackClick}/>
+          <img
+            src="/images/arrow-back-black.png"
+            alt="arrow-black"
+            width={99}
+            height={99}
+            onClick={handleBackClick}
+          />
           <button>Rejected</button>
         </div>
 
@@ -55,8 +80,7 @@ const ViewProposal: React.FC = () => {
 
         <div className="about">
           <h1>About proposal</h1>
-            <p>{proposalData.about}</p>
-            <p>{proposalData.about}</p>
+          <p>{proposalData.about}</p>
         </div>
 
         <div className="buttonGroup">
@@ -65,7 +89,7 @@ const ViewProposal: React.FC = () => {
           <button className="three">Fund Project</button>
         </div>
       </main>
-      <Footer className="footerProposal"/>
+      <Footer className="footerProposal" />
     </>
   );
 };

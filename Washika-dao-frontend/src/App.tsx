@@ -30,7 +30,7 @@ const App: React.FC = () => {
         <Route path="/JoinPlatform" element={<JoinPlatform />} />
         <Route path="/Funder" element={<Funder />} />
         <Route path="/DaoProfile/:daoMultiSigAddr" element={<DaoProfile />} />
-        <Route path="/ViewProposal" element={<ViewProposal />} />
+        <Route path="/ViewProposal/:daoMultiSigAddr/:proposalId" element={<ViewProposal />} />
         <Route path="/Owner" element={<Owner />} />
       </Routes>
     </Router>

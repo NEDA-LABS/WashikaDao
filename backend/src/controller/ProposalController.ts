@@ -50,7 +50,7 @@ export async function CreateProposal(req: Request, res: Response){
         //if proposal doesn't exist create or build a new proposal using the data from the form submission 
         const createdProposal = proposalRepository.create(proposalData); 
             await proposalRepository.save(createdProposal); 
-            res.status(201).json({ message: 'Proposal created successfully'});
+            res.status(201).json({ message: 'Proposal created successfully', proposalId});
             //TODO: BLOCKCHAIN INTEGRATION 
             }
         }
@@ -76,24 +76,25 @@ export async function CreateProposal(req: Request, res: Response){
  *
  * @returns - An HTTP response with a status code and a JSON object containing the proposal details or an error message.
  */
-// export async function GetProposalDetailsById (req: Request, res: Response) {
+export async function GetProposalDetailsById (req: Request, res: Response) {
 
-//     /**Grabbing the proposal ID from the url params */
-//     const _proposalId: string = req.params.proposalId; 
+    /**Grabbing the proposal ID from the url params */
+    const proposalId: number = req.params.proposalId; 
 
-//     try {
-//         //find proposal by proposalId if doesn't exist will be caught within
-//         const proposalDetails: typeof Proposal = await proposalRepository.findOneBy({ proposalId: _proposalId });
-//         if (typeof proposalDetails === undefined || typeof proposalDetails === null) {
-//             return res.status(400).json({ message: 'Proposal not found or does not exist' })
-//         }
-//         return res.status(200).json(proposalDetails);
-//     } 
-//     //TODO: BLOCKCHAIN INTEGRATION 
-//     catch(error) {
-//         res.status(500).json({ error: 'Error fetching proposal' })
-//     }
-// }
+    try {
+        //find proposal by proposalId if doesn't exist will be caught within
+        const proposalDetails: Proposal | null = await proposalRepository.findOneBy({ proposalId });
+
+        if (typeof proposalDetails === undefined || typeof proposalDetails === null) {
+            return res.status(400).json({ message: 'Proposal not found or does not exist' })
+        }
+        return res.status(200).json(proposalDetails);
+    } 
+    //TODO: BLOCKCHAIN INTEGRATION 
+    catch(error) {
+        res.status(500).json({ error: 'Error fetching proposal' })
+    }
+}
 
 
 // /**
