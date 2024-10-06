@@ -28,9 +28,12 @@ const uploadImageToCloudinary = async (file: File) => {
 
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
-  const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
-  console.log(multiSigAddr);
-   // Extract multiSigAddr from URL params
+  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
+  console.log(daoMultiSigAddr);
+  const params = useParams<{ daoMultiSigAddr: string }>();
+  console.log(params);
+
+  // Extract multiSigAddr from URL params
 
   // State to manage form data
   const [proposalData, setProposalData] = useState({
@@ -40,7 +43,7 @@ const CreateProposal: React.FC = () => {
     proposalDescription: "",
     proposalStatus: "open", // default to 'open'
     amountRequested: "",
-    daoMultiSigAddr: multiSigAddr || "", // Populate daoMultiSigAddr from URL params
+    daoMultiSigAddr: daoMultiSigAddr || "", // Populate daoMultiSigAddr from URL params
     numUpvotes: 0, // default value
     numDownvotes: 0, // default value
     fileUrl: "",
@@ -79,7 +82,7 @@ const CreateProposal: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/CreateProposal/DaoDetails/${multiSigAddr}/createProposal`,
+        `http://localhost:8080/CreateProposal/DaoDetails/${daoMultiSigAddr}/createProposal`,
         {
           method: "POST",
           headers: {

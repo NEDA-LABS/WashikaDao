@@ -49,7 +49,7 @@ const DaoProfile: React.FC = () => {
   }, [daoMultiSigAddr]);
 
   const handleClick = () => {
-    navigate("/CreateProposal");
+    navigate(`/CreateProposal/${daoMultiSigAddr}`);
   };
 
   if (loading) {
@@ -64,7 +64,7 @@ const DaoProfile: React.FC = () => {
       <main className="daoMain">
         <div className="daoImage">
           <img
-            src={daoDetails.daoImageIpfsHash || "images/DaoImage.png"} //fallback image
+            src={daoDetails.daoImageIpfsHash || "/images/DaoImage.png"} //fallback image
             alt="DaoImage"
             width={1450}
             height={509}
@@ -76,7 +76,7 @@ const DaoProfile: React.FC = () => {
               <h1>{daoDetails.daoName || "KIKUNDI CHA JUKUMU"}</h1>
               <div className="location">
                 <p>{daoDetails.daoLocation || "Dar-es-Salaam, Tanzania"}</p>
-                <img src="images/locationIcon.png" width="27" height="31" />
+                <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
               <p className="email">
                 {daoDetails.multiSigAddr || "@JukumuDAO.ETH"}

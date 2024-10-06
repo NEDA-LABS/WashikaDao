@@ -34,12 +34,12 @@ export class Proposal {
     @Column()
     numDownvotes: number; 
 
-    @OneToMany(() => Vote, vote => vote.proposalId)
+    @OneToMany(() => Vote, (vote) => vote.proposalId)
     votes: Vote;
      
     //relation where one proposal can only belong to one dao but one dao can have multiple proposals 
     @ManyToOne(() => Dao, dao => dao.proposal)
-    //@JoinColumn({ name: "daoId" })
+    @JoinColumn({ name: "daoId" })
     dao: Dao;
 
 }
