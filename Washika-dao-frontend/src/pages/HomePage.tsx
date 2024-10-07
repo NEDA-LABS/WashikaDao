@@ -52,8 +52,6 @@ const HomePage: React.FC = () => {
             DAO ni nini?
           </button>
           {/**Testing thirdweb modal button*/}
-          <button className="button-2" onClick={handleWalletConnection}>  Sign Up
-          </button>
           <ConnectWallet />
         </div>
 
