@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 /** Thirdweb wallet connection imports **/
 import { createThirdwebClient } from "thirdweb";
-import {  ConnectButton } from "thirdweb/react";
+import {  ConnectButton, ThirdwebProvider } from "thirdweb/react";
 import { lightTheme } from "thirdweb/react";
 
 import { celoAlfajoresTestnet} from "thirdweb/chains";
@@ -35,11 +35,20 @@ const customTheme = lightTheme({
 /**
  * on click should pop up thirdweb modal
  */
-async function handleWalletConnection () {
+function handleWalletConnection () {
+    console.log("yes i got called");
  return (
+      <ThirdwebProvider>
       <ConnectButton client={client} theme={customTheme} accountAbstraction={{ chain, sponsorGas: false }} />
+      </ThirdwebProvider>
     )
   }
+function handleTestingComponents() {
+   return (
+    <h1> I test whether a component is the problem</h1>
+    )
+  }
+
   const renderProfileLink = () => {
     if (className === "DaoProfile" || className === "navbarProposal") {
       return (
