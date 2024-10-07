@@ -1,16 +1,23 @@
 import { createThirdwebClient } from "thirdweb";
-import { useActiveAccount, useActiveWallet, useActiveWalletConnectionStatus, ThirdwebProvider, ConnectButton, useConnectModal, useSetActiveWallet } from "thirdweb/react";
-import { createWallet, inAppWallet } from "thirdweb/wallets";
+//useActiveAccount,
+import { useActiveWallet, useActiveWalletConnectionStatus, ThirdwebProvider, ConnectButton, useConnectModal, useSetActiveWallet } from "thirdweb/react";
+import { inAppWallet } from "thirdweb/wallets";
 import { lightTheme } from "thirdweb/react";
-import { celoAlfajoresTestnet, celo } from "thirdweb/chains";
+//add import for celo in prod too
+import { celoAlfajoresTestnet} from "thirdweb/chains";
 import { useEffect } from "react";
 
-const { connect, isConnecting } = useConnectModal();
+//isConnecting
+const { connect} = useConnectModal();
 const setActiveAccount = useSetActiveWallet();
 
+/**
+  * Place Button on Karibu Button, is user clicks, prompt to choose means to use to generate in app wallet, then log them in
+  *
+  */
 
-//Interrogate the components & find place to add connect wallet button
 //Add authentication using that one modal button to route to daoProfile using sample profile
+//@ts-ignore
 const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
 const client = createThirdwebClient({ clientId: _clientId });
 const customTheme = lightTheme({
@@ -36,7 +43,7 @@ const wallets = [inAppWallet({
 )];
 const chain = celoAlfajoresTestnet;//TODO: Switch to mainnet when in prod
 // Get the connected smart account
-const smartAccount = useActiveAccount();
+//const smartAccount = useActiveAccount();
 
 //subscribe to account change event
 const currWallet = useActiveWallet();
@@ -81,3 +88,7 @@ export default function WC() {
     </ThirdwebProvider>
   );
 }
+
+/**
+ * Creating a new wallet inAppWallet for each new user
+ */

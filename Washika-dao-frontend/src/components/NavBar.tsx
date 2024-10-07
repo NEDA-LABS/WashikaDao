@@ -1,8 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 
+/** Thirdweb wallet connection imports **/
+import { createThirdwebClient } from "thirdweb";
+import {  ConnectButton } from "thirdweb/react";
+import { lightTheme } from "thirdweb/react";
+
+import { celoAlfajoresTestnet} from "thirdweb/chains";
+
 interface NavBarProps {
   className: string;
-  // user?: { name: string }; 
+  // user?: { name: string };
 }
 
 const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
@@ -12,6 +19,27 @@ const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
     navigate("/JoinPlatform");
   };
 
+  /*
+   * Setting up thirdweb client
+   */
+//@ts-ignore
+const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
+var client = createThirdwebClient({ clientId: _clientId });
+const customTheme = lightTheme({
+  colors: {
+    modalBg: "red",
+  },
+});
+ const chain = celoAlfajoresTestnet;//TODO: Switch to mainnet when in prod
+
+/**
+ * on click should pop up thirdweb modal
+ */
+async function handleWalletConnection () {
+ return (
+      <ConnectButton client={client} theme={customTheme} accountAbstraction={{ chain, sponsorGas: false }} />
+    )
+  }
   const renderProfileLink = () => {
     if (className === "DaoProfile" || className === "navbarProposal") {
       return (
@@ -40,7 +68,7 @@ const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
       );
     }
     return (
-      <button onClick={handleClick}>Karibu</button>
+      <button onClick={handleWalletConnection}>Karibu</button>
     );
   };
 
