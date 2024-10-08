@@ -1,4 +1,4 @@
-  import { createThirdwebClient } from "thirdweb";
+import { createThirdwebClient } from "thirdweb";
 import {  ConnectButton, ThirdwebProvider } from "thirdweb/react";
 import { lightTheme } from "thirdweb/react";
 
@@ -10,7 +10,7 @@ const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
 var client = createThirdwebClient({ clientId: _clientId });
 const customTheme = lightTheme({
   colors: {
-    modalBg: "red",
+    modalBg: "yellow",
   },
 });
  const chain = celoAlfajoresTestnet;//TODO: Switch to mainnet when in prod
@@ -20,3 +20,5 @@ const customTheme = lightTheme({
       </ThirdwebProvider>
     )
   }
+
+
