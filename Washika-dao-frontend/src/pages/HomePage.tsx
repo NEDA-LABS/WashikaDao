@@ -3,8 +3,8 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import GroupInfo from "../components/GroupInfo";
 
-/**Rainbow kit config for connecting wallet **/
-import { ConnectButton } from "@rainbow-me/rainbowkit";
+import ConnectWallet from "../components/auth/ConnectWallet";
+/** Thirdweb imports **/
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -15,6 +15,10 @@ const HomePage: React.FC = () => {
   const handleJifunzeElimu = () => {
     navigate("/JifunzeElimu");
   };
+
+  const handleWalletConnection = () => {
+   navigate("/ConnectWallet");
+  }
 
   return (
     <>
@@ -40,8 +44,6 @@ const HomePage: React.FC = () => {
           </div>
         </section>
 
-        {/*connect Button*/}
-        <ConnectButton />
         <div className="buttons">
           <button className="button-1" onClick={handleDaoRegistration}>
             Fungua DAO
@@ -49,6 +51,8 @@ const HomePage: React.FC = () => {
           <button className="button-2" onClick={handleJifunzeElimu}>
             DAO ni nini?
           </button>
+          {/**Testing thirdweb modal button*/}
+          <ConnectWallet />
         </div>
 
         <p className="parag-container">

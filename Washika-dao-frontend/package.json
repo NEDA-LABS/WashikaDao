@@ -12,16 +12,12 @@
         "preview": "vite preview"
     },
     "dependencies": {
-        "@rainbow-me/rainbowkit": "^2.1.7",
-        "@tanstack/react-query": "^5.59.0",
-        "@web3auth/ethereum-provider": "^9.0.2",
         "axios": "^1.7.7",
         "cloudinary": "^2.5.0",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "react-router-dom": "^6.26.0",
-        "viem": "^2.21.18",
-        "wagmi": "^2.12.17"
+        "thirdweb": "^5.61.0"
     },
     "devDependencies": {
         "@eslint/js": "^9.8.0",
