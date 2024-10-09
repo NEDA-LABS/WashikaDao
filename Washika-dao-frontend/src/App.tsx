@@ -14,6 +14,7 @@ import DaoProfile from "./pages/DaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
 
+
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation, allowing users to move between different pages without refreshing the browser.
 const App: React.FC = () => {
