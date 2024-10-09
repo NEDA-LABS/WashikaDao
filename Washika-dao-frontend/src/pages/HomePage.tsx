@@ -16,10 +16,6 @@ const HomePage: React.FC = () => {
     navigate("/JifunzeElimu");
   };
 
-  const handleWalletConnection = () => {
-   navigate("/ConnectWallet");
-  }
-
   return (
     <>
       <NavBar className={""} />
