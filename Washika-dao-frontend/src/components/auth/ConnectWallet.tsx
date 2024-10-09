@@ -4,7 +4,7 @@ import { lightTheme } from "thirdweb/react";
 
 import { celoAlfajoresTestnet} from "thirdweb/chains";
 
-export default function () {
+export default function ConnectWallet () {
 //@ts-ignore
 const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
 var client = createThirdwebClient({ clientId: _clientId });

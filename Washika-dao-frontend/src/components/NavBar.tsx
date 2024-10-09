@@ -27,7 +27,7 @@ const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
 var client = createThirdwebClient({ clientId: _clientId });
 const customTheme = lightTheme({
   colors: {
-    modalBg: "red",
+    modalBg: "yellow",
   },
 });
  const chain = celoAlfajoresTestnet;//TODO: Switch to mainnet when in prod
@@ -43,12 +43,14 @@ function handleWalletConnection () {
       </ThirdwebProvider>
     )
   }
+  /**
 function handleTestingComponents() {
    return (
     <h1> I test whether a component is the problem</h1>
     )
   }
 
+**/
   const renderProfileLink = () => {
     if (className === "DaoProfile" || className === "navbarProposal") {
       return (
