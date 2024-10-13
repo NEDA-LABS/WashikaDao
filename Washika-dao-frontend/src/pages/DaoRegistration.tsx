@@ -4,6 +4,8 @@ import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import TestCreateBtn from "../components/actions/TestCreateBtn";
+import CreateTestDao from "../components/actions/CreateTestDao";
 
 interface FormData {
   daoName: string;
@@ -26,11 +28,11 @@ interface Member {
 const uploadImageToCloudinary = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "ml_default"); 
+  formData.append("upload_preset", "ml_default");
 
   try {
     const response = await fetch(
-      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload", 
+      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload",
       {
         method: "POST",
         body: formData,
@@ -113,7 +115,7 @@ const DaoRegistration: React.FC = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0]; // Access the file if it exists
-  
+
     if (file) {
       const imageUrl = await uploadImageToCloudinary(file); // Upload the file and get the image URL
       if (imageUrl) {
@@ -124,8 +126,8 @@ const DaoRegistration: React.FC = () => {
       }
     }
   };
-  
-  
+
+
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -287,7 +289,7 @@ const DaoRegistration: React.FC = () => {
                 //     console.error("Wallet connection failed:", error);
                 //   }
                 // },
-              },              
+              },
               {
                 label: "Andika akaunti namba ambayo itapokea fedha za kikundi",
                 type: "text",
@@ -304,6 +306,7 @@ const DaoRegistration: React.FC = () => {
           </div>
         </form>
       </main>
+      {/* Add your own components here, I am testing here */}
       <Footer className={""} />
     </>
   );
