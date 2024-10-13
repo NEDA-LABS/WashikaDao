@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import GroupInfo from "../components/GroupInfo";
 
 import ConnectWallet from "../components/auth/ConnectWallet";
-import TestDao from "./TestDao";
-/** Thirdweb imports **/
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();

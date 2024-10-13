@@ -13,7 +13,6 @@ import Funder from "./pages/Funder";
 import DaoProfile from "./pages/DaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
-import { ThirdwebProvider } from "thirdweb/react";
 import TestDao from "./pages/TestDao";
 import { ThirdwebProviderContext } from "./ThirdWebProviderContext";
 
