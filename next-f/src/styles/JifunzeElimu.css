@@ -1,0 +1,43 @@
+.jifunze {
+  padding: 240px 0 0;
+}
+
+div.onee {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 48px;
+  margin: 0 96px 120px 84px;
+  position: relative;
+}
+
+div.onee::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 1282px;
+  background-color: #c8954b;
+}
+
+div.onee::before {
+  content: "";
+  position: absolute;
+  bottom: -3px;
+  left: 1282px;
+  width: 8px;
+  height: 8px;
+  background-color: #c8954b;
+  border-radius: 50%;
+}
+
+.jifunze .onee .left {
+  width: 1043px;
+  height: 309px;
+  font-size: 56px;
+  color: #fffefe;
+}
+
+.jifunze .imagge {
+    padding: 64px 12px;
+    background-color: #4b454662;;
+}

@@ -1,0 +1,827 @@
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+
+nav.DaoProfile {
+  height: 571px;
+  background-color: #636844;
+  align-items: flex-start;
+  border-radius: 0 0 8px 8px;
+}
+
+main.daoMain {
+  background-color: #ffffff;
+  padding-top: 720px;
+}
+
+.daoMain .daoImage {
+  width: 100%;
+  padding: 0 24px;
+  position: absolute;
+  top: 164px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.daoImage img {
+  border-radius: 9px;
+  object-fit: cover;
+}
+
+.daoMain .first {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  margin: 0 16px 0 90px;
+}
+
+.daoMain .left .one {
+  position: relative;
+  padding: 21px 0;
+}
+
+.daoMain .left .one::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+  width: 450px;
+  background-color: #D9D9D9;
+}
+
+.daoMain .one h1 {
+  width: 533px;
+  height: 46px;
+  color: #433939;
+  font-size: 45px;
+  font-family: 'DM Mono', sans-serif;
+}
+
+.daoMain .location {
+  margin: 20px 0 9px;
+  display: flex;
+  gap: 6px;
+}
+
+.daoMain .location p {
+  width: 324px;
+  height: 31px;
+  color: #a39898;
+  font-size: 27px;
+}
+
+.daoMain .email {
+  width: 268px;
+  height: 31px;
+  color: #f8b859;
+  font-weight: bold;
+  font-size: 27px;
+}
+
+.daoMain .section-2 {
+  margin: 24px 0;
+  padding: 0 24px 0 0;
+  width: 762px;
+  height: 252px;
+  font-size: 36px;
+}
+
+.DaoOperations h1{
+  width: 533px;
+  height: 46px;
+  color: #433939;
+  font-size: 45px;
+  font-family: 'DM Mono', sans-serif;
+  padding: 16px 0 64px 3px;
+  position: relative;
+}
+
+.DaoOperations h1::after{
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+  left: 0;
+  width: 450px;
+  background-color: #FFBD59;
+}
+
+.DaoOperations .button-group, .owner .button-group {
+  margin: 72px 0 64px -9px;
+  gap: 16px;
+}
+
+.DaoOperations button, .owner button {
+  height: 83px;
+  border: none;
+  font-weight: bold;
+  color: #FBFAF8;
+}
+
+.DaoOperations .button-1, .owner .button-1 {
+  width: 344px;
+  background-color: #56923F;
+  font-size: 27px;
+  border-radius: 10px;
+}
+
+.DaoOperations .button-2, .owner .button-2 {
+  width: 338px;
+  background-color: #BE7B15;
+  font-size: 25px;
+}
+
+.details {
+  margin-left: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.details .email{
+  width: 389px;
+  height: 46px;
+  font-size: 39px;
+}
+
+.details .parag {
+  width: 703px;
+  height: 168px;
+  color: #433939;
+  font-size: 31px;
+  font-weight: bold;
+}
+
+.treasury{
+  width: 610px;
+  height: 1114px;
+  background-color: #F6F6F6;
+  border-radius: 20px;
+  padding: 48px 84px 48px 56px;
+}
+
+.treasury .first {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 0 0 24px 52px;
+  gap: 12px;
+}
+
+.treasury .first::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+  left: 0px;
+  right: 0px;
+  background-color: #FFBD59;
+}
+
+
+.treasury .one {
+  display: flex;
+  gap: 88px;
+
+}
+
+.treasury .one .left {
+  padding-top: 16px;
+  width: 41px;
+  height: 21px;
+  color: #433939;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.treasury .one .right {
+  width: 291px;
+  height: 35px;
+  color: #A39898;
+  font-size: 31px;
+  font-weight: bold;
+}
+
+.treasury .amount {
+  width: 446px;
+  height: 56px;
+  font-size: 50px;
+  display: flex;
+  align-items: center;
+}
+
+.treasury .section-3 {
+  margin-bottom: 24px;
+  padding: 24px 12px 24px 24px;
+  border: none;
+  gap: 0px;
+  position: relative;
+}
+
+.treasury .section-3::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+  left: 0px;
+  right: 12px;
+  background-color: #FFBD59;
+}
+
+.treasury .taarifa {
+  border-radius: 6px;
+  background-color: #FFFFFF;
+}
+
+.treasury .section-3 h2 {
+  width: 249px;
+  font-size: 26px;
+  padding-top: 9px;
+}
+
+.treasury .section-3 .bottom p {
+  padding-left: 32px;
+}
+
+.section-3 .fundDao {
+  margin-top: 64px;
+  display: flex;
+  justify-content: end;
+}
+
+.fundDao button{
+  width: 182px;
+  height: 36px;
+  color: #FFFFFF;
+  border: 1px solid #DCB273;
+  border-radius: 6px;
+  background-color: #4E79E8;
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.treasury-history h1{
+  margin-left: 28px;
+  width: 298px;
+  height: 30px;
+  color: #7D7272;
+  font-size: 27px;
+  font-weight: 400;
+}
+
+.treasury-history #treasury-history {
+  width: 467px;
+  height: 481px;
+  border-radius: 10px;
+  margin: 16px 0 24px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+#treasury-history::-webkit-scrollbar {
+  display: none;
+}
+
+#treasury-history .slot {
+  padding: 24px 12px 24px 24px;
+  width: 100%;
+  height: 103px;
+  display: flex;
+  border-radius: 10px;
+  background-color: #FFFFFF;
+}
+
+.slot .left {
+  width: 50%;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.slot .left div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slot .left p {
+  width: 65px;
+  height: 15px;
+  font-size: 11px;
+  margin-left: 4px;
+}
+
+.slot h1 {
+  margin: 0;
+  width: 104px;
+  height: 24px;
+  color: #433939;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.slot .right {
+  width: 50%;
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}
+
+.slot .right div{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: 12px;
+}
+
+.slot .right .top {
+  padding: 0;
+  width: 103px;
+  height: 19px;
+  color: #433939;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.slot .right .bottom {
+  padding: 0;
+  width: 65px;
+  height: 15px;
+  color: #433939;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.history-button {
+  text-align: center;
+}
+
+.history-button button {
+  width: 182px;
+  height: 36px;
+  color: #FFFFFF;
+  border-radius: 6px;
+  border: 1px solid #DCB273;
+  background-color: #60CE60;
+  font-size: 19px;
+}
+
+section.second {
+  position: relative;
+  margin-bottom: 120px;
+}
+
+section.second::before {
+  content: "";
+  position: absolute;
+  left: 36px;
+  top: 310px;
+  height: 257px;
+  width: 1px;
+  background-color: #000000;
+  opacity: 23%;
+}
+
+section.second::after {
+  content: "";
+  position: absolute;
+  top: 24px;
+  left: 480px;
+  height: 1px;
+  width: 473px;
+  background-color: #FFBD59;
+}
+
+.second .main {
+  margin-left: 116px;
+  width: 312px;
+  height: 37px;
+  color: #D9D9D9;
+  font-size: 32px;
+}
+
+.second .proposal-groups {
+  margin: 28px 0 64px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  height: 750px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+}
+
+.second .proposal-groups::-webkit-scrollbar {
+  display: none;
+}
+
+.second .proposal {
+  margin-left: 80px;
+  padding: 36px 44px 24px 64px;
+  width: 1340px;
+  min-height: 361px;
+  border-radius: 9px;
+  background-color: #D9D9D9;
+}
+
+.proposal .one {
+  display: flex;
+  justify-content: space-between;
+}
+
+.proposal .one h1 {
+  margin-top: 24px;
+  width: 869px;
+  height: 46px;
+  color: #000000;
+  font-size: 35px;
+  font-weight: bold;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.proposal .one div {
+  width: 231px;
+  height: 38px;
+  border-radius: 57px;
+  background-color: #D23737;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #FBFAF8;
+  font-family: 'Syne', sans-serif;
+}
+
+.proposal .one .inProgress {
+  background-color: #61AE45;
+}
+
+.proposal .two {
+  margin: 16px 30px 0;
+  width: 1030px;
+  height: 110px;
+  font-size: 22px;
+}
+
+.proposal .three {
+  height: 96px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.proposal .three .button-group {
+  margin-left: 24px;
+  margin-top: 48px;
+  gap: 36px;
+}
+
+.proposal .three .button-group button {
+  width: 261px;
+  height: 39px;
+  border-radius: 19px;
+  font-size: 22px;
+  background-color: #E28B06;
+}
+
+.proposal .three .button-group .button-2 {
+  background-color: #000000;
+  text-decoration: underline;
+}
+
+.proposal-right {
+  display: flex;
+  flex-direction: column;
+  color: #433939;
+  gap: 9px;
+}
+
+.proposal-right h2 {
+  margin-left: 56px;
+  width: 301px;
+  height: 24px;
+  font-size: 21px;
+}
+
+.proposal-right p {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  width: 361px;
+  height: 33px;
+  font-size: 36px;
+  transform: scaleX(0.9);
+  font-family: "Druk Text Wide Web", sans-serif;
+}
+
+.proposal-right p span {
+  font-size: 16px;
+  font-weight: bold;
+  transform: scaleY(0.6);
+  display: inline-block;
+}
+
+@media only screen and (max-width: 600px) {
+  nav.DaoProfile {
+    height: 136px;
+  }
+
+  main.daoMain {
+    width: auto;
+    padding-top: 206px;
+  }
+
+  .daoMain .daoImage {
+    top: 64px;
+  }
+
+  .daoImage img {
+    width: 96vw;
+    height: auto;
+  }
+
+  .daoMain .first {
+    display: flex;
+    flex-direction: column;
+    margin: 0 24px;
+  }
+
+  .daoMain .left .one {
+    padding: 0 0 16px;
+  }
+
+  .daoMain .left .one::after {
+    width: 100%;
+  }
+
+  .daoMain .one h1 {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .daoMain .location {
+    margin: 0;
+  }
+
+  .daoMain .location p {
+    width: auto;
+    height: auto;
+    font-size: 16px;
+  }
+
+  .daoMain .location img {
+    width: 16px;
+    height: 16px;
+  }
+
+  .daoMain .email {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+    margin: 0;
+  }
+
+  .daoMain .section-2 {
+    padding: 0;
+    margin: 12px 0;
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+  
+  .DaoOperations h1 {
+    width: auto;
+    height: auto;
+    font-size: 36px;
+    padding: 24px 0;
+  }
+
+  .DaoOperations h1::after {
+    width: 100%;
+  }
+
+  .DaoOperations .button-group, .owner .button-group {
+    margin: 24px 0;
+  }
+
+  .DaoOperations .button-1, .owner .button-1, .DaoOperations .button-2, .owner .button-2 {
+    width: auto;
+    height: 56px;
+    font-size: 24px;
+  }
+
+  .details {
+    margin: 0;
+    gap: 12px;
+  }
+
+  .details .email {
+    height: auto;
+    width: auto;
+    font-size: 24px;
+  }
+
+  .details .parag {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .treasury {
+    width: auto;
+    height: auto;
+    padding: 24px 0;
+    margin: 24px 0;
+  }
+
+  .treasury .first {
+    padding: 0 0 24px;
+  }
+
+  .treasury .one {
+    gap: 48px;
+  }
+
+  .treasury .one .left {
+    padding-top: 41px;
+    width: auto;
+    height: auto;
+    font-size: 16px;
+  }
+
+  .treasury .one .right {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+   
+  .treasury .amount {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .treasury .section-3::after {
+    left: 24px;
+    width: auto;
+  }
+
+  .treasury .section-3 h2 {
+    width: auto;
+    font-size: 12px;
+    padding-top: 3px;
+  }
+
+  .section-3 .bottom p {
+    padding-left: 0;
+    font-size: 24px;
+  }
+
+  .section-3 .fundDao {
+    margin: 0;
+  }
+
+  .fundDao button {
+    width: auto;
+    padding: 0 16px;
+  }
+
+  .treasury-history h1 {
+    margin: 12px;
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .treasury-history #treasury-history {
+    width: auto;
+    margin: 12px;
+    height: 320px;
+    gap: 24px;
+  }
+
+  #treasury-history .slot {
+    padding: 0 6px;
+  }
+
+  .slot .left {
+    gap: 3px;
+  }
+
+  .slot .left div {
+    gap: 0;
+  }
+
+  .slot .left p{
+    width: auto;
+    height: auto;
+    margin-left: 12px;
+  }
+
+  .slot h1 {
+    width: auto;
+    height: auto;
+    font-size: 16px;
+  }
+
+  .slot .right div {
+    gap: 3px;
+  }
+
+  .slot .right .top {
+    width: auto;
+    height: auto;
+    font-size: 12px;
+  }
+
+  .slot .right .bottom {
+    width: auto;
+    height: auto;
+    font-size: 10px;
+  }
+
+  section.second {
+    margin-bottom: 36px;
+  }
+
+  section.second::before {
+    height: 640px;
+    left: 24px;
+  }
+
+  section.second::after {
+    display: none;
+  }
+
+  .second .main {
+    margin-left: 24px;
+    text-align: center;
+  }
+
+  .second .proposal-groups {
+    margin: 24px;
+    height: 1150px;
+  }
+
+  .second .proposal {
+    margin-left: 24px;
+    padding: 12px;
+    width: auto;
+    min-height: auto;
+  }
+
+  .proposal .one h1 {
+    margin: 0;
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .proposal .one div {
+    width: auto;
+    height: 36px;
+    font-size: 12px;padding: 0 24px;
+    margin-top: 24px;
+  }
+
+  .proposal .two {
+    margin: 12px 0 0;
+    width: auto;
+    height: auto;
+    font-size: 18px;
+  }
+
+  .proposal .three {
+    height: auto;
+    flex-direction: column;
+  }
+
+  .proposal .three .button-group {
+    margin: 12px 0;
+    gap: 12px;
+  }
+
+  .proposal .three .button-group button {
+    width: auto;
+  }
+
+  .proposal-right h2 {
+    margin: 0;
+    width: auto;
+    height: auto;
+  }
+
+  .proposal-right p {
+    width: auto;
+    height: auto;
+    font-size: 26px;
+    justify-content: flex-start;
+    margin-left: -16px;
+  }
+
+  
+}
+

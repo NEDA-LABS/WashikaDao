@@ -1,0 +1,257 @@
+.navbarProposal {
+  background-color: #636844;
+}
+
+.viewProposal {
+  padding: 200px 56px 120px 120px;
+  background-color: #d9d9d9;
+}
+
+.viewProposal .one {
+  display: flex;
+  justify-content: space-between;
+}
+
+.viewProposal img {
+  cursor: pointer;
+}
+
+.viewProposal .one button {
+  width: 478px;
+  height: 69px;
+  border-radius: 118px;
+  background-color: #d23737;
+  color: #fbfaf8;
+  font-size: 38px;
+  font-weight: bold;
+  font-family: "Syne", sans-serif;
+  margin-top: 56px;
+}
+
+.viewProposal article h1 {
+  width: 731px;
+  height: 141px;
+  color: #000000;
+  font-size: 61px;
+  line-height: 56px;
+}
+
+.viewProposal article p {
+  margin: 24px 0 64px;
+  width: 857px;
+  height: 207px;
+  color: #000000;
+  font-size: 32px;
+}
+
+.viewProposal section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 16px;
+}
+
+.viewProposal section button {
+  width: 466px;
+  height: 69px;
+  border-radius: 34px;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 39px;
+  text-decoration: underline;
+}
+
+.viewProposal section div {
+  margin-right: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.viewProposal section .first {
+  width: 420px;
+  height: 33px;
+  color: #433939;
+  font-size: 29px;
+  text-align: center;
+  font-weight: bold;
+}
+
+.viewProposal section .second {
+  width: 503px;
+  height: 46px;
+  color: #433939;
+  font-size: 40px;
+  font-weight: 100;
+  letter-spacing: 5px;
+  transform: scaleX(0.9) scaleY(1.2);
+  font-family: "Druk Text Wide Web", sans-serif;
+}
+
+.viewProposal section span {
+  letter-spacing: 0px;
+  font-size: 24px;
+  font-weight: bold;
+  transform: scaleY(0.6);
+  display: inline-block;
+}
+
+.viewProposal .about h1 {
+  width: 887px;
+  height: 196px;
+  font-size: 74px;
+  display: flex;
+  align-items: center;
+}
+
+.viewProposal .about p {
+  width: 912px;
+  margin-bottom: 48px;
+  font-size: 32px;
+  color: #000000;
+}
+
+.viewProposal .buttonGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.viewProposal .buttonGroup button {
+  width: 327px;
+  height: 49px;
+  border-radius: 24px;
+  background-color: black;
+  font-size: 27px;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.viewProposal .buttonGroup .one {
+  background-color: #e28b06;
+}
+
+.viewProposal .buttonGroup .two {
+  background-color: #61ae45;
+}
+
+.viewProposal .buttonGroup .three {
+  background-color: #4e79e8;
+}
+
+.footerProposal {
+  background-color: #282424;
+}
+
+.footerProposal .social-icon {
+  color: #282424;
+}
+
+.social-icon:hover {
+  color: #837e7f;
+}
+
+@media only screen and (max-width: 600px) {
+  .viewProposal {
+    padding: 100px 0 64px;
+  }
+
+  .viewProposal img {
+    width: 64px;
+    height: 64px;
+  }
+
+  .viewProposal .one {
+    margin: 0 12px;
+    align-items: center;
+  }
+
+  .viewProposal .one button {
+    width: auto;
+    height: 36px;
+    padding: 0 12px;
+    margin: 0;
+    font-size: 24px;
+  }
+
+  .viewProposal article h1 {
+    margin: 0 24px;
+    width: auto;
+    height: auto;
+    font-size: 36px;
+    line-height: initial;
+  }
+
+  .viewProposal article p {
+    margin: 12px 24px;
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .viewProposal section {
+    margin: 24px;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .viewProposal section button {
+    width: 260px;
+    height: 36px;
+    padding: 0 12px;
+    margin: 0;
+    font-size: 16px;
+  }
+
+  .viewProposal section div {
+    margin: 0 24px;
+  }
+
+  .viewProposal section .first {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .viewProposal section .second {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+    letter-spacing: initial;
+  }
+
+  .viewProposal section span {
+    font-size: 16px;
+  }
+
+  .viewProposal .about {
+    margin: 0 24px;
+  }
+
+  .viewProposal .about h1 {
+    width: auto;
+    height: auto;
+    font-size: 36px;
+  }
+
+  .viewProposal .about p {
+    width: auto;
+    font-size: 24px;
+    margin-bottom: 24px;
+  }
+
+  .viewProposal .buttonGroup {
+    gap: 12px;
+    align-items: center;
+  }
+
+  .viewProposal .buttonGroup button {
+    width: 260px;
+    height: 36px;
+    font-size: 24px;
+  }
+}
