@@ -1,101 +1,140 @@
-import Image from "next/image";
+"use client";
+import NavBar from "@/components/NavBar";
+import Footer from "@/components/Footer";
+import GroupInfo from "@/components/GroupInfo";
+import { useRouter } from "next/navigation";
+import ConnectWallet from "@/components/auth/ConnectWallet";
+import "@/styles/HomePage.css";
 
-export default function Home() {
+const HomePage: React.FC = () => {
+  const router = useRouter();
+
+
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+    <>
+      <NavBar className={""} />
+      <main>
+        <section className="image-container">
+          <div className="inner-container">
+            <img
+              src="images/LOGO FULL.png"
+              alt="logo"
+              width="246"
+              height="180"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <p className="main">
+              Uongozi wa <br />
+              Kidijitali kwa <br />
+              Vikundi vya kifedha
+            </p>
+            <p>
+              Tumia teknologia yetu kuunda, kuendesha <br />
+              na kuboresha vikundi vidogo vya kiuchumi
+            </p>
+          </div>
+        </section>
+
+        <div className="buttons">
+          <button className="button-1" onClick={() => router.push("/DaoRegistration")}>
+            Fungua DAO
+          </button>
+          <button className="button-2" onClick={() => router.push("/JifunzeElimu")}>
+            DAO ni nini?
+          </button>
+          {/**Testing thirdweb modal button*/}
+          <ConnectWallet />
+        </div>
+
+        <p className="parag-container">
+          Tunawezesha vikundi kutunza kumbukumbu zao, kufanya maamuzi na kupata
+          faida nyingi
+        </p>
+
+        <section className="main-container">
+          <div className="boxes">
+            <div className="box one">
+              <div className="box-left">
+                <h1>Salama na Kisasa</h1>
+                <p>
+                  Fahamu kila kitu kuhusu kikundi chako kama vile
+                  <span> kiwango kilichopo, hisa za wanakikundi</span> na jinsi
+                  ya kupata <span>mikopo</span>.
+                </p>
+              </div>
+              <div className="box-right">
+                <div>
+                  <img src="public/images/LOGO SYMBLO(1).png" alt="logo" width="63" />
+                  <a href="Homepage.html">
+                    <img src="public/images/wordlogo.png" alt="logo" width="253" />
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div className="box two">
+              <div className="box-left two">
+                <h1>Elimu ya kifedha</h1>
+                <p>
+                  Pata mafunzo mbali mbali ya Elimu ya
+                  <span> Uchumi wa kidijitali</span>. Fahamu jinsi gani na wewe
+                  unaweza kunufaika na Teknolojia
+                </p>
+              </div>
+              <div className="box-right"></div>
+            </div>
+
+            <div className="half-box box-left">
+              <h1>Pata mikopo kirahisi</h1>
+              <p>
+                Kuza kipata chako kwa kupata
+                <span> mikopo kirahisi kwa dhamana ya kikundi chako</span>.
+                Jiunge na mtandao wetu wa wajasiriamali
+              </p>
+            </div>
+          </div>
+
+          <GroupInfo />
+        </section>
+        <div className="parag-container-two">
+          <h2>Karibu kwa WashikaDAO</h2>
+          <p className="sub-parag-container">
+            Tunawezesha vikundi kufanikisha malengo yao kwa usawa na usalama wa
+            mali zao
+          </p>
+        </div>
+
+        <div className="article-container">
+          <article className="one">
+            <div>
+              <h2>Fungua DAO</h2>
+              <p>
+                Tumia mfumo wetu wa kisasa kuendesha na kukuza Kikundi chako cha
+                kifedha
+              </p>
+            </div>
+          </article>
+          <article className="two">
+            <div>
+              <h2>Jifunze kuhusu DAO</h2>
+              <p>
+                Pata Elimu na makala kuhusu Uchumi wa kidijitali unavyoweza
+                kukusaidia wewe na kikundi cheka kufikia malengo yenu
+              </p>
+            </div>
+          </article>
+          <article className="three">
+            <div>
+              <h2>DAO Tool kit</h2>
+              <p>
+                Kila kitu unachohitaji kujua kuhusu DAO. Anza leo kushiriki.
+              </p>
+            </div>
+          </article>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <Footer className={""} />
+    </>
   );
-}
+};
+
+export default HomePage;
