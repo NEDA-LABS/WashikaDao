@@ -22,7 +22,10 @@ const ViewProposal: React.FC = () => {
   useEffect(() => {
     const fetchProposalData = async () => {
       try {
-        const response = await fetch(`/http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}`);        if (!response.ok) {
+        const response = await fetch(
+          `/http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}`
+        );
+        if (!response.ok) {
           throw new Error("Network response was not ok");
         }
         const data: ProposalData = await response.json();

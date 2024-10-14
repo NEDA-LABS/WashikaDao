@@ -73,9 +73,9 @@ const MemberForm: React.FC<MemberFormProps> = ({
             <button type="button" className="button-1" onClick={onAddMember}>
               Ongeza mwingine
             </button>
-            <button type="button" className="button-2">
+            {/* <button type="button" className="button-2">
               Create new wallet
-            </button>
+            </button> */}
           </div>
         </div>
       </div>

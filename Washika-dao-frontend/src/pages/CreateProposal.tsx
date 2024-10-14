@@ -92,9 +92,7 @@ const CreateProposal: React.FC = () => {
 
       if (response.ok) {
         const proposalId = data.proposalId;
-        console.log(proposalId);
-        
-        console.log("Proposal created successfully");
+        console.log("Proposal created successfully, ID:", proposalId);
         navigate(`/ViewProposal/${daoMultiSigAddr}/${proposalId}`);
       } else {
         console.error("Error creating proposal:", data.message);

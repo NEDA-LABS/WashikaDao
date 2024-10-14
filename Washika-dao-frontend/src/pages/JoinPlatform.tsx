@@ -56,7 +56,7 @@ const JoinPlatform: React.FC = () => {
           />
         </form>
 
-        <DaoForm
+        {/* <DaoForm
           className="hazina digitalWallet"
           title="Digital Wallet"
           description="Connect and fund impact DAOs and community saving groups"
@@ -69,10 +69,12 @@ const JoinPlatform: React.FC = () => {
             },
             { label: "Fill in your Digital wallet ID", type: "text" },
           ]}
-        />
+        /> */}
         <div className="button-container">
           {" "}
           <button className="createDao">Create DAO</button>
+
+          //TODO: separate createDao and joinDao concerns
           <button className="joinDao">
             <p>Join a DAO</p>
             <img src="/images/arrowright.png" alt="arrowRight" />

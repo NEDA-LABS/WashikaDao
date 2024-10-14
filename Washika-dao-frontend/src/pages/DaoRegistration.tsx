@@ -3,7 +3,8 @@ import DaoForm from "../components/DaoForm";
 import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react"; 
+import { useActiveAccount } from "thirdweb/react";
 
 interface FormData {
   daoName: string;
@@ -47,7 +48,9 @@ const uploadImageToCloudinary = async (file: File) => {
 
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
-
+//TODO: Extract multiSigAddr from Navbar connectWallet data and save to formData
+const activeAccount = useActiveAccount();
+  console.log("address", activeAccount?.address);
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
     daoLocation: "",
@@ -59,6 +62,15 @@ const DaoRegistration: React.FC = () => {
     multiSigAddr: "",
   });
 
+  useEffect(() => {
+    if (activeAccount?.address) {
+      setFormData((prevData) => ({
+        ...prevData,
+        multiSigAddr: activeAccount.address,
+      }));
+    }
+  }, [activeAccount]);
+  
   // State to hold the list of members
   const [members, setMembers] = useState<Member[]>([]);
 
@@ -131,6 +143,13 @@ const DaoRegistration: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
 
+    if (activeAccount?.address) {
+      setFormData((prevData) => ({
+        ...prevData,
+        multiSigAddr: activeAccount.address, // Update multiSigAddr with activeAccount address
+      }));
+      console.log("MultiSig address saved:", activeAccount.address);
+    }
     // Combine form data and member data
     const combinedData = {
       ...formData,
@@ -262,7 +281,7 @@ const DaoRegistration: React.FC = () => {
             onAddMember={handleAddMember}
           />
 
-          <DaoForm
+          {/* <DaoForm
             className="hazina"
             title="Hazina ya kikundi"
             description="Taarifa na maelezo ya kifedha ya kikundi"
@@ -296,7 +315,7 @@ const DaoRegistration: React.FC = () => {
                 onChange: handleChange,
               },
             ]}
-          />
+          /> */}
           <div className="button-container">
             <button className="createDao" type="submit">
               Create DAO

@@ -1,15 +1,15 @@
 //import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
-import {Dao} from "../entity/Dao";
-import {Proposal} from "../entity/Proposal"; 
-import {Vote} from "../entity/Vote";
-import { AppDataSource } from "../data-source";  
+import { Dao } from "../entity/Dao";
+import { Proposal } from "../entity/Proposal";
+import { Vote } from "../entity/Vote";
+import { AppDataSource } from "../data-source";
 import { ObjectLiteral } from "typeorm";
 import { IProposal } from "../Interfaces/EntityTypes";
 import { log } from "console";
 
-const proposalRepository = AppDataSource.getRepository(Proposal); 
-const voteRepository = AppDataSource.getRepository(Vote); 
+const proposalRepository = AppDataSource.getRepository(Proposal);
+const voteRepository = AppDataSource.getRepository(Vote);
 const daoRepository = AppDataSource.getRepository(Dao);
 
 /**Handling a post request sent to {'/proposal'} to create a new proposal*/
@@ -27,40 +27,39 @@ const daoRepository = AppDataSource.getRepository(Dao);
  *
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
-export async function CreateProposal(req: Request, res: Response){
-    const { multiSigAddr } = req.params; 
-    console.log(multiSigAddr);
-    
-    if (!multiSigAddr) {
-        return res.status(400).json({ error: 'Missing required from url params' })
-    }
-    const proposalData= req.body;  
-    //check missing details
-    if (!proposalData) {
-        return res.status(400).json({ error: 'Missing required in request body' })
-    }
-    try {
-        //check if proposal exists 
-        const proposalId: number = proposalData.proposalId;        //find proposal by proposalId 
-    const proposalFound = await proposalRepository.findOneBy({ proposalId });
-    if (proposalFound) {
-        return res.status(400).json({ error: 'Proposal already exists' })
-        //you can capture more sanitization errors here with the if else but lets go to what we want to do here instead.
-        } else {
-        //if proposal doesn't exist create or build a new proposal using the data from the form submission 
-        const createdProposal = proposalRepository.create(proposalData); 
-            await proposalRepository.save(createdProposal); 
-            res.status(201).json({ message: 'Proposal created successfully', proposalId});
-            //TODO: BLOCKCHAIN INTEGRATION 
-            }
-        }
-    catch(error) {
-        res.status(500).json( error)
-        console.log(error);
-        
-    }
-}
+export async function CreateProposal(req: Request, res: Response) {
+  const { multiSigAddr } = req.params;
+  console.log(multiSigAddr);
 
+  if (!multiSigAddr) {
+    return res.status(400).json({ error: "Missing required from url params" });
+  }
+  const proposalData = req.body;
+  //check missing details
+  if (!proposalData) {
+    return res.status(400).json({ error: "Missing required in request body" });
+  }
+  try {
+    // //check if proposal exists
+    // const proposalId: number = proposalData.proposalId; //find proposal by proposalId
+    // const proposalFound = await proposalRepository.findOneBy({ proposalId });
+    // if (proposalFound) {
+    //   return res.status(400).json({ error: "Proposal already exists" });
+    //   //you can capture more sanitization errors here with the if else but lets go to what we want to do here instead.
+    // } else {
+      //if proposal doesn't exist create or build a new proposal using the data from the form submission
+      const createdProposal = proposalRepository.create(proposalData);
+      await proposalRepository.save(createdProposal);
+      res
+        .status(201)
+        .json({ message: "Proposal created successfully", createdProposal });
+      //TODO: BLOCKCHAIN INTEGRATION
+    // }
+  } catch (error) {
+    res.status(500).json(error);
+    console.log(error);
+  }
+}
 
 /**
  * Retrieves the details of a proposal by its ID.
@@ -76,26 +75,30 @@ export async function CreateProposal(req: Request, res: Response){
  *
  * @returns - An HTTP response with a status code and a JSON object containing the proposal details or an error message.
  */
-export async function GetProposalDetailsById (req: Request, res: Response) {
+export async function GetProposalDetailsById(req: Request, res: Response) {
+  /**Grabbing the proposal ID from the url params */
+  const proposalId: number = req.params.proposalId;
 
-    /**Grabbing the proposal ID from the url params */
-    const proposalId: number = req.params.proposalId; 
+  try {
+    //find proposal by proposalId if doesn't exist will be caught within
+    const proposalDetails: Proposal | null = await proposalRepository.findOneBy(
+      { proposalId }
+    );
 
-    try {
-        //find proposal by proposalId if doesn't exist will be caught within
-        const proposalDetails: Proposal | null = await proposalRepository.findOneBy({ proposalId });
-
-        if (typeof proposalDetails === undefined || typeof proposalDetails === null) {
-            return res.status(400).json({ message: 'Proposal not found or does not exist' })
-        }
-        return res.status(200).json(proposalDetails);
-    } 
-    //TODO: BLOCKCHAIN INTEGRATION 
-    catch(error) {
-        res.status(500).json({ error: 'Error fetching proposal' })
+    if (
+      typeof proposalDetails === undefined ||
+      typeof proposalDetails === null
+    ) {
+      return res
+        .status(400)
+        .json({ message: "Proposal not found or does not exist" });
     }
+    return res.status(200).json(proposalDetails);
+  } catch (error) {
+    //TODO: BLOCKCHAIN INTEGRATION
+    res.status(500).json({ error: "Error fetching proposal" });
+  }
 }
-
 
 // /**
 //  * Handles a POST request to upvote a proposal by its ID.
@@ -114,7 +117,7 @@ export async function GetProposalDetailsById (req: Request, res: Response) {
 //  */
 // export async function UpvoteProposalById (req: Request, res: Response) {
 //     const {multiSigAddr} = req.params;
-//     const { proposalId } = req.params; 
+//     const { proposalId } = req.params;
 
 //     if (!multiSigAddr ||!proposalId) {
 //         return res.status(400).json({ error: 'Missing required from url params' })
@@ -127,9 +130,9 @@ export async function GetProposalDetailsById (req: Request, res: Response) {
 //     }
 
 //     const voteDetails: typeof Vote = req.body;
-//     voteDetails.voteValue = true; 
-//     voteDetails.proposalId = proposalId; 
-//     voteDetails.voterAddr = voterAddr; 
+//     voteDetails.voteValue = true;
+//     voteDetails.proposalId = proposalId;
+//     voteDetails.voterAddr = voterAddr;
 
 //     try {
 //         // Find proposal by proposalId
@@ -140,24 +143,24 @@ export async function GetProposalDetailsById (req: Request, res: Response) {
 //         }
 
 //         // Check if voter has already voted for this proposal
-//         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']}) 
+//         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
 
 //         if (proposalsVoted.includes(proposalId)) {
 //             return res.status(400).json({ error: 'Voter has already voted for this proposal' })
 //         }
 
 //         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
-//         await voteRepository.save(createdVote); 
+//         await voteRepository.save(createdVote);
 
 //         res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
 
 //         // Updating the proposal
-//         foundProposal.numUpvotes += 1; 
+//         foundProposal.numUpvotes += 1;
 
 //         // Updating the proposal
-//         await proposalRepository.save(foundProposal); 
+//         await proposalRepository.save(foundProposal);
 
-//         res.status(200).json({ message: 'updated proposal successfully' }); 
+//         res.status(200).json({ message: 'updated proposal successfully' });
 
 //         // TODO: BLOCKCHAIN INTEGRATION
 //     } catch (error) {
@@ -165,8 +168,7 @@ export async function GetProposalDetailsById (req: Request, res: Response) {
 //     }
 // }
 
-
-// //write for downvote then refactor the different sections to make it easier to debug 
+// //write for downvote then refactor the different sections to make it easier to debug
 // /**
 //  * Handles a POST request to downvote a proposal by its ID.
 //  *
@@ -184,7 +186,7 @@ export async function GetProposalDetailsById (req: Request, res: Response) {
 //  */
 // export const DownVoteProposalById = async (req: Request, res: Response) => {
 //     const {multiSigAddr} = req.params;
-//     const { proposalId } = req.params; 
+//     const { proposalId } = req.params;
 //     if (!multiSigAddr ||!proposalId) {
 //         return res.status(400).json({ error: 'Missing required from url params' })
 //     }
@@ -192,74 +194,76 @@ export async function GetProposalDetailsById (req: Request, res: Response) {
 //     if (!voterAddr) {
 //         return res.status(401).json({ error: 'Unauthorized' })
 //     }
-//     const voteDetails: typeof Vote = req.body;//can also be named as downvote type of Vote 
-//     voteDetails.voteValue = false; 
-//     voteDetails.proposalId = proposalId; 
-//     voteDetails.voterAddr = voterAddr; 
+//     const voteDetails: typeof Vote = req.body;//can also be named as downvote type of Vote
+//     voteDetails.voteValue = false;
+//     voteDetails.proposalId = proposalId;
+//     voteDetails.voterAddr = voterAddr;
 //     try {
-//         //find proposal by proposalId 
+//         //find proposal by proposalId
 //         const foundProposal: typeof Proposal = await proposalRepository.findOneBy({ proposalId: proposalId });
 //         if (foundProposal.proposalId === undefined || foundProposal.proposalId === null) {
 //             return res.status(404).json({ message: 'Proposal not found' })
 //         }
 //         //Check if voter has already voted for this proposal
-//         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']}) 
+//         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
 //          if (proposalsVoted.includes(proposalId)) {
 //             return res.status(400).json({ error: 'Voter has already voted for this proposal' })
 //         }
 //         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
-//         await voteRepository.save(createdVote); 
+//         await voteRepository.save(createdVote);
 //         res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
 //         //updating the proposal
-//         foundProposal.numDownvotes += 1; 
-//         //updating the proposal 
-//         await proposalRepository.save(foundProposal); 
-//         res.status(200).json({ message: 'updated proposal successfully' }); 
+//         foundProposal.numDownvotes += 1;
+//         //updating the proposal
+//         await proposalRepository.save(foundProposal);
+//         res.status(200).json({ message: 'updated proposal successfully' });
 //         //TODO: BLOCKCHAIN INTEGRATION
 //     } catch (error) {
 //         res.status(500).json({ error: 'Error processing or casting  upvote' })
 //     }
 // }
 
+/**
+ * Retrieves all proposals associated with a specific DAO.
+ *
+ * @param req - The Express request object containing the multiSigAddr in the parameters.
+ * @param res - The Express response object to send back the HTTP response.
+ *
+ * @remarks
+ * This function extracts the multiSigAddr from the request parameters and attempts to find the corresponding DAO in the database.
+ * If the DAO is found, it retrieves all proposals associated with that DAO.
+ * If the DAO is not found, it sends a 404 error response with a message indicating that the DAO was not found.
+ * If an error occurs during the database query, it sends a 400 error response with a message indicating the error.
+ *
+ * @returns - An HTTP response with a status code and a JSON object containing the proposals associated with the DAO.
+ * If the DAO is found and proposals exist, the response status code will be 200 and the JSON object will contain the proposals.
+ * If the DAO is not found, the response status code will be 404 and the JSON object will contain an error message.
+ * If an error occurs, the response status code will be 400 and the JSON object will contain an error message.
+ */
+export async function GetAllProposalsInDao(req: Request, res: Response) {
+  const { multiSigAddr } = req.params;
 
-// /**
-//  * Retrieves all proposals associated with a specific DAO.
-//  *
-//  * @param req - The Express request object containing the multiSigAddr in the parameters.
-//  * @param res - The Express response object to send back the HTTP response.
-//  *
-//  * @remarks
-//  * This function extracts the multiSigAddr from the request parameters and attempts to find the corresponding DAO in the database.
-//  * If the DAO is found, it retrieves all proposals associated with that DAO.
-//  * If the DAO is not found, it sends a 404 error response with a message indicating that the DAO was not found.
-//  * If an error occurs during the database query, it sends a 400 error response with a message indicating the error.
-//  *
-//  * @returns - An HTTP response with a status code and a JSON object containing the proposals associated with the DAO.
-//  * If the DAO is found and proposals exist, the response status code will be 200 and the JSON object will contain the proposals.
-//  * If the DAO is not found, the response status code will be 404 and the JSON object will contain an error message.
-//  * If an error occurs, the response status code will be 400 and the JSON object will contain an error message.
-//  */
-// export async function GetAllProposalsInDao(req: Request, res: Response) {
-//     const { multiSigAddr } = req.params; 
+  if (!multiSigAddr) {
+    return res.status(400).json({ error: "Missing required multiSigAddr" });
+  }
 
-//     if (!multiSigAddr) {
-//         return res.status(400).json({ error: 'Missing required multiSigAddr' })
-//     }
+  try {
+    // Check if DAO exists
+    const daoSought = await daoRepository.findOne({
+      where: { daoMultiSigAddr: multiSigAddr },
+      relations: ["proposal"], // Ensure the proposals relation is loaded
+    });
 
-//     try {
-//         // Check if DAO exists
-//         const daoSought = await daoRepository.findOneBy({ multiSigAddr: multiSigAddr });
+    if (!daoSought) {
+      return res.status(404).json({ message: "DAO not found" });
+    }
 
-//         if (!daoSought || !daoSought.multiSigAddr) {
-//             return res.status(404).json({ message: 'DAO not found' })
-//         }
+    // Retrieve all proposals associated with this DAO
+    const proposals = daoSought.proposal;
 
-//         // Retrieve all proposals associated with this DAO
-//         const proposals = await proposalRepository.findOne({where:{multiSigAddr},  relations: ["proposals"]});
-
-//         return res.status(200).json({proposals: daoSought.proposals})
-//     } catch (error) {
-//         console.error(error); 
-//         return res.status(400).json({message: "Error Getting proposals" }); 
-//     }
-// }
+    return res.status(200).json({ proposals });
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: "Error getting proposals" });
+  }
+}

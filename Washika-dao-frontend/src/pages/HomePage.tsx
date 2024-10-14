@@ -3,9 +3,6 @@ import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import GroupInfo from "../components/GroupInfo";
 
-import ConnectWallet from "../components/auth/ConnectWallet";
-/** Thirdweb imports **/
-
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 
@@ -47,8 +44,6 @@ const HomePage: React.FC = () => {
           <button className="button-2" onClick={handleJifunzeElimu}>
             DAO ni nini?
           </button>
-          {/**Testing thirdweb modal button*/}
-          <ConnectWallet />
         </div>
 
         <p className="parag-container">

@@ -1,9 +1,7 @@
-// Importing BrowserRouter, Route, and Routes from 'react-router-dom' for setting up client-side routing.
-// BrowserRouter is used to wrap the app for routing, and Routes is used to define multiple routes.
-// Route defines each individual path and its corresponding component.
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { ThirdwebProvider } from "thirdweb/react";
 
-// Importing page components to be used for rendering based on the specified routes.
+// Importing page components
 import HomePage from "./pages/HomePage";
 import JifunzeElimu from "./pages/JifunzeElimu";
 import DaoRegistration from "./pages/DaoRegistration";
@@ -14,27 +12,29 @@ import DaoProfile from "./pages/DaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
 
-
 // App component serves as the root of the React application.
-// It sets up the Router to manage client-side navigation, allowing users to move between different pages without refreshing the browser.
+// It sets up the Router to manage client-side navigation.
 const App: React.FC = () => {
+  // const chain = celoAlfajoresTestnet; // Set up testnet chain
+
   return (
-    <Router>
-      {/* Defining routes for the application. Routes is used to declare all the possible routes for the app */}
-      <Routes>
-        {/* Each Route defines a path in the URL and maps it to a specific component to be rendered */}
-        <Route path="/" element={<HomePage />} /> // Root path ('/') loads the
-        HomePage component
-        <Route path="/DaoRegistration" element={<DaoRegistration />} />
-        <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
-        <Route path="/CreateProposal/:daoMultiSigAddr" element={<CreateProposal />} />
-        <Route path="/JoinPlatform" element={<JoinPlatform />} />
-        <Route path="/Funder" element={<Funder />} />
-        <Route path="/DaoProfile/:daoMultiSigAddr" element={<DaoProfile />} />
-        <Route path="/ViewProposal/:daoMultiSigAddr/:proposalId" element={<ViewProposal />} />
-        <Route path="/Owner" element={<Owner />} />
-      </Routes>
-    </Router>
+    // Wrap the entire app in ThirdwebProvider
+    <ThirdwebProvider>
+      <Router>
+        <Routes>
+          {/* Define routes for the application */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/DaoRegistration" element={<DaoRegistration />} />
+          <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
+          <Route path="/CreateProposal/:daoMultiSigAddr" element={<CreateProposal />} />
+          <Route path="/JoinPlatform" element={<JoinPlatform />} />
+          <Route path="/Funder" element={<Funder />} />
+          <Route path="/DaoProfile/:daoMultiSigAddr" element={<DaoProfile />} />
+          <Route path="/ViewProposal/:daoMultiSigAddr/:proposalId" element={<ViewProposal />} />
+          <Route path="/Owner" element={<Owner />} />
+        </Routes>
+      </Router>
+    </ThirdwebProvider>
   );
 };
 
