@@ -5,6 +5,7 @@ import GroupInfo from "../components/GroupInfo";
 
 import ConnectWallet from "../components/auth/ConnectWallet";
 
+
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 

@@ -4,8 +4,6 @@ import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import TestCreateBtn from "../components/actions/TestCreateBtn";
-import CreateTestDao from "../components/actions/CreateTestDao";
 
 interface FormData {
   daoName: string;

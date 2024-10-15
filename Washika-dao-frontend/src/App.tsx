@@ -13,15 +13,16 @@ import Funder from "./pages/Funder";
 import DaoProfile from "./pages/DaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
+
+import { ThirdwebProvider } from "thirdweb/react";
 import TestDao from "./pages/TestDao";
 import { ThirdwebProviderContext } from "./ThirdWebProviderContext";
-
 
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation, allowing users to move between different pages without refreshing the browser.
 const App: React.FC = () => {
   return (
-    <ThirdwebProviderContext chainId={44787} supportedChainIds={[17000]}>
+   <ThirdwebProviderContext chainId={44787} supportedChainIds={[17000]}>
     <Router>
       {/* Defining routes for the application. Routes is used to declare all the possible routes for the app */}
       <Routes>
@@ -40,7 +41,7 @@ const App: React.FC = () => {
       </Routes>
     </Router>
     </ThirdwebProviderContext>
-  );
+ );
 };
 
 export default App;
