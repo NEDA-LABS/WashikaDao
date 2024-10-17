@@ -117,6 +117,8 @@ Help us build the future of financial inclusion! Whether you're a developer, com
 
 v1 Contract Address: 0x50d92eA99AF339519Cd060c73d2DB24620AF2f57 
 
+Contract Creator Address(deployer): 0x590Ab3FfA33644F1fDC648627Cd5eC937a271A20
+
 Chain ID: 44787
 
 CeloAlfajores
