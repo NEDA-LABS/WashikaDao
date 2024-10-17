@@ -106,7 +106,7 @@ We welcome contributions from the community! To get involved:
 
 ## **License**
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE file](https://github.com/NEDA-LABS/WashikaDao/blob/main/LICENCE) for details.
 
 ---
 
