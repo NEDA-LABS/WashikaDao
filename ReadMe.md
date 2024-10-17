@@ -113,8 +113,14 @@ This project is licensed under the MIT License. See the [LICENSE file](https://g
 ### 🛠️ **Call to Action**
 
 Help us build the future of financial inclusion! Whether you're a developer, community leader, or financial expert, we invite you to contribute to Washika DAO. Together, we can create a fairer, more inclusive financial system for everyone.
-v1 Contract Address: 0x50d92eA99AF339519Cd060c73d2DB24620AF2f57
+
+
+v1 Contract Address: 0x50d92eA99AF339519Cd060c73d2DB24620AF2f57 
+
 Chain ID: 44787
+
+CeloAlfajores
+
 
 - **Visit Us**: [Washika DAO Website](https://quick-match-late.on-fleek.app)
 - **Join the Community**: Follow us on [Twitter](https://x.com/nedalabs?s=11&t=hj2iETJ0AG45JhGdjSLNcg) and [LinkedIn](https://www.linkedin.com/company/nedalabs/)
