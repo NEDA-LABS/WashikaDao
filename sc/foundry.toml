@@ -1,17 +1,20 @@
 [profile.default]
-src = "src"
-out = "out"
 libs = ["lib"]
+out = "out"
+src = "src"
 
- [rpc_endpoints]
-celo-alfajores = "https://alfajores-forno.celo-testnet.org"
+[rpc_endpoints]
 celo = "https://forno.celo.org"
+celo-alfajores = "https://alfajores-forno.celo-testnet.org"
 
 #Testing using arb - sepolia as celo l2 stabilizes
 default_network = "http://127.0.0.1:8545"
 localhost = "http://127.0.0.1:8545"
 
 arbitrumSepolia = "https://sepolia-rollup.arbitrum.io/rpc"
+baseSepolia = "https://base-sepolia.g.alchemy.com/v2/yghAGkVjbY1_oCc-OptaeRkZ9605ldxX"
 
 ethereum-holesky = "https://eth-holesky.g.alchemy.com/v2/XpZjXgxfC9_Vww6m81BedcCXi0JbXdx_"
 # See more config options https://github.com/foundry-rs/foundry/blob/master/crates/config/README.md#all-options
+# [etherscan]
+# api_key = "1C1B7G4A276DN3U7V39IVNI6WKKHZX88YJ"
