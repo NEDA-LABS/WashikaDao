@@ -1,89 +1,48 @@
-## Foundry
+# WashikaDao - Base Buildathon Project
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## Overview
 
-Foundry consists of:
+WashikaDao is a decentralized autonomous organization (DAO) designed to enable seamless governance and decision-making among a distributed community. The project was built to showcase the potential of decentralized governance using blockchain technology on the Base Sepolia testnet. This project demonstrates the ease of interacting with smart contracts using Foundry and Base’s testnet.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## Project Objective
 
-## Documentation
+The objective of WashikaDao is to facilitate decentralized decision-making where proposals are created, voted upon, and executed based on a token-governed system. The smart contracts ensure that the process is transparent, secure, and fully on-chain.
 
-https://book.getfoundry.sh/
+### Key Features
+- Creating new DAO.
+- Adding members on DAOs
+- Create proposals and vote cast
+- Execute changes
 
-## Usage
+## Development Environment
 
-### Build
+**Tech Stack**:
+- **Foundry**: Modular and fast Ethereum development framework
+- **Anvil**: Local blockchain for rapid development
+- **Base Sepolia Testnet**: Used for contract deployment and interaction testing
 
-```shell
-$ forge build
+## Key Contracts
+
+The smart contracts for WashikaDao are located in the [WashikaDao repository](https://github.com/NEDA-LABS/WashikaDao/tree/dev/sc) on the `dev/sc` branch. These include:
+
+1. **FullDaoContract.sol**: this contract when deployed can create new DAO, add members on DAOS, create proposals and cast votes and execute the changes on chain, the changes may include transfer funds to and from the pool.
+
+---
+
+## Contract Deployment
+
+### Prerequisites
+
+Before deploying the contracts, ensure you have the following set up:
+1. **Foundry** installed ([Installation guide](https://book.getfoundry.sh/getting-started/installation.html)).
+2. A wallet with test ETH for gas fees on the Base Sepolia testnet.
+3. **Anvil** for local testing (comes with Foundry).
+
+### Step 1: Clone the Repository
+
+Start by cloning the WashikaDao repository and switching to the development branch where the latest contracts are located:
+```bash
+git clone https://github.com/NEDA-LABS/WashikaDao.git
+cd WashikaDao
+git checkout dev
 ```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
-### Smart Contract Access page: Deployed on holesky as we wait for Celo to stabilize after L2 transition
-```forge create --rpc-url "ethereum-holesky" --private-key "${CELO_PRIVATE_KEY}" --verifier-url "https://api-holesky.etherscan.io/api" -e "${ETHERSCAN_API_KEY}" --verify src/FullDaoContract.sol:FullDaoContract ```
-[⠑] Compiling...
-No files changed, compilation skipped
-Deployer: 0xfdF57a59Bc3e63a56de4682a53D57371518c7A48
-Deployed to: 0xffd26D80A70DCC05E5b0FcD57B6C104e507f8b75
-Transaction hash: 0x964e7f17cbdf3a35175f786a6045d53638ed12dc3cfdce18679fa3606c240c30
-Starting contract verification...
-Waiting for etherscan to detect contract deployment...
-Start verifying contract `0xffd26D80A70DCC05E5b0FcD57B6C104e507f8b75` deployed on holesky
-
-Submitting verification for [src/FullDaoContract.sol:FullDaoContract] 0xffd26D80A70DCC05E5b0FcD57B6C104e507f8b75.
-Submitted contract for verification:
-	Response: `OK`
-	GUID: `p8hdkdsudaurzigd9iyqded5zvyji95ewqmefjqurqfmzg71s8`
-	URL: https://sepolia.basescan.org/address/0xA78949a0F0056508f26e6b75DE617E7d591873c9
-Contract verification status:
-Response: `NOTOK`
-Details: `Pending in queue`
-Contract verification status:
-Response: `OK`
-Details: `Pass - Verified`
-Contract successfully verified
