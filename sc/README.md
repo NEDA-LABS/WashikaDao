@@ -92,7 +92,7 @@ Propose new actions
 - Vote on proposals
 - Execute actions once a proposal passes
 - Contract Addresses (Base Sepolia)
-The contract is deployed on the Base Sepolia testnet at address `0xA78949a0F0056508f26e6b75DE617E7d591873c9` see on [Basescan]("https://sepolia.basescan.org/address/0xA78949a0F0056508f26e6b75DE617E7d591873c9")
+The contract is deployed on the Base Sepolia testnet at address `0xA78949a0F0056508f26e6b75DE617E7d591873c9` see on [Basescan](https://sepolia.basescan.org/address/0xA78949a0F0056508f26e6b75DE617E7d591873c9)
 
 ## How to Contribute
 
