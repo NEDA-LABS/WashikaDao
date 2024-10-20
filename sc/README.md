@@ -79,7 +79,7 @@ Submitting verification for [src/FullDaoContract.sol:FullDaoContract] 0xffd26D80
 Submitted contract for verification:
 	Response: `OK`
 	GUID: `p8hdkdsudaurzigd9iyqded5zvyji95ewqmefjqurqfmzg71s8`
-	URL: https://holesky.etherscan.io/address/0xffd26d80a70dcc05e5b0fcd57b6c104e507f8b75
+	URL: https://sepolia.basescan.org/address/0xA78949a0F0056508f26e6b75DE617E7d591873c9
 Contract verification status:
 Response: `NOTOK`
 Details: `Pending in queue`
