@@ -1,6 +1,6 @@
-  import { Address, getContract, prepareContractCall, createThirdwebClient } from "thirdweb"
+import { Address, getContract, prepareContractCall, createThirdwebClient } from "thirdweb"
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-  import {  useSendTransaction } from "thirdweb/react";
+import {  useSendTransaction } from "thirdweb/react";
 
 
 
@@ -10,7 +10,7 @@ export default function TestCreateDao() {
   const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
   const client = createThirdwebClient({ clientId: _clientId });
 
-  const { mutate: sendTransaction } = useSendTransaction();
+  const { mutate: sendTransaction, data: transactionResult } = useSendTransaction();
 
   const TESTER_WALLET_AS_MSIG: Address = "0x31D5F5a357B4a9AD0b9107DC84eA8Cf7D0D621E7";
   const _daoName: string =   "TestingName";
@@ -39,6 +39,9 @@ export default function TestCreateDao() {
     });
       console.log(transaction);
     sendTransaction(transaction);
+
+    console.log(transactionResult);
+
   }
     return (
   <div>
