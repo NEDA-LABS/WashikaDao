@@ -8,7 +8,7 @@ import { MemberDetails } from "../entity/MemberDetails";
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
  * It also creates a new member detail for the creator of the DAO.
- * NOTE: Will Contain logic to filter out details & sending a blockchain transaction to create a Dao. 
+ * NOTE: Will Contain logic to filter out details & sending a blockchain transaction to create a Dao.
  * @param req - The Express request object containing the DAO and member details in the request body.
  * @param res - The Express response object to send back the HTTP response.
  *
@@ -108,7 +108,7 @@ export async function CreateNewDao(req: Request, res: Response) {
 
 /**
  * Retrieves the details of a DAO (Decentralized Autonomous Organization) based on the provided multi-signature address.
- * NOTE: Break down into 2 steps, start onchain and check some details from db, the db one will be specifically for displaying daos in the frontend, say for a user to scroll through, the onchain one will be used when client searches & wants to get into the details of a certain Dao. 
+ * NOTE: Break down into 2 steps, start onchain and check some details from db, the db one will be specifically for displaying daos in the frontend, say for a user to scroll through, the onchain one will be used when client searches & wants to get into the details of a certain Dao.
  * @param req - The Express request object containing the DAO multi-signature address in the request parameters.
  * @param res - The Express response object to send back the HTTP response.
  *
@@ -126,15 +126,15 @@ export async function CreateNewDao(req: Request, res: Response) {
  */
 export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
   const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
-  
+
   if (!daoMultiSigAddr) {
     return res.status(400).json({ message: "Missing required params!" });
   }
-  
+
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
     const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr });
-    
+
     if (daoDetails) {
       return res.status(200).json({
         message: "DAO found with the details below",
@@ -281,4 +281,3 @@ export async function FundDao(req: Request, res: Response) {
     res.status(500).json({ error: "Error funding DAO" });
   }
 }
-//add function to add member if time allows
