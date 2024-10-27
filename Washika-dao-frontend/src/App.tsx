@@ -11,7 +11,12 @@ import Funder from "./pages/Funder";
 import DaoProfile from "./pages/DaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
+//Testing functionality components
 import TestCreateDao from "./pages/TestCreateDao";
+import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao";
+import TestHoleskyAddMember from "./pages/TestHoleskyAddMember";
+import TestHoleskyCreateProposal from "./pages/TestHoleskyCreateProposal";
+
 
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation.
@@ -34,6 +39,9 @@ const App: React.FC = () => {
           <Route path="/ViewProposal/:daoMultiSigAddr/:proposalId" element={<ViewProposal />} />
           <Route path="/Owner" element={<Owner />} />
           <Route path="/TestCreateDao" element={<TestCreateDao />} />
+          <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
+          <Route path="/TestHoleskyAddMember" element={<TestHoleskyAddMember />} />
+          <Route path="/TestHoleskyCreateProposal" element={<TestHoleskyCreateProposal />} />
         </Routes>
       </Router>
     </ThirdwebProvider>
