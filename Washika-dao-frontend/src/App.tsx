@@ -12,6 +12,7 @@ import DaoProfile from "./pages/DaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
 import TestCreateDao from "./pages/TestCreateDao";
+import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao";
 
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation.
@@ -34,6 +35,7 @@ const App: React.FC = () => {
           <Route path="/ViewProposal/:daoMultiSigAddr/:proposalId" element={<ViewProposal />} />
           <Route path="/Owner" element={<Owner />} />
           <Route path="/TestCreateDao" element={<TestCreateDao />} />
+          <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
         </Routes>
       </Router>
     </ThirdwebProvider>
