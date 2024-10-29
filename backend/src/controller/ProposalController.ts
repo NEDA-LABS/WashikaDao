@@ -50,9 +50,11 @@ export async function CreateProposal(req: Request, res: Response) {
       //if proposal doesn't exist create or build a new proposal using the data from the form submission
       const createdProposal = proposalRepository.create(proposalData);
       await proposalRepository.save(createdProposal);
-      res
-        .status(201)
-        .json({ message: "Proposal created successfully", createdProposal });
+      res.status(201).json({ 
+        message: "Proposal created successfully", 
+        // proposalId: createdProposal.proposalId,  // Ensure proposalId is included
+        createdProposal 
+      });
       //TODO: BLOCKCHAIN INTEGRATION
     // }
   } catch (error) {
@@ -77,7 +79,12 @@ export async function CreateProposal(req: Request, res: Response) {
  */
 export async function GetProposalDetailsById(req: Request, res: Response) {
   /**Grabbing the proposal ID from the url params */
-  const proposalId: number = req.params.proposalId;
+    /** Parse proposalId as a number */
+    const proposalId: number = parseInt(req.params.proposalId, 10);
+
+    if (isNaN(proposalId)) {
+      return res.status(400).json({ error: "Invalid proposal ID" });
+    }
 
   try {
     //find proposal by proposalId if doesn't exist will be caught within

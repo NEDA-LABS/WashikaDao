@@ -18,7 +18,8 @@ import './styles/ViewProposal.css'
 import './styles/JoinPlatform.css'     
 import './styles/JifunzeElimu.css'       
 import './styles/Owner.css'              
-import './styles/Funder.css'             
+import './styles/Funder.css'    
+import './styles/BlogPage.css'         
 
 // Selecting the HTML element with the id of 'root' as the mounting point for the React app.
 // The createRoot method is used to create a root element for rendering the React app in the 'root' element.

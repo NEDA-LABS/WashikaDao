@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
 import { AppDataSource } from "../data-source";
 import { MemberDetails } from "../entity/MemberDetails";
+import { log } from "console";
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
@@ -72,10 +73,10 @@ export async function CreateNewDao(req: Request, res: Response) {
         AppDataSource.getRepository(MemberDetails);
 
       for (const member of members) {
-        const { name, phoneNumber, nationalIdNo, memberRole } = member;
+        const { firstName, lastName, phoneNumber, nationalIdNo, memberRole } = member;
 
         // Validate each member's required fields
-        if (!name || !phoneNumber || !nationalIdNo || !memberRole) {
+        if (firstName || lastName || !phoneNumber || !nationalIdNo || !memberRole) {
           return res
             .status(400)
             .json({ error: "Missing required member details" });
@@ -83,7 +84,8 @@ export async function CreateNewDao(req: Request, res: Response) {
 
         // Create and save the member
         const memberDetails = new MemberDetails();
-        memberDetails.memberName = name;
+        memberDetails.firstName = firstName;
+        memberDetails.lastName = lastName;
         memberDetails.phoneNumber = phoneNumber;
         memberDetails.nationalIdNo = nationalIdNo;
         memberDetails.memberRole = memberRole;
@@ -105,6 +107,34 @@ export async function CreateNewDao(req: Request, res: Response) {
     res.status(500).json({ error: "Error creating DAO and members" });
   }
 }
+
+
+/**
+ * Retrieves a list of all DAOs (Decentralized Autonomous Organizations) from the database.
+ * NOTE: This function is meant to provide an overview of each DAO for frontend display purposes.
+ *
+ * @param req - The Express request object.
+ * @param res - The Express response object to send back the HTTP response.
+ *
+ * @returns
+ * - HTTP 200: If the DAO list is successfully retrieved, it returns an array of DAOs.
+ * - HTTP 500: If an error occurs while retrieving the DAO list.
+ */
+export async function GetAllDaoDetails(req: Request, res: Response) {
+  try {
+    const daoRepository = AppDataSource.getRepository(Dao);
+
+    // Fetch all DAOs
+    const daoList = await daoRepository.find({
+      select: ["daoName", "daoMultiSigAddr"], // Fields to include in the response
+    });
+
+    return res.status(200).json({ daoList });
+  } catch (error) {
+    return res.status(500).json({ error: "Error retrieving DAO list" });
+  }
+}
+
 
 /**
  * Retrieves the details of a DAO (Decentralized Autonomous Organization) based on the provided multi-signature address.

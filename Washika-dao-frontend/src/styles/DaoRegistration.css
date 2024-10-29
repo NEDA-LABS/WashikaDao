@@ -413,28 +413,6 @@
   display: inline-block;
 }
 
-.button-group {
-  display: flex;
-  gap: 48px;
-}
-
-.button-group button {
-  width: 365px;
-  height: 69px;
-  color: #ffffff;
-  font-size: 30px;
-  border: 1px solid #dcb273;
-  border-radius: 6px;
-}
-
-.button-group .button-1 {
-  background-color: #e28b06;
-}
-
-.button-group .button-2 {
-  background-color: #5e503a;
-}
-
 .hazina .account-number-label {
   display: inline-block;
   width: 1153px;

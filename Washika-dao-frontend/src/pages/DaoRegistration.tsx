@@ -84,7 +84,7 @@ const activeAccount = useActiveAccount();
 
   // Handle changes in the main form fields
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>
   ) => {
     const { name, value } = e.target; // Destructure the target name and value
     setFormData((prevData) => ({

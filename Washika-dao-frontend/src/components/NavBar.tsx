@@ -1,6 +1,4 @@
 import { Link, useNavigate } from "react-router-dom";
-import ConnectWallet from "../components/auth/ConnectWallet";
-/** Thirdweb imports **/
 
 
 interface NavBarProps {
@@ -40,10 +38,13 @@ const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
         {/* <button>{user.name}</button> */}
         <button>user.name</button></>
       );
+    } else if (className === "joinPlatformNav") {
+      return (
+        <button>Karibu</button>
+      )
     }
     return (
-      // Testing thirdweb modal button
-      <ConnectWallet />
+      <button onClick={handleClick}> Sign in </button>
     );
   };
 

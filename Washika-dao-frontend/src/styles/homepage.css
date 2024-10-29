@@ -404,7 +404,7 @@
 .article-container {
   display: flex;
   padding: 16px 90px 120px;
-  justify-content: space-between;
+  justify-content: space-evenly;
 }
 
 .article-container article {
@@ -413,6 +413,21 @@
   border-bottom: 1px solid #c8954b;
   position: relative;
   cursor: pointer;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.article-container article::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  z-index: 1;
 }
 
 .article-container div {
@@ -422,6 +437,7 @@
   flex-direction: column;
   gap: 6px;
   padding: 16px;
+  z-index: 2;
 }
 
 .article-container h2 {
@@ -436,25 +452,9 @@
 .article-container p {
   color: #f6f7fa;
   font-size: 24px;
-  font-weight: lighter;
+  font-weight: normal;
   font-family: "Dosis", sans-serif;
   height: 110px;
-}
-
-.article-container .one {
-  background-image: url("/images/funguaDao.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.article-container .two {
-  background-image: url("images/jifunze.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.article-container .three {
-  background-image: url("images/DAOToolkit.png");
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 @media only screen and (max-width: 900px) {

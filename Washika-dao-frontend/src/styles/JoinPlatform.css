@@ -48,7 +48,8 @@
 
 .digitalWallet {
   padding: 0;
-  margin-left: 100px;
+  margin: 100px;
+
 }
 
 .digitalWallet .left {
@@ -95,14 +96,14 @@
 }
 
 .digitalWallet .formDiv {
-  margin-left: -28px;
+  margin: 28px;
 }
 
 .daoRegistration.join .combinedForms::before {
   display: none;
 }
 
-.daoRegistration.join .button-container {
+/* .daoRegistration.join .button-container {
   display: flex;
   gap: 36px;
   padding: 64px 0 36px 120px;
@@ -128,11 +129,11 @@
   height: 8px;
   background-color: #c8954b;
   border-radius: 50%;
-}
+} 
 
 .daoRegistration.join .createDao {
   width: 503px;
-}
+} 
 
 .daoRegistration.join .joinDao {
   display: flex;
@@ -146,10 +147,16 @@
   color: #fbfaf8;
   font-weight: bold;
   padding: 0 84px 0 72px;
+} */
+
+.connectButton {
+  width: 100%;
+  text-align: center;
+  padding: 4rem;
 }
 
 .findAndJoin {
-  margin: 84px 142px 140px;
+  margin: 84px 142px 70px;
   display: flex;
   gap: 64px;
 }
@@ -201,17 +208,18 @@
   padding: 0 36px;
 }
 
-.findAndJoin .formDiv {
+/* .findAndJoin .formDiv {
   background-color: transparent;
   padding: 36px 6px;
-}
+} */
 
-.findAndJoin .formDiv button {
-    width: 319px;
-    height: 50px;
-    border-radius: 13px;
-    background-color: #48B248;
-    border: 1px solid #DEFC26;
+.createAccount {
+  margin-bottom: 4rem;
+  width: 319px;
+  height: 50px;
+  border-radius: 13px;
+  background-color: #48b248;
+  border: 1px solid #defc26;
 }
 
 @media only screen and (max-width: 600px) {
@@ -346,7 +354,7 @@
     padding: 24px 0;
   }
 
-  .findAndJoin .formDiv button  {
+  .findAndJoin .formDiv button {
     margin-top: 24px;
     width: 100%;
     height: 56px;
