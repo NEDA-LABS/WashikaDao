@@ -7,7 +7,7 @@ export class Dao {
   @PrimaryGeneratedColumn()
   daoId: number
 
-  @Column()
+  @Column({ unique: true })
   daoName: string
 
   @Column()
@@ -25,10 +25,13 @@ export class Dao {
   @Column()
   daoOverview: string
 
+  @Column({ unique: true })
+  multiSigPhoneNo: number
+
   @Column()
   daoImageIpfsHash: string
 
-  @Column()
+  @Column({ unique: true })
   daoMultiSigAddr: string  
   //one to many relation where one dao can have multiple proposals but one proposal cannot have multiple daos 
   @OneToMany(() => Proposal, proposal => proposal.dao)

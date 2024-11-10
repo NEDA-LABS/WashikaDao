@@ -4,7 +4,6 @@ import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
 import { AppDataSource } from "../data-source";
 import { MemberDetails } from "../entity/MemberDetails";
-import { log } from "console";
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
@@ -33,7 +32,8 @@ export async function CreateNewDao(req: Request, res: Response) {
     daoOverview,
     daoImageIpfsHash,
     multiSigAddr,
-    members, // Assume members is an array of objects with member details
+    multiSigPhoneNo,
+    members, // members is an array of objects with member details
   } = req.body;
 
   // Validate required DAO fields
@@ -45,7 +45,8 @@ export async function CreateNewDao(req: Request, res: Response) {
     !daoDescription ||
     !daoOverview ||
     !daoImageIpfsHash ||
-    !multiSigAddr
+    !multiSigAddr ||
+    !multiSigPhoneNo
   ) {
     return res.status(400).json({ error: "Missing required DAO details" });
   }
@@ -62,6 +63,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     dao.daoImageIpfsHash = daoImageIpfsHash;
     dao.daoMultiSigAddr = multiSigAddr;
     dao.daoMultiSigs = [multiSigAddr]; // Assuming it's an array of multisigs
+    dao.multiSigPhoneNo = multiSigPhoneNo;
 
     // Initialize the DAO repository
     const daoRepository = AppDataSource.getRepository(Dao);
@@ -93,13 +95,18 @@ export async function CreateNewDao(req: Request, res: Response) {
         memberDetails.daos = [dao]; // Link member to the created DAO
 
         await memberDetailsRepository.save(memberDetails);
+        res
+      .status(201)
+      .json({
+        message: "Members created successfully"
+      });
       }
     }
 
     res
       .status(201)
       .json({
-        message: "DAO and members created successfully",
+        message: "DAO created successfully",
         daoMultisigAddr: dao.daoMultiSigAddr,
       });
   } catch (error) {
@@ -179,6 +186,7 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           daoImageIpfsHash: daoDetails.daoImageIpfsHash,
           daoMultiSigs: daoDetails.daoMultiSigs,
           multiSigAddr: daoDetails.daoMultiSigAddr,
+          multiSigPhoneNo: daoDetails.multiSigPhoneNo
         },
       });
     } else {
@@ -221,6 +229,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     _daoDescription,
     _daoOverview,
     _daoImageIpfsHash,
+    multiSigPhoneNo
   } = req.body;
   //so you have to manually update all the details if you are updating details
   //check missing details
@@ -233,7 +242,8 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     !_daoTitle ||
     !_daoDescription ||
     !_daoOverview ||
-    !_daoImageIpfsHash
+    !_daoImageIpfsHash ||
+    !multiSigPhoneNo
   ) {
     return res.status(400).json({ error: "Missing required in form details" }); //return 400 status if required fields are missing
   }
@@ -254,6 +264,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     daoDetails.daoDescription = _daoDescription;
     daoDetails.daoOverview = _daoOverview;
     daoDetails.daoImageIpfsHash = _daoImageIpfsHash;
+    daoDetails.multiSigPhoneNo = multiSigPhoneNo;
     await daoRepository.save(daoDetails);
     res.status(200).json({ message: "DAO details updated" });
   } catch (err) {

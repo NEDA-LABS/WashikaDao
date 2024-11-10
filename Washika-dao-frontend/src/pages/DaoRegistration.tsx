@@ -3,8 +3,7 @@ import DaoForm from "../components/DaoForm";
 import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react"; 
-import { useActiveAccount } from "thirdweb/react";
+import { useState } from "react"; 
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -17,6 +16,7 @@ interface FormData {
   daoOverview: string;
   daoImageIpfsHash: string;
   multiSigAddr: string;
+  multiSigPhoneNo: number;
 }
 
 interface Member {
@@ -51,11 +51,8 @@ const uploadImageToCloudinary = async (file: File) => {
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
 //TODO: Extract multiSigAddr from Navbar connectWallet data and save to formData
-const activeAccount = useActiveAccount();
-  console.log("address", activeAccount?.address);
 
-  const userRole = useSelector((state: RootState) => state.user.role);
-  const multiSigAddr = useSelector((state: RootState) => state.user.daoMultiSig);
+const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => state.user);
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
     daoLocation: "",
@@ -64,18 +61,10 @@ const activeAccount = useActiveAccount();
     daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
-    multiSigAddr: multiSigAddr,
+    multiSigAddr: daoMultiSig || "",
+    multiSigPhoneNo: phoneNumber // Set initial value to daoMultiSig
   });
 
-  useEffect(() => {
-    if (activeAccount?.address) {
-      setFormData((prevData) => ({
-        ...prevData,
-        multiSigAddr: activeAccount.address,
-      }));
-    }
-  }, [activeAccount]);
-  
   // State to hold the list of members
   const [members, setMembers] = useState<Member[]>([]);
 
@@ -147,14 +136,7 @@ const activeAccount = useActiveAccount();
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
-
-    if (activeAccount?.address) {
-      setFormData((prevData) => ({
-        ...prevData,
-        multiSigAddr: activeAccount.address, // Update multiSigAddr with activeAccount address
-      }));
-      console.log("MultiSig address saved:", activeAccount.address);
-    }
+    
     // Combine form data and member data
     const combinedData = {
       ...formData,
@@ -188,9 +170,10 @@ const activeAccount = useActiveAccount();
     }
   };
 
-  return userRole === "owner" ? (
+  return (
     <>
       <NavBar className={""} />
+      {role === "Owner" ? ( // Only show form if user role is "owner"
       <main className="daoRegistration">
         <div className="funguaKikundi">
           <h1>Fungua Kikundi chako kirahisi, upate faida kibao</h1>
@@ -328,9 +311,12 @@ const activeAccount = useActiveAccount();
           </div>
         </form>
       </main>
+            ) : (
+              <p className="daoRegistration">You do not have the necessary permissions to register a DAO.</p>
+            )}
       <Footer className={""} />
     </>
-  ) : null;
+  );
 };
 
 export default DaoRegistration;

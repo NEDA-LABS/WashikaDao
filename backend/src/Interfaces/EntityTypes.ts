@@ -29,6 +29,7 @@ export interface IDao {
     daoImageIpfsHash: string;
     daoMultiSigs: string[];
     daoMultiSigAddr: string;
+    multiSigPhoneNo: number;
     proposals: IProposal;  //relationship with proposal entity
     members: IMemberDetails;  //relationship with memberDetails entity
 

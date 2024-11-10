@@ -6,6 +6,8 @@ import { Request, Response } from "express";
 
 //Creatint the initial Owner of a Dao
 router.post('/DaoDetails/CreateOwner', (req: Request, res: Response) => DaoMembershipController.CreateInitialOwner(req, res))
+//Logging in user
+router.post('/DaoDetails/login', (req: Request, res: Response) => DaoMembershipController.loginMember(req, res))
 //Adding a particular user to be an owner of a particular dao too 
 //TODO: implement this to be a protected route 
 router.post('/DaoDetails/AddMultisig/:multiSigAddr', (req: Request, res: Response) => DaoMembershipController.AddAnotherMultisigToDao(req, res)); 

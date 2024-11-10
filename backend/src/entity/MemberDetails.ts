@@ -13,17 +13,17 @@ export class MemberDetails {
     @Column() 
     lastName: string 
 
-    @Column()
+    @Column({ unique: true })
     phoneNumber: number
 
-    @Column()
+    @Column({ unique: true })
     nationalIdNo: number
 
     @Column()
     memberRole: string//funder, owner, member 
 
     //optional member address 
-    @Column({nullable: true})
+    @Column({nullable: true, unique: true })
     memberAddr?: string
 
     @Column()

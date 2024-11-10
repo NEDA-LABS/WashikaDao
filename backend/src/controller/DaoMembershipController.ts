@@ -1,6 +1,7 @@
 import { eventNames } from "process";
 //import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
+import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
 import { Dao } from "../entity/Dao";
 import { Proposal } from "../entity/Proposal";
 import { Vote } from "../entity/Vote";
@@ -57,7 +58,70 @@ export async function CreateInitialOwner(req: Request, res: Response) {
       .json({ message: "Dao Owner created successfully" });
   } catch (error) {
     console.error("Error creating Dao owner:", error);
+    // Check if the error is due to a unique constraint violation
+    if (error instanceof QueryFailedError && error.message.includes("UNIQUE")) {
+      // Customize the error message based on which field is duplicated
+      let errorMessage = "A unique constraint was violated.";
+      if (error.message.includes("phoneNumber")) {
+        errorMessage = "The phone number is already in use.";
+      } else if (error.message.includes("nationalIdNo")) {
+        errorMessage = "The national ID number is already in use.";
+      } else if (error.message.includes("memberAddr")) {
+        errorMessage = "The member address is already in use.";
+      }
+
+      return res.status(409).json({ error: errorMessage });
+    }
     res.status(500).json({ error: error.message });
+  }
+}
+
+/**
+ * Logs in an existing member by verifying their memberAddr.
+ *
+ * @param req - The Express request object containing the body with login credentials.
+ * @param res - The Express response object to send the HTTP response.
+ *
+ * @remarks
+ * This function is responsible for authenticating a member using their memberAddr.
+ * It checks if the provided memberAddr exists in the database and returns a successful login message if found.
+ *
+ * @returns
+ * - If memberAddr is missing, it returns a 400 status code with an error message.
+ * - If memberAddr is not found in the database, it returns a 404 status code with an error message.
+ * - If login is successful, it returns a 200 status code with a success message and member details.
+ */
+export async function loginMember(req: Request, res: Response) {
+  const { memberAddr } = req.body;
+
+  // Validate required fields
+  if (!memberAddr) {
+    return res.status(400).json({ error: "Member address is required" });
+  }
+
+  try {
+    // Check if a member with the given memberAddr exists
+    const member = await memberDetailsRepository.findOne({ where: { memberAddr } });
+
+    if (!member) {
+      // If member is not found, return an error message
+      return res.status(404).json({ error: "Member not found. Please check the member address and try again." });
+    }
+
+    // If member exists, return a success message and member details (without sensitive data)
+    return res.status(200).json({
+      message: "Login successful",
+      member: {
+        firstName: member.firstName,
+        lastName: member.lastName,
+        phoneNumber: member.phoneNumber,
+        memberRole: member.memberRole,
+        memberAddr: member.memberAddr,
+      },
+    });
+  } catch (error) {
+    console.error("Error logging in member:", error);
+    res.status(500).json({ error: "An error occurred while logging in. Please try again later." });
   }
 }
 

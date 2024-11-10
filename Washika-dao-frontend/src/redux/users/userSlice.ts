@@ -7,7 +7,7 @@ interface UserState {
   firstName: string;
   lastName: string;
   role: string;
-  // Add any other fields you need for the user
+  phoneNumber: number;
 }
 
 const initialState: UserState = {
@@ -16,6 +16,7 @@ const initialState: UserState = {
   firstName: '',
   lastName: '',
   role: '',
+  phoneNumber: 0,
 };
 
 const userSlice = createSlice({
@@ -29,6 +30,7 @@ const userSlice = createSlice({
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
       state.role = action.payload.role;
+      state.phoneNumber = action.payload.phoneNumber;
     },
     clearCurrentUser(state) {
       // Reset state to initial state values
@@ -37,6 +39,7 @@ const userSlice = createSlice({
       state.firstName = initialState.firstName;
       state.lastName = initialState.lastName;
       state.role = initialState.role;
+      state.phoneNumber = initialState.phoneNumber;
     },
   },
 });
