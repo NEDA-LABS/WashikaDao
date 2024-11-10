@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import DaoForm from "../components/DaoForm";
-import ConnectWallet from "../components/auth/ConnectWallet";
-import { useActiveAccount } from "thirdweb/react";
+import { useDispatch } from "react-redux";
+import { setCurrentUser } from "../redux/users/userSlice";
+import { ethers } from "ethers";
 
 interface Dao {
   daoName: string;
   daoMultiSigAddr: string;
-  // Add any other properties DAO objects have
 }
 
 const JoinPlatform: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [role, setRole] = useState(""); // Default role
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -24,12 +25,37 @@ const JoinPlatform: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
   const [multiSigAddr, setMultiSigAddr] = useState("");
   const [memberDaos, setMemberDaos] = useState<string[]>([]); // Array of all DAOs member belongs to
+  const [memberAddr, setMemberAddr] = useState("");
+  const [txHash, setTxHash] = useState("");
+  const [usrBal, setUsrBal] = useState("");
 
-  const activeAccount = useActiveAccount();
-  const memberAddr = activeAccount?.address;
-
-  console.log("memberAddr:", memberAddr);
   console.log(selectedDao);
+
+  async function connect() {
+    try {
+      const provider = new ethers.BrowserProvider(window.ethereum, "any");
+      const accounts = await provider.send("eth_requestAccounts", []);
+      const account = accounts[0];
+      const signer = await provider.getSigner();
+      const address = await signer.getAddress();
+
+      setMemberAddr(address);
+
+      const balance = await provider.getBalance(address);
+      const balanceInEth = ethers.formatEther(balance);
+      setUsrBal(balanceInEth);
+
+      provider.on("accountsChanged", (accounts) => {
+        setMemberAddr(accounts[0]);
+        console.log("New address:", accounts[0]);
+      });
+
+      console.log(account);
+    } catch (error) {
+      console.error("Failed to connect wallet:", error);
+    }
+  }
+  console.log(usrBal);
 
   useEffect(() => {
     if (role !== "Owner") {
@@ -39,11 +65,8 @@ const JoinPlatform: React.FC = () => {
             "http://localhost:8080/FunguaDao/GetDaoDetails"
           );
 
-          if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Failed to fetch DAOs. Response:", errorText);
+          if (!response.ok)
             throw new Error(`HTTP error! status: ${response.status}`);
-          }
 
           // Parse JSON data safely
           const data = await response.json();
@@ -109,7 +132,7 @@ const JoinPlatform: React.FC = () => {
     try {
       const endpoint =
         role === "Owner"
-          ? 'http://localhost:8080/JiungeNaDao/DaoDetails/CreateOwner'
+          ? "http://localhost:8080/JiungeNaDao/DaoDetails/CreateOwner"
           : `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr}/AddMember`;
 
       const response = await fetch(endpoint, {
@@ -121,10 +144,26 @@ const JoinPlatform: React.FC = () => {
       });
 
       const result = await response.json();
+      setTxHash(result.hash);
+      console.log(txHash);
 
       if (response.ok) {
         console.log(`Success: ${result.message}`);
-        navigate(role === "Owner" ? "/Owner" : "/Funder");
+        // Dispatch the current user information to the store
+        dispatch(
+          setCurrentUser({
+            memberAddr: payload.memberAddr,
+            daoMultiSig: payload.daoMultiSig,
+            firstName,
+            lastName,
+            role,
+          })
+        );
+
+        // Navigate to profile page based on role
+        navigate(
+          role === "Owner" || role === "Member" ? `/Owner/${memberAddr}` : `/Funder/${memberAddr}`
+        );
       } else {
         console.error(`Error: ${result.error}`);
       }
@@ -152,17 +191,7 @@ const JoinPlatform: React.FC = () => {
             </div>
           ))}
         </div>
-
-        <div className="hazina digitalWallet">
-          <div className="left">
-            <h2>Digital Wallet</h2>
-            <p>Connect and fund impact DAOs and community saving groups</p>
-          </div>
-          <div className="formDiv">
-            <ConnectWallet />
-          </div>
-        </div>
-
+        
         <form className="combinedForms" onSubmit={handleSubmit}>
           <DaoForm
             className="form one"
@@ -193,6 +222,7 @@ const JoinPlatform: React.FC = () => {
                 label: "Role",
                 type: "select",
                 options: [
+                  { label: "Role", value: "", disabled: true },
                   { label: "Owner", value: "Owner" },
                   { label: "Member", value: "Member" },
                   { label: "Funder", value: "Funder" },
@@ -201,6 +231,18 @@ const JoinPlatform: React.FC = () => {
               },
             ]}
           />
+
+<div className="hazina digitalWallet">
+          <div className="left">
+            <h2>Digital Wallet</h2>
+            <p>Connect and fund impact DAOs and community saving groups</p>
+          </div>
+          <div className="formDiv">
+            <p>Connect To A Payment System of your choice</p>
+            <button  className="connectWallet" onClick={connect}>Connect Wallet</button>
+          </div>
+        </div>
+
 
           {role && role !== "Owner" && (
             <div className="findAndJoin">
@@ -218,7 +260,7 @@ const JoinPlatform: React.FC = () => {
                 onChange={handleDaoChange}
                 required
               >
-                <option value="" disabled hidden>
+                <option value="" disabled>
                   Select your DAO
                 </option>
                 {daos.map((dao) => (
@@ -231,7 +273,7 @@ const JoinPlatform: React.FC = () => {
           )}
 
           <center>
-            <button className="createAccount">
+            <button type="submit" className="createAccount">
               Submit
             </button>
           </center>

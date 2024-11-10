@@ -40,7 +40,7 @@ const App: React.FC = () => {
               element={<CreateProposal />}
             />
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
-            <Route path="/Funder" element={<Funder />} />
+            <Route path="/Funder/:memberAddr" element={<Funder />} />
             <Route
               path="/DaoProfile/:daoMultiSigAddr"
               element={<DaoProfile />}
@@ -49,7 +49,7 @@ const App: React.FC = () => {
               path="/ViewProposal/:daoMultiSigAddr/:proposalId"
               element={<ViewProposal />}
             />
-            <Route path="/Owner" element={<Owner />} />
+            <Route path="/Owner/:memberAddr" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/TestCreateDao" element={<TestCreateDao />} />
             <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />

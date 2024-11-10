@@ -5,6 +5,8 @@ import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react"; 
 import { useActiveAccount } from "thirdweb/react";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface FormData {
   daoName: string;
@@ -51,6 +53,9 @@ const DaoRegistration: React.FC = () => {
 //TODO: Extract multiSigAddr from Navbar connectWallet data and save to formData
 const activeAccount = useActiveAccount();
   console.log("address", activeAccount?.address);
+
+  const userRole = useSelector((state: RootState) => state.user.role);
+  const multiSigAddr = useSelector((state: RootState) => state.user.daoMultiSig);
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
     daoLocation: "",
@@ -59,7 +64,7 @@ const activeAccount = useActiveAccount();
     daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
-    multiSigAddr: "",
+    multiSigAddr: multiSigAddr,
   });
 
   useEffect(() => {
@@ -183,7 +188,7 @@ const activeAccount = useActiveAccount();
     }
   };
 
-  return (
+  return userRole === "owner" ? (
     <>
       <NavBar className={""} />
       <main className="daoRegistration">
@@ -325,7 +330,7 @@ const activeAccount = useActiveAccount();
       </main>
       <Footer className={""} />
     </>
-  );
+  ) : null;
 };
 
 export default DaoRegistration;
