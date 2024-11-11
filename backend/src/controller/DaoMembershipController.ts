@@ -1,7 +1,7 @@
 import { eventNames } from "process";
 //import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
-import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
+import { getRepository, QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
 import { Dao } from "../entity/Dao";
 import { Proposal } from "../entity/Proposal";
 import { Vote } from "../entity/Vote";
@@ -378,26 +378,31 @@ export async function BlackListMember(req: Request, res: Response) {
  * - If the members are successfully retrieved, it returns a 200 status code with a list of members.
  * - If any other error occurs, it returns a 500 status code with the error message.
  */
-export async function GetAllMembers(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.params;
+export async function GetAllMembers(req: Request, res: Response): Promise<Response> {
+  const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
+  console.log('daoMultiSigAddr:', daoMultiSigAddr);
+
   if (!daoMultiSigAddr) {
-    return res.status(400).json({ error: "Missing required" });
+    return res.status(400).json({ error: "Missing required parameter" });
   }
+
   try {
-    const daoDetails = await daoRepository.findOne({
-      where: { daoMultiSigAddr },
-      relations: ["members"],
+    // Fetch members with the matching daoMultiSig using AppDataSource
+    const memberRepository = AppDataSource.getRepository(MemberDetails);
+    const members = await memberRepository.find({
+      where: { daoMultiSig: daoMultiSigAddr },
+      relations: ["daos"],
     });
 
-    if (!daoDetails || !daoDetails.daoMultiSigAddr) {
-      return res.status(400).json({ error: "Error locating DAO" });
+    const memberCount = members.length;
+
+    if (memberCount === 0) {
+      return res.status(404).json({ error: "No members found for the specified DAO multisig address" });
     }
 
-    return res.status(200).json({ members: daoDetails.members });
+    return res.status(200).json({ members, memberCount });
   } catch (error) {
-    console.error(error);
-    return res
-      .status(500)
-      .json({ error: "Internal Server Error Occurred When Fetching Members" });
+    console.error("Error fetching members:", error);
+    return res.status(500).json({ error: "Internal Server Error Occurred When Fetching Members" });
   }
 }

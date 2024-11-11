@@ -1,14 +1,10 @@
-// Importing the StrictMode component from React, which helps identify potential issues by activating additional checks and warnings in development mode.
+// src/index.tsx or src/index.js
 import { StrictMode } from "react";
-
-// Importing the createRoot function from ReactDOM, used to initialize the rendering of the React app in a specified DOM element.
 import { createRoot } from "react-dom/client";
-
-// Importing the main application component (App) from the App.tsx file, which serves as the root component for the entire application.
 import App from "./App.tsx";
-
 import { Provider } from "react-redux";
-import { store } from "./redux/store.ts";
+import { store, persistor } from "./redux/store.ts";
+import { PersistGate } from 'redux-persist/integration/react'; // Import PersistGate
 
 // Importing various CSS files for styling different parts of the application.
 import "./styles/index.css";
@@ -25,13 +21,12 @@ import "./styles/Funder.css";
 import "./styles/BlogPage.css";
 
 // Selecting the HTML element with the id of 'root' as the mounting point for the React app.
-// The createRoot method is used to create a root element for rendering the React app in the 'root' element.
-// The render function takes JSX as input, rendering the <App /> component wrapped in React's StrictMode, which helps detect potential issues.
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
-      <App />
+      <PersistGate loading={null} persistor={persistor}>
+        <App />
+      </PersistGate>
     </Provider>
-    {/*The root component of the React app*/}
   </StrictMode>
 );

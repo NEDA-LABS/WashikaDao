@@ -2,6 +2,7 @@ interface Option {
   label: string;
   value: string;
   disabled?: boolean; // Allow disabled attribute
+  selected?: boolean; // Allow selected attribute
 }
 
 interface DaoFormProps {
@@ -91,7 +92,7 @@ const DaoForm: React.FC<DaoFormProps> = ({
                       option,
                       idx // Mapping through options to create <option> elements
                     ) => (
-                      <option key={idx} value={option.value} disabled={option.disabled}>
+                      <option key={idx} value={option.value} disabled={option.disabled} selected={option.selected}>
                         {" "}
                         {/* Unique key for each option */}
                         {option.label}

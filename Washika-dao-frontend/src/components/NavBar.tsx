@@ -1,16 +1,29 @@
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
+import { RootState } from "../redux/store";
 
 
 interface NavBarProps {
   className: string;
-  // user?: { name: string };
 }
 
-const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
+const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const navigate = useNavigate();
+  const { daoMultiSig } = useSelector(
+    (state: RootState) => state.user
+  );
   const handleClick = () => {
     navigate("/JoinPlatform");
   };
+
+  const handleDaoToolKitClick = (e: React.MouseEvent) => {
+    if (!daoMultiSig) {
+      e.preventDefault(); // Prevents default link action
+      navigate("/JoinPlatform");
+    }
+  };
+
+  const daoMultiSIgAddr = daoMultiSig;
 
   const renderProfileLink = () => {
     if (className === "DaoProfile" || className === "navbarProposal") {
@@ -21,9 +34,11 @@ const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
       );
     } else {
       return (
-        <li className="three">
-          <Link to="/DaoProfile">DAO Tool Kit</Link>
-        </li>
+        (<li className="three">
+          <Link to={`/DaoProfile/${daoMultiSIgAddr || ""}`} onClick={handleDaoToolKitClick}>
+            DAO Tool Kit
+          </Link>
+        </li>)
       );
     }
   };

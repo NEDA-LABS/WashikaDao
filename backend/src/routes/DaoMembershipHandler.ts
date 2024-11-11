@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const DaoController = require("../controller/DaoController");
-const DaoMembershipController = require("../controller/DaoMembershipController");
+import DaoController = require("../controller/DaoController");
+import DaoMembershipController = require("../controller/DaoMembershipController");
 import { Request, Response } from "express";
 
 //Creatint the initial Owner of a Dao
@@ -15,7 +15,7 @@ router.post('/DaoDetails/AddMultisig/:multiSigAddr', (req: Request, res: Respons
 //TODO: implement this to be a protected route, ensure user has enough permissions to access this since it is direct no other checks 
 router.post('/DaoDetails/:multiSigAddr/AddMember', (req: Request, res: Response) => DaoMembershipController.RequestToJoinDao(req, res));
 //displaying all members of this dao 
-router.get('/DaoDetails/:multiSigAddr/members', (req: Request, res: Response) => DaoMembershipController.GetAllMembers(req, res)); 
+router.get('/DaoDetails/:daoMultiSigAddr/members', (req: Request, res: Response) => DaoMembershipController.GetAllMembers(req, res)); 
 //adding member to a particular dao
 router.post('/DaoDetails/:multiSigAddr/members/AddMember', (req: Request, res: Response) => DaoMembershipController.WhiteListUser(req, res));
 //deleting a member from a particular dao or blacklisting them

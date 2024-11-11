@@ -298,7 +298,7 @@ const JoinPlatform: React.FC = () => {
                 label: "Role",
                 type: "select",
                 options: [
-                  { label: "Role", value: "", disabled: true },
+                  { label: "Select Role", value: "", disabled: true, selected: true },
                   { label: "Owner", value: "Owner" },
                   { label: "Member", value: "Member" },
                   { label: "Funder", value: "Funder" },
@@ -337,7 +337,7 @@ const JoinPlatform: React.FC = () => {
                 onChange={handleDaoChange}
                 required
               >
-                <option value="" disabled>
+                <option value="" disabled selected>
                   Select your DAO
                 </option>
                 {daos.map((dao) => (
