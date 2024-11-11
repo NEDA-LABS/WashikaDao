@@ -30,6 +30,7 @@ export interface IDao {
     daoMultiSigs: string[];
     daoMultiSigAddr: string;
     multiSigPhoneNo: number;
+    kiwango: number;
     proposals: IProposal;  //relationship with proposal entity
     members: IMemberDetails;  //relationship with memberDetails entity
 

@@ -55,7 +55,7 @@ const JoinPlatform: React.FC = () => {
       );
 
       const result = await response.json();
-      console.log(result);
+      console.log(result.member);
 
       if (response.ok) {
         console.log("Login successful:", result.message);
@@ -63,7 +63,7 @@ const JoinPlatform: React.FC = () => {
         // Dispatch the user information to the Redux store
         dispatch(setCurrentUser({
           memberAddr: result.member.memberAddr,
-          daoMultiSig: result.daoMultiSig || '',
+          daoMultiSig: result.member.daoMultiSig || '',
           firstName: result.member.firstName,
           lastName: result.member.lastName,
           role: result.member.memberRole,

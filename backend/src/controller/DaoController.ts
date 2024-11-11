@@ -33,6 +33,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     daoImageIpfsHash,
     multiSigAddr,
     multiSigPhoneNo,
+    kiwango,
     members, // members is an array of objects with member details
   } = req.body;
 
@@ -64,6 +65,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     dao.daoMultiSigAddr = multiSigAddr;
     dao.daoMultiSigs = [multiSigAddr]; // Assuming it's an array of multisigs
     dao.multiSigPhoneNo = multiSigPhoneNo;
+    dao.kiwango = kiwango;
 
     // Initialize the DAO repository
     const daoRepository = AppDataSource.getRepository(Dao);
@@ -186,7 +188,8 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           daoImageIpfsHash: daoDetails.daoImageIpfsHash,
           daoMultiSigs: daoDetails.daoMultiSigs,
           multiSigAddr: daoDetails.daoMultiSigAddr,
-          multiSigPhoneNo: daoDetails.multiSigPhoneNo
+          multiSigPhoneNo: daoDetails.multiSigPhoneNo,
+          kiwango: daoDetails.kiwango
         },
       });
     } else {
@@ -229,7 +232,8 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     _daoDescription,
     _daoOverview,
     _daoImageIpfsHash,
-    multiSigPhoneNo
+    multiSigPhoneNo,
+    kiwango
   } = req.body;
   //so you have to manually update all the details if you are updating details
   //check missing details
@@ -265,6 +269,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     daoDetails.daoOverview = _daoOverview;
     daoDetails.daoImageIpfsHash = _daoImageIpfsHash;
     daoDetails.multiSigPhoneNo = multiSigPhoneNo;
+    daoDetails.kiwango = kiwango;
     await daoRepository.save(daoDetails);
     res.status(200).json({ message: "DAO details updated" });
   } catch (err) {

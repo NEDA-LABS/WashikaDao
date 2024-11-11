@@ -3,7 +3,7 @@ import DaoForm from "../components/DaoForm";
 import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react"; 
+import { useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
@@ -17,6 +17,7 @@ interface FormData {
   daoImageIpfsHash: string;
   multiSigAddr: string;
   multiSigPhoneNo: number;
+  kiwango: number;
 }
 
 interface Member {
@@ -29,11 +30,11 @@ interface Member {
 const uploadImageToCloudinary = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
-  formData.append("upload_preset", "ml_default"); 
+  formData.append("upload_preset", "ml_default");
 
   try {
     const response = await fetch(
-      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload", 
+      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload",
       {
         method: "POST",
         body: formData,
@@ -50,9 +51,13 @@ const uploadImageToCloudinary = async (file: File) => {
 
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
-//TODO: Extract multiSigAddr from Navbar connectWallet data and save to formData
+  //TODO: Extract multiSigAddr from Navbar connectWallet data and save to formData
 
-const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => state.user);
+  const { role, memberAddr, phoneNumber } = useSelector(
+    (state: RootState) => state.user
+  );
+  console.log({daoMultiSig: memberAddr});
+  
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
     daoLocation: "",
@@ -61,8 +66,9 @@ const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => sta
     daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
-    multiSigAddr: daoMultiSig || "",
-    multiSigPhoneNo: phoneNumber // Set initial value to daoMultiSig
+    multiSigAddr: memberAddr || "",
+    multiSigPhoneNo: phoneNumber, // Set initial value to daoMultiSig
+    kiwango: 0,
   });
 
   // State to hold the list of members
@@ -78,7 +84,9 @@ const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => sta
 
   // Handle changes in the main form fields
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement| HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target; // Destructure the target name and value
     setFormData((prevData) => ({
@@ -119,7 +127,7 @@ const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => sta
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0]; // Access the file if it exists
-  
+
     if (file) {
       const imageUrl = await uploadImageToCloudinary(file); // Upload the file and get the image URL
       if (imageUrl) {
@@ -130,13 +138,16 @@ const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => sta
       }
     }
   };
-  
-  
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
-    
+    // Ensure multiSigAddr is properly set
+    if (!formData.multiSigAddr || formData.multiSigAddr.trim() === "") {
+      alert("MultiSig Address is required");
+      return;
+    }
+
     // Combine form data and member data
     const combinedData = {
       ...formData,
@@ -155,13 +166,15 @@ const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => sta
           body: JSON.stringify(combinedData), // Send combined data
         }
       );
-      const data = await response.json(); // Parse the response JSON
+      const data = await response.json();
+      console.log(data);
+       // Parse the response JSON
 
-            // Check if the response indicates success
+      // Check if the response indicates success
       if (response.ok) {
-        const daoMultisigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
+        const daoMultiSigAddr = data.multiSigAddr; // Extract multi-sig address from response
         console.log("DAO created successfully", data);
-        navigate(`/DaoProfile/${daoMultisigAddr}`); // Navigate to the DAO profile page
+        navigate(`/DaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
       } else {
         console.error("Error creating DAO:", data.message);
       }
@@ -174,102 +187,107 @@ const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => sta
     <>
       <NavBar className={""} />
       {role === "Owner" ? ( // Only show form if user role is "owner"
-      <main className="daoRegistration">
-        <div className="funguaKikundi">
-          <h1>Fungua Kikundi chako kirahisi, upate faida kibao</h1>
-          <p>
-            Tumia teknolojia yetu kuunda, kuendesha, na kuboresha kikundi chako
-          </p>
-        </div>
+        <main className="daoRegistration">
+          <div className="funguaKikundi">
+            <h1>Fungua Kikundi chako kirahisi, upate faida kibao</h1>
+            <p>
+              Tumia teknolojia yetu kuunda, kuendesha, na kuboresha kikundi
+              chako
+            </p>
+          </div>
 
-        <div className="circle-container">
-          <div className="circle one">1</div>
-          <div className="line"></div>
-          <div className="circle">2</div>
-          <div className="line"></div>
-          <div className="circle">3</div>
-          <div className="line"></div>
-          <div className="circle">4</div>
-          <div className="line"></div>
-          <div className="circle">5</div>
-        </div>
-        <form className="combinedForms" onSubmit={handleSubmit}>
-          <DaoForm
-            className="form one"
-            title="Jaza fomu hii kufungua kikundi"
-            description="Taarifa za awali ya kikundi chako"
-            fields={[
-              {
-                label: "Jina la kikundi",
-                type: "text",
-                name: "daoName",
-                value: formData.daoName,
-                onChange: handleChange,
-              },
-              {
-                label: "Mahali kilipo",
-                type: "text",
-                name: "daoLocation",
-                value: formData.daoLocation,
-                onChange: handleChange,
-              },
-              {
-                label: "Kikundi ni cha kina nani",
-                type: "text",
-                name: "targetAudience",
-                value: formData.targetAudience,
-                onChange: handleChange,
-              },
-              {
-                label: "Kiwango cha kuanzia",
-                type: "number",
-              },
-            ]}
-          />
-
-          <DaoForm
-            className="form two"
-            title="Kuhusu kikundi"
-            description="Taarifa za maelezo mafupi kuhusu kikundi chako na nia yenu."
-            fields={[
-              {
-                label: "Kichwa cha Juu",
-                type: "text",
-                name: "daoTitle",
-                value: formData.daoTitle,
-                onChange: handleChange,
-              },
-              {
-                label: "Maelezo mafupi/utangulizi",
-                type: "textarea",
-                name: "daoDescription",
-                value: formData.daoDescription,
-                onChange: handleChange,
-              },
-              {
-                label: "Maerezo marefu",
-                type: "textarea",
-                name: "daoOverview",
-                value: formData.daoOverview,
-                onChange: handleChange,
-              },
-              {
-                label: "",
-                type: "file",
-                name: "daoImageIpfsHash",
-                onChange: (e) => handleFileChange(e as React.ChangeEvent<HTMLInputElement>),  // File input handler
+          <div className="circle-container">
+            <div className="circle one">1</div>
+            <div className="line"></div>
+            <div className="circle">2</div>
+            <div className="line"></div>
+            <div className="circle">3</div>
+            <div className="line"></div>
+            <div className="circle">4</div>
+            <div className="line"></div>
+            <div className="circle">5</div>
+          </div>
+          <form className="combinedForms" onSubmit={handleSubmit}>
+            <DaoForm
+              className="form one"
+              title="Jaza fomu hii kufungua kikundi"
+              description="Taarifa za awali ya kikundi chako"
+              fields={[
+                {
+                  label: "Jina la kikundi",
+                  type: "text",
+                  name: "daoName",
+                  value: formData.daoName,
+                  onChange: handleChange,
                 },
-            ]}
-          />
+                {
+                  label: "Mahali kilipo",
+                  type: "text",
+                  name: "daoLocation",
+                  value: formData.daoLocation,
+                  onChange: handleChange,
+                },
+                {
+                  label: "Kikundi ni cha kina nani",
+                  type: "text",
+                  name: "targetAudience",
+                  value: formData.targetAudience,
+                  onChange: handleChange,
+                },
+                {
+                  label: "Kiwango cha kuanzia",
+                  type: "number",
+                  name: "kiwango",
+                  value: formData.kiwango,
+                  onChange: handleChange,
+                },
+              ]}
+            />
 
-          {/* Pass members state and handlers to the MemberForm */}
-          <MemberForm
-            currentMember={currentMember}
-            onMemberChange={handleMemberChange}
-            onAddMember={handleAddMember}
-          />
+            <DaoForm
+              className="form two"
+              title="Kuhusu kikundi"
+              description="Taarifa za maelezo mafupi kuhusu kikundi chako na nia yenu."
+              fields={[
+                {
+                  label: "Kichwa cha Juu",
+                  type: "text",
+                  name: "daoTitle",
+                  value: formData.daoTitle,
+                  onChange: handleChange,
+                },
+                {
+                  label: "Maelezo mafupi/utangulizi",
+                  type: "textarea",
+                  name: "daoDescription",
+                  value: formData.daoDescription,
+                  onChange: handleChange,
+                },
+                {
+                  label: "Maerezo marefu",
+                  type: "textarea",
+                  name: "daoOverview",
+                  value: formData.daoOverview,
+                  onChange: handleChange,
+                },
+                {
+                  label: "",
+                  type: "file",
+                  name: "daoImageIpfsHash",
+                  onChange: (e) =>
+                    handleFileChange(e as React.ChangeEvent<HTMLInputElement>), // File input handler
+                },
+              ]}
+            />
 
-          {/* <DaoForm
+            {/* Pass members state and handlers to the MemberForm */}
+            <MemberForm
+              currentMember={currentMember}
+              onMemberChange={handleMemberChange}
+              onAddMember={handleAddMember}
+            />
+
+            {/* <DaoForm
             className="hazina"
             title="Hazina ya kikundi"
             description="Taarifa na maelezo ya kifedha ya kikundi"
@@ -304,16 +322,18 @@ const { role, daoMultiSig, phoneNumber } = useSelector((state: RootState) => sta
               },
             ]}
           /> */}
-          <div className="button-container">
-            <button className="createDao" type="submit">
-              Create DAO
-            </button>
-          </div>
-        </form>
-      </main>
-            ) : (
-              <p className="daoRegistration">You do not have the necessary permissions to register a DAO.</p>
-            )}
+            <div className="button-container">
+              <button className="createDao" type="submit">
+                Create DAO
+              </button>
+            </div>
+          </form>
+        </main>
+      ) : (
+        <p className="daoRegistration">
+          You do not have the necessary permissions to register a DAO.
+        </p>
+      )}
       <Footer className={""} />
     </>
   );

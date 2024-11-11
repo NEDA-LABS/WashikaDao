@@ -14,7 +14,7 @@ interface DaoFormProps {
     name?: string;
     id?: string;
     options?: Option[];
-    value?: string;
+    value?: string | number;
     onChange?: (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => void | Promise<void>;
     onClick?: () => void;
   }[];

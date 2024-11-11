@@ -29,6 +29,9 @@ export class Dao {
   multiSigPhoneNo: number
 
   @Column()
+  kiwango: number
+
+  @Column()
   daoImageIpfsHash: string
 
   @Column({ unique: true })
