@@ -21,7 +21,7 @@ const DaoProfile: React.FC = () => {
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
 
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
-  const [memberCount, setMemberCount] = useState<number>(0);  
+  const [memberCount, setMemberCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -94,14 +94,10 @@ const DaoProfile: React.FC = () => {
                 <p>{daoDetails.daoLocation}</p>
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
-              <p className="email">
-                {daoDetails.multiSigAddr}
-              </p>
+              <p className="email">{daoDetails.multiSigAddr}</p>
             </div>
 
-            <p className="section-2">
-              {daoDetails.daoDescription}
-            </p>
+            <p className="section-2">{daoDetails.daoDescription}</p>
 
             <div className="DaoOperations">
               <h1>DAO operations</h1>
@@ -114,13 +110,10 @@ const DaoProfile: React.FC = () => {
             </div>
 
             <div className="details">
-              <p className="email">
-                {daoDetails.multiSigAddr}
-              </p>
+              <p className="email">{daoDetails.multiSigAddr}</p>
               <p className="parag">
-                This is the multi-sig account for{" "}
-                {daoDetails.daoName}. Create a proposal to get
-                access to the JUKUMU fund.
+                This is the multi-sig account for {daoDetails.daoName}. Create a
+                proposal to get access to the JUKUMU fund.
               </p>
             </div>
           </div>
@@ -131,7 +124,7 @@ const DaoProfile: React.FC = () => {
                 <p className="left">TSH</p>
                 <p className="right">Thamani ya hazina</p>
               </div>
-              <p className="amount">{daoDetails.kiwango}</p>
+              <p className="amount">{daoDetails.kiwango.toLocaleString()}</p>
             </div>
 
             <div className="section-3">
