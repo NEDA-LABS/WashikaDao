@@ -12,6 +12,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const { firstName, memberAddr, daoMultiSig } = useSelector(
     (state: RootState) => state.user
   );
+  console.log(firstName);
+  
   const handleClick = () => {
     navigate("/JoinPlatform");
   };
@@ -44,17 +46,16 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   };
 
   const renderButton = () => {
-    if (memberAddr) {
+    if (memberAddr && className != "DaoProfile" && className != "navbarOwner") {
       // If memberAddr is present, display "Profile" and navigate to ownerProfile
       return (<button onClick={() => navigate(`/Owner/${memberAddr}`)}>Profile</button>);
     } else if (className === "DaoProfile" || className === "navbarProposal") {
       return (
-        <button onClick={handleClick}>Add Member</button>
+        <button onClick={handleClick}>JIUNGE NASI</button>
       );
-    } else if (className === "navbarOwner" /*&& user*/) {
-      return (<>
-        {/* <button>{user.name}</button> */}
-        <button>{firstName}</button></>
+    } else if (className === "navbarOwner") {
+      return (
+        <button>{firstName}</button>
       );
     } else if (className === "joinPlatformNav") {
       return (
