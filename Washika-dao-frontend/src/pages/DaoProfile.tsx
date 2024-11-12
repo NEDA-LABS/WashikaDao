@@ -63,6 +63,7 @@ const DaoProfile: React.FC = () => {
       fetchMemberCount();
     }
   }, [daoMultiSigAddr]);
+  console.log(daoDetails);
 
   const handleClick = () => {
     navigate(`/CreateProposal/${daoMultiSigAddr}`);

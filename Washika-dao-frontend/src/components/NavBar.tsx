@@ -12,8 +12,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const { firstName, memberAddr, daoMultiSig } = useSelector(
     (state: RootState) => state.user
   );
-  console.log(firstName);
-  
+
   const handleClick = () => {
     navigate("/JoinPlatform");
   };
@@ -43,7 +42,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         </li>)
       );
     }
-  };
+  };  
 
   const renderButton = () => {
     if (memberAddr && className != "DaoProfile" && className != "navbarOwner") {

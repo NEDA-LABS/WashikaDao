@@ -117,6 +117,7 @@ export async function loginMember(req: Request, res: Response) {
         phoneNumber: member.phoneNumber,
         memberRole: member.memberRole,
         memberAddr: member.memberAddr,
+        daoMultiSig: member.daoMultiSig,
       },
     });
   } catch (error) {
