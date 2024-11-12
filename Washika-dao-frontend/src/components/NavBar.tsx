@@ -9,7 +9,7 @@ interface NavBarProps {
 
 const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const navigate = useNavigate();
-  const { daoMultiSig } = useSelector(
+  const { firstName, memberAddr, daoMultiSig } = useSelector(
     (state: RootState) => state.user
   );
   const handleClick = () => {
@@ -44,14 +44,17 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   };
 
   const renderButton = () => {
-    if (className === "DaoProfile" || className === "navbarProposal") {
+    if (memberAddr) {
+      // If memberAddr is present, display "Profile" and navigate to ownerProfile
+      return (<button onClick={() => navigate(`/Owner/${memberAddr}`)}>Profile</button>);
+    } else if (className === "DaoProfile" || className === "navbarProposal") {
       return (
         <button onClick={handleClick}>Add Member</button>
       );
     } else if (className === "navbarOwner" /*&& user*/) {
       return (<>
         {/* <button>{user.name}</button> */}
-        <button>user.name</button></>
+        <button>{firstName}</button></>
       );
     } else if (className === "joinPlatformNav") {
       return (
