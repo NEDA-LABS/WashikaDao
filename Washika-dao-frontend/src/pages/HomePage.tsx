@@ -1,7 +1,19 @@
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import NavBar from "../components/NavBar";
 import Footer from "../components/Footer";
 import { useNavigate } from "react-router-dom";
 import GroupInfo from "../components/GroupInfo";
+
+interface Blog {
+  slug: string;
+  title: string;
+  category: string;
+  date: string;
+  className?: string;
+  image?: string;
+  content?: string;
+}
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
@@ -12,7 +24,58 @@ const HomePage: React.FC = () => {
   const handleJifunzeElimu = () => {
     navigate("/JifunzeElimu");
   };
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [category, setCategory] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const blogsPerPage = 3;
 
+  // Fetch blogs from blogs.json
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await fetch("/data/blogs.json");
+        const metadata = await response.json();
+
+        const blogsWithContent = await Promise.all(
+          metadata.map(async (blog: Blog) => {
+            const contentResponse = await fetch(`/data/${blog.slug}.md`);
+            const content = await contentResponse.text();
+            return {
+              ...blog,
+              content: content.split(" ").slice(0, 16).join(" ") + "..." 
+            };
+          })
+        );
+        setBlogs(blogsWithContent);
+      } catch (error) {
+        console.error("Failed to fetch blogs", error);
+      }
+    };
+
+    fetchBlogs();
+  }, []);
+
+  const filteredBlogs = blogs.filter((blog) => {
+    const matchesCategory = category === "All" || blog.category === category;
+    const matchesSearch = blog.title
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
+
+  const indexOfLastBlog = currentPage * blogsPerPage;
+  const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+  const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
+  const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
   return (
     <>
       <NavBar className={""} />
@@ -103,34 +166,54 @@ const HomePage: React.FC = () => {
             mali zao
           </p>
         </div>
-
+        <div className="search-filter">
+          <input
+            className="search"
+            type="text"
+            placeholder="Search blogs..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <select
+            className="search"
+            value={category}
+            onChange={(e) => setCategory(e.target.value)}
+          >
+            <option value="All">All Categories</option>
+            <option value="DAO">DAO</option>
+            <option value="Education">Education</option>
+            <option value="Toolkit">Toolkit</option>
+          </select>
+        </div>
         <div className="article-container">
-          <article className="one">
-            <div>
-              <h2>Fungua DAO</h2>
-              <p>
-                Tumia mfumo wetu wa kisasa kuendesha na kukuza Kikundi chako cha
-                kifedha
-              </p>
-            </div>
-          </article>
-          <article className="two">
-            <div>
-              <h2>Jifunze kuhusu DAO</h2>
-              <p>
-                Pata Elimu na makala kuhusu Uchumi wa kidijitali unavyoweza
-                kukusaidia wewe na kikundi cheka kufikia malengo yenu
-              </p>
-            </div>
-          </article>
-          <article className="three">
-            <div>
-              <h2>DAO Tool kit</h2>
-              <p>
-                Kila kitu unachohitaji kujua kuhusu DAO. Anza leo kushiriki.
-              </p>
-            </div>
-          </article>
+          {currentBlogs.map((blog) => (
+            <Link to={`/blog/${blog.slug}`} key={blog.slug}>
+              <article
+                className={blog.className}
+                style={{ backgroundImage: `url(${blog.image})` }}
+              >
+                <div>
+                  <h2>{blog.title}</h2>
+                  <p>{blog.content}</p>
+                </div>
+              </article>
+            </Link>
+          ))}
+        </div>
+
+        <div className="pagination">
+          <button onClick={handlePrevPage} disabled={currentPage === 1}>
+            Previous
+          </button>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
         </div>
       </main>
       <Footer className={""} />
