@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 // Define the DAO interface including memberCount
 interface Dao {
@@ -16,12 +17,16 @@ interface Dao {
 
 const GroupInfo: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]); // State to store DAOs with member count
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [daoMultiSigAddr, setDaoMultiSigAddr] = useState("");
 
   useEffect(() => {
     const fetchDaos = async () => {
       try {
         // Fetch the DAOs from the backend
-        const response = await fetch("http://localhost:8080/FunguaDao/GetDaoDetails");
+        const response = await fetch(
+          "http://localhost:8080/FunguaDao/GetDaoDetails"
+        );
 
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -55,6 +60,7 @@ const GroupInfo: React.FC = () => {
           `http://localhost:8080/JiungeNaDao/DaoDetails/${MultiSigAddr}/members`
         );
         const data = await response.json();
+        setDaoMultiSigAddr(MultiSigAddr);
         return response.ok ? data.memberCount : 0; // Return member count or 0 if no data
       } catch (error) {
         console.error("Failed to fetch member count:", error);
@@ -63,46 +69,76 @@ const GroupInfo: React.FC = () => {
     };
 
     fetchDaos(); // Call the function to fetch DAOs and their member counts
+
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 768); // Adjust for your breakpoints
+    };
+
+    // Initial check and event listener
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, []);
 
   return (
     <div className="groups">
-      {daos.map((group, index) => ( // Iterate over the group data array
-        <div className="group" key={index}> {/* Each group's container */}
-          <div className="image">
-            <img src={group.daoImageIpfsHash} alt={group.daoTitle} width={465} />
-            <div className="taarifaTop">Taarifa</div>
-          </div>
-          <div className="section-1">
-            <div className="left">
-              <h2>{group.daoTitle}</h2>
-              <div className="location">
-                <p>{group.daoLocation}</p>
-                <img src="images/location.png" width="11" height="13" />
+      {daos.map(
+        (
+          group,
+          index // Iterate over the group data array
+        ) => (
+          <div className="group" key={index}>
+            {" "}
+            {/* Each group's container */}
+            <Link to={`/daoProfile/${daoMultiSigAddr}`}>
+              <div className="image">
+                <img src={group.daoImageIpfsHash} alt={group.daoTitle} />
+                <div className="taarifaTop">Taarifa</div>
               </div>
-              <p className="email">{group.daoMultiSigAddr}</p>
-            </div>
-            <div className="right">
-              <h3>Thamani ya hazina</h3>
-              <div>
-                <p>TSH</p>
-                <p className="amount">{group.kiwango.toLocaleString()}</p>
+              <div className="section-1">
+                <div className="left">
+                  <h2>{group.daoTitle}</h2>
+                  <div className="location">
+                    <p>{group.daoLocation}</p>
+                    <img src="images/location.png" />
+                  </div>
+                  <p className="email">
+                    {group.daoMultiSigAddr
+                      ? isSmallScreen
+                        ? `${group.daoMultiSigAddr}`
+                        : `${group.daoMultiSigAddr.slice(
+                            0,
+                            14
+                          )}...${group.daoMultiSigAddr.slice(-9)}`
+                      : "N/A"}
+                  </p>
+                </div>
+                <div className="right">
+                  <h3>Thamani ya hazina</h3>
+                  <div>
+                    <p className="currency">TSH</p>
+                    <p className="amount">{group.kiwango.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
-            </div>
+              <p className="section-2">{group.daoDescription}</p>
+              <div className="section-3">
+                <div className="top">
+                  <img src="images/profile.png" alt="idadi" />
+                  <div className="taarifa">Taarifa za wanachama</div>
+                </div>
+                <div className="bottom">
+                  <h2>Idadi ya wanachama</h2>
+                  <p>{group.memberCount}</p>
+                </div>
+              </div>
+            </Link>
           </div>
-          <p className="section-2">{group.daoDescription}</p>
-          <div className="section-3">
-            <div className="top">
-              <img src="images/profile.png" alt="idadi" />
-              <div className="taarifa">Taarifa za wanachama</div>
-            </div>
-            <div className="bottom">
-              <h2>Idadi ya wanachama</h2>
-              <p>{group.memberCount}</p>
-            </div>
-          </div>
-        </div>
-      ))}
+        )
+      )}
     </div>
   );
 };

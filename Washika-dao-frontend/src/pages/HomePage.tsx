@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
             const content = await contentResponse.text();
             return {
               ...blog,
-              content: content.split(" ").slice(0, 16).join(" ") + "..." 
+              content: content.split(" ").slice(0, 16).join(" ") + "...",
             };
           })
         );
@@ -86,7 +86,7 @@ const HomePage: React.FC = () => {
               src="images/LOGO FULL.png"
               alt="logo"
               width="246"
-              height="180"
+              height="183"
             />
             <p className="main">
               Uongozi wa <br />
@@ -110,20 +110,23 @@ const HomePage: React.FC = () => {
         </div>
 
         <p className="parag-container">
-          Tunawezesha vikundi kutunza<br /> kumbukumbu zao, kufanya maamuzi na<br/> kupata
-          faida nyingi
+          Tunawezesha vikundi kutunza
+          <br /> kumbukumbu zao, kufanya maamuzi na
+          <br /> kupata faida nyingi
         </p>
 
         <section className="main-container">
           <div className="boxes">
             <div className="box one">
               <div className="box-left">
-                <h1>Salama na Kisasa</h1>
-                <p>
-                  Fahamu kila kitu kuhusu kikundi chako kama vile
-                  <span> kiwango kilichopo, hisa za wanakikundi</span> na jinsi
-                  ya kupata <span>mikopo</span>.
-                </p>
+                <div>
+                  <h1>Salama na Kisasa</h1>
+                  <p>
+                    Fahamu kila kitu kuhusu kikundi chako kama vile
+                    <span> kiwango kilichopo, hisa za wanakikundi</span> na
+                    jinsi ya kupata <span>mikopo</span>.
+                  </p>
+                </div>
               </div>
               <div className="box-right">
                 <div>
@@ -137,23 +140,27 @@ const HomePage: React.FC = () => {
 
             <div className="box two">
               <div className="box-left two">
-                <h1>Elimu ya kifedha</h1>
-                <p>
-                  Pata mafunzo mbali mbali ya Elimu ya
-                  <span> Uchumi wa kidijitali</span>. Fahamu jinsi gani na wewe
-                  unaweza kunufaika na Teknolojia
-                </p>
+                <div>
+                  <h1>Elimu ya kifedha</h1>
+                  <p>
+                    Pata mafunzo mbali mbali ya Elimu ya
+                    <span> Uchumi wa kidijitali</span>. Fahamu jinsi gani na
+                    wewe unaweza kunufaika na Teknolojia
+                  </p>
+                </div>
               </div>
               <div className="box-right"></div>
             </div>
 
             <div className="half-box box-left">
-              <h1>Pata mikopo kirahisi</h1>
-              <p>
-                Kuza kipata chako kwa kupata
-                <span> mikopo kirahisi kwa dhamana ya kikundi chako</span>.
-                Jiunge na mtandao wetu wa wajasiriamali
-              </p>
+              <div>
+                <h1>Pata mikopo kirahisi</h1>
+                <p>
+                  Kuza kipata chako kwa kupata
+                  <span> mikopo kirahisi kwa dhamana ya kikundi chako</span>.
+                  Jiunge na mtandao wetu wa wajasiriamali
+                </p>
+              </div>
             </div>
           </div>
 
@@ -162,7 +169,7 @@ const HomePage: React.FC = () => {
         <div className="parag-container-two">
           <h2>Karibu kwa WashikaDAO</h2>
           <p className="sub-parag-container">
-            Tunawezesha vikundi kufanikisha malengo yao kwa usawa na usalama wa
+            Tunawezesha vikundi kufanikisha <br />malengo yao kwa usawa na usalama wa<br />
             mali zao
           </p>
         </div>

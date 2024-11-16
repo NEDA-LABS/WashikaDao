@@ -96,19 +96,22 @@ div.onee::before {
 }
 
 /* Responsive design */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .search-filter {
     flex-direction: column;
     gap: 0.75rem;
+    margin: 12px;
   }
   
   .pagination {
     flex-direction: column;
     gap: 0.5rem;
+    margin-bottom: 48px;
   }
 
   .pagination button {
-    width: 100%;
+    width: 40%;
+    padding: 0.5rem 1.5rem;
   }
 }
 
