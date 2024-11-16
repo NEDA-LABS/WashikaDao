@@ -110,7 +110,7 @@ const HomePage: React.FC = () => {
         </div>
 
         <p className="parag-container">
-          Tunawezesha vikundi kutunza kumbukumbu zao, kufanya maamuzi na kupata
+          Tunawezesha vikundi kutunza<br /> kumbukumbu zao, kufanya maamuzi na<br/> kupata
           faida nyingi
         </p>
 

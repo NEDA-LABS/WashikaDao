@@ -134,9 +134,7 @@ export async function GetAllDaoDetails(req: Request, res: Response) {
     const daoRepository = AppDataSource.getRepository(Dao);
 
     // Fetch all DAOs
-    const daoList = await daoRepository.find({
-      select: ["daoName", "daoMultiSigAddr"], // Fields to include in the response
-    });
+    const daoList = await daoRepository.find();
 
     return res.status(200).json({ daoList });
   } catch (error) {

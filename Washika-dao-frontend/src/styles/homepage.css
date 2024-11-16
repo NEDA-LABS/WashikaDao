@@ -22,14 +22,13 @@
 }
 
 .image-container p {
-  width: 56vw;
-  font-size: 36px;
+  font-size: 31px;
   font-family: "Droid Sans", sans-serif;
 }
 
 .image-container .main {
-  margin: 12px 0 3px;
-  font-size: 48px;
+  margin: 16px 0 20px;
+  font-size: 40px;
   color: #f8b859;
   font-weight: bold;
   line-height: 116%;
@@ -38,13 +37,13 @@
 .buttons {
   display: flex;
   gap: 48px;
-  font-size: 37px;
+  font-size: 31px;
   margin-left: 84px;
 }
 
 .buttons button {
-  width: 373px;
-  height: 83px;
+  width: 356px;
+  height: 72px;
   padding: 24px;
   border: 2px solid #f8b859;
   border-radius: 24px;
@@ -64,13 +63,11 @@
 
 .parag-container {
   width: 1236px;
-  height: 261px;
   color: #fffefe;
   display: flex;
-  margin: 64px 48px;
-  justify-content: center;
+  margin: 32px 100px;
   align-items: center;
-  font-size: 62px;
+  font-size: 48px;
   font-family: "Droid Sans", sans-serif;
 }
 

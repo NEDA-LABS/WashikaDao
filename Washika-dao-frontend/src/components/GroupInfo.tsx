@@ -1,85 +1,96 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
-interface GroupData {
-  image: string;
-  title: string;
-  location: string;
-  email: string;
-  treasuryValue: string;
-  description: string;
-  memberCount: number;
+// Define the DAO interface including memberCount
+interface Dao {
+  daoName: string;
+  daoLocation: string;
+  targetAudience: string;
+  daoTitle: string;
+  daoDescription: string;
+  daoOverview: string;
+  daoImageIpfsHash: string;
+  multiSigAddr: string;
+  kiwango: number;
+  memberCount: number; // Add memberCount field
 }
 
-const groupData: GroupData[] = [
-  {
-    image: "images/jukumu.png",
-    title: "KIKUNDI CHA JUKUMU",
-    location: "Dar es salaam, Tanzania",
-    email: "@JukumuDAO.ETH",
-    treasuryValue: "23,000,000",
-    description:
-      "JUKUMU ni kikundi cha wajasiriamali na wanafanyabiashara wadogo wadogo. Tupo Mburahati, Dar-es-Salaam. Tuna mipango endelevu ya kujenga biashara zetu. Tunanunua hisa, kukopa na kuposha biashara zetu pamoja na elimu za kujijenga kiuchumi",
-    memberCount: 48,
-  },
-  {
-    image: "images/hazina.png",
-    title: "WANAWAKE WA CCT HAZINA",
-    location: "Dodoma, Tanzania",
-    email: "@ccthazinaDODOMADAO.ETH",
-    treasuryValue: "11,000,000",
-    description:
-      "WANAWAKE WA CCT - Ni kikundi cha kina mama wa Umoja wa madhehebu ya Kikristo Tanzania. Kikundi hiki ni KIKOBA cha kuwawezesha wanawake wa kikundi hiki kukuza mfunguko wao wa kifedha.",
-    memberCount: 28,
-  },
-  {
-    image: "images/jukumu.png",
-    title: "KIKUNDI CHA JUKUMU",
-    location: "Dar es salaam, Tanzania",
-    email: "@JukumuDAO.ETH",
-    treasuryValue: "23,000,000",
-    description:
-      "JUKUMU ni kikundi cha wajasiriamali na wanafanyabiashara wadogo wadogo. Tupo Mburahati, Dar-es-Salaam. Tuna mipango endelevu ya kujenga biashara zetu. Tunanunua hisa, kukopa na kuposha biashara zetu pamoja na elimu za kujijenga kuchumi",
-    memberCount: 48,
-  },
-  {
-    image: "images/hazina.png",
-    title: "WANAWAKE WA CCT HAZINA",
-    location: "Dodoma, Tanzania",
-    email: "@ccthazinaDODOMADAO.ETH",
-    treasuryValue: "11,000,000",
-    description:
-      "WANAWAKE WA CCT - Ni kikundi cha kina mama wa Umoja wa madhehebu ya Kikristo Tanzania. Kikundi hiki ni KIKOBA cha kuwawezesha wanawake wa kikundi hiki kukuza mfunguko wao wa kifedha.",
-    memberCount: 28,
-  },
-];
-
 const GroupInfo: React.FC = () => {
+  const [daos, setDaos] = useState<Dao[]>([]); // State to store DAOs with member count
+
+  useEffect(() => {
+    const fetchDaos = async () => {
+      try {
+        // Fetch the DAOs from the backend
+        const response = await fetch("http://localhost:8080/FunguaDao/GetDaoDetails");
+
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
+
+        // Parse JSON data safely
+        const data = await response.json();
+        console.log("Fetched DAOs:", data);
+
+        if (Array.isArray(data.daoList)) {
+          // For each DAO, fetch the member count using multiSigAddr
+          const daoWithMemberCounts = await Promise.all(
+            data.daoList.map(async (dao: Dao) => {
+              const memberCount = await fetchMemberCount(dao.multiSigAddr);
+              return { ...dao, memberCount };
+            })
+          );
+
+          setDaos(daoWithMemberCounts); // Update state with DAOs and their member counts
+        } else {
+          console.error("daoList is missing or not an array");
+        }
+      } catch (error) {
+        console.error("Failed to fetch DAOs:", error);
+      }
+    };
+
+    // Fetch the member count for a given multiSigAddr
+    const fetchMemberCount = async (multiSigAddr: string): Promise<number> => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr}/members`
+        );
+        const data = await response.json();
+        return response.ok ? data.memberCount : 0; // Return member count or 0 if no data
+      } catch (error) {
+        console.error("Failed to fetch member count:", error);
+        return 0; // Return 0 in case of an error
+      }
+    };
+
+    fetchDaos(); // Call the function to fetch DAOs and their member counts
+  }, []);
+
   return (
     <div className="groups">
-      {groupData.map((group, index) => ( // Iterate over the group data array
+      {daos.map((group, index) => ( // Iterate over the group data array
         <div className="group" key={index}> {/* Each group's container */}
           <div className="image">
-            <img src={group.image} alt={group.title} width={465} />
+            <img src={group.daoImageIpfsHash} alt={group.daoTitle} width={465} />
             <div className="taarifaTop">Taarifa</div>
           </div>
           <div className="section-1">
             <div className="left">
-              <h2>{group.title}</h2>
+              <h2>{group.daoTitle}</h2>
               <div className="location">
-                <p>{group.location}</p>
+                <p>{group.daoLocation}</p>
                 <img src="images/location.png" width="11" height="13" />
               </div>
-              <p className="email">{group.email}</p>
+              <p className="email">{group.multiSigAddr}</p>
             </div>
             <div className="right">
               <h3>Thamani ya hazina</h3>
               <div>
                 <p>TSH</p>
-                <p className="amount">{group.treasuryValue}</p>
+                <p className="amount">{group.kiwango.toLocaleString()}</p>
               </div>
             </div>
           </div>
-          <p className="section-2">{group.description}</p>
+          <p className="section-2">{group.daoDescription}</p>
           <div className="section-3">
             <div className="top">
               <img src="images/profile.png" alt="idadi" />
