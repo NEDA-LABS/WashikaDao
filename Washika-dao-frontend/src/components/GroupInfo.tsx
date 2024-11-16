@@ -9,7 +9,7 @@ interface Dao {
   daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
-  multiSigAddr: string;
+  daoMultiSigAddr: string; // Use multiSigAddr for fetching member count
   kiwango: number;
   memberCount: number; // Add memberCount field
 }
@@ -34,8 +34,8 @@ const GroupInfo: React.FC = () => {
           // For each DAO, fetch the member count using multiSigAddr
           const daoWithMemberCounts = await Promise.all(
             data.daoList.map(async (dao: Dao) => {
-              const memberCount = await fetchMemberCount(dao.multiSigAddr);
-              return { ...dao, memberCount };
+              const memberCount = await fetchMemberCount(dao.daoMultiSigAddr); // Use multiSigAddr to fetch member count
+              return { ...dao, memberCount }; // Add memberCount to the DAO object
             })
           );
 
@@ -49,10 +49,10 @@ const GroupInfo: React.FC = () => {
     };
 
     // Fetch the member count for a given multiSigAddr
-    const fetchMemberCount = async (multiSigAddr: string): Promise<number> => {
+    const fetchMemberCount = async (MultiSigAddr: string): Promise<number> => {
       try {
         const response = await fetch(
-          `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr}/members`
+          `http://localhost:8080/JiungeNaDao/DaoDetails/${MultiSigAddr}/members`
         );
         const data = await response.json();
         return response.ok ? data.memberCount : 0; // Return member count or 0 if no data
@@ -80,7 +80,7 @@ const GroupInfo: React.FC = () => {
                 <p>{group.daoLocation}</p>
                 <img src="images/location.png" width="11" height="13" />
               </div>
-              <p className="email">{group.multiSigAddr}</p>
+              <p className="email">{group.daoMultiSigAddr}</p>
             </div>
             <div className="right">
               <h3>Thamani ya hazina</h3>
