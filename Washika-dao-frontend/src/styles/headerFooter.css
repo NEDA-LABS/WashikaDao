@@ -181,7 +181,7 @@ footer li {
 }
 
 
-@media only screen and (min-width: 1512px) {
+/* @media only screen and (min-width: 1512px) {
 nav {
   width: 100vw;
   height: 145px;
@@ -297,4 +297,4 @@ footer a {
 footer img {
   margin-top: -72px;
 }
-}
+} */

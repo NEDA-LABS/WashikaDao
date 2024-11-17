@@ -81,7 +81,6 @@ const JifunzeElimu: React.FC = () => {
 
       <main className="jifunze">
         <div className="onee">
-          ``
           <div className="left">
             <h2>Karibu kwa WashikaDAO</h2>
             <p>
@@ -90,7 +89,7 @@ const JifunzeElimu: React.FC = () => {
             </p>
           </div>
           <div className="image">
-            <img src="images/LOGO SYMBLO(1).png" alt="logo" width="175" />
+            <img src="images/LOGO SYMBLO(1).png" alt="logo"  />
           </div>
         </div>
         <div className="search-filter">
