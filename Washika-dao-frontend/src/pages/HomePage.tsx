@@ -85,8 +85,6 @@ const HomePage: React.FC = () => {
             <img
               src="images/LOGO FULL.png"
               alt="logo"
-              width="246"
-              height="183"
             />
             <p className="main">
               Uongozi wa <br />

@@ -28,9 +28,6 @@ const JoinPlatform: React.FC = () => {
   const [memberAddr, setMemberAddr] = useState("");
   const [txHash, setTxHash] = useState("");
   const [usrBal, setUsrBal] = useState("");
-  // const [isWalletConnected, setIsWalletConnected] = useState(false);
-
-  console.log(selectedDao);
 
   // New function for login functionality
   const loginMember = async (event: React.FormEvent) => {
@@ -238,6 +235,8 @@ const JoinPlatform: React.FC = () => {
       console.error("Submission failed:", error);
     }
   };
+  console.log(selectedDao);
+  
 
   return (
     <>

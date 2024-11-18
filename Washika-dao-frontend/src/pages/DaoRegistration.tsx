@@ -3,11 +3,15 @@ import DaoForm from "../components/DaoForm";
 import NavBar from "../components/NavBar";
 import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import React from "react";
 
 interface FormData {
+  input1: string | number | undefined;
+  input2: string | number | undefined;
+  input3: string | number | undefined;
   daoName: string;
   daoLocation: string;
   targetAudience: string;
@@ -21,7 +25,8 @@ interface FormData {
 }
 
 interface Member {
-  name: string;
+  firstName: string;
+  lastName: string;
   phoneNumber: string;
   nationalIdNo: string;
   memberRole: string;
@@ -56,8 +61,19 @@ const DaoRegistration: React.FC = () => {
   const { role, memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
-  console.log({daoMultiSig: memberAddr});
-  
+  console.log({ phoneNumber: phoneNumber });
+  console.log({ role: role });
+  console.log({ memberAddr: memberAddr });
+
+  useEffect(() => {
+    if (memberAddr) {
+      setFormData((prevData) => ({
+        ...prevData,
+        multiSigAddr: memberAddr.toLowerCase(),
+      }));
+    }
+  }, [memberAddr]);  
+
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
     daoLocation: "",
@@ -66,9 +82,12 @@ const DaoRegistration: React.FC = () => {
     daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
-    multiSigAddr: memberAddr || "",
+    multiSigAddr: memberAddr?.toLowerCase() || "",
     multiSigPhoneNo: phoneNumber, // Set initial value to daoMultiSig
     kiwango: 0,
+    input1: "",
+    input2: "",
+    input3: "",
   });
 
   // State to hold the list of members
@@ -76,11 +95,25 @@ const DaoRegistration: React.FC = () => {
 
   // Temporary state to hold the current member's input values
   const [currentMember, setCurrentMember] = useState<Member>({
-    name: "",
+    firstName: "",
+    lastName: "",
     phoneNumber: "",
     nationalIdNo: "",
     memberRole: "",
   });
+  const [completedSteps, setCompletedSteps] = useState<number>(0);
+
+  useEffect(() => {
+    let stepsCompleted = 0;
+
+    if (memberAddr) stepsCompleted++;
+    if (formData.daoName) stepsCompleted++;
+    if (formData.daoTitle) stepsCompleted++;
+    if (formData.daoImageIpfsHash) stepsCompleted++;
+    if (members.length > 0) stepsCompleted++;
+
+    setCompletedSteps(stepsCompleted);
+  }, [formData, memberAddr, members.length, phoneNumber]);
 
   // Handle changes in the main form fields
   const handleChange = (
@@ -106,7 +139,8 @@ const DaoRegistration: React.FC = () => {
   // Function to add a member to the members list
   const handleAddMember = () => {
     if (
-      currentMember.name &&
+      currentMember.firstName &&
+      currentMember.lastName &&
       currentMember.phoneNumber &&
       currentMember.nationalIdNo &&
       currentMember.memberRole
@@ -116,7 +150,8 @@ const DaoRegistration: React.FC = () => {
 
       // Clear the currentMember form for new input
       setCurrentMember({
-        name: "",
+        firstName: "",
+        lastName: "",
         phoneNumber: "",
         nationalIdNo: "",
         memberRole: "",
@@ -168,7 +203,7 @@ const DaoRegistration: React.FC = () => {
       );
       const data = await response.json();
       console.log(data);
-       // Parse the response JSON
+      // Parse the response JSON
 
       // Check if the response indicates success
       if (response.ok) {
@@ -189,24 +224,31 @@ const DaoRegistration: React.FC = () => {
       {role === "Owner" ? ( // Only show form if user role is "owner"
         <main className="daoRegistration">
           <div className="funguaKikundi">
-            <h1>Fungua Kikundi chako kirahisi, upate faida kibao</h1>
+            <h1>
+              Fungua Kikundi chako <br />
+              kirahisi, upate faida kibao
+            </h1>
             <p>
-              Tumia teknolojia yetu kuunda, kuendesha, na kuboresha kikundi
-              chako
+              Tumia teknolojia yetu kuunda, kuendesha, <br />
+              na kuboresha kikundi chako
             </p>
           </div>
 
           <div className="circle-container">
-            <div className="circle one">1</div>
-            <div className="line"></div>
-            <div className="circle">2</div>
-            <div className="line"></div>
-            <div className="circle">3</div>
-            <div className="line"></div>
-            <div className="circle">4</div>
-            <div className="line"></div>
-            <div className="circle">5</div>
+            {Array.from({ length: 5 }, (_, index) => (
+              <React.Fragment key={`circle-${index}`}>
+                <div
+                  className={`circle ${
+                    index + 1 <= completedSteps ? "green" : ""
+                  }`}
+                >
+                  {index + 1}
+                </div>
+                {index < 4 && <div className="line" />}
+              </React.Fragment>
+            ))}
           </div>
+
           <form className="combinedForms" onSubmit={handleSubmit}>
             <DaoForm
               className="form one"
@@ -271,6 +313,35 @@ const DaoRegistration: React.FC = () => {
                   onChange: handleChange,
                 },
                 {
+                  group: true,
+                  fields: [
+                    {
+                      label: "Weka Namba za HISA",
+                      type: "text",
+                      name: "input1",
+                      value: formData.input1,
+                      onChange: handleChange,
+                    },
+                    {
+                      label: "Weka Kiasi cha HISA",
+                      type: "text",
+                      name: "input2",
+                      value: formData.input2,
+                      onChange: handleChange,
+                    },
+                    {
+                      label: "Riba za Mikopo",
+                      type: "text",
+                      name: "input3",
+                      value: formData.input3,
+                      placeholder: "%",
+                      onChange: handleChange,
+                    },
+                  ],
+                  label: "",
+                  type: "",
+                },
+                {
                   label: "",
                   type: "file",
                   name: "daoImageIpfsHash",
@@ -322,11 +393,10 @@ const DaoRegistration: React.FC = () => {
               },
             ]}
           /> */}
-            <div className="button-container">
-              <button className="createDao" type="submit">
-                Create DAO
-              </button>
-            </div>
+
+            <button className="createDao" type="submit">
+              Create DAO
+            </button>
           </form>
         </main>
       ) : (
