@@ -72,7 +72,7 @@ const DaoRegistration: React.FC = () => {
         multiSigAddr: memberAddr.toLowerCase(),
       }));
     }
-  }, [memberAddr]);  
+  }, [memberAddr]);
 
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
@@ -393,10 +393,11 @@ const DaoRegistration: React.FC = () => {
               },
             ]}
           /> */}
-
-            <button className="createDao" type="submit">
-              Create DAO
-            </button>
+            <center>
+              <button className="createDao" type="submit">
+                Create DAO
+              </button>
+            </center>
           </form>
         </main>
       ) : (

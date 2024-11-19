@@ -1,25 +1,5 @@
 .daoRegistration.join .funguaKikundi {
-  padding-left: 72px;
-  margin-bottom: 0;
-}
-
-.daoRegistration.join .funguaKikundi h1 {
-  width: 1106px;
-}
-
-.daoRegistration.join .funguaKikundi::before {
-  content: "";
-  position: absolute;
-  bottom: -3px;
-  left: 1012px;
-  width: 8px;
-  height: 8px;
-  background-color: #c8954b;
-  border-radius: 50%;
-}
-
-.daoRegistration.join .circle-container {
-  padding: 64px 0 0 184px;
+  margin-bottom: 48px;
 }
 
 .daoRegistration.join .form select {
@@ -27,7 +7,7 @@
   height: 64px;
   border-radius: 15px;
   background-color: #d9d9d9;
-  font-size: 24px;
+  font-size: clamp(18px,4vw,24px);
   font-family: "DM Mono", sans-serif;
   color: #433939;
   padding: 0 36px;
@@ -46,14 +26,8 @@
   display: none;
 }
 
-.daoRegistration.join .form.one .left {
-  width: 362px;
-}
-
 .digitalWallet {
   padding: 0;
-  margin: 100px;
-
 }
 
 .digitalWallet .left {
@@ -67,8 +41,7 @@
   position: absolute;
   bottom: 0;
   height: 2px;
-  left: -24px;
-  width: 941px;
+  width: 60vw;
   background-color: #c8954b;
 }
 
@@ -76,7 +49,7 @@
   content: "";
   position: absolute;
   bottom: -3px;
-  left: 910px;
+  left: 60vw;
   width: 8px;
   height: 8px;
   background-color: #c8954b;
@@ -84,8 +57,7 @@
 }
 
 .digitalWallet h2 {
-  width: 913px;
-  height: 60px;
+  width: clamp(22px, 87vw, 1570px);
   font-size: 63px;
   color: #f8b859;
 }
@@ -106,20 +78,18 @@
 }
 
 .digitalWallet .formDiv p {
-  width: 958px;
   text-align: center;
-  padding-top: 48px;
   font-style: normal;
 }
 
 .connectWallet {
-  width: 365px;
-  height: 69px;
+  width: clamp(120px, 22vw, 365px);
+  height: clamp(32px, 7vw, 69px);
   color: #ffffff;
-  background-color: #D0820c;
-  border: 1px solid #DCB273;
+  background-color: #d0820c;
+  border: 1px solid #dcb273;
   border-radius: 6px;
-  font-size:30px;
+  font-size: clamp(16px, 2vw, 30px);
   cursor: pointer;
 }
 
@@ -182,26 +152,23 @@
 .findAndJoin {
   margin: 84px 142px 70px;
   display: flex;
-  gap: 64px;
+  justify-content: space-evenly;
 }
 
 .findAndJoin .one {
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 16px;
+  width: 376px;
 }
 
 .findAndJoin h2 {
-  width: 376px;
-  height: 84px;
   color: #f8b859;
-  font-size: 36px;
+  font-size: clamp(24px, 4vw, 36px);
 }
 
 .findAndJoin p {
-  width: 480px;
-  height: 81px;
-  font-size: 31px;
+  font-size: clamp(18px, 2vw, 31px);
   color: #ffffff;
   font-style: italic;
 }
@@ -213,73 +180,40 @@
   justify-content: center;
 }
 
-.findAndJoin .two {
-  margin-top: 48px;
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-}
-
 .findAndJoin .select-1 {
-  width: 435px;
-  height: 69px;
+  width: clamp(200px, 20vw, 435px);
+  height: clamp(36px, 3vw, 69px);
   border-radius: 16px;
   border: 1px solid #dcb273;
   background-color: #856d4a;
-  font-size: 30px;
+  font-size: clamp(16px, 1.5vw, 30px);
   color: #d9d9d9;
   font-family: "DM Mono", sans-serif;
-  padding: 0 36px;
 }
-
-/* .findAndJoin .formDiv {
-  background-color: transparent;
-  padding: 36px 6px;
-} */
 
 .createAccount {
   margin-bottom: 4rem;
-  width: 319px;
-  height: 50px;
+  width: clamp(200px,39vw,319px);
+  height: clamp(36px, 6vw, 50px);
   border-radius: 13px;
   background-color: #48b248;
   border: 1px solid #defc26;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 900px) {
   .daoRegistration.join .funguaKikundi {
-    padding-left: 0;
-    margin: 24px;
-  }
-
-  .daoRegistration.join .funguaKikundi h1 {
-    width: auto;
-  }
-
-  .daoRegistration.join .funguaKikundi::before {
-    left: 100%;
-  }
-
-  .daoRegistration.join .funguaKikundi::after {
-    width: 100%;
-  }
-
-  .daoRegistration.join .circle-container {
-    padding: 24px;
+    margin-bottom: 0;
   }
 
   .daoRegistration.join .form select {
     width: auto;
     height: 40px;
     border-radius: 9px;
+    padding: 0 12px;
   }
 
   .daoRegistration.join .form.one {
-    padding: 24px;
-  }
-
-  .daoRegistration.join .form.one .left {
-    width: auto;
+    padding: 9px;
   }
 
   .digitalWallet {
@@ -293,17 +227,15 @@
 
   .digitalWallet .left::after {
     left: 0;
-    width: 100%;
+    width: 90vw;
   }
 
   .digitalWallet .left::before {
-    left: 100%;
+    left: 90vw;
   }
 
   .digitalWallet h2 {
-    width: auto;
-    height: auto;
-    font-size: 36px;
+    font-size: 24px;
   }
 
   .digitalWallet p {
@@ -343,46 +275,25 @@
     margin: 24px;
     flex-direction: column;
     gap: 36px;
+    align-items: center;
   }
 
   .findAndJoin .one {
     gap: 16px;
-  }
-
-  .findAndJoin h2 {
     width: auto;
-    height: auto;
-  }
-
-  .findAndJoin p {
-    width: auto;
-    height: auto;
-    font-size: 24px;
   }
 
   .findAndJoin .image {
     padding: 0;
   }
 
-  .findAndJoin .two {
-    margin: 24px 0;
-    gap: 0;
+  .image img {
+    width: 123px;
   }
 
-  .findAndJoin .two .select-1 {
-    width: auto;
-    height: 64px;
-    font-size: 18px;
-  }
-
-  .findAndJoin .formDiv {
-    padding: 24px 0;
-  }
-
-  .findAndJoin .formDiv button {
-    margin-top: 24px;
-    width: 100%;
-    height: 56px;
-    font-size: 24px;
+  .findAndJoin .select-1 {
+    width: clamp(200px, 40vw, 435px);
+    height: clamp(36px, 5vw, 69px);
+    font-size: clamp(16px, 4vw, 30px);
   }
 }

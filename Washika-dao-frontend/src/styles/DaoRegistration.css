@@ -394,6 +394,7 @@ form {
   display: flex;
   flex-direction: column;
   gap: 36px;
+  align-items: center;
 }
 
 .hazina .left {
@@ -402,15 +403,11 @@ form {
 
 .hazina h2 {
   margin-bottom: 36px;
-  width: 913px;
-  height: 60px;
   color: #f8b859;
   font-size: 63px;
 }
 
 .hazina p {
-  width: 432px;
-  height: 125px;
   color: #ffffff;
   font-size: 31px;
   font-style: italic;
@@ -419,11 +416,9 @@ form {
 .hazina .formDiv {
   display: flex;
   flex-direction: column;
-  gap: 64px;
-  margin-left: 36px;
-  padding: 56px;
-  width: 1300px;
-  height: 473px;
+  justify-content: center;
+  width: clamp(300px,60vw,780px);
+  height: clamp(190px,29vw,473px);
   border-radius: 14px;
   background-color: #4b4546;
 }
@@ -702,8 +697,7 @@ button.createDao {
   }
 
   .hazina .formDiv {
-    gap: 20px;
-    padding: 24px;
+    padding: 36px;
     width: auto;
     height: auto;
     margin: 16px 24px 0;

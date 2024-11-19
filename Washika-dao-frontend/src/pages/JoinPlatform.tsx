@@ -6,6 +6,7 @@ import DaoForm from "../components/DaoForm";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
 import { ethers } from "ethers";
+import React from "react";
 
 interface Dao {
   daoName: string;
@@ -21,13 +22,13 @@ const JoinPlatform: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<number | "">("");
   const [nationalIdNo, setNationalIdNo] = useState<number | "">("");
   const [selectedDao, setSelectedDao] = useState(""); // Currently selected DAO
-  const [currentStep, setCurrentStep] = useState(1);
   const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
   const [multiSigAddr, setMultiSigAddr] = useState("");
   const [memberDaos, setMemberDaos] = useState<string[]>([]); // Array of all DAOs member belongs to
   const [memberAddr, setMemberAddr] = useState("");
   const [txHash, setTxHash] = useState("");
   const [usrBal, setUsrBal] = useState("");
+  const [completedSteps, setCompletedSteps] = useState<number>(0);
 
   // New function for login functionality
   const loginMember = async (event: React.FormEvent) => {
@@ -58,15 +59,16 @@ const JoinPlatform: React.FC = () => {
         console.log("Login successful:", result.message);
 
         // Dispatch the user information to the Redux store
-        dispatch(setCurrentUser({
-          memberAddr: result.member.memberAddr,
-          daoMultiSig: result.member.daoMultiSig || '',
-          firstName: result.member.firstName,
-          lastName: result.member.lastName,
-          role: result.member.memberRole,
-          phoneNumber: result.member.phoneNumber,
-      }));
-      
+        dispatch(
+          setCurrentUser({
+            memberAddr: result.member.memberAddr,
+            daoMultiSig: result.member.daoMultiSig || "",
+            firstName: result.member.firstName,
+            lastName: result.member.lastName,
+            role: result.member.memberRole,
+            phoneNumber: result.member.phoneNumber,
+          })
+        );
 
         // Verify that result.memberAddr is not undefined
         if (result?.member?.memberAddr) {
@@ -145,7 +147,17 @@ const JoinPlatform: React.FC = () => {
       };
       fetchDaos();
     }
-  }, [role]);
+
+    let stepsCompleted = 0;
+
+    if (firstName) stepsCompleted++;
+    if (memberAddr) stepsCompleted++;
+    if (phoneNumber) stepsCompleted++;
+    if (role) stepsCompleted++;
+    if (daos.length > 0) stepsCompleted++;
+
+    setCompletedSteps(stepsCompleted);
+  }, [daos.length, firstName, memberAddr, phoneNumber, role]);
 
   const handleRoleChange = (
     event: React.ChangeEvent<
@@ -170,11 +182,6 @@ const JoinPlatform: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    if (currentStep < 5) {
-      setCurrentStep(currentStep + 1);
-      return;
-    }
 
     // Build payload data
     const payload = {
@@ -236,7 +243,6 @@ const JoinPlatform: React.FC = () => {
     }
   };
   console.log(selectedDao);
-  
 
   return (
     <>
@@ -244,7 +250,7 @@ const JoinPlatform: React.FC = () => {
       <main className="daoRegistration join">
         <div className="funguaKikundi">
           <h1>Create, manage and fund community impact projects</h1>
-          <p>Welcome to a one-stop platform for your DAO operations</p>
+          <p>Welcome to a one-stop platform for your<br/> DAO operations</p>
         </div>
 
         <form className="hazina digitalWallet" onSubmit={loginMember}>
@@ -257,13 +263,17 @@ const JoinPlatform: React.FC = () => {
         </form>
 
         <div className="circle-container">
-          {[1, 2, 3, 4, 5].map((step) => (
-            <div key={step}>
-              <div className={`circle ${currentStep >= step ? "filled" : ""}`}>
-                {step}
+          {Array.from({ length: 5 }, (_, index) => (
+            <React.Fragment key={`circle-${index}`}>
+              <div
+                className={`circle ${
+                  index + 1 <= completedSteps ? "green" : ""
+                }`}
+              >
+                {index + 1}
               </div>
-              {step < 5 && <div className="line"></div>}
-            </div>
+              {index < 4 && <div className="line" />}
+            </React.Fragment>
           ))}
         </div>
 
@@ -297,7 +307,12 @@ const JoinPlatform: React.FC = () => {
                 label: "Role",
                 type: "select",
                 options: [
-                  { label: "Select Role", value: "", disabled: true, selected: true },
+                  {
+                    label: "Select Role",
+                    value: "",
+                    disabled: true,
+                    selected: true,
+                  },
                   { label: "Owner", value: "Owner" },
                   { label: "Member", value: "Member" },
                   { label: "Funder", value: "Funder" },
