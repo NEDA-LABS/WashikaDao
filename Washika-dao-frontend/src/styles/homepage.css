@@ -7,7 +7,7 @@
   background-repeat: no-repeat;
   position: relative;
   bottom: clamp(16px,1.2vw,24px);
-  margin-bottom: 36px;
+  margin-bottom: clamp(12px,4vw,36px);
 }
 
 .inner-container {
@@ -431,7 +431,6 @@
   .image-container {
     height: 380px;
     padding: 0 24px;
-    margin-bottom: 12px;
   }
 
   .inner-container {
