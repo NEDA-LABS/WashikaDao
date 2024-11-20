@@ -19,6 +19,7 @@ const JoinPlatform: React.FC = () => {
   const [role, setRole] = useState(""); // Default role
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<number | "">("");
   const [nationalIdNo, setNationalIdNo] = useState<number | "">("");
   const [selectedDao, setSelectedDao] = useState(""); // Currently selected DAO
@@ -29,6 +30,9 @@ const JoinPlatform: React.FC = () => {
   const [txHash, setTxHash] = useState("");
   const [usrBal, setUsrBal] = useState("");
   const [completedSteps, setCompletedSteps] = useState<number>(0);
+
+  console.log(email);
+  
 
   // New function for login functionality
   const loginMember = async (event: React.FormEvent) => {
@@ -292,6 +296,11 @@ const JoinPlatform: React.FC = () => {
                 label: "Last Name",
                 type: "text",
                 onChange: (e) => setLastName(e.target.value),
+              },
+              {
+                label: "email",
+                type: "email",
+                onChange: (e) => setEmail((e.target.value)),
               },
               {
                 label: "Phone Number",
