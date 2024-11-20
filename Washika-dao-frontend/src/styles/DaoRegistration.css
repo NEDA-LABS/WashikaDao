@@ -196,8 +196,13 @@ form {
 
 .groupDiv {
   display: grid;
-  grid-template-columns: 1.3fr 1.5fr 1fr;
-  gap: clamp(16px,5vw,26px);
+  grid-template-columns: 2fr 2.6fr 1.5fr;
+  gap: clamp(16px,4vw,26px);
+  align-items: end;
+}
+
+.groupDiv:has(.file-input) {
+  grid-template-columns: 1fr 1fr;
 }
 
 .groupDiv .keyDiv {
@@ -206,6 +211,8 @@ form {
 
 .groupDiv input {
   padding-left: 14px;
+  border-radius: 11px;
+  border: 3px solid #f59605;
 }
 
 .groupDiv input::placeholder {
@@ -221,15 +228,16 @@ form {
 }
 
 .form .file-input {
-  width: clamp(124px,27vw,382px);
-  height: clamp(40px,6vw,86px);
+  width: clamp(124px,25.2vw,498px);
+  height: clamp(34px,5vw,86px);
   border-radius: 14px;
   background-color: #92bb84;
   color: #3c3a3a;
-  font-size: 23px;
+  font-size: clamp(8px,1.5vw,23px);
   font-family: "Syne", sans-serif;
   border: none;
-  padding: clamp(8px,1vw,30px) clamp(5px, 2vw,24px);
+  text-align: center;
+  padding-top: clamp(8px,1.5vw,28px);
   cursor: pointer;
 }
 
@@ -474,13 +482,13 @@ form {
 
 button.createDao {
   width: clamp(200px, 28vw, 504px);
-  height: clamp(48px, 6vw, 122px);
+  height: clamp(48px, 7vw, 122px);
   color: #fbfaf8;
   background-color: #56923f;
   font-size: clamp(16px, 4.5vw, 31px);
   font-weight: bold;
   border-radius: 12px;
-  margin: 36px 0;
+  margin: clamp(36px,13vw,84px) 0;
 }
 
 @media only screen and (max-width: 900px) {
@@ -579,6 +587,10 @@ button.createDao {
 
   .groupDiv label {
     margin-bottom: 0;
+  }
+
+  .form .file-input {
+    width: clamp(14px,38vw,412px);
   }
 
   .wanakikundi {

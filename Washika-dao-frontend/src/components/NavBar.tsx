@@ -1,13 +1,14 @@
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
-
+import { clearCurrentUser } from "../redux/users/userSlice";
 
 interface NavBarProps {
   className: string;
 }
 
 const NavBar: React.FC<NavBarProps> = ({ className }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { firstName, memberAddr, daoMultiSig } = useSelector(
     (state: RootState) => state.user
@@ -35,35 +36,48 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       );
     } else {
       return (
-        (<li className="three">
-          <Link to={`/PublicDaoProfile/${daoMultiSIgAddr || ""}`} onClick={handleDaoToolKitClick}>
+        <li className="three">
+          <Link
+            to={`/PublicDaoProfile/${daoMultiSIgAddr || ""}`}
+            onClick={handleDaoToolKitClick}
+          >
             DAO Tool Kit
           </Link>
-        </li>)
+        </li>
       );
     }
-  };  
+  };
+
+  const handleLogout = () => {
+    // Dispatch action to clear current user data
+    dispatch(clearCurrentUser());
+    // Navigate to the login or home page after logout
+    navigate("/");
+  };
 
   const renderButton = () => {
     if (memberAddr && className != "DaoProfile" && className != "navbarOwner") {
       // If memberAddr is present, display "Profile" and navigate to ownerProfile
-      return (<button onClick={() => navigate(`/Owner/${memberAddr}`)}>Profile</button>);
-    } else if (className === "DaoProfile" || className === "navbarProposal") {
       return (
-        <button onClick={handleClick}>JIUNGE NASI</button>
+        <button onClick={() => navigate(`/Owner/${memberAddr}`)}>
+          Profile
+        </button>
       );
+    } else if (className === "DaoProfile" || className === "navbarProposal") {
+      return <button onClick={handleClick}>JIUNGE NASI</button>;
     } else if (className === "navbarOwner") {
-      return (
-        <button>{firstName}</button>
+      return firstName ? (
+        // If user is logged in, show the logout button
+
+        <button onClick={handleLogout}>Logout</button>
+      ) : (
+        // If no user data, show a sign-in button
+        <button onClick={handleClick}>Sign in</button>
       );
     } else if (className === "joinPlatformNav") {
-      return (
-        <button>Karibu</button>
-      )
+      return <button>Karibu</button>;
     }
-    return (
-      <button onClick={handleClick}> Sign in </button>
-    );
+    return <button onClick={handleClick}> Sign in </button>;
   };
 
   return (
@@ -82,12 +96,11 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
           <Link to="/JifunzeElimu">Jifunze/Elimu</Link>
         </li>
         {renderProfileLink()}
-        <li className="show">
-          {renderButton()}
-        </li>
+        <li className="show">{renderButton()}</li>
       </ul>
     </nav>
   );
 };
 
 export default NavBar;
+
