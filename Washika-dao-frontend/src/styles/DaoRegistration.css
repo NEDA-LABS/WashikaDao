@@ -195,8 +195,9 @@ form {
 }
 
 .groupDiv {
-  display: flex;
-  gap: 16px;
+  display: grid;
+  grid-template-columns: 1.3fr 1.5fr 1fr;
+  gap: clamp(16px,5vw,26px);
 }
 
 .groupDiv .keyDiv {
@@ -216,20 +217,19 @@ form {
   margin-bottom: 8px;
   color: #f8b859;
   font-weight: bold;
-  font-size: clamp(10px, 1.4vw, 24px);
+  font-size: clamp(10px, 1.2vw, 24px);
 }
 
 .form .file-input {
-  width: 382px;
-  height: 86px;
+  width: clamp(124px,27vw,382px);
+  height: clamp(40px,6vw,86px);
   border-radius: 14px;
   background-color: #92bb84;
   color: #3c3a3a;
   font-size: 23px;
   font-family: "Syne", sans-serif;
   border: none;
-  padding: 30px 24px;
-  text-align: center;
+  padding: clamp(8px,1vw,30px) clamp(5px, 2vw,24px);
   cursor: pointer;
 }
 
@@ -240,6 +240,15 @@ form {
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.form .file-input-1 {
+  background-color: #e2f859;
+}
+
+.form .file-input-1::file-selector-button{
+  background-color: #e2f859;
+
 }
 
 .wanakikundi {
@@ -385,12 +394,12 @@ form {
   padding: 14px;
   font-weight: bold;
   color: #ffffff;
-  background-color: #5e503a;
+  background-color: #1b791b;
   font-size: clamp(14px, 1.5vw, 21px);
 }
 
 .hazina {
-  padding: 64px 90px;
+  /* padding: 64px 90px; */
   display: flex;
   flex-direction: column;
   gap: 36px;
@@ -446,7 +455,7 @@ form {
   font-size: 29px;
 }
 
-.hazina input {
+/* .hazina input {
   width: 1051px;
   height: 102px;
   border-radius: 20px;
@@ -454,14 +463,14 @@ form {
   padding: 24px;
   color: #aea8a8;
   font-size: 37px;
-}
+} */
 
-.hazina input::placeholder {
+/* .hazina input::placeholder {
   color: #aea8a8;
   font-size: 37px;
   width: 988px;
   height: 44;
-}
+} */
 
 button.createDao {
   width: clamp(200px, 28vw, 504px);
@@ -570,13 +579,6 @@ button.createDao {
 
   .groupDiv label {
     margin-bottom: 0;
-  }
-
-  .form .file-input {
-    width: 180px;
-    height: 46px;
-    padding: 16px 5px;
-    font-size: 11px;
   }
 
   .wanakikundi {

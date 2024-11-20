@@ -86,7 +86,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
               Ongeza mwingine
             </button>
             <button type="button" className="button-2">
-              Create new wallet
+              Mkaribishe
             </button>
           </div>
           </div>
