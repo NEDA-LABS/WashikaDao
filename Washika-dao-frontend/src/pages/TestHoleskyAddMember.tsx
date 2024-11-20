@@ -5,7 +5,7 @@ import { Contract } from "ethers";
 
 //Blockchain component
 export default function TestHoleskyAddMember() {
-  const [usrBal, setUsrBal] = useState(''); //Keeping track of bal of connected address
+  const [, setUsrBal] = useState(''); //Keeping track of bal of connected address
   const [userAddr, setUsrAddr] = useState('');//keeping track of curr connected address
   const [txHash, setTxHash] = useState('');//Keeping track of the transaction hash
 

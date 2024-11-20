@@ -13,14 +13,15 @@ interface DaoDetails {
   daoOverview: string;
   daoImageIpfsHash: string;
   multiSigAddr: string;
+  kiwango: number;
 }
 
-const DaoProfile: React.FC = () => {
+const PublicDaoProfile: React.FC = () => {
   const navigate = useNavigate();
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
-  console.log({"daoMultiSigAddr": daoMultiSigAddr});
 
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
+  const [memberCount, setMemberCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -33,8 +34,6 @@ const DaoProfile: React.FC = () => {
         if (response.ok) {
           setLoading(false);
           setDaoDetails(data.daoDetails);
-          console.log({ result: data });
-          console.log({ data: data.daoDetails });
         } else {
           console.error("Error fetching daoDetails:", data.message);
         }
@@ -43,10 +42,28 @@ const DaoProfile: React.FC = () => {
       }
     };
 
+    const fetchMemberCount = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSigAddr}/members`
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setMemberCount(data.memberCount);
+        } else {
+          console.error("Error fetching member count:", data.message);
+        }
+      } catch (error) {
+        console.error("Failed to fetch member count:", error);
+      }
+    };
+
     if (daoMultiSigAddr) {
       fetchDaoDetails();
+      fetchMemberCount();
     }
   }, [daoMultiSigAddr]);
+  console.log(daoDetails);
 
   const handleClick = () => {
     navigate(`/CreateProposal/${daoMultiSigAddr}`);
@@ -64,7 +81,7 @@ const DaoProfile: React.FC = () => {
       <main className="daoMain">
         <div className="daoImage">
           <img
-            src={daoDetails.daoImageIpfsHash || "/images/DaoImage.png"} //fallback image
+            src={daoDetails.daoImageIpfsHash}
             alt="DaoImage"
             width={1450}
             height={509}
@@ -73,20 +90,15 @@ const DaoProfile: React.FC = () => {
         <section className="first">
           <div className="left">
             <div className="one">
-              <h1>{daoDetails.daoName || "KIKUNDI CHA JUKUMU"}</h1>
+              <h1>{daoDetails.daoName}</h1>
               <div className="location">
-                <p>{daoDetails.daoLocation || "Dar-es-Salaam, Tanzania"}</p>
+                <p>{daoDetails.daoLocation}</p>
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
-              <p className="email">
-                {daoDetails.multiSigAddr || "@JukumuDAO.ETH"}
-              </p>
+              <p className="email">{daoDetails.multiSigAddr}</p>
             </div>
 
-            <p className="section-2">
-              {daoDetails.daoDescription ||
-                "Jukumu ni kikundi cha wajasiriliamali na wafanyabiashara wadogo wadogo. Tupo Mburahati, Dar-es-Salaam. Tuna mipango endelevu ya kujenga biashara zetu. Tunanunua hisa, kukopa na kuposha biashara zetu pamoja na elimu za kujijenga kiuchumi."}
-            </p>
+            <p className="section-2">{daoDetails.daoDescription}</p>
 
             <div className="DaoOperations">
               <h1>DAO operations</h1>
@@ -99,13 +111,10 @@ const DaoProfile: React.FC = () => {
             </div>
 
             <div className="details">
-              <p className="email">
-                {daoDetails.multiSigAddr || "@JukumuDAO.ETH"}
-              </p>
+              <p className="email">{daoDetails.multiSigAddr}</p>
               <p className="parag">
-                This is the multi-sig account for{" "}
-                {daoDetails.daoName || "JUKUMU"}. Create a proposal to get
-                access to the JUKUMU fund.
+                This is the multi-sig account for {daoDetails.daoName}. Create a
+                proposal to get access to the JUKUMU fund.
               </p>
             </div>
           </div>
@@ -116,7 +125,7 @@ const DaoProfile: React.FC = () => {
                 <p className="left">TSH</p>
                 <p className="right">Thamani ya hazina</p>
               </div>
-              <p className="amount">3,000,000</p>
+              <p className="amount">{daoDetails.kiwango.toLocaleString()}</p>
             </div>
 
             <div className="section-3">
@@ -126,7 +135,7 @@ const DaoProfile: React.FC = () => {
               </div>
               <div className="bottom">
                 <h2>Idadi ya wanachama</h2>
-                <p>23</p>
+                <p>{memberCount}</p>
               </div>
               <div className="fundDao">
                 <button>FUND DAO</button>
@@ -146,4 +155,4 @@ const DaoProfile: React.FC = () => {
   );
 };
 
-export default DaoProfile;
+export default PublicDaoProfile;

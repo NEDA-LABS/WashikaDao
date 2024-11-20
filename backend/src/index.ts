@@ -1,15 +1,11 @@
 require('dotenv').config();
-const express = require('express');
+import express = require('express');
 const router = express.Router();
 const PORT = process.env.PORT || 8080;
 
-import "reflect-metadata"
-import { DataSource } from "typeorm";
-import { Dao } from "./entity/Dao";
-import { MemberDetails } from "./entity/MemberDetails";
-import { Proposal } from "./entity/Proposal";
-import { Vote } from "./entity/Vote"; 
-const cors = require("cors");
+import "reflect-metadata" 
+import cors = require("cors"); 
+
 
 import { AppDataSource } from "./data-source";
 /*

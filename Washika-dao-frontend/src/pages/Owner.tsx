@@ -3,11 +3,15 @@ import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import ProposalGroups from "../components/ProposalGroups";
 import Strip from "../components/Strip";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store"; 
 
 const Owner: React.FC = () => {
   const navigate = useNavigate();
+  const { firstName } = useSelector((state: RootState) => state.user);
+  const { daoMultiSig } = useSelector((state: RootState) => state.user);
   const handleClick = () => {
-    navigate("/CreateProposal");
+    navigate(`/CreateProposal/${daoMultiSig}`);
   };
   return (
     <>
@@ -15,7 +19,7 @@ const Owner: React.FC = () => {
       <main className="owner">
         <div className="top">
           <div className="one">
-            <h1>Hi, Shaila</h1>
+            <h1>Hi, {firstName}</h1>
             <p>Welcome to your one-stop platform for your DAO operations</p>
           </div>
           <img

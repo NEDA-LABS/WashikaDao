@@ -28,19 +28,23 @@ export interface IDao {
     daoOverview: string; 
     daoImageIpfsHash: string;
     daoMultiSigs: string[];
+    daoMultiSigAddr: string;
+    multiSigPhoneNo: number;
+    kiwango: number;
     proposals: IProposal;  //relationship with proposal entity
     members: IMemberDetails;  //relationship with memberDetails entity
 
 }
 
 export interface IMemberDetails {
-    memberId?: string;
-    memberName: string;
+    memberId?: number;
+    firstName: string;
+    lastName: string;
     phoneNumber: number;
     nationalIdNo: number;
     memberRole: string;  //funder, owner, member
     memberAddr: string;
     daoMultiSig: string;
-    daos?: IDao; 
+    daos?: IDao[]; 
 }
 

@@ -1,6 +1,7 @@
 // Define the structure of a Member object
 interface Member {
-  name: string;
+  firstName: string;
+  lastName: string;
   phoneNumber: string;
   nationalIdNo: string;
   memberRole: string;
@@ -25,20 +26,30 @@ const MemberForm: React.FC<MemberFormProps> = ({
           <p>Taarifa za wanachama kwenye kikundi</p>
         </div>
         <div className="two">
-          <img src="images/Group.png" alt="profile logo" width={193} />
+          <img src="images/Group.png" alt="profile logo" />
         </div>
       </div>
       <div className="right">
         <div className="top">Taarifa za wanachama</div>
         <div className="formDiv">
-          <div className="first">
+          <div className="div">
+             <div className="first">
             <div className="input">
               <label>Jina la mwanachama</label>
-              <input
-                type="text"
-                value={currentMember.name}
-                onChange={(e) => onMemberChange("name", e.target.value)}
-              />
+              <div className="memberNames">
+                <input
+                  type="text"
+                  value={currentMember.firstName}
+                  onChange={(e) => onMemberChange("firstName", e.target.value)}
+                  placeholder="first name"
+                />
+                <input
+                  type="text"
+                  value={currentMember.lastName}
+                  onChange={(e) => onMemberChange("lastName", e.target.value)}
+                   placeholder="last name"
+                />
+              </div>
             </div>
             <div className="input">
               <label>Nafasi yake</label>
@@ -47,6 +58,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
                 onChange={(e) => onMemberChange("memberRole", e.target.value)}
                 className="short"
               >
+                <option value="" disabled>Role</option>
                 <option value="Owner">Owner</option>
                 <option value="Funder">Funder</option>
                 <option value="Member">Member</option>
@@ -73,10 +85,12 @@ const MemberForm: React.FC<MemberFormProps> = ({
             <button type="button" className="button-1" onClick={onAddMember}>
               Ongeza mwingine
             </button>
-            {/* <button type="button" className="button-2">
+            <button type="button" className="button-2">
               Create new wallet
-            </button> */}
+            </button>
           </div>
+          </div>
+         
         </div>
       </div>
     </div>

@@ -1,0 +1,31 @@
+[
+    {
+      "slug": "Article1",
+      "title": "Umuhimu wa Uchumi wa Kidijitali",
+      "category": "DAO",
+      "image": "/images/Article1.jpg",
+      "date": "2024-01-01"
+    },
+    {
+      "slug": "Article2",
+      "title": "Teknolojia ya Blockchain Inabadilisha",
+      "category": "Education",
+      "image": "/images/Article2.jpg",
+      "date": "2024-01-10"
+    },
+    {
+      "slug": "Article3",
+      "title": "Umuhimu wa Kuokoa na Kuweka Mchango",
+      "category": "Toolkit",
+      "image": "/images/Article3.jpg",
+      "date": "2024-01-01"
+    },
+    {
+      "slug": "Article4",
+      "title": "Faida za Vikundi vya Akiba na Mikopo ya Jamii",
+      "category": "DAO",
+      "image": "/images/Article4.jpg",
+      "date": "2024-01-10"
+    }
+  ]
+  

@@ -10,16 +10,19 @@ export default function ConnectWallet() {
   const client = createThirdwebClient({ clientId: _clientId });
   const customTheme = lightTheme({
     colors: {
-      modalBg: "yellow",
+      primaryButtonBg: "#d0820c", // Background color for the button
+      primaryButtonText: "#fbfaf8", // Text color for the button
     },
   });
   const chain = celoAlfajoresTestnet;
   //TODO: Switch to mainnet when in prod
   return (
-    <ConnectButton
-      client={client}
-      theme={customTheme}
-      accountAbstraction={{ chain, sponsorGas: false }}
-    />
+    <div className="connectButton">
+      <ConnectButton
+        client={client}
+        theme={customTheme}
+        accountAbstraction={{ chain, sponsorGas: false }}
+      />
+    </div>
   );
 }

@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { ThirdwebProvider } from "thirdweb/react";
+import { HelmetProvider } from "react-helmet-async";
 
 // Importing page components
 import HomePage from "./pages/HomePage";
@@ -8,11 +9,13 @@ import DaoRegistration from "./pages/DaoRegistration";
 import CreateProposal from "./pages/CreateProposal";
 import JoinPlatform from "./pages/JoinPlatform";
 import Funder from "./pages/Funder";
-import DaoProfile from "./pages/DaoProfile";
+import PublicDaoProfile from "./pages/PublicDaoProfile";
+// import PrivateDaoProfile from "./pages/PrivateDaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
 //Testing functionality components
 import TestCreateDao from "./pages/TestCreateDao";
+import BlogPage from "./pages/BlogPage";
 import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao";
 import TestHoleskyAddMember from "./pages/TestHoleskyAddMember";
 import TestHoleskyCreateProposal from "./pages/TestHoleskyCreateProposal";
@@ -26,24 +29,40 @@ const App: React.FC = () => {
   return (
     // Wrap the entire app in ThirdwebProvider
     <ThirdwebProvider>
-      <Router>
-        <Routes>
-          {/* Define routes for the application */}
-          <Route path="/" element={<HomePage />} />
-          <Route path="/DaoRegistration" element={<DaoRegistration />} />
-          <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
-          <Route path="/CreateProposal/:daoMultiSigAddr" element={<CreateProposal />} />
-          <Route path="/JoinPlatform" element={<JoinPlatform />} />
-          <Route path="/Funder" element={<Funder />} />
-          <Route path="/DaoProfile/:daoMultiSigAddr" element={<DaoProfile />} />
-          <Route path="/ViewProposal/:daoMultiSigAddr/:proposalId" element={<ViewProposal />} />
-          <Route path="/Owner" element={<Owner />} />
-          <Route path="/TestCreateDao" element={<TestCreateDao />} />
-          <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
+      <HelmetProvider>
+        <Router>
+          <Routes>
+            {/* Define routes for the application */}
+            <Route path="/" element={<HomePage />} />
+            <Route path="/DaoRegistration" element={<DaoRegistration />} />
+            <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
+            <Route
+              path="/CreateProposal/:daoMultiSigAddr"
+              element={<CreateProposal />}
+            />
+            <Route path="/JoinPlatform" element={<JoinPlatform />} />
+            <Route path="/Funder/:memberAddr" element={<Funder />} />
+            <Route
+              path="/PublicDaoProfile/:daoMultiSigAddr"
+              element={<PublicDaoProfile />}
+            />
+            {/* <Route
+              path="/DaoProfile/:daoMultiSigAddr"
+              element={<PrivateDaoProfile />}
+            /> */}
+            <Route
+              path="/ViewProposal/:daoMultiSigAddr/:proposalId"
+              element={<ViewProposal />}
+            />
+            <Route path="/Owner/:memberAddr" element={<Owner />} />
+            <Route path="/blog/:slug" element={<BlogPage />} />
+            <Route path="/TestCreateDao" element={<TestCreateDao />} />
+            <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
           <Route path="/TestHoleskyAddMember" element={<TestHoleskyAddMember />} />
           <Route path="/TestHoleskyCreateProposal" element={<TestHoleskyCreateProposal />} />
         </Routes>
-      </Router>
+        </Router>
+      </HelmetProvider>
     </ThirdwebProvider>
   );
 };

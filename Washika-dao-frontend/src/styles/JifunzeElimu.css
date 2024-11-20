@@ -1,11 +1,11 @@
 .jifunze {
-  padding: 240px 0 0;
+  padding-top: clamp(120px,16vw,240px);
 }
 
 div.onee {
   display: flex;
   justify-content: space-between;
-  padding-bottom: 48px;
+  padding-bottom: 36px;
   margin: 0 96px 120px 84px;
   position: relative;
 }
@@ -15,7 +15,7 @@ div.onee::after {
   position: absolute;
   bottom: 0;
   height: 2px;
-  width: 1282px;
+  width: 90vw;
   background-color: #c8954b;
 }
 
@@ -23,7 +23,7 @@ div.onee::before {
   content: "";
   position: absolute;
   bottom: -3px;
-  left: 1282px;
+  left: 90vw;
   width: 8px;
   height: 8px;
   background-color: #c8954b;
@@ -31,10 +31,94 @@ div.onee::before {
 }
 
 .jifunze .onee .left {
-  width: 1043px;
-  height: 309px;
-  font-size: 56px;
+  width: 85%;
+  font-size: clamp(18px,4.9vw,56px);
   color: #fffefe;
+}
+
+.onee .image img {
+  width: clamp(70px,11vw,175px);
+}
+
+.search-filter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 2rem 5rem;
+}
+
+.search-filter .search {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  background-color: #f7f7f7;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.2s ease-in-out;
+}
+
+.search-filter .search:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin: 0 0 5rem;
+}
+
+.pagination button {
+  padding: 0.75rem 1.5rem;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.pagination button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.pagination button:hover:not(:disabled) {
+  background-color: #0056b3;
+}
+
+.pagination span {
+  font-size: 1rem;
+  color: #333;
+}
+
+/* Responsive design */
+@media (max-width: 900px) {
+  div.onee {
+    margin: 0 24px;
+  }
+  .search-filter {
+    flex-direction: column;
+    gap: 0.75rem;
+    margin: 12px;
+  }
+  
+  .pagination {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 48px;
+  }
+
+  .pagination button {
+    width: 40%;
+    padding: 0.5rem 1.5rem;
+  }
 }
 
 .jifunze .imagge {

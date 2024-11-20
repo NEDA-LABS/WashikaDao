@@ -1,18 +1,30 @@
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import ConnectWallet from "../components/auth/ConnectWallet";
-/** Thirdweb imports **/
+import { RootState } from "../redux/store";
 
 
 interface NavBarProps {
   className: string;
-  // user?: { name: string };
 }
 
-const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
+const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const navigate = useNavigate();
+  const { firstName, memberAddr, daoMultiSig } = useSelector(
+    (state: RootState) => state.user
+  );
+
   const handleClick = () => {
     navigate("/JoinPlatform");
   };
+
+  const handleDaoToolKitClick = (e: React.MouseEvent) => {
+    if (!daoMultiSig) {
+      e.preventDefault(); // Prevents default link action
+      navigate("/JoinPlatform");
+    }
+  };
+
+  const daoMultiSIgAddr = daoMultiSig;
 
   const renderProfileLink = () => {
     if (className === "DaoProfile" || className === "navbarProposal") {
@@ -23,27 +35,34 @@ const NavBar: React.FC<NavBarProps> = ({ className/*, user*/ }) => {
       );
     } else {
       return (
-        <li className="three">
-          <Link to="/DaoProfile">DAO Tool Kit</Link>
-        </li>
+        (<li className="three">
+          <Link to={`/PublicDaoProfile/${daoMultiSIgAddr || ""}`} onClick={handleDaoToolKitClick}>
+            DAO Tool Kit
+          </Link>
+        </li>)
       );
     }
-  };
+  };  
 
   const renderButton = () => {
-    if (className === "DaoProfile" || className === "navbarProposal") {
+    if (memberAddr && className != "DaoProfile" && className != "navbarOwner") {
+      // If memberAddr is present, display "Profile" and navigate to ownerProfile
+      return (<button onClick={() => navigate(`/Owner/${memberAddr}`)}>Profile</button>);
+    } else if (className === "DaoProfile" || className === "navbarProposal") {
       return (
-        <button onClick={handleClick}>Add Member</button>
+        <button onClick={handleClick}>JIUNGE NASI</button>
       );
-    } else if (className === "navbarOwner" /*&& user*/) {
-      return (<>
-        {/* <button>{user.name}</button> */}
-        <button>user.name</button></>
+    } else if (className === "navbarOwner") {
+      return (
+        <button>{firstName}</button>
       );
+    } else if (className === "joinPlatformNav") {
+      return (
+        <button>Karibu</button>
+      )
     }
     return (
-      // Testing thirdweb modal button
-      <ConnectWallet />
+      <button onClick={handleClick}> Sign in </button>
     );
   };
 

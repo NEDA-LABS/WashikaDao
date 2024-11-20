@@ -1,53 +1,54 @@
 .image-container {
-  width: 100%;
   height: 86vh;
   color: #ffffff;
   padding: 16px 40px;
   background-image: url("/images/image-container.png");
   background-size: cover;
+  background-repeat: no-repeat;
   position: relative;
-  bottom: 24px;
+  bottom: clamp(16px,1.2vw,24px);
 }
 
 .inner-container {
+  height: calc(100% - 170px);
   position: absolute;
-  top: 160px;
+  top: 140px;
   padding-left: 48px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
 }
 
 .inner-container img {
-  margin-left: 24px;
-  width: 164px;
-  height: auto;
+  width: clamp(96px,26vh,240px);
+  margin: 9px;
 }
 
 .image-container p {
-  width: 56vw;
-  font-size: 36px;
+  font-size: clamp(24px, 2.3vw, 45px);
   font-family: "Droid Sans", sans-serif;
 }
 
 .image-container .main {
-  margin: 12px 0 3px;
-  font-size: 48px;
+  font-size: clamp(40px, 4vw, 86px);
   color: #f8b859;
   font-weight: bold;
-  line-height: 116%;
+  font-family: "DM Sans", sans-serif;
 }
 
 .buttons {
   display: flex;
-  gap: 48px;
-  font-size: 37px;
+  gap: 68px;
+  font-size: clamp(16px,3vw,31px);
   margin-left: 84px;
 }
 
 .buttons button {
-  width: 373px;
-  height: 83px;
-  padding: 24px;
+  width: clamp(240px,24vw,356px);
+  height: clamp(36px,4vw,72px);
+  padding: clamp(12px,1vw,24px);
   border: 2px solid #f8b859;
-  border-radius: 24px;
+  border-radius: clamp(16px,2vw,24px);
   cursor: pointer;
   font-family: "Tajawal", sans-serif;
 }
@@ -63,20 +64,15 @@
 }
 
 .parag-container {
-  width: 1236px;
-  height: 261px;
   color: #fffefe;
-  display: flex;
-  margin: 64px 48px;
-  justify-content: center;
-  align-items: center;
-  font-size: 62px;
+  margin: 32px 100px;
+  font-size: clamp(18px, 4vw, 48px);
   font-family: "Droid Sans", sans-serif;
 }
 
 .main-container {
   margin: 0 90px;
-  padding: 0 36px;
+  padding-left: 36px;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -102,8 +98,6 @@
 
 .box {
   display: flex;
-  justify-content: space-between;
-  width: 84vw;
   height: 569px;
 }
 
@@ -113,33 +107,29 @@
 }
 
 .box-left {
+  width: 59%;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
-  position: relative;
+}
+
+.box-left div {
+  transform: translateY(-30%);
+  margin: 0 48px;
 }
 
 .box-left h1 {
-  width: 582px;
-  height: 85px;
   color: #433939;
-  font-size: 67px;
+  font-size: clamp(19px, 4vw, 67px);
   font-weight: bold;
-  position: absolute;
   top: 140px;
   left: 36px;
 }
 
 .box-left p {
-  width: 568px;
-  height: 112px;
   color: #231f20;
-  font-size: 31px;
+  font-size: clamp(15px, 3vw, 31px);
   font-family: "Dosis", sans-serif;
-  position: absolute;
-  top: 240px;
-  left: 36px;
 }
 
 .box-left span {
@@ -153,8 +143,7 @@
   justify-content: center;
   align-items: start;
   border-radius: 8px;
-  width: 36vw;
-  height: 571px;
+  width: 41%;
   padding-top: 24px;
 }
 
@@ -164,28 +153,19 @@
 }
 
 .box-left.two {
-  width: 48vw;
-  height: 570px;
   background-color: #f6f7fa;
   border-radius: 10px;
 }
 
 .half-box {
-  width: 48vw;
   height: 586px;
   border-radius: 13px;
   background-color: #f6f7fa;
 }
 
-.half-box h1 {
-  height: 163px;
-  top: 64px;
-  line-height: 1;
-}
-
 .groups {
   position: absolute;
-  right: 1.5%;
+  right: 1.2%;
   top: 126px;
   display: flex;
   flex-direction: column;
@@ -201,7 +181,7 @@
 }
 
 .group {
-  padding: 24px 0px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -218,7 +198,8 @@
 
 .group .image img {
   border-radius: 9px;
-  width: 400px;
+  width: 31.5vw;
+  height: 271px;
 }
 
 .image .taarifaTop {
@@ -233,33 +214,36 @@
   color: #a69d9d;
   background-color: #defc26;
   border-radius: 10px;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .section-1 {
-  margin: 0 16px;
   display: grid;
   grid-template-columns: 2.5fr 3fr;
   border-bottom: 1px solid #d9d9d9;
   padding-bottom: 16px;
 }
 
+.section-1 .left {
+  margin: 12px 0 0 12px;
+}
+
 .section-1 h2 {
-  margin: 16px 0 3px;
+  margin-bottom: 6px;
   color: #433939;
-  font-size: 30px;
+  font-size: clamp(20px, 2vw, 30px);
   font-family: "DM Mono", sans-serif;
+  line-height: 100%;
 }
 
 .left .location {
-  margin: 0 8px 9px;
+  margin: 0 8px 8px;
   display: flex;
   gap: 6px;
 }
 
 .location p {
-  height: 13px;
   color: #a39898;
   font-size: 11px;
 }
@@ -273,17 +257,14 @@
 }
 
 .group .right {
-  margin-top: 64px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 3px;
+  justify-content: end;
 }
 
 .group h3 {
-  padding-right: 3px;
-  width: 166px;
-  height: 20px;
+  padding-right: 12px;
   color: #a39898;
   font-size: 17px;
   display: flex;
@@ -294,24 +275,22 @@
   color: #433939;
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  gap: 3px;
 }
 
 .right p {
-  width: 23px;
-  height: 12px;
   font-size: 10px;
   font-weight: bold;
-  padding-left: 16px;
+}
+
+.right .currency {
+  padding-left: 12px;
 }
 
 .right .amount,
 .treasury .amount {
-  padding: 0;
-  width: 248px;
-  height: 31px;
   color: #433939;
-  font-size: 28px;
+  font-size: 24px;
   font-weight: 100;
   font-family: "Druk Text Wide Web", sans-serif;
   display: inline-block;
@@ -319,11 +298,11 @@
 }
 
 .section-2 {
-  padding: 12px 12px 136px;
-  height: 140px;
+  padding: 12px 12px;
+  min-height: 140px;
   color: #433939;
   font-family: "Dosis", sans-serif;
-  font-size: 18px;
+  font-size: clamp(12px, 2vw, 18px);
 }
 
 .section-3 {
@@ -358,11 +337,9 @@
 
 .section-3 h2 {
   padding-top: 3px;
-  width: 926px;
-  height: 71px;
   color: #433939;
   line-height: 1.2;
-  font-size: 28px;
+  font-size: clamp(16px, 2.5vw, 34px);
   font-weight: 100;
   font-family: "Druk Text Wide Web", sans-serif;
   display: inline-block;
@@ -370,9 +347,7 @@
 }
 
 .section-3 p {
-  width: 178px;
-  height: 110px;
-  font-size: 69px;
+  font-size: clamp(32px, 4vw, 69px);
   color: #433939;
   padding: 24px 12px;
   font-family: "Druk Text Wide Web", sans-serif;
@@ -382,8 +357,7 @@
 
 .parag-container-two {
   margin: 64px 100px;
-  width: 1043px;
-  height: 309px;
+
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -391,98 +365,89 @@
 
 .parag-container-two h2 {
   color: #fffefe;
-  font-size: 56px;
+  font-size: clamp(18px, 3.5vw, 56px);
   font-family: "Droid Sans", sans-serif;
 }
 
 .sub-parag-container {
   color: #fffefe;
-  font-size: 56px;
+  font-size: clamp(18px, 3.5vw, 56px);
   font-family: "Encode Sans", sans-serif;
 }
 
 .article-container {
   display: flex;
   padding: 16px 90px 120px;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  align-items: center;
 }
 
 .article-container article {
-  width: 392px;
-  height: 460px;
+  width: clamp(70px, 25vw, 392px);
+  height: clamp(70px, 29vw, 354px);
   border-bottom: 1px solid #c8954b;
   position: relative;
   cursor: pointer;
+  border-radius: 14px;
+  background-size: cover;
+  background-position: center;
+  overflow: hidden;
+}
+
+.article-container article::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 .article-container div {
   position: absolute;
-  bottom: 20px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   padding: 16px;
+  z-index: 2;
 }
 
 .article-container h2 {
   color: #ffffff;
-  font-size: 43px;
-}
-
-.article-container .two h2 {
-  font-size: 56px;
+  font-size: clamp(12px, 2.5vw, 43px);
 }
 
 .article-container p {
   color: #f6f7fa;
-  font-size: 24px;
-  font-weight: lighter;
+  font-size: clamp(8px, 1.8vw, 24px);
+  font-weight: normal;
   font-family: "Dosis", sans-serif;
-  height: 110px;
-}
-
-.article-container .one {
-  background-image: url("/images/funguaDao.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.article-container .two {
-  background-image: url("images/jifunze.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
-.article-container .three {
-  background-image: url("images/DAOToolkit.png");
-  background-repeat: no-repeat;
-  background-size: cover;
 }
 
 @media only screen and (max-width: 900px) {
   .image-container {
-    height: 480px;
+    height: 380px;
     padding: 0 24px;
   }
 
   .inner-container {
-    width: auto;
     top: 126px;
     padding-left: 0px;
+    height: calc(100% - 136px);
   }
   .inner-container img {
     margin: 0;
-  }
-  .image-container p {
-    width: auto;
-    height: auto;
-    font-size: 18px;
-    margin-right: 24px;
+    width: clamp(100px,12vw,196px);
   }
 
   .image-container .main {
-    margin: 16px 24px 9px 0;
-    font-size: 26px;
-    height: auto;
-    width: auto;
+    font-size: clamp(23px, 7vw, 31px);
+  }
+
+  .image-container p {
+    font-size: clamp(12px, 4vw, 18px);
   }
 
   .buttons {
@@ -499,14 +464,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding-bottom: 16px;
+    padding-bottom: 4px;
   }
 
   .parag-container {
-    width: auto;
-    height: auto;
     margin: 24px;
-    font-size: 18px;
   }
 
   .main-container {
@@ -521,27 +483,16 @@
 
   .box {
     margin: 0;
-    width: calc(100vw - 48px);
     height: 140px;
-    flex-shrink: 0;
   }
 
   .box-left {
     padding: 0 24px;
   }
 
-  .box-left h1 {
-    width: auto;
-    height: auto;
-    font-size: 22px;
-    position: initial;
-  }
-
-  .box-left p {
-    width: auto;
-    height: auto;
-    font-size: 15px;
-    position: initial;
+  .box-left div {
+    transform: translateY(0%);
+    margin: 0 24px;
   }
 
   .box.one .box-right,
@@ -549,13 +500,11 @@
     display: none;
   }
 
-  .box-left.two {
+  .box-left {
     width: auto;
-    height: 140px;
   }
 
   .half-box {
-    min-width: calc(100vw - 48px);
     height: 140px;
   }
 
@@ -578,6 +527,7 @@
 
   .group .image img {
     width: 100%;
+    height: clamp(200px, 27vw, 270px);
   }
 
   .image .taarifaTop {
@@ -588,55 +538,47 @@
   }
 
   .section-1 {
-    width: auto;
     display: initial;
   }
 
-  .section-1 h2 {
-    margin: -16px 9px 0;
-    font-size: 20px;
+  .section-1 .left {
+    margin: 0;
   }
 
-  .left .location {
-    margin: 0 9px;
-  }
-
-  .left .location img {
-    width: auto;
-  }
-
+  .left .location,
   .left .email {
-    margin: 0 9px;
+    margin: 0;
   }
 
   .group .right {
-    margin-top: 3px;
+    margin: 3px 0 0;
     align-items: flex-start;
   }
 
   .group h3 {
     width: auto;
-    margin: 6px 9px 0;
+    margin-top: 6px;
   }
 
   .right p {
     width: auto;
-    padding: 0 9px;
+  }
+
+  .right .currency {
+    padding-left: 6px;
   }
 
   .right .amount,
   .treasury .amount {
     font-size: 16px;
-    width: auto;
   }
 
   .section-2 {
-    padding: 0 9px 9px;
+    padding: 36px 0px 9px;
     font-size: 14px;
     margin: 0;
     margin-top: -28px;
-    width: auto;
-    height: auto;
+    min-height: auto;
   }
 
   .section-3 {
@@ -644,122 +586,26 @@
     gap: 3px;
   }
 
-  .section-3 img {
-    width: auto;
-    height: auto;
-  }
-
-  .section-3 .taarifa {
-    width: auto;
-    height: auto;
-    padding: 0 6px;
-  }
-
   .section-3 h2 {
-    width: auto;
-    height: auto;
-    font-size: 14px;
-    padding: 0;
-  }
-
-  .section-3 p {
-    width: auto;
-    height: auto;
+    width: 231px;
   }
 
   .parag-container-two {
     margin: 24px 24px 6px;
     gap: 6px;
-    width: auto;
-    height: auto;
-  }
-
-  .parag-container-two h2,
-  .sub-parag-container {
-    font-size: 20px;
   }
 
   .article-container {
-    padding: 24px 28px;
-    flex-direction: column;
+    padding: 2px 45px 24px;
     gap: 24px;
     margin-bottom: 12px;
   }
 
   .article-container article {
-    width: auto;
-    height: 180px;
     border-radius: 9px;
   }
 
-  .article-container h2,
-  .article-container .two h2 {
-    font-size: 26px;
-  }
-
-  .article-container p {
-    font-size: 18px;
-  }
-
   .article-container div {
-    bottom: -36px;
-  }
-}
-
-@media only screen and (width: 1512px) {
-  .inner-container {
-    top: 212px;
-  }
-  .inner-container img {
-    width: 246px;
-  }
-
-  .image-container p {
-    font-size: 40px;
-  }
-
-  .image-container .main {
-    font-size: 78px;
-  }
-
-  .box-left h1 {
-    left: 64px;
-  }
-
-  .box-left p {
-    left: 64px;
-  }
-
-  .box-left.two {
-    width: 728px;
-  }
-
-  .half-box {
-    width: 712px;
-  }
-
-  .half-box p {
-    width: 594px;
-    height: 173px;
-  }
-
-  .groups {
-    right: 54px;
-  }
-
-  .group .image img {
-    width: 100%;
-  }
-
-  .image .taarifaTop {
-    width: 127px;
-    height: 37px;
-    border-radius: 15px;
-  }
-
-  .section-2 {
-    margin-left: -16px;
-    padding: 12px 0 136px;
-    width: 432px;
+    padding: 6px;
   }
 }

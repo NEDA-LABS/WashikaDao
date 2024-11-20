@@ -1,10 +1,10 @@
 nav {
   width: 100vw;
-  height: 120px;
+  height: clamp(22px,12vw,120px);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 58px;
+  padding: clamp(28px,3.4vw,58px);
   background-color: #4b454662;
   position: absolute;
   font-weight: bold;
@@ -23,6 +23,7 @@ nav div,
   justify-content: center;
   gap: 8px;
   padding-top: 3px;
+
 }
 
 nav img,
@@ -114,7 +115,7 @@ footer img {
   margin-top: -72px;
 }
 
-@media only screen and (max-width: 600px) {
+@media only screen and (max-width: 900px) {
   nav {
     height: 84px;
     padding: 16px;
@@ -181,7 +182,7 @@ footer li {
 }
 
 
-@media only screen and (min-width: 1512px) {
+/* @media only screen and (min-width: 1512px) {
 nav {
   width: 100vw;
   height: 145px;
@@ -297,4 +298,4 @@ footer a {
 footer img {
   margin-top: -72px;
 }
-}
+} */
