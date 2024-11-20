@@ -9,7 +9,8 @@ import DaoRegistration from "./pages/DaoRegistration";
 import CreateProposal from "./pages/CreateProposal";
 import JoinPlatform from "./pages/JoinPlatform";
 import Funder from "./pages/Funder";
-import DaoProfile from "./pages/DaoProfile";
+import PublicDaoProfile from "./pages/PublicDaoProfile";
+// import PrivateDaoProfile from "./pages/PrivateDaoProfile";
 import ViewProposal from "./pages/ViewProposal";
 import Owner from "./pages/Owner";
 //Testing functionality components
@@ -42,9 +43,13 @@ const App: React.FC = () => {
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
             <Route path="/Funder/:memberAddr" element={<Funder />} />
             <Route
-              path="/DaoProfile/:daoMultiSigAddr"
-              element={<DaoProfile />}
+              path="/PublicDaoProfile/:daoMultiSigAddr"
+              element={<PublicDaoProfile />}
             />
+            {/* <Route
+              path="/DaoProfile/:daoMultiSigAddr"
+              element={<PrivateDaoProfile />}
+            /> */}
             <Route
               path="/ViewProposal/:daoMultiSigAddr/:proposalId"
               element={<ViewProposal />}

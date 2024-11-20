@@ -9,9 +9,9 @@ import { RootState } from "../redux/store";
 import React from "react";
 
 interface FormData {
-  input1: string | number | undefined;
-  input2: string | number | undefined;
-  input3: string | number | undefined;
+  // input1: string | number | undefined;
+  // input2: string | number | undefined;
+  // input3: string | number | undefined;
   daoName: string;
   daoLocation: string;
   targetAudience: string;
@@ -85,9 +85,9 @@ const DaoRegistration: React.FC = () => {
     multiSigAddr: memberAddr?.toLowerCase() || "",
     multiSigPhoneNo: phoneNumber, // Set initial value to daoMultiSig
     kiwango: 0,
-    input1: "",
-    input2: "",
-    input3: "",
+    // input1: "",
+    // input2: "",
+    // input3: "",
   });
 
   // State to hold the list of members
@@ -209,7 +209,7 @@ const DaoRegistration: React.FC = () => {
       if (response.ok) {
         const daoMultiSigAddr = data.multiSigAddr; // Extract multi-sig address from response
         console.log("DAO created successfully", data);
-        navigate(`/DaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
+        navigate(`/PublicDaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
       } else {
         console.error("Error creating DAO:", data.message);
       }
@@ -319,21 +319,21 @@ const DaoRegistration: React.FC = () => {
                       label: "Weka Namba za HISA",
                       type: "text",
                       name: "input1",
-                      value: formData.input1,
+                      // value: formData.input1,
                       onChange: handleChange,
                     },
                     {
                       label: "Weka Kiasi cha HISA",
                       type: "text",
                       name: "input2",
-                      value: formData.input2,
+                      // value: formData.input2,
                       onChange: handleChange,
                     },
                     {
                       label: "Riba za Mikopo",
                       type: "text",
                       name: "input3",
-                      value: formData.input3,
+                      // value: formData.input3,
                       placeholder: "%",
                       onChange: handleChange,
                     },

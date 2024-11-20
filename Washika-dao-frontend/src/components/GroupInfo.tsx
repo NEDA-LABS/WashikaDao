@@ -93,7 +93,7 @@ const GroupInfo: React.FC = () => {
           <div className="group" key={index}>
             {" "}
             {/* Each group's container */}
-            <Link to={`/daoProfile/${daoMultiSigAddr}`}>
+            <Link to={`/PublicDaoProfile/${daoMultiSigAddr}`}>
               <div className="image">
                 <img src={group.daoImageIpfsHash} alt={group.daoTitle} />
                 <div className="taarifaTop">Taarifa</div>

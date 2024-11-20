@@ -52,6 +52,16 @@ export async function CreateNewDao(req: Request, res: Response) {
     return res.status(400).json({ error: "Missing required DAO details" });
   }
 
+  const daoRepository = AppDataSource.getRepository(Dao);
+  const existingDao = await daoRepository.findOne({
+    where: { daoMultiSigAddr: multiSigAddr },
+  });
+  
+  if (existingDao) {
+    return res.status(400).json({ error: "DAO with this multiSigAddr already exists." });
+  }
+  
+
   try {
     // Save DAO details to the database
     const dao = new Dao();

@@ -36,7 +36,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     } else {
       return (
         (<li className="three">
-          <Link to={`/DaoProfile/${daoMultiSIgAddr || ""}`} onClick={handleDaoToolKitClick}>
+          <Link to={`/PublicDaoProfile/${daoMultiSIgAddr || ""}`} onClick={handleDaoToolKitClick}>
             DAO Tool Kit
           </Link>
         </li>)

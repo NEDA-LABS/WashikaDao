@@ -225,7 +225,7 @@ const JoinPlatform: React.FC = () => {
             firstName,
             lastName,
             role,
-            phoneNumber: 0,
+            phoneNumber: payload.phoneNumber,
           })
         );
 
