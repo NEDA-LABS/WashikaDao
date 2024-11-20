@@ -1,6 +1,6 @@
 .blog-page {
-  font-size: 1.5rem;
-  padding: clamp(120px, 11vw, 240px) clamp(12px, 5vw, 120px) 0;
+  font-size: 20px;
+  padding: clamp(120px, 11vw, 240px) clamp(12px, 16vw, 420px) 0;
   font-family: Arial, sans-serif;
   line-height: 1.6;
   color: rgb(201, 201, 201);
@@ -14,11 +14,11 @@
 }
 
 .blog-page h1 {
-  font-size: 3rem;
+  font-size: 24px;
 }
 
 .blog-page p {
-  font-size: 1.5rem;
+  /* font-size: 21px; */
   margin-bottom: 1rem;
 }
 

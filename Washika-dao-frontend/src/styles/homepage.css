@@ -20,7 +20,7 @@
 }
 
 .inner-container img {
-  width: clamp(96px,26vh,240px);
+  width: clamp(96px,20vh,240px);
   margin: 9px;
 }
 
@@ -30,7 +30,7 @@
 }
 
 .image-container .main {
-  font-size: clamp(40px, 4vw, 86px);
+  font-size: clamp(40px, 3.5vw, 86px);
   color: #f8b859;
   font-weight: bold;
   font-family: "DM Sans", sans-serif;
