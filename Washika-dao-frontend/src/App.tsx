@@ -12,6 +12,7 @@ import Funder from "./pages/Funder";
 import PublicDaoProfile from "./pages/PublicDaoProfile";
 // import PrivateDaoProfile from "./pages/PrivateDaoProfile";
 import ViewProposal from "./pages/ViewProposal";
+import MemberProfile from "./pages/MemberProfile";
 import Owner from "./pages/Owner";
 //Testing functionality components
 import TestCreateDao from "./pages/TestCreateDao";
@@ -54,6 +55,7 @@ const App: React.FC = () => {
               path="/ViewProposal/:daoMultiSigAddr/:proposalId"
               element={<ViewProposal />}
             />
+            <Route path="/MemberProfile" element={<MemberProfile />} />
             <Route path="/Owner/:memberAddr" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/TestCreateDao" element={<TestCreateDao />} />
