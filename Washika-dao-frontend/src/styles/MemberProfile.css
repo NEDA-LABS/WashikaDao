@@ -7,13 +7,16 @@ body :has(.member) {
 }
 
 .member {
-  padding: clamp(120px, 14vw, 200px) clamp(24px, 7vw, 96px);
+  padding: clamp(120px, 24vw, 230px) clamp(24px, 7vw, 96px);
   background: linear-gradient(to bottom, #ffffff 33%, #282424 58%);
 }
 
 .member .one {
   display: grid;
   grid-template-columns: 2.8fr 1fr;
+  align-items: center;
+  margin-bottom: 36px;
+  position: relative;
 }
 
 .member .one .first h1 {
@@ -33,6 +36,9 @@ body :has(.member) {
   grid-template-rows: repeat(3, 1fr);
   padding: 0 clamp(6px,2.6vw, 20px);
   border-radius: clamp(6px, 1vw, 16px);
+  position: absolute;
+  bottom: 56px;
+  right: -64px;
 }
 
 .member .header {
@@ -100,7 +106,47 @@ body :has(.member) {
     width: 7px;
 }
 
+.button-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 0 48px 24px 0px;
+  margin-bottom: 18px;
+  position: relative;
+}
 
+.button-group ::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+  left: 0px;
+  right: clamp(70px,54.8vw,1100px);
+  background-color: #ffbd59;
+}
+
+.button-group button {
+  border: 2px solid #ffbd59;
+  font-weight: bold;
+  padding: 16px;
+  border-radius: 6px;
+  font-size: clamp(9px,1.6vw,18px);
+}
+
+.button-group button:nth-of-type(1){
+  background-color: #2ea62c;
+  color: #ffffff;
+}
+
+.dashboard {
+  border: 1px solid red;
+}
+
+.dashboard-wrapper h2 {
+  font-weight: normal;
+  font-size: 28px;
+  color: #433939;
+}
 
 .footerDaoMember {
   background-color: #282424;
@@ -122,7 +168,10 @@ body :has(.member) {
     height: clamp(156px, 42vw, 220px);
     padding: 0 clamp(6px,7.8vw, 24px);
     border-radius: 16px;
-    margin: 16px 0;
+    margin: 24px 0;
+    position: relative;
+    bottom: 0;
+    right: 0;
   }
 
   .member .header .left, .member .credit h2 {
@@ -141,6 +190,10 @@ body :has(.member) {
 
   .member .credit p {
     font-size: clamp(9px, 2.3vw,15px);
+  }
+
+  .button-group {
+    display: none;
   }
 }
 

@@ -44,15 +44,15 @@ const MemberProfile: React.FC = () => {
         </section>
 
         <div className="button-group">
-          <button>Taarifa za fedha</button>
+          <button>Taarifa za Fedha</button>
           <button>Fanya Malipo</button>
           <button>Omba Mkopo</button>
           <button>Edit Settings</button>
         </div>
 
-        <div>
+        <div className="dashboard-wrapper">
           <h2>Taarifa za fedha</h2>
-          <div>
+          <div className="dashboard">
             <div>
               <div>Dao Dashboard Overview</div>
               <ul>
