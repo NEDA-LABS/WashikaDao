@@ -53,7 +53,7 @@ const MemberProfile: React.FC = () => {
         <div className="dashboard-wrapper">
           <h2>Taarifa za fedha</h2>
           <div className="dashboard">
-            <div>
+            <div className="one">
               <div>Dao Dashboard Overview</div>
               <ul>
                 <li>Deposit </li>
@@ -69,7 +69,7 @@ const MemberProfile: React.FC = () => {
                 </select>
               </ul>
             </div>
-            <div>
+            <div className="two">
               <div>
                 <div></div>
                 <div>

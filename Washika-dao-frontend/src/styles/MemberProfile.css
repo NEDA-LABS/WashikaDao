@@ -7,8 +7,8 @@ body :has(.member) {
 }
 
 .member {
-  padding: clamp(120px, 24vw, 230px) clamp(24px, 7vw, 96px);
-  background: linear-gradient(to bottom, #ffffff 33%, #282424 58%);
+  padding: clamp(120px, 24vw, 230px) clamp(24px, 7vw, 96px) 0;
+  background: linear-gradient(to bottom, #ffffff 51%, #282424 78%);
 }
 
 .member .one {
@@ -138,14 +138,33 @@ body :has(.member) {
   color: #ffffff;
 }
 
-.dashboard {
-  border: 1px solid red;
-}
-
 .dashboard-wrapper h2 {
   font-weight: normal;
   font-size: 28px;
   color: #433939;
+}
+
+.dashboard {
+  border: 1px solid #e1e4ea;
+  padding: 16px;
+  border-radius: 18px;
+margin: 16px 0;
+}
+
+.dashboard .one, .dashboard .one ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard .one ul {
+  width: 48%;
+}
+
+.dashboard .two {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
 }
 
 .footerDaoMember {
