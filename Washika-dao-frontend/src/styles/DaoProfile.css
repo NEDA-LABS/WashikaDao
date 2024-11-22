@@ -380,8 +380,8 @@ section.second::before {
   left: 36px;
   top: 310px;
   height: 257px;
-  width: 1px;
-  background-color: #000000;
+  width: 2px;
+  background-color: #D9D9D9;
   opacity: 23%;
 }
 
@@ -483,6 +483,7 @@ section.second::after {
   height: 39px;
   border-radius: 19px;
   font-size: 22px;
+  color: #FFFFFF;
   background-color: #E28B06;
 }
 

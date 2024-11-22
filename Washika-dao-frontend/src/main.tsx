@@ -19,6 +19,7 @@ import "./styles/JifunzeElimu.css";
 import "./styles/Owner.css";
 import "./styles/Funder.css";
 import "./styles/BlogPage.css";
+import "./styles/MemberProfile.css"
 
 // Selecting the HTML element with the id of 'root' as the mounting point for the React app.
 createRoot(document.getElementById("root")!).render(

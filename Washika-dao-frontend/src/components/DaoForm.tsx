@@ -55,14 +55,30 @@ const DaoForm: React.FC<DaoFormProps> = ({
               <div key={index} className="groupDiv">
                 {field.fields?.map((subField: Field, subIndex: number) => (
                   <div key={subIndex} className="keyDiv">
-                    <label>{subField.label}</label>
-                    <input
-                      type={subField.type}
-                      name={subField.name}
-                      value={subField.value}
-                      placeholder={subField.placeholder}
-                      onChange={subField.onChange}
-                    />
+                    {subField.type === "file" ? (
+                      <div>
+                        <label>{subField.label}</label>
+                        <input
+                          type="file"
+                          name={subField.name}
+                          className={`file-input file-input-${subIndex}`}
+                          onChange={(e) =>
+                            subField.onChange && subField.onChange(e)
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <div>
+                        <label>{subField.label}</label>
+                        <input
+                          type={subField.type}
+                          name={subField.name}
+                          value={subField.value}
+                          placeholder={subField.placeholder}
+                          onChange={subField.onChange}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -1,0 +1,219 @@
+body :has(.member) {
+  background-color: #282424;
+}
+
+.navbarDaoMember {
+  background-color: #4b4546;
+}
+
+.member {
+  padding: clamp(120px, 24vw, 230px) clamp(24px, 7vw, 96px) 0;
+  background: linear-gradient(to bottom, #ffffff 51%, #282424 78%);
+}
+
+.member .one {
+  display: grid;
+  grid-template-columns: 2.8fr 1fr;
+  align-items: center;
+  margin-bottom: 36px;
+  position: relative;
+}
+
+.member .one .first h1 {
+  font-size: clamp(31px, 5vw, 76px);
+  color: #433939;
+}
+
+.member .one .first p {
+  font-size: clamp(20px, 2.7vw, 43px);
+}
+
+.member .one .second {
+  width: clamp(240px, 25vw, 379px);
+  height: clamp(156px, 15vw, 212px);
+  border: 1px solid green;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  padding: 0 clamp(6px,2.6vw, 20px);
+  border-radius: clamp(6px, 1vw, 16px);
+  position: absolute;
+  bottom: 56px;
+  right: -64px;
+}
+
+.member .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e1e4ea;
+}
+
+.member .header .left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: clamp(12px,1.2vw,19px);
+    color: #0e121bb2;
+}
+
+.member .header .right{
+    display: flex;
+    align-items: center;
+    gap: clamp(8px,1.1vw,16px);
+    padding: 4px 9px;
+    border: 1px solid #e1e4ea;
+    border-radius: 8px;
+}
+
+.member .header .right p {
+    font-size: clamp(12px, 0.8vw, 15px);
+    font-weight: 500;
+    color: #525866;
+}
+
+.member .credit {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    justify-content: center;
+}
+
+.member .credit h2{
+    font-weight: normal;
+    font-size: clamp(12px,1.2vw,19px);
+    color: #99a0ae;
+}
+
+.member .credit h2 span {
+    color: #525866;
+    font-weight: 500;
+}
+
+.member .credit p {
+    color: #99a0ae;
+    font-size: clamp(9px, 0.8vw, 14px);
+}
+
+.member .bars {
+    display: flex;
+    gap: 3px;
+    padding-bottom:20px;
+    overflow: hidden;
+}
+
+.member .bars div {
+    background-color: #e1e4ea;
+    width: 7px;
+}
+
+.button-group {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  padding: 0 48px 24px 0px;
+  margin-bottom: 18px;
+  position: relative;
+}
+
+.button-group ::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+  left: 0px;
+  right: clamp(70px,54.8vw,1100px);
+  background-color: #ffbd59;
+}
+
+.button-group button {
+  border: 2px solid #ffbd59;
+  font-weight: bold;
+  padding: 16px;
+  border-radius: 6px;
+  font-size: clamp(9px,1.6vw,18px);
+}
+
+.button-group button:nth-of-type(1){
+  background-color: #2ea62c;
+  color: #ffffff;
+}
+
+.dashboard-wrapper h2 {
+  font-weight: normal;
+  font-size: 28px;
+  color: #433939;
+}
+
+.dashboard {
+  border: 1px solid #e1e4ea;
+  padding: 16px;
+  border-radius: 18px;
+margin: 16px 0;
+}
+
+.dashboard .one, .dashboard .one ul {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard .one ul {
+  width: 48%;
+}
+
+.dashboard .two {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.footerDaoMember {
+  background-color: #282424;
+}
+
+@media only screen and (max-width: 900px) {
+  .member .one {
+    display: initial;
+  }
+
+  .member .one .center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .member .one .second {
+    width: clamp(240px, 76vw, 392px);
+    height: clamp(156px, 42vw, 220px);
+    padding: 0 clamp(6px,7.8vw, 24px);
+    border-radius: 16px;
+    margin: 24px 0;
+    position: relative;
+    bottom: 0;
+    right: 0;
+  }
+
+  .member .header .left, .member .credit h2 {
+    font-size: clamp(14px,3.4vw,22px);
+  }
+
+  .member .header .right {
+    gap: clamp(12px,5vw,36px);
+    margin:clamp(9px,4vw,20px) 0;
+    padding:clamp(3px,0.8vw,5px) clamp(2px,1.1vw,9px);
+  }
+
+  .member .header .right p {
+    font-size: clamp(12px, 1.7vw, 15px);
+  }
+
+  .member .credit p {
+    font-size: clamp(9px, 2.3vw,15px);
+  }
+
+  .button-group {
+    display: none;
+  }
+}
+
+

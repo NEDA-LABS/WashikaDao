@@ -283,6 +283,13 @@ const DaoRegistration: React.FC = () => {
                   value: formData.kiwango,
                   onChange: handleChange,
                 },
+                {
+                  label: "Akaunti namba ya fedha",
+                  type: "number",
+                  name: "accountNo",
+                  // value: formData.accountNo,
+                  onChange: handleChange,
+                },
               ]}
             />
 
@@ -343,10 +350,28 @@ const DaoRegistration: React.FC = () => {
                 },
                 {
                   label: "",
-                  type: "file",
-                  name: "daoImageIpfsHash",
-                  onChange: (e) =>
-                    handleFileChange(e as React.ChangeEvent<HTMLInputElement>), // File input handler
+                  type: "",
+                  group: true,
+                  fields: [
+                    {
+                      label: "Profile Image",
+                      type: "file",
+                      name: "daoImageIpfsHash",
+                      onChange: (e) =>
+                        handleFileChange(
+                          e as React.ChangeEvent<HTMLInputElement>
+                        ), // File input handler
+                    },
+                    {
+                      label: "Upload Registration Documents",
+                      type: "file",
+                      name: "daoRegDocs",
+                      onChange: (e) =>
+                        handleFileChange(
+                          e as React.ChangeEvent<HTMLInputElement>
+                        ), // File input handler
+                    },
+                  ],
                 },
               ]}
             />
@@ -358,41 +383,6 @@ const DaoRegistration: React.FC = () => {
               onAddMember={handleAddMember}
             />
 
-            {/* <DaoForm
-            className="hazina"
-            title="Hazina ya kikundi"
-            description="Taarifa na maelezo ya kifedha ya kikundi"
-            fields={[
-              {
-                label: "Unganisha multi-sig wallet/acc for your kikundi",
-                type: "button",
-                name: "connect-wallet",
-                id: "connect-wallet",
-                // onClick: async () => {
-                //   try {
-                //     // Logic to connect wallet using a web3 provider (e.g., MetaMask)
-                //     const provider = new ethers.providers.Web3Provider(window.ethereum);
-                //     const accounts = await provider.send("eth_requestAccounts", []);
-                //     const walletAddress = accounts[0];
-                //     setFormData((prevData) => ({
-                //       ...prevData,
-                //       multiSigAddr: walletAddress,
-                //     }));
-                //     console.log("Wallet connected:", walletAddress);
-                //   } catch (error) {
-                //     console.error("Wallet connection failed:", error);
-                //   }
-                // },
-              },              
-              {
-                label: "Andika akaunti namba ambayo itapokea fedha za kikundi",
-                type: "text",
-                name: "multiSigAddr",
-                value: formData.multiSigAddr,
-                onChange: handleChange,
-              },
-            ]}
-          /> */}
             <center>
               <button className="createDao" type="submit">
                 Create DAO
