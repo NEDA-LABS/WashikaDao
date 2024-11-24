@@ -34,7 +34,7 @@ body :has(.member) {
   border: 1px solid green;
   display: grid;
   grid-template-rows: repeat(3, 1fr);
-  padding: 0 clamp(6px,2.6vw, 20px);
+  padding: 0 clamp(6px, 2.6vw, 20px);
   border-radius: clamp(6px, 1vw, 16px);
   position: absolute;
   bottom: 56px;
@@ -49,61 +49,61 @@ body :has(.member) {
 }
 
 .member .header .left {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: clamp(12px,1.2vw,19px);
-    color: #0e121bb2;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: clamp(12px, 1.2vw, 19px);
+  color: #0e121bb2;
 }
 
-.member .header .right{
-    display: flex;
-    align-items: center;
-    gap: clamp(8px,1.1vw,16px);
-    padding: 4px 9px;
-    border: 1px solid #e1e4ea;
-    border-radius: 8px;
+.member .header .right {
+  display: flex;
+  align-items: center;
+  gap: clamp(8px, 1.1vw, 16px);
+  padding: 4px 9px;
+  border: 1px solid #e1e4ea;
+  border-radius: 8px;
 }
 
 .member .header .right p {
-    font-size: clamp(12px, 0.8vw, 15px);
-    font-weight: 500;
-    color: #525866;
+  font-size: clamp(12px, 0.8vw, 15px);
+  font-weight: 500;
+  color: #525866;
 }
 
 .member .credit {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    justify-content: center;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  justify-content: center;
 }
 
-.member .credit h2{
-    font-weight: normal;
-    font-size: clamp(12px,1.2vw,19px);
-    color: #99a0ae;
+.member .credit h2 {
+  font-weight: normal;
+  font-size: clamp(12px, 1.2vw, 19px);
+  color: #99a0ae;
 }
 
 .member .credit h2 span {
-    color: #525866;
-    font-weight: 500;
+  color: #525866;
+  font-weight: 500;
 }
 
 .member .credit p {
-    color: #99a0ae;
-    font-size: clamp(9px, 0.8vw, 14px);
+  color: #99a0ae;
+  font-size: clamp(9px, 0.8vw, 14px);
 }
 
 .member .bars {
-    display: flex;
-    gap: 3px;
-    padding-bottom:20px;
-    overflow: hidden;
+  display: flex;
+  gap: 3px;
+  padding-bottom: 20px;
+  overflow: hidden;
 }
 
 .member .bars div {
-    background-color: #e1e4ea;
-    width: 7px;
+  background-color: #e1e4ea;
+  width: 7px;
 }
 
 .button-group {
@@ -121,7 +121,7 @@ body :has(.member) {
   bottom: 0;
   height: 1px;
   left: 0px;
-  right: clamp(70px,54.8vw,1100px);
+  right: clamp(70px, 54.8vw, 1100px);
   background-color: #ffbd59;
 }
 
@@ -130,10 +130,10 @@ body :has(.member) {
   font-weight: bold;
   padding: 16px;
   border-radius: 6px;
-  font-size: clamp(9px,1.6vw,18px);
+  font-size: clamp(9px, 1.6vw, 18px);
 }
 
-.button-group button:nth-of-type(1){
+.button-group button:nth-of-type(1) {
   background-color: #2ea62c;
   color: #ffffff;
 }
@@ -148,23 +148,145 @@ body :has(.member) {
   border: 1px solid #e1e4ea;
   padding: 16px;
   border-radius: 18px;
-margin: 16px 0;
+  margin: 16px 0;
 }
 
-.dashboard .one, .dashboard .one ul {
+.dashboard .one,
+.dashboard .one ul, .dashboard .one ul li {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.dashboard .one div {
+  display: flex;
+  gap: 9px;
+  font-weight: 500;
+  font-size: 19px;
+  color: #0e121b;
 }
 
 .dashboard .one ul {
   width: 48%;
 }
 
+.dashboard .one ul select {
+  border: 1px solid #e1e4ea;
+  padding: 6px;
+  border-radius: 9px;
+}
+
 .dashboard .two {
   display: flex;
   justify-content: space-between;
   font-size: 14px;
+}
+
+.dashboard .two .totals, .dashboard .two .totals .groupss .amount {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard .two .totals .icon{
+  border: 1px solid #e1e4ea;
+  padding: 9px;
+  border-radius: 50%;
+}
+
+.dashboard .two .totals .groupss {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.dashboard .two .totals .groupss p {
+  font-size: 13px;
+  color: #99a0ae;
+  font-weight: 500;
+}
+
+.dashboard .two .totals .groupss .amount p {
+  font-size: 19px;
+  color: #0e121b;
+}
+
+.dashboard .two .totals .groupss .amount div {
+  border: 1px solid #000000;
+  background-color: #c2f5da;
+  padding: 2px 9px;
+  border-radius: 11px;
+  color: #0b4627;
+}
+
+.dashboard .two .totals .groupss .amount .down {
+  border: none;
+  background-color: #ffc0c5;
+}
+
+.dashboard .bargraph {
+  display: flex;
+  gap: 24px;
+  padding: 20px 0 0;
+  overflow: hidden;
+}
+
+.dashboard .bargraph .oneBar {
+  width: 79px;
+  height: 164px;
+  display: grid;
+  grid-template-rows: 3fr 2fr 1fr 1fr;
+  gap: 1px;
+}
+
+.dashboard .bargraph .level {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  color: #525866;
+  font-size: 14px;
+}
+
+.dashboard .bargraph .oneBar .bar-1 {
+  background-color: #33C759;
+}
+
+.dashboard .bargraph .oneBar .bar-2 {
+  background-color: #30ADE6;
+}
+
+.dashboard .bargraph .oneBar .bar-3 {
+  background-color: #00C7BE;
+}
+
+.dashboard .bargraph .oneBar .bar-4 {
+  text-align: center;
+  color: #525866;
+  font-size: 14px;
+  padding-top: 12px;
+}
+
+.member .create {
+  background-color: #1e1e1e;
+  border: 1px solid #f8b859;
+  border-radius: 8px;
+  font-size: 21px;
+  color: #fbfaf8;
+  font-weight: bold;
+  padding: 12px;
+  margin: 16px 0 22px;
+}
+
+.member .second .sec {
+  display: flex;
+  gap: 16px;
+}
+
+.member .second h1 {
+  color: #171717;
+  font-weight: normal;
+  font-size: 31px;
 }
 
 .footerDaoMember {
@@ -185,7 +307,7 @@ margin: 16px 0;
   .member .one .second {
     width: clamp(240px, 76vw, 392px);
     height: clamp(156px, 42vw, 220px);
-    padding: 0 clamp(6px,7.8vw, 24px);
+    padding: 0 clamp(6px, 7.8vw, 24px);
     border-radius: 16px;
     margin: 24px 0;
     position: relative;
@@ -193,14 +315,15 @@ margin: 16px 0;
     right: 0;
   }
 
-  .member .header .left, .member .credit h2 {
-    font-size: clamp(14px,3.4vw,22px);
+  .member .header .left,
+  .member .credit h2 {
+    font-size: clamp(14px, 3.4vw, 22px);
   }
 
   .member .header .right {
-    gap: clamp(12px,5vw,36px);
-    margin:clamp(9px,4vw,20px) 0;
-    padding:clamp(3px,0.8vw,5px) clamp(2px,1.1vw,9px);
+    gap: clamp(12px, 5vw, 36px);
+    margin: clamp(9px, 4vw, 20px) 0;
+    padding: clamp(3px, 0.8vw, 5px) clamp(2px, 1.1vw, 9px);
   }
 
   .member .header .right p {
@@ -208,12 +331,10 @@ margin: 16px 0;
   }
 
   .member .credit p {
-    font-size: clamp(9px, 2.3vw,15px);
+    font-size: clamp(9px, 2.3vw, 15px);
   }
 
   .button-group {
     display: none;
   }
 }
-
-

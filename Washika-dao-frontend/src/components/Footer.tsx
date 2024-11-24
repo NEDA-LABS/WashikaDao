@@ -1,10 +1,18 @@
+import React from "react";
 import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faFacebookF,
+  faTwitter,
+  faInstagram,
+  faLinkedinIn,
+} from "@fortawesome/free-brands-svg-icons";
 
 interface FooterProps {
   className: string;
 }
 
-const Footer: React.FC<FooterProps> = ({className}) => {
+const Footer: React.FC<FooterProps> = ({ className }) => {
   return (
     <footer className={className}>
       <div>
@@ -22,7 +30,7 @@ const Footer: React.FC<FooterProps> = ({className}) => {
           <li>
             <Link to="/karibu">Karibu</Link>
           </li>
-        </ul>{" "}
+        </ul>
       </div>
       <div className="social-media-icons">
         <a
@@ -31,7 +39,7 @@ const Footer: React.FC<FooterProps> = ({className}) => {
           rel="noopener noreferrer"
           className="social-icon"
         >
-          <i className="fab fa-facebook-f"></i>
+          <FontAwesomeIcon icon={faFacebookF} />
         </a>
         <a
           href="https://x.com/nedalabs?s=11&t=hj2iETJOAG45JhGdjSLNcg"
@@ -39,7 +47,7 @@ const Footer: React.FC<FooterProps> = ({className}) => {
           rel="noopener noreferrer"
           className="social-icon"
         >
-          <i className="fab fa-twitter"></i>
+          <FontAwesomeIcon icon={faTwitter} />
         </a>
         <a
           href="https://instagram.com"
@@ -47,7 +55,7 @@ const Footer: React.FC<FooterProps> = ({className}) => {
           rel="noopener noreferrer"
           className="social-icon"
         >
-          <i className="fab fa-instagram"></i>
+          <FontAwesomeIcon icon={faInstagram} />
         </a>
         <a
           href="https://linkedin.com/company/nedalabs/"
@@ -55,7 +63,7 @@ const Footer: React.FC<FooterProps> = ({className}) => {
           rel="noopener noreferrer"
           className="social-icon"
         >
-          <i className="fab fa-linkedin-in"></i>
+          <FontAwesomeIcon icon={faLinkedinIn} />
         </a>
       </div>
       <img src="images/LOGO FULL.png" alt="logo" width="240" />
