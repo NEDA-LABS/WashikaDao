@@ -11,6 +11,7 @@ export default function TestHoleskyCreateProposal() {
     const provider = new ethers.BrowserProvider(window.ethereum, "any");
     let accounts = await provider.send("eth_requestAccounts", []);
     let account = accounts[0];
+    console.log(account)
     provider.on('accountsChanged', function (accounts) {
         account = accounts[0];
         console.log(address); // Print new address
@@ -39,6 +40,7 @@ export default function TestHoleskyCreateProposal() {
   async function handleCreateProposal() {
        const provider = new ethers.BrowserProvider(window.ethereum, "any");
     let accounts = await provider.send("eth_requestAccounts", []);
+    console.log(accounts)
     const signer = await  provider.getSigner();
       let holeskyFullDaoContract;
       holeskyFullDaoContract = new Contract("0xffd26D80A70DCC05E5b0FcD57B6C104e507f8b75", abi, signer);
