@@ -124,7 +124,7 @@ Chain ID: 44787
 CeloAlfajores
 
 
-- **Visit Us**: [Washika DAO Website](https://quick-match-late.on-fleek.app)
+- **Visit Us**: [Washika DAO Website](https://washikadao.on-fleek.app)
 - **Join the Community**: Follow us on [Twitter](https://x.com/nedalabs?s=11&t=hj2iETJ0AG45JhGdjSLNcg) and [LinkedIn](https://www.linkedin.com/company/nedalabs/)
   
 
