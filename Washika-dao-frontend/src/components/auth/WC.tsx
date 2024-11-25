@@ -1,7 +1,7 @@
-import { createThirdwebClient } from "thirdweb";
+import {createThirdwebClient, ThirdwebClient} from "thirdweb";
 //useActiveAccount,
 import { useActiveWallet, useActiveWalletConnectionStatus, ThirdwebProvider, ConnectButton, useConnectModal, useSetActiveWallet } from "thirdweb/react";
-import { inAppWallet } from "thirdweb/wallets";
+import {inAppWallet, Wallet} from "thirdweb/wallets";
 import { lightTheme } from "thirdweb/react";
 //add import for celo in prod too
 import { celoAlfajoresTestnet} from "thirdweb/chains";
@@ -17,15 +17,15 @@ const setActiveAccount = useSetActiveWallet();
   */
 
 //Add authentication using that one modal button to route to daoProfile using sample profile
-//@ts-ignore
+//@ts-expect-error
 const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
-const client = createThirdwebClient({ clientId: _clientId });
-const customTheme = lightTheme({
+const client: ThirdwebClient = createThirdwebClient({ clientId: _clientId });
+const customTheme: Theme = lightTheme({
   colors: {
     modalBg: "red",
   },
 });
-const wallets = [inAppWallet({
+const wallets: Wallet<"inApp">[] = [inAppWallet({
   auth: {
     options: [
       "email",

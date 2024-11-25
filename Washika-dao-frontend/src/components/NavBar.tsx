@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { clearCurrentUser } from "../redux/users/userSlice";
+//import ConnectWallet from "./auth/ConnectWallet.tsx";
 
 interface NavBarProps {
   className: string;
@@ -18,6 +19,11 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     navigate("/JoinPlatform");
   };
 
+  /**handleCreateAccount for wallet & authentication
+  function handleCreateAcount(){
+    ConnectWallet();
+  }
+**/
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
     if (!daoMultiSig) {
       e.preventDefault(); // Prevents default link action

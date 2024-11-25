@@ -100,7 +100,6 @@ const JoinPlatform: React.FC = () => {
       const account = accounts[0];
       const signer = await provider.getSigner();
       const address = await signer.getAddress(); // Get the address from the signer
-
       setMemberAddr(address);
       console.log({ account: account });
 
