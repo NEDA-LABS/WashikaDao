@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
 
 nav.DaoProfile {
-  height: 571px;
+  height: clamp(156px,60vw,571px);
   background-color: #636844;
   align-items: flex-start;
   border-radius: 0 0 8px 8px;
@@ -9,14 +9,14 @@ nav.DaoProfile {
 
 main.daoMain {
   background-color: #ffffff;
-  padding-top: 720px;
+  padding-top: clamp(206px,60vw,720px);
 }
 
 .daoMain .daoImage {
   width: 100%;
   padding: 0 24px;
   position: absolute;
-  top: 164px;
+  top: clamp(64px,9vw,164px);
   z-index: 2;
   display: flex;
   justify-content: center;
@@ -24,6 +24,7 @@ main.daoMain {
 }
 
 .daoImage img {
+  width: 100%;
   border-radius: 9px;
   object-fit: cover;
 }
@@ -524,18 +525,9 @@ section.second::after {
   display: inline-block;
 }
 
-@media only screen and (max-width: 600px) {
-  nav.DaoProfile {
-    height: 136px;
-  }
-
+@media only screen and (max-width: 900px) {
   main.daoMain {
     width: auto;
-    padding-top: 206px;
-  }
-
-  .daoMain .daoImage {
-    top: 64px;
   }
 
   .daoImage img {

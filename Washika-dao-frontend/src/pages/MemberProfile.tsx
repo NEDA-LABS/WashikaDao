@@ -25,10 +25,10 @@ const MemberProfile: React.FC = () => {
             </p>
           </div>
           <div className="center">
-            <div className="second">
+            <div className="secondy">
               <div className="header">
                 <div className="left">
-                  <img src="/images/speed-up-line.png" alt="logo" />
+                  <img src="/images/speed-up-line.png"alt="logo" />
                   <h1>Credit Score</h1>
                 </div>
                 <div className="right">
