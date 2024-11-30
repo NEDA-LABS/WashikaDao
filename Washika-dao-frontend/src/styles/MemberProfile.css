@@ -28,7 +28,7 @@ body :has(.member) {
   font-size: clamp(20px, 2.7vw, 43px);
 }
 
-.member .one .second {
+.member .one .secondy {
   width: clamp(240px, 25vw, 379px);
   height: clamp(156px, 15vw, 212px);
   border: 1px solid green;
@@ -278,6 +278,10 @@ body :has(.member) {
   margin: 16px 0 22px;
 }
 
+.member .second {
+  position: initial;
+}
+
 .member .second .sec {
   display: flex;
   gap: 16px;
@@ -304,7 +308,7 @@ body :has(.member) {
     align-items: center;
   }
 
-  .member .one .second {
+  .member .one .secondy {
     width: clamp(240px, 76vw, 392px);
     height: clamp(156px, 42vw, 220px);
     padding: 0 clamp(6px, 7.8vw, 24px);

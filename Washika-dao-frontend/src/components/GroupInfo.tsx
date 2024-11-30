@@ -71,7 +71,7 @@ const GroupInfo: React.FC = () => {
     fetchDaos(); // Call the function to fetch DAOs and their member counts
 
     const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 768); // Adjust for your breakpoints
+      setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
     };
 
     // Initial check and event listener
@@ -108,11 +108,11 @@ const GroupInfo: React.FC = () => {
                   <p className="email">
                     {group.daoMultiSigAddr
                       ? isSmallScreen
-                        ? `${group.daoMultiSigAddr}`
-                        : `${group.daoMultiSigAddr.slice(
+                        ? `${group.daoMultiSigAddr.slice(
                             0,
                             14
                           )}...${group.daoMultiSigAddr.slice(-9)}`
+                        : `${group.daoMultiSigAddr}`
                       : "N/A"}
                   </p>
                 </div>
