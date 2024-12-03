@@ -101,7 +101,7 @@ const GroupInfo: React.FC = () => {
                   <h2>{group.daoTitle}</h2>
                   <div className="location">
                     <p>{group.daoLocation}</p>
-                    <img src="images/location.png" />
+                    <img src="/images/location.png" />
                   </div>
                   <p className="email">
                     {group.daoMultiSigAddr
@@ -125,7 +125,7 @@ const GroupInfo: React.FC = () => {
               <p className="section-2">{group.daoDescription}</p>
               <div className="section-3">
                 <div className="top">
-                  <img src="images/profile.png" alt="idadi" />
+                  <img src="/images/profile.png" alt="idadi" />
                   <div className="taarifa">Taarifa za wanachama</div>
                 </div>
                 <div className="bottom">

@@ -115,7 +115,7 @@ body :has(.member) {
   position: relative;
 }
 
-.button-group ::after {
+.button-group.buttons ::after {
   content: "";
   position: absolute;
   bottom: 0;

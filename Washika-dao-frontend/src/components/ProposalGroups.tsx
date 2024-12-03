@@ -31,22 +31,6 @@ const ProposalGroups: React.FC = () => {
       amountRequested: "500,000",
       currency: "Tsh",
     },
-    {
-      title: "Proposal for Buying new spare part of machinery",
-      status: "Rejected",
-      description:
-        "We are Nipe Fagio, an environmental non-profit organization committed to cleaning and preserving our beaches. Our goal is to collect and remove at least 10 tons of plastic waste through community clean-up events and outreach programs.",
-      amountRequested: "3,000,000",
-      currency: "Tsh",
-    },
-    {
-      title: "Proposal for Beach clean up - msasani to Mbezi",
-      status: "In progress",
-      description:
-        "We are Nipe Fagio, an environmental non-profit organization committed to cleaning and preserving our beaches. Our goal is to collect and remove at least 10 tons of plastic waste through community clean-up events and outreach programs.",
-      amountRequested: "500,000",
-      currency: "Tsh",
-    },
   ];
 
   return (
@@ -65,7 +49,7 @@ const ProposalGroups: React.FC = () => {
           </div>
           <p className="two">{proposal.description}</p>
           <div className="three">
-            <div className="button-group">
+            <div className="button-group button">
               <button onClick={handleProposalClick}>Vote on Proposal</button>
               <button className="button-2" onClick={handleProposalClick}>View linked resources</button>
             </div>

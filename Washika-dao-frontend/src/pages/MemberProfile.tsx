@@ -51,7 +51,7 @@ const MemberProfile: React.FC = () => {
           </div>
         </section>
 
-        <div className="button-group">
+        <div className="button-group buttons">
           <button>Taarifa za Fedha</button>
           <button>Fanya Malipo</button>
           <button>Omba Mkopo</button>

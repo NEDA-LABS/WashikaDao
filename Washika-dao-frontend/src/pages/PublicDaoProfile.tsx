@@ -149,7 +149,7 @@ const PublicDaoProfile: React.FC = () => {
 
             <div className="section-3">
               <div className="top">
-                <img src="images/profile.png" alt="idadi" />
+                <img src="/images/profile.png" alt="idadi" />
                 <div className="taarifa">Taarifa za wanachama</div>
               </div>
               <div className="bottom">
