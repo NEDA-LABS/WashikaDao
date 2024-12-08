@@ -18,7 +18,6 @@ interface Dao {
 const GroupInfo: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]); // State to store DAOs with member count
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [daoMultiSigAddr, setDaoMultiSigAddr] = useState("");
 
   useEffect(() => {
     const fetchDaos = async () => {
@@ -54,13 +53,12 @@ const GroupInfo: React.FC = () => {
     };
 
     // Fetch the member count for a given multiSigAddr
-    const fetchMemberCount = async (MultiSigAddr: string): Promise<number> => {
+    const fetchMemberCount = async (multiSigAddr: string): Promise<number> => {
       try {
         const response = await fetch(
-          `http://localhost:8080/JiungeNaDao/DaoDetails/${MultiSigAddr}/members`
+          `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr}/members`
         );
         const data = await response.json();
-        setDaoMultiSigAddr(MultiSigAddr);
         return response.ok ? data.memberCount : 0; // Return member count or 0 if no data
       } catch (error) {
         console.error("Failed to fetch member count:", error);
@@ -93,7 +91,7 @@ const GroupInfo: React.FC = () => {
           <div className="group" key={index}>
             {" "}
             {/* Each group's container */}
-            <Link to={`/PublicDaoProfile/${daoMultiSigAddr}`}>
+            <Link to={`/PublicDaoProfile/${group.daoMultiSigAddr}`}>
               <div className="image">
                 <img src={group.daoImageIpfsHash} alt={group.daoTitle} />
                 <div className="taarifaTop">Taarifa</div>
@@ -103,7 +101,7 @@ const GroupInfo: React.FC = () => {
                   <h2>{group.daoTitle}</h2>
                   <div className="location">
                     <p>{group.daoLocation}</p>
-                    <img src="images/location.png" />
+                    <img src="/images/location.png" />
                   </div>
                   <p className="email">
                     {group.daoMultiSigAddr
@@ -127,7 +125,7 @@ const GroupInfo: React.FC = () => {
               <p className="section-2">{group.daoDescription}</p>
               <div className="section-3">
                 <div className="top">
-                  <img src="images/profile.png" alt="idadi" />
+                  <img src="/images/profile.png" alt="idadi" />
                   <div className="taarifa">Taarifa za wanachama</div>
                 </div>
                 <div className="bottom">

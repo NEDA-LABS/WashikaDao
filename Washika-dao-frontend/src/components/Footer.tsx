@@ -66,7 +66,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
           <FontAwesomeIcon icon={faLinkedinIn} />
         </a>
       </div>
-      <img src="images/LOGO FULL.png" alt="logo" width="240" />
+      <img src="/images/LOGO FULL.png" alt="logo" width="240" />
     </footer>
   );
 };

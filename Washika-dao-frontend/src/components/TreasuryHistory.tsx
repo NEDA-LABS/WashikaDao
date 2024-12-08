@@ -67,7 +67,7 @@ const TreasuryHistory: React.FC = () => {
 
   return (
     <div className="treasury-history">
-      <h1>Treasury History</h1>
+      <h1>Mini Statement</h1>
       <div id="treasury-history">
         {treasuryData.map((entry, index) => (
           <div className="slot" key={index}>
@@ -94,7 +94,7 @@ const TreasuryHistory: React.FC = () => {
         ))}
       </div>
       <div className="history-button">
-        <button>More History</button>
+        <button>Full Statement</button>
       </div>
     </div>
   );
