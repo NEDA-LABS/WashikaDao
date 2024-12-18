@@ -1,6 +1,7 @@
+import React from 'react';
 import {createThirdwebClient, ThirdwebClient} from "thirdweb";
 //useActiveAccount,
-import { useActiveWallet, useActiveWalletConnectionStatus, ThirdwebProvider, ConnectButton, useConnectModal, useSetActiveWallet } from "thirdweb/react";
+import { useActiveWallet, useActiveWalletConnectionStatus, ThirdwebProvider, ConnectButton, useConnectModal, useSetActiveWallet, Theme } from "thirdweb/react";
 import {inAppWallet, Wallet} from "thirdweb/wallets";
 import { lightTheme } from "thirdweb/react";
 //add import for celo in prod too
