@@ -5,3 +5,5 @@ V1 allows user to create web3 account by clicking karibu button to create an in-
 </li>
 <li>The user will then signing by connecting the external wallet or authenticating using inapp method they used to sign up</li>
 <li>The dev will check if logged in by checking if the useActiveWallet returns a valid account</li>
+
+Next: Extract TestConnection to reusable functions and components and then use them in the other pages. 

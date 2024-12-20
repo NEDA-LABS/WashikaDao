@@ -322,6 +322,7 @@ export async function FundDao(req: Request, res: Response) {
     //send a notification to all the members in the DAO about the new fund request
     //use a blockchain function & Transaction for ease even to check balance
 
+    //Use thirdparty funding api & check response using webhook or callback. 
     const daoRepository = AppDataSource.getRepository(Dao);
     const daoDetails = await daoRepository.findOneBy({
       daoMultiSigAddr: _daoMultiSig,

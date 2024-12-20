@@ -12,6 +12,7 @@ const proposalRepository = AppDataSource.getRepository(Proposal);
 const voteRepository = AppDataSource.getRepository(Vote);
 const daoRepository = AppDataSource.getRepository(Dao);
 
+//Create proposal,read proposal, read all proposals, update proposal if not already voted,  delete proposal if not yet voted on.
 /**Handling a post request sent to {'/proposal'} to create a new proposal*/
 /**
  * Handles a POST request sent to '/proposal' to create a new proposal.

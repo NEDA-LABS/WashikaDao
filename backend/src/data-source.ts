@@ -6,6 +6,7 @@ import { MemberDetails } from "./entity/MemberDetails";
 import { Proposal } from "./entity/Proposal";
 import { Vote } from "./entity/Vote";
 
+//Change to Postgres ??? More popular indexing option
 /**
  * Configuration for creating a DataSource object using TypeORM.
  * This DataSource is used to connect to a MySQL database and manage entities.

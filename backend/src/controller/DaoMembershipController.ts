@@ -10,6 +10,7 @@ import { AppDataSource } from "../data-source";
 import { IDao, IMemberDetails } from "../Interfaces/EntityTypes";
 import { In, ObjectLiteral } from "typeorm";
 
+
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
 
