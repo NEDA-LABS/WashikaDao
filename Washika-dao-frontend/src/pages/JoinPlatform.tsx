@@ -12,7 +12,10 @@ interface Dao {
   daoName: string;
   daoMultiSigAddr: string;
 }
-
+/**
+ *@Auth policy: checks if isLoggedIn if not requires you to else proceed 
+ * @returns 
+ */
 const JoinPlatform: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

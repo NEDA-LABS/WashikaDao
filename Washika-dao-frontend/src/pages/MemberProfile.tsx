@@ -9,7 +9,10 @@ import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import ProposalGroups from "../components/ProposalGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+/**
+ * @Auth policy: Should definitely be authenticated to make sense
+ * @returns 
+ */
 const MemberProfile: React.FC = () => {
   return (
     <>

@@ -2,7 +2,10 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { clearCurrentUser } from "../redux/users/userSlice";
-//import ConnectWallet from "./auth/ConnectWallet.tsx";
+import ConnectWallet from "./auth/ConnectWallet.tsx";
+import { useState } from "react";
+import { Account } from "thirdweb/wallets";
+import { useActiveAccount } from "thirdweb/react";
 
 interface NavBarProps {
   className: string;
@@ -14,6 +17,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const { firstName, memberAddr, daoMultiSig } = useSelector(
     (state: RootState) => state.user
   );
+  //Simpler User state management ? 
+  const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined); 
+  const activeAccount = useActiveAccount();
 
   const handleClick = () => {
     navigate("/JoinPlatform");

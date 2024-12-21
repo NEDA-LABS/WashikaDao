@@ -10,9 +10,9 @@ import { celoAlfajoresTestnet, arbitrumSepolia } from "thirdweb/chains";
   const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
   const client = createThirdwebClient({ clientId: _clientId });
 export default function TestH3WebCreateDao(){
-    const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);
-    const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);
-    const activeAccount = useActiveAccount();
+    const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);//handles state of currently connected account
+    const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);//Defines the current wallet type if (wallet === smart) => then its msig --> use this for authentication 
+    const activeAccount = useActiveAccount();//Thirdweb hooks
     const activeWallet = useActiveWallet(); 
 	//Using loading state for createDao Button will be extracted to be used in the form 
 	const [isLoading, setIsLoading] = useState(false); 
@@ -30,6 +30,7 @@ export default function TestH3WebCreateDao(){
         console.log("Current Active wallet is", currActiveWall)
     }
 
+	/**Setting up the wallet configuration details */
         const wallets = [inAppWallet({
             auth: {
         mode: "popup", //options are "popup" | "redirect" | "window"
@@ -48,15 +49,15 @@ export default function TestH3WebCreateDao(){
     const testingAsMsig = 0x590Ab3FfA33644F1fDC648627Cd5eC937a271A20; 
     /** Sample Data for creating the Dao */
     const TESTER_WALLET_AS_MSIG = activeAccount;
-    const _daoName: string =   "TestingName";
-    const _location: string = "KenyaTesting";
-    const _targetAudience: string = "TestingTarget";
-    const _daoTitle: string = "TestingTitle";
-    const _daoDescription: string = "Iamthedescripton";
-    const _daoOverview: string = "Iamtheoverview";
-    const _daoImageUrlHash: string = "Imtheurl";
+    const _daoName: string =   "ChrisDao";
+    const _location: string = "Africa";
+    const _targetAudience: string = "Bitcoiners";
+    const _daoTitle: string = "BTCMAxis";
+    const _daoDescription: string = "ChrisBitcoinersDao";
+    const _daoOverview: string = "Chrisandbtcmaxis";
+    const _daoImageUrlHash: string = "ImageUrlWillgoHere";
     const _multiSigAddr:Account | undefined = TESTER_WALLET_AS_MSIG;
-    const _multiSigPhoneNo  =  BigInt(724680615);
+    const _multiSigPhoneNo  =  BigInt(726140388);
 
     /**function to create dao*/
     //Maybe get the Dao first 

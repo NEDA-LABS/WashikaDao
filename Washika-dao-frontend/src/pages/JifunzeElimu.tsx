@@ -13,7 +13,10 @@ interface Blog {
   image?: string;
   content?: string;
 }
-
+/**
+ * @Auth Policy: Does not require authentication for access
+ * @returns 
+ */
 const JifunzeElimu: React.FC = () => {
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [searchTerm, setSearchTerm] = useState("");

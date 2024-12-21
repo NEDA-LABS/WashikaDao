@@ -8,6 +8,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import React from "react";
 
+/**
+ * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
+ */
 interface FormData {
   // input1: string | number | undefined;
   // input2: string | number | undefined;

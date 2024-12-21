@@ -15,7 +15,9 @@ interface DaoDetails {
   multiSigAddr: string;
   kiwango: number;
 }
-
+/**
+ * @Auth Policy: Logged in and also check if is admin
+ */
 const DaoProfile: React.FC = () => {
   const navigate = useNavigate();
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();

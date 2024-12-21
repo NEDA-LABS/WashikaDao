@@ -5,7 +5,10 @@ import ProposalGroups from "../components/ProposalGroups";
 import Strip from "../components/Strip";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store"; 
-
+/**
+ * @Auth Policy: Requires auth in order to be able to fetch data concerning the owner 
+ * @returns 
+ */
 const Owner: React.FC = () => {
   const navigate = useNavigate();
   const { firstName } = useSelector((state: RootState) => state.user);

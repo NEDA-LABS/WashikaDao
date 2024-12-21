@@ -14,7 +14,10 @@ interface Blog {
   image?: string;
   content?: string;
 }
-
+/**
+ * @Auth Policy: Not necessarily authenticated for access but different components require access 
+ * @returns 
+ */
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
 

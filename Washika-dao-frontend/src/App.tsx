@@ -15,7 +15,6 @@ import ViewProposal from "./pages/ViewProposal.tsx";
 import MemberProfile from "./pages/MemberProfile.tsx";
 import Owner from "./pages/Owner.tsx";
 //Testing functionality components
-import TestCreateDao from "./pages/TestCreateDao.tsx";
 import BlogPage from "./pages/BlogPage.tsx";
 import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao.tsx";
 import TestHoleskyAddMember from "./pages/TestHoleskyAddMember.tsx";
@@ -59,7 +58,6 @@ const App: React.FC = () => {
             <Route path="/MemberProfile" element={<MemberProfile />} />
             <Route path="/Owner/:memberAddr" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/TestCreateDao" element={<TestCreateDao />} />
             <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
           <Route path="/TestHoleskyAddMember" element={<TestHoleskyAddMember />} />
           <Route path="/TestHoleskyCreateProposal" element={<TestHoleskyCreateProposal />} />
