@@ -7,28 +7,27 @@ body :has(.member) {
 }
 
 .member {
-  padding: clamp(120px, 24vw, 230px) clamp(24px, 7vw, 96px) 0;
   background: linear-gradient(to bottom, #ffffff 51%, #282424 78%);
 }
 
-.member .one {
+.member section.one {
   display: grid;
   grid-template-columns: 2.8fr 1fr;
   align-items: center;
-  margin-bottom: 36px;
+  margin: clamp(120px, 24vw, 230px) clamp(24px, 7vw, 96px) 0;
   position: relative;
 }
 
-.member .one .first h1 {
+.member section.one .first h1 {
   font-size: clamp(31px, 5vw, 76px);
   color: #433939;
 }
 
-.member .one .first p {
+.member section.one .first p {
   font-size: clamp(20px, 2.7vw, 43px);
 }
 
-.member .one .secondy {
+.member section.one .secondy {
   width: clamp(240px, 25vw, 379px);
   height: clamp(156px, 15vw, 212px);
   border: 1px solid green;
@@ -110,9 +109,9 @@ body :has(.member) {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 24px;
-  padding: 0 48px 24px 0px;
-  margin-bottom: 18px;
   position: relative;
+  padding-bottom: 36px;
+  margin: 24px 96px;
 }
 
 .button-group.buttons ::after {
@@ -130,12 +129,17 @@ body :has(.member) {
   font-weight: bold;
   padding: 16px;
   border-radius: 6px;
-  font-size: clamp(9px, 1.6vw, 18px);
+  font-size: clamp(14px, 1.6vw, 18px);
+  width: 100%;
 }
 
 .button-group button:nth-of-type(1) {
   background-color: #2ea62c;
   color: #ffffff;
+}
+
+.dashboard-wrapper {
+  margin: clamp(16px,5vw,24px) clamp(24px, 7vw, 96px);
 }
 
 .dashboard-wrapper h2 {
@@ -152,22 +156,29 @@ body :has(.member) {
 }
 
 .dashboard .one,
-.dashboard .one ul, .dashboard .one ul li {
+.dashboard .one ul,
+.dashboard .one ul li {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.dashboard .one {
+  border-bottom: 1px solid #e1e4ea;
+  padding-bottom: 16px;
 }
 
 .dashboard .one div {
   display: flex;
   gap: 9px;
   font-weight: 500;
-  font-size: 19px;
+  font-size: clamp(12px,4vw,19px);
   color: #0e121b;
 }
 
 .dashboard .one ul {
   width: 48%;
+  font-size: clamp(10px,1vw,16px);
 }
 
 .dashboard .one ul select {
@@ -179,17 +190,25 @@ body :has(.member) {
 .dashboard .two {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
+  font-size: clamp(9px,1.3vw,14px);
+  padding: 16px 0;
+  border-bottom: 1px solid #e1e4ea;
 }
 
-.dashboard .two .totals, .dashboard .two .totals .groupss .amount {
+.dashboard .two .lined {
+  width: 1px;
+  background-color: #e1e4ea;
+}
+
+.dashboard .two .totals,
+.dashboard .two .totals .groupss .amount {
   display: flex;
   gap: 9px;
   align-items: center;
   justify-content: center;
 }
 
-.dashboard .two .totals .icon{
+.dashboard .two .totals .icon {
   border: 1px solid #e1e4ea;
   padding: 9px;
   border-radius: 50%;
@@ -202,13 +221,13 @@ body :has(.member) {
 }
 
 .dashboard .two .totals .groupss p {
-  font-size: 13px;
+  font-size: clamp(6px,1.2vw,13px);
   color: #99a0ae;
   font-weight: 500;
 }
 
 .dashboard .two .totals .groupss .amount p {
-  font-size: 19px;
+  font-size: clamp(12px,1.7vw,19px);
   color: #0e121b;
 }
 
@@ -225,15 +244,19 @@ body :has(.member) {
   background-color: #ffc0c5;
 }
 
-.dashboard .bargraph {
+.dashboard .bargraph, .allBars {
   display: flex;
   gap: 24px;
   padding: 20px 0 0;
-  overflow: hidden;
+  width: 100%;
+}
+
+.allBars {
+  overflow: scroll;
 }
 
 .dashboard .bargraph .oneBar {
-  width: 79px;
+  width: 100%;
   height: 164px;
   display: grid;
   grid-template-rows: 3fr 2fr 1fr 1fr;
@@ -249,15 +272,15 @@ body :has(.member) {
 }
 
 .dashboard .bargraph .oneBar .bar-1 {
-  background-color: #33C759;
+  background-color: #33c759;
 }
 
 .dashboard .bargraph .oneBar .bar-2 {
-  background-color: #30ADE6;
+  background-color: #30ade6;
 }
 
 .dashboard .bargraph .oneBar .bar-3 {
-  background-color: #00C7BE;
+  background-color: #00c7be;
 }
 
 .dashboard .bargraph .oneBar .bar-4 {
@@ -274,20 +297,19 @@ body :has(.member) {
   font-size: 21px;
   color: #fbfaf8;
   font-weight: bold;
-  padding: 12px;
-  margin: 16px 0 22px;
+  padding: 12px 24px;
+  margin: 16px clamp(24px, 8vw, 96px) 22px;
 }
 
-.member .second {
-  position: initial;
-}
-
-.member .second .sec {
+.member .second .sec,
+.owner .second .sec {
   display: flex;
   gap: 16px;
+  margin: 0 clamp(24px, 8vw, 96px);
 }
 
-.member .second h1 {
+.member .sec h1,
+.owner .sec h1 {
   color: #171717;
   font-weight: normal;
   font-size: 31px;
@@ -298,17 +320,21 @@ body :has(.member) {
 }
 
 @media only screen and (max-width: 900px) {
-  .member .one {
+  .member section.one {
     display: initial;
   }
 
-  .member .one .center {
+  .member section.one .first {
+    margin: 100px 24px 0;
+  }
+
+  .member section.one .center {
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
-  .member .one .secondy {
+  .member section.one .secondy {
     width: clamp(240px, 76vw, 392px);
     height: clamp(156px, 42vw, 220px);
     padding: 0 clamp(6px, 7.8vw, 24px);
@@ -339,6 +365,32 @@ body :has(.member) {
   }
 
   .button-group {
+    margin: 0 0 0 32px;
+    display: flex;
+    width: 80%;
+  }
+
+  .dashboard .one {
+    display: initial;
+  }
+
+
+  .dashboard .one ul {
+    width: 100%;
+    font-size: clamp(6px, 2vw,16px);
+  }
+
+  .dashboard .one ul select {
+    padding: auto 0;
+  }
+  
+  .dashboard .two {
+    flex-wrap: wrap;
+    justify-content: start;
+    gap: 9px;
+  }
+
+  .dashboard .two .lined {
     display: none;
   }
 }

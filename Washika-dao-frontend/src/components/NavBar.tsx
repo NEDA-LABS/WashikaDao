@@ -50,7 +50,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       return (
         <li className="three">
           <Link
-            to={`/PublicDaoProfile/${daoMultiSIgAddr || ""}`}
+            to={`/DaoProfile/${daoMultiSIgAddr || ""}`}
             onClick={handleDaoToolKitClick}
           >
             DAO Tool Kit

@@ -3,17 +3,17 @@ import { ThirdwebProvider } from "thirdweb/react";
 import { HelmetProvider } from "react-helmet-async";
 
 // Importing page components
-import HomePage from "./pages/HomePage.tsx";
-import JifunzeElimu from "./pages/JifunzeElimu.tsx";
-import DaoRegistration from "./pages/DaoRegistration.tsx";
-import CreateProposal from "./pages/CreateProposal.tsx";
-import JoinPlatform from "./pages/JoinPlatform.tsx";
-import Funder from "./pages/Funder.tsx";
-import PublicDaoProfile from "./pages/PublicDaoProfile.tsx";
-// import PrivateDaoProfile from "./pages/PrivateDaoProfile";
-import ViewProposal from "./pages/ViewProposal.tsx";
-import MemberProfile from "./pages/MemberProfile.tsx";
-import Owner from "./pages/Owner.tsx";
+import HomePage from "./pages/HomePage";
+import JifunzeElimu from "./pages/JifunzeElimu";
+import DaoRegistration from "./pages/DaoRegistration";
+import CreateProposal from "./pages/CreateProposal";
+import JoinPlatform from "./pages/JoinPlatform";
+import Funder from "./pages/Funder";
+import DaoProfile from "./pages/DaoProfile";
+import SuperAdmin from "./pages/SuperAdmin";
+import ViewProposal from "./pages/ViewProposal";
+import MemberProfile from "./pages/MemberProfile";
+import Owner from "./pages/Owner";
 //Testing functionality components
 import BlogPage from "./pages/BlogPage.tsx";
 import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao.tsx";
@@ -44,13 +44,13 @@ const App: React.FC = () => {
             <Route path="/TestConnection" element={<TestConnection />} />
             <Route path="/Funder/:memberAddr" element={<Funder />} />
             <Route
-              path="/PublicDaoProfile/:daoMultiSigAddr"
-              element={<PublicDaoProfile />}
-            />
-            {/* <Route
               path="/DaoProfile/:daoMultiSigAddr"
-              element={<PrivateDaoProfile />}
-            /> */}
+              element={<DaoProfile />}
+            />
+            <Route
+              path="/SuperAdmin"
+              element={<SuperAdmin />}
+            />
             <Route
               path="/ViewProposal/:daoMultiSigAddr/:proposalId"
               element={<ViewProposal />}

@@ -15,10 +15,7 @@ interface DaoDetails {
   multiSigAddr: string;
   kiwango: number;
 }
-/**
- * @Auth Policy: Should be logged in to wallet & dao and address should be that of a non-admin 
- * @returns 
- */
+
 const PublicDaoProfile: React.FC = () => {
   const navigate = useNavigate();
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
@@ -125,7 +122,7 @@ const PublicDaoProfile: React.FC = () => {
 
             <p className="section-21">{daoDetails.daoOverview}</p>
             <p className="section-22">{daoDetails.daoDescription}</p>
-
+            
             <div className="DaoOperations">
               <h1>DAO operations</h1>
               <div className="button-group">

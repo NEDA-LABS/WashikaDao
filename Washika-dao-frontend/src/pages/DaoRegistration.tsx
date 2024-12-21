@@ -212,7 +212,7 @@ const DaoRegistration: React.FC = () => {
       if (response.ok) {
         const daoMultiSigAddr = data.multiSigAddr; // Extract multi-sig address from response
         console.log("DAO created successfully", data);
-        navigate(`/PublicDaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
+        navigate(`/DaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
       } else {
         console.error("Error creating DAO:", data.message);
       }

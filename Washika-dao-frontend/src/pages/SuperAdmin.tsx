@@ -5,64 +5,79 @@ import {
   faPiggyBank,
   faSyncAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import ProposalGroups from "../components/ProposalGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-/**
- * @Auth policy: Should definitely be authenticated to make sense
- * @returns 
- */
-const MemberProfile: React.FC = () => {
+
+const SuperAdmin: React.FC = () => {
   return (
     <>
-      <NavBar className={"navbarDaoMember"} />
-      <main className="member">
-        <section className="one">
-          <div className="first">
-            <h1>Karibu mshikaDAU</h1>
-            <p>
-              Tuna kurahisishia kujua na kupata taarifa zako
-              <br />
-              zote muhimu za vikundi vyako vya kifedha{" "}
-            </p>
+      <NavBar className={"SuperAdmin"} />
+      <main className="member superAdmin">
+        <div className="centered">
+          <div className="daoImage one">
+          <img
+            src="/images/WhatsApp Image 2023-09-24 at 03.24 1(2).png"
+            alt="DaoImage"
+          />
+        </div>
+        </div>
+        
+        <div className="notification">
+          <div>
+            <img src="/images/Info.png" alt="info icon" />
           </div>
-          <div className="center">
-            <div className="secondy">
-              <div className="header">
-                <div className="left">
-                  <img src="/images/speed-up-line.png"alt="logo" />
-                  <h1>Credit Score</h1>
-                </div>
-                <div className="right">
-                  <img src="/images/Vector(1).png" alt="" />
-                  <p>Apply</p>
-                </div>
+          <div className="notifications">
+            <h3>Notification</h3>
+            <p>New Member Request</p>
+            <button>View</button>
+          </div>
+          <div>
+            <img src="/images/X.png" alt="cancel icon" />
+          </div>
+        </div>
+        <div className="top">
+          <div className="one onesy">
+            <h1>Kikundi cha Jukumu</h1>
+            <div className="location">
+              <p>Dar-es-Salaam, Tanzania</p>
+              <img src="/images/locationIcon.png" width="27" height="31" />
+            </div>
+            <p className="email">@JukumuDao.ETH</p>
+          </div>
+          <div className="two">
+            <div className="first">
+              <div className="one">
+                <p className="left">TSH</p>
+                <p className="right">Thamani ya hazina</p>
               </div>
-              <div className="credit">
-                <h2>
-                  Your <span>credit score </span>is <span>0</span>
-                </h2>
-                <p>Build your credit score by buying shares</p>
-              </div>
-              <div className="bars">
-                {Array.from({ length: 36 }, (_, index) => (
-                  <div key={index}></div>
-                ))}
-              </div>
+              <p className="amount">3,000,000</p>
+            </div>
+            <div className="section">
+              <img src="/images/profile.png" alt="idadi" />
+              <h2>Idadi ya<br /> wanachama</h2>
+              <p>23</p>
+            </div>
+            <div className="center">
+              <div className="taarifa">Taarifa za wanachama</div>
             </div>
           </div>
-        </section>
+        </div>
 
+        <div className="DaoOperations">
+          <h1>DAO operations</h1>
+        </div>
         <div className="button-group buttons">
-          <button>Taarifa za Fedha</button>
-          <button>Fanya Malipo</button>
-          <button>Omba Mkopo</button>
+          <button>Dao Overview</button>
+          <button>Add Members</button>
+          <button>Taarifa za mikopo</button>
           <button>Edit Settings</button>
         </div>
 
         <div className="dashboard-wrapper">
-          <h2>Taarifa za fedha</h2>
+          <div className="fullStatement">
+            <button>Full Statement</button>
+          </div>
           <div className="dashboard">
             <div className="one">
               <div>
@@ -114,7 +129,6 @@ const MemberProfile: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="lined"></div>
               <div className="totals">
                 <FontAwesomeIcon
                   className="icon"
@@ -129,7 +143,6 @@ const MemberProfile: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="lined"></div>
               <div className="totals">
                 <FontAwesomeIcon
                   className="icon"
@@ -144,7 +157,6 @@ const MemberProfile: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="lined"></div>
               <div className="totals">
                 <FontAwesomeIcon
                   className="icon"
@@ -159,7 +171,6 @@ const MemberProfile: React.FC = () => {
                   </div>
                 </div>
               </div>
-              <div className="lined"></div>
               <div className="totals">
                 <FontAwesomeIcon
                   className="icon"
@@ -184,31 +195,30 @@ const MemberProfile: React.FC = () => {
               </div>
               <div className="allBars">
                 {Array.from({ length: 12 }, (_, index) => {
-                const months = [
-                  "Jan",
-                  "Feb",
-                  "Mar",
-                  "Apr",
-                  "May",
-                  "Jun",
-                  "Jul",
-                  "Aug",
-                  "Sep",
-                  "Oct",
-                  "Nov",
-                  "Dec",
-                ];
-                return (
-                  <div key={index} className={`oneBar bar${index}`}>
-                    <div className="bar-1"></div>
-                    <div className="bar-2"></div>
-                    <div className="bar-3"></div>
-                    <div className="bar-4">{months[index]}</div>
-                  </div>
-                );
-              })}
+                  const months = [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                  ];
+                  return (
+                    <div key={index} className={`oneBar bar${index}`}>
+                      <div className="bar-1"></div>
+                      <div className="bar-2"></div>
+                      <div className="bar-3"></div>
+                      <div className="bar-4">{months[index]}</div>
+                    </div>
+                  );
+                })}
               </div>
-              
             </div>
           </div>
         </div>
@@ -221,9 +231,8 @@ const MemberProfile: React.FC = () => {
           <ProposalGroups />
         </section>
       </main>
-      <Footer className={"footerDaoMember"} />
     </>
   );
 };
 
-export default MemberProfile;
+export default SuperAdmin;
