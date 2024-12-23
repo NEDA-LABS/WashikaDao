@@ -56,7 +56,7 @@ const App: React.FC = () => {
               element={<ViewProposal />}
             />
             <Route path="/MemberProfile" element={<MemberProfile />} />
-            <Route path="/Owner/:memberAddr" element={<Owner />} />
+            <Route path="/Owner/:address" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
           <Route path="/TestHoleskyAddMember" element={<TestHoleskyAddMember />} />
