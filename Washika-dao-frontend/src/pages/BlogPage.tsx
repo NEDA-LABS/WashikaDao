@@ -14,6 +14,10 @@ interface Blog {
   image: string; 
   content?: string;
 }
+/**
+ * 
+ * @auth Policy: Accessible to all, no need to check if user is authenticated to access this route 
+ */
 const BlogPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);

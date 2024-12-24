@@ -16,13 +16,14 @@ interface DaoDetails {
   kiwango: number;
 }
 
-const DaoProfile: React.FC = () => {
+const PublicDaoProfile: React.FC = () => {
   const navigate = useNavigate();
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
 
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
 
   useEffect(() => {
     const fetchDaoDetails = async () => {
@@ -62,6 +63,18 @@ const DaoProfile: React.FC = () => {
       fetchDaoDetails();
       fetchMemberCount();
     }
+
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
+    };
+
+    // Initial check and event listener
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
   }, [daoMultiSigAddr]);
   console.log(daoDetails);
 
@@ -95,27 +108,33 @@ const DaoProfile: React.FC = () => {
                 <p>{daoDetails.daoLocation}</p>
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
-              <p className="email">{daoDetails.multiSigAddr}</p>
+              <p className="email">
+                    {daoMultiSigAddr
+                      ? isSmallScreen
+                        ? `${daoMultiSigAddr.slice(
+                            0,
+                            14
+                          )}...${daoMultiSigAddr.slice(-9)}`
+                        : `${daoMultiSigAddr}`
+                      : "N/A"}
+                  </p>
             </div>
 
-            <p className="section-2">{daoDetails.daoDescription}</p>
-
+            <p className="section-21">{daoDetails.daoOverview}</p>
+            <p className="section-22">{daoDetails.daoDescription}</p>
+            
             <div className="DaoOperations">
               <h1>DAO operations</h1>
               <div className="button-group">
                 <button className="button-1" onClick={handleClick}>
-                  Create a Proposal
+                  Dao Overview
                 </button>
-                <button className="button-2">Vote on a proposal</button>
+                <button className="button-2">Nunua Share</button>
+                <button className="button-2" onClick={handleClick}>
+                Omba Mkopo
+                </button>
+                <button className="button-2">Fanya Malipo</button>
               </div>
-            </div>
-
-            <div className="details">
-              <p className="email">{daoDetails.multiSigAddr}</p>
-              <p className="parag">
-                This is the multi-sig account for {daoDetails.daoName}. Create a
-                proposal to get access to the JUKUMU fund.
-              </p>
             </div>
           </div>
 
@@ -130,7 +149,7 @@ const DaoProfile: React.FC = () => {
 
             <div className="section-3">
               <div className="top">
-                <img src="images/profile.png" alt="idadi" />
+                <img src="/images/profile.png" alt="idadi" />
                 <div className="taarifa">Taarifa za wanachama</div>
               </div>
               <div className="bottom">
@@ -155,4 +174,4 @@ const DaoProfile: React.FC = () => {
   );
 };
 
-export default DaoProfile;
+export default PublicDaoProfile;

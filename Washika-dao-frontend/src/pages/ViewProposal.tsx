@@ -12,7 +12,10 @@ interface ProposalData {
   about: string;
   daoMultiSigAddr: string;
 }
-
+/**
+ * @Auth Policy: Visible to all 
+ * @returns 
+ */
 const ViewProposal: React.FC = () => {
   const { proposalId } = useParams<{ proposalId: string }>(); // Get proposalId from the URL
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>(); // Get multiSigAddr from the URL

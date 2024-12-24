@@ -8,6 +8,9 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import React from "react";
 
+/**
+ * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
+ */
 interface FormData {
   // input1: string | number | undefined;
   // input2: string | number | undefined;
@@ -209,7 +212,7 @@ const DaoRegistration: React.FC = () => {
       if (response.ok) {
         const daoMultiSigAddr = data.multiSigAddr; // Extract multi-sig address from response
         console.log("DAO created successfully", data);
-        navigate(`/PublicDaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
+        navigate(`/DaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
       } else {
         console.error("Error creating DAO:", data.message);
       }

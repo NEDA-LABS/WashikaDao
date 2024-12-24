@@ -2,7 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { clearCurrentUser } from "../redux/users/userSlice";
-//import ConnectWallet from "./auth/ConnectWallet.tsx";
+
 
 interface NavBarProps {
   className: string;
@@ -14,7 +14,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const { firstName, memberAddr, daoMultiSig } = useSelector(
     (state: RootState) => state.user
   );
-
+  
   const handleClick = () => {
     navigate("/JoinPlatform");
   };
@@ -44,7 +44,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       return (
         <li className="three">
           <Link
-            to={`/PublicDaoProfile/${daoMultiSIgAddr || ""}`}
+            to={`/DaoProfile/${daoMultiSIgAddr || ""}`}
             onClick={handleDaoToolKitClick}
           >
             DAO Tool Kit

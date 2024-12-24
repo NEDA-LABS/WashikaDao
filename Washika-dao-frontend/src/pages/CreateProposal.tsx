@@ -3,6 +3,11 @@ import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 
+/**
+ * 
+ * @Auth policy: Check if user is authenticated before allowing access 
+ * @returns 
+ */
 // Upload function for Cloudinary (as before)
 const uploadImageToCloudinary = async (file: File) => {
   const formData = new FormData();

@@ -289,7 +289,7 @@
 }
 
 .right .amount,
-.treasury .amount {
+.treasury .amount, .superAdmin .top .two .amount {
   color: #433939;
   font-size: 24px;
   font-weight: 100;
@@ -322,7 +322,7 @@
   align-items: center;
 }
 
-.section-3 .taarifa {
+.section-3 .taarifa, .superAdmin .taarifa {
   width: 182px;
   height: 29px;
   border: 1px solid #dcb273;
@@ -336,7 +336,7 @@
   align-items: center;
 }
 
-.section-3 h2 {
+.section-3 h2, .superAdmin .section h2 {
   padding-top: 3px;
   color: #433939;
   line-height: 1.2;
@@ -347,7 +347,7 @@
   transform: scaleY(1.2);
 }
 
-.section-3 p {
+.section-3 p, .superAdmin .section p {
   font-size: clamp(32px, 4vw, 69px);
   color: #433939;
   padding: 24px 12px;

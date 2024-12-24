@@ -3,46 +3,44 @@
 }
 
 .owner {
-  background: linear-gradient(to bottom, #636844 13%, #282424 84%);
-  padding: 320px 96px 0px 78px;
+  background: linear-gradient(to bottom, #ffffff 51%, #282424 78%);
 }
 
-.owner .one {
-  color: #ffffff;
+.owner .tops .one {
+  color: #433939;
 }
 
-.owner .top {
+.owner .tops {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  margin-right: 24px;
+  margin: clamp(120px, 20vw, 230px) clamp(24px, 7vw, 96px) 0;
 }
 
-.owner .top h1 {
-  width: 752px;
-  height: 110px;
+.owner .tops h1 {
   font-size: 76px;
 }
 
-.owner .one p {
+.owner .tops .one p {
   width: 963px;
   height: 139px;
   font-size: 48px;
 }
 
-.owner .top img {
-  margin-bottom: 24px;
+.owner .tops img {
+  display: none;
 }
 
 .owner .button-group {
   display: flex;
   gap: 30px;
+  margin: 32px clamp(24px, 7vw, 96px) 0;
 }
 
 .owner .second .myProposals {
   display: flex;
   align-items: center;
-  margin: 120px 0 48px 9px;
+  margin: 48px 9px;
   gap: 9px;
 }
 
@@ -54,44 +52,27 @@
   color: #fbfaf8;
 }
 
-.owner .proposal-groups {
-  margin-left: -92px;
-  margin-bottom: -48px;
-  gap: 48px;
-
-}
-
-.owner section.second::before {
-  content: "";
-  position: absolute;
-  left: -40px;
-  top: 360px;
-  height: 257px;
-  width: 1px;
-  background-color: #d9d9d9;
-  opacity: 23%;
-}
-
 .owner section.second::after {
-    display: none;
+  display: none;
 }
 
 section.third {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 36px 0 84px;
-    height: 256px;
-    background-color: #4A4043;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 36px 0 84px;
+  height: 256px;
+  background-color: #4a4043;
 }
 
-.third article, .third article div {
-    display: flex;
+.third article,
+.third article div {
+  display: flex;
 }
 
 .third article {
-    flex-direction: column;
-    gap: 24px;
+  flex-direction: column;
+  gap: 24px;
 }
 
 .third article div {
@@ -99,53 +80,40 @@ section.third {
 }
 
 .third article h1 {
-    width: 260px;
-    height: 30px;
-    font-size: 31px;
-    font-weight: bold;
-    color: #ffffff;
+  width: 260px;
+  height: 30px;
+  font-size: 31px;
+  font-weight: bold;
+  color: #ffffff;
 }
 
 .third article p {
-    width: 360px;
-    height: 48px;
-    font-size: 20px;
-    color: #ffffff;
+  width: 360px;
+  height: 48px;
+  font-size: 20px;
+  color: #ffffff;
 }
 
 .ownerFooter {
-    background: transparent;
+  background: transparent;
 }
 
-@media only screen and (max-width: 600px) {
-  .owner {
-    padding: 120px 24px 0px;
-  }
-
-  .owner .top {
-    margin: 0;
-  }
-
-  .owner .top h1 {
+@media only screen and (max-width: 900px) {
+  .owner .tops h1 {
     width: auto;
     height: auto;
     font-size: 36px;
   }
 
-  .owner .one p {
+  .owner .tops .one p {
     width: auto;
     height: auto;
     font-size: 24px;
   }
 
-  .owner .top img {
-    margin-bottom: 36px;
-    width: 24px;
-    height: 57px;
-  }
-
-  .owner .button-group {
-    margin-left: 0;
+  .owner .button-group button {
+    width: 85vw;
+    font-size: 16px;
   }
 
   .owner .second .myProposals {
@@ -156,16 +124,6 @@ section.third {
     width: auto;
     height: auto;
     font-size: 24px;
-  }
-
-  .owner .proposal-groups {
-    margin: 0px;
-    gap: 24px;
-  }
-
-  .owner section.second::before {
-    left: 0;
-    height: 640px;
   }
 
   .owner .proposal-groups .button-group button {
@@ -193,7 +151,7 @@ section.third {
     height: 16px;
   }
 
-  .third article h1  {
+  .third article h1 {
     width: auto;
     height: auto;
     font-size: 12px;
@@ -206,4 +164,3 @@ section.third {
     text-align: center;
   }
 }
-

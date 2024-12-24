@@ -1,3 +1,5 @@
+import logger from "./utils/Helpers/Logger";
+
 require('dotenv').config();
 import express = require('express');
 const router = express.Router();
@@ -17,7 +19,7 @@ export const AppDataSource = new DataSource({
 //}) 
 
 const app = express();
-app.use(cors());
+app.use(cors(), logger);
 app.use(express.json());// specifying we will be receiving the data in json format 
 //Endpoints to be used
 

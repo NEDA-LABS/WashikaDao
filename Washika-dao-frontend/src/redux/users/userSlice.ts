@@ -1,9 +1,10 @@
 // src/features/user/userSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { Account } from 'thirdweb/wallets';
 
 interface UserState {
-  memberAddr: string | null;
-  daoMultiSig: string | null;
+  memberAddr: string | null | Account;
+  daoMultiSig: string | undefined | Account;
   firstName: string;
   lastName: string;
   role: string;
@@ -12,7 +13,7 @@ interface UserState {
 
 const initialState: UserState = {
   memberAddr: null,
-  daoMultiSig: null,
+  daoMultiSig: undefined,
   firstName: '',
   lastName: '',
   role: '',

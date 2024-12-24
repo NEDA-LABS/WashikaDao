@@ -16,8 +16,10 @@ The ```routes``` directory contains the relevant routes & their corresponding co
 The ```controller``` directory contains the relevant controller modules, which contain the logic for processing the request. 
 The current implementation features using REST APIs fully, however, future iterations will include a hybrid blockchain implementation to serve the aforementioned purposes. 
 
-Current Fixes: Controller Testing - prod
-UX:
- 1. Account Abstraction: Selection of a provider within the ecosystem.
- 2. Implementation using REST APIs into our currently existing API's 
- 3. Addition of Smart Contract Calls for specified transactions/interactions to work with our APIs. 
+Current Fixes: Making Application Production Ready
+ 1. Testing Dao Crud Operations
+2. Proposal Crud Ops:-GetAllProposalsInDao, GetProposalDetailsById,FundProposal 
+3. Vote: GetAllOngoingProposals, VoteInSpecificProposal,GetVotedProposals
+4. Authentication & Implementation of protected Routes 
+5. Normal User Management
+6. Admin User Management

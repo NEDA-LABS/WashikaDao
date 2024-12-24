@@ -12,7 +12,7 @@ main.daoMain {
   padding-top: clamp(640px, 48vw, 680px);
 }
 
-.daoMain .daoImage {
+.daoImage {
   width: 100%;
   padding: 0 24px;
   position: absolute;
@@ -39,12 +39,12 @@ main.daoMain {
   padding-left: 24px;
 }
 
-.daoMain .left .one {
+.daoMain .left .one, .superAdmin .top .one {
   position: relative;
   padding: 0 0 clamp(16px, 7vw, 48px);
 }
 
-.daoMain .left .one::after {
+.daoMain .left .one::after, .superAdmin .top .one.onesy::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -53,25 +53,25 @@ main.daoMain {
   background-color: #d9d9d9;
 }
 
-.daoMain .one h1 {
+.daoMain .one h1, .superAdmin .top .one h1 {
   color: #433939;
-  font-size: clamp(24px, 5vw, 45px);
+  font-size: clamp(24px, 3vw, 45px);
   font-family: "DM Mono", sans-serif;
 }
 
-.daoMain .location {
+.daoMain .location, .superAdmin .top .one .location {
   margin: 9px 0;
   display: flex;
   gap: clamp(9px, 1vw, 16px);
   align-items: center;
 }
 
-.daoMain .location p {
+.daoMain .location p, .superAdmin .top .one .location p {
   color: #a39898;
   font-size: clamp(16px, 3vw, 27px);
 }
 
-.daoMain .email {
+.daoMain .email, .superAdmin .top .one .email {
   color: #f8b859;
   font-weight: bold;
   font-size: clamp(18px, 3vw, 27px);
@@ -87,13 +87,13 @@ main.daoMain {
 .daoMain .section-22 {
   margin: clamp(12px,1vw,18px) 0;
   padding: 0 clamp(12px,5vw,24px) 0 0;
-  font-size: clamp(28px,3vw,48px);
+  font-size: clamp(24px,3vw,48px);
   font-weight: bold;
 }
 
 .DaoOperations h1 {
   color: #433939;
-  font-size: clamp(31px,3vw,45px);
+  font-size: clamp(20px,3vw,45px);
   font-family: "DM Mono", sans-serif;
   padding: 16px 0 16px 3px;
   position: relative;
@@ -111,7 +111,7 @@ main.daoMain {
 
 .DaoOperations .button-group,
 .owner .button-group {
-  margin: 36px 0 0 -9px;
+  margin: 16px;
   gap: 16px;
 }
 
@@ -137,13 +137,13 @@ main.daoMain {
   color: #433939;
 }
 
-.treasury {
+.treasury, .superAdmin .top .two {
   background-color: #f6f6f6;
   border-radius: 20px;
   padding: 48px 56px;
 }
 
-.treasury .first {
+.treasury .first, .superAdmin .top .two .first {
   margin: 0;
   display: flex;
   flex-direction: column;
@@ -153,7 +153,7 @@ main.daoMain {
   gap: 12px;
 }
 
-.treasury .first::after {
+.treasury .first::after,.superAdmin .top .two .first::after, .superAdmin .section::after {
   content: "";
   position: absolute;
   bottom: 0;
@@ -163,25 +163,25 @@ main.daoMain {
   background-color: #ffbd59;
 }
 
-.treasury .one {
+.treasury .one, .superAdmin .top .two .one {
   display: flex;
   gap: clamp(24px,4vw,88px);
 }
 
-.treasury .one .left {
+.treasury .one .left, .superAdmin .top .two .one .left {
   padding-top: 16px;
   color: #433939;
   font-size: 19px;
   font-weight: bold;
 }
 
-.treasury .one .right {
+.treasury .one .right, .superAdmin .top .two .one .right {
   color: #a39898;
   font-size: 31px;
   font-weight: bold;
 }
 
-.treasury .amount {
+.treasury .amount, .superAdmin .top .two .amount {
   font-size: clamp(24px,3.7vw,50px);
   display: flex;
   align-items: center;
@@ -365,8 +365,9 @@ section.second::after {
   margin-left: 116px;
   width: 312px;
   height: 37px;
-  color: #d9d9d9;
+  color: #171717;
   font-size: 32px;
+  font-weight: normal;
 }
 
 .second .proposal-groups {
@@ -504,15 +505,15 @@ section.second::after {
     padding-left: 0;
   }
 
-  .daoMain .left .one::after {
+  .daoMain .left .one::after, .superAdmin .top .one.onesy::after {
     width: 100%;
   }
 
-  .daoMain .location {
+  .daoMain .location, .superAdmin .top .one .location {
     margin: 0;
   }
 
-  .daoMain .location img {
+  .daoMain .location img, .superAdmin .top .one .location img {
     width: 16px;
     height: 16px;
   }
@@ -523,6 +524,7 @@ section.second::after {
 
   .DaoOperations h1 {
     padding: 12px 0;
+    margin-bottom: 16px;
   }
 
   .DaoOperations h1::after {
@@ -531,15 +533,16 @@ section.second::after {
 
   .DaoOperations .button-group,
   .owner .button-group {
-    margin: 20px 0 0 12px;
+    margin: 0;
     display: flex;
+    width: 100%;
   }
 
   .DaoOperations .button-1,
   .owner .button-1,
   .DaoOperations .button-2,
   .owner .button-2 {
-    font-size: 20px;
+    font-size: 16px;
   }
 
   .treasury {
@@ -551,12 +554,12 @@ section.second::after {
     padding: 0 0 24px;
   }
 
-  .treasury .one .left {
+  .treasury .one .left, .superAdmin .top .two .one .left {
     padding-top: 9px;
     font-size: 16px;
   }
 
-  .treasury .one .right {
+  .treasury .one .right, .superAdmin .top .two .one .right {
     font-size: 24px;
   }
 
@@ -649,12 +652,13 @@ section.second::after {
   }
 
   .second .main {
-    margin-left: 24px;
+    margin-left: 0;
     text-align: center;
+    font-size: 24px;
   }
 
   .second .proposal-groups {
-    margin: 24px;
+    margin: 12px;
   }
 
   .second .proposal {
@@ -664,7 +668,7 @@ section.second::after {
 
   .proposal .one h1 {
     margin: 0;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .proposal .one div {
@@ -672,12 +676,12 @@ section.second::after {
     height: 36px;
     font-size: 12px;
     padding: 0 24px;
-    margin-top: 24px;
+    margin-top: 12px;
   }
 
   .proposal .two {
     margin: 12px 0 0;
-    font-size: 18px;
+    font-size: 14px;
   }
 
   .proposal .three {
@@ -688,6 +692,7 @@ section.second::after {
     flex-direction: row;
     margin: 12px 0;
     gap: 12px;
+    justify-content: space-evenly;
   }
 
   .proposal .three .button-group button {

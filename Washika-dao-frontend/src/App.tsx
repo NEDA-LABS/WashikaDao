@@ -9,19 +9,18 @@ import DaoRegistration from "./pages/DaoRegistration";
 import CreateProposal from "./pages/CreateProposal";
 import JoinPlatform from "./pages/JoinPlatform";
 import Funder from "./pages/Funder";
-import PublicDaoProfile from "./pages/PublicDaoProfile";
-// import PrivateDaoProfile from "./pages/PrivateDaoProfile";
+import DaoProfile from "./pages/DaoProfile";
+import SuperAdmin from "./pages/SuperAdmin";
 import ViewProposal from "./pages/ViewProposal";
 import MemberProfile from "./pages/MemberProfile";
 import Owner from "./pages/Owner";
 //Testing functionality components
-import TestCreateDao from "./pages/TestCreateDao";
-import BlogPage from "./pages/BlogPage";
-import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao";
-import TestHoleskyAddMember from "./pages/TestHoleskyAddMember";
-import TestHoleskyCreateProposal from "./pages/TestHoleskyCreateProposal";
-
-
+import BlogPage from "./pages/BlogPage.tsx";
+import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao.tsx";
+import TestHoleskyAddMember from "./pages/TestHoleskyAddMember.tsx";
+import TestHoleskyCreateProposal from "./pages/TestHoleskyCreateProposal.tsx";
+import TestConnection from "./pages/TestConnection.tsx";
+import TestH3WebCreateDao from "./pages/TestH3WebCreateDao.tsx";
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation.
 const App: React.FC = () => {
@@ -42,26 +41,27 @@ const App: React.FC = () => {
               element={<CreateProposal />}
             />
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
+            <Route path="/TestConnection" element={<TestConnection />} />
             <Route path="/Funder/:memberAddr" element={<Funder />} />
             <Route
-              path="/PublicDaoProfile/:daoMultiSigAddr"
-              element={<PublicDaoProfile />}
-            />
-            {/* <Route
               path="/DaoProfile/:daoMultiSigAddr"
-              element={<PrivateDaoProfile />}
-            /> */}
+              element={<DaoProfile />}
+            />
+            <Route
+              path="/SuperAdmin"
+              element={<SuperAdmin />}
+            />
             <Route
               path="/ViewProposal/:daoMultiSigAddr/:proposalId"
               element={<ViewProposal />}
             />
             <Route path="/MemberProfile" element={<MemberProfile />} />
-            <Route path="/Owner/:memberAddr" element={<Owner />} />
+            <Route path="/Owner/:address" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/TestCreateDao" element={<TestCreateDao />} />
             <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
           <Route path="/TestHoleskyAddMember" element={<TestHoleskyAddMember />} />
           <Route path="/TestHoleskyCreateProposal" element={<TestHoleskyCreateProposal />} />
+          <Route path="/TestH3WebCreateDao" element={<TestH3WebCreateDao />} />
         </Routes>
         </Router>
       </HelmetProvider>
