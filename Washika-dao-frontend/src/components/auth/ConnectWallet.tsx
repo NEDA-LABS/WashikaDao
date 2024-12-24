@@ -8,7 +8,7 @@ import { inAppWallet } from "thirdweb/wallets";
  *
  * Connect Wallet Component is from thirdweb & is responsible for the modal for plugging in in app wallet functionality
  */
-//WARN:: DO NOT TOUCH COMPONENT IN USE
+//WARN!!:DO NOT TOUCH COMPONENT IN USE
 
 export default function ConnectWallet() {
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment

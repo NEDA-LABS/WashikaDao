@@ -17,15 +17,15 @@ export function getCurrentConnectedAccount2(){
 
 } 
 import { Navigate } from 'react-router-dom';
-import { useAddress } from 'thirdweb/react';
+//import { useAddress } from 'thirdweb/react';
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
 
-const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
-  const address = useAddress();
-
+//const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
+//  const address = useAddress();
+/*
   if (!address) {
     return <Navigate to="/" />;
   }
@@ -37,16 +37,19 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-
+*/
+/** 
 const SampleApp = () => {
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
+        {/* Public Routes */
+        {/*
         <Route path="/" element={<HomePage />} />
         <Route path="/blogs" element={<BlogsPage />} />
 
         {/* Protected Routes - Need wallet connection */}
+/*
         <Route
           path="/ListOfDaos"
           element={
@@ -63,15 +66,17 @@ const SampleApp = () => {
             </ProtectedRoute>
           }
         />
-        {/* Add other protected routes here */}
-      </Routes>
-    </Router>
-  );
-};
+        {/**  Add other protected routes here */
+   //   </Routes>
+   // </Router>
+  //*/}
+ // */
+ // );
+//};
 
 //daoUtils.ts 
-import { useContract, useContractRead } from "thirdweb/react";
-
+//import { useContract, useContractRead } from "thirdweb/react";
+/*
 interface DAOMembershipStatus {
   isAdmin: boolean;
   isMember: boolean;
@@ -129,11 +134,15 @@ const DAOCard: React.FC<DAOCardProps> = ({ daoAddress, daoName }) => {
       <h3>{daoName}</h3>
       <p>Status: {isAdmin ? "Admin" : isMember ? "Member" : "Not a member"}</p>
       {isMember ? (
-        <button onClick={() => /* navigate to DAO dashboard */}>
+        */
+       /*
+        //<button onClick={() => /* navigate to DAO dashboard */
+          /*
           Enter DAO
         </button>
       ) : (
-        <button onClick={() => /* show join DAO modal */}>
+        <button onClick={() => /* show join DAO modal */
+          /*
           Join DAO
         </button>
       )}
@@ -280,4 +289,5 @@ const ListOfDaosPage = () => {
     </div>
   );
 };
+**/
 //DaoCard.tsx
