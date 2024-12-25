@@ -8,7 +8,7 @@ import { setCurrentUser } from "../redux/users/userSlice";
 import { createThirdwebClient } from "thirdweb";
 import {
   ConnectButton,
-  // useActiveWallet,
+  //  useActiveWallet,
   useActiveAccount,
   lightTheme,
 } from "thirdweb/react";
@@ -66,6 +66,8 @@ const JoinPlatform: React.FC = () => {
     console.error("No active account found.");
     return undefined;
   }
+  console.log(activeAccount);
+  
 
   // handleGetActiveAccount();
 

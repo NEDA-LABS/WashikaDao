@@ -2,6 +2,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { clearCurrentUser } from "../redux/users/userSlice";
+import { useActiveWallet, useActiveAccount } from "thirdweb/react";
 
 
 interface NavBarProps {
@@ -14,6 +15,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const { firstName, memberAddr, daoMultiSig } = useSelector(
     (state: RootState) => state.user
   );
+  const activeWallet = useActiveWallet();
+  const activeAccount = useActiveAccount();
   
   const handleClick = () => {
     navigate("/JoinPlatform");
@@ -57,6 +60,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const handleLogout = () => {
     // Dispatch action to clear current user data
     dispatch(clearCurrentUser());
+    if(activeAccount?.address && activeWallet){
+      activeWallet.disconnect();
+    }
     // Navigate to the login or home page after logout
     navigate("/");
   };
