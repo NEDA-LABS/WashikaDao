@@ -69,7 +69,7 @@ const DaoRegistration: React.FC = () => {
   console.log({ memberAddr: memberAddr });
 
   useEffect(() => {
-    if (memberAddr) {
+    if (typeof memberAddr === "string") {
       setFormData((prevData) => ({
         ...prevData,
         multiSigAddr: memberAddr.toLowerCase(),
@@ -85,7 +85,7 @@ const DaoRegistration: React.FC = () => {
     daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
-    multiSigAddr: memberAddr?.toLowerCase() || "",
+    multiSigAddr: typeof memberAddr === "string" ? memberAddr.toLowerCase() : "",
     multiSigPhoneNo: phoneNumber, // Set initial value to daoMultiSig
     kiwango: 0,
     // input1: "",

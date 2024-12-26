@@ -5,22 +5,10 @@ import NavBar from "../components/NavBar";
 import DaoForm from "../components/DaoForm";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
-import { createThirdwebClient } from "thirdweb";
-import {
-  ConnectButton,
-  //  useActiveWallet,
-  useActiveAccount,
-  lightTheme,
-} from "thirdweb/react";
-import { Account, inAppWallet /*, Wallet*/ } from "thirdweb/wallets";
-import { arbitrumSepolia } from "thirdweb/chains";
+import { useLocation } from "react-router-dom";
+
 // import { ethers } from "ethers";
 import React from "react";
-
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-//@ts-ignore
-const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
-const client = createThirdwebClient({ clientId: _clientId });
 
 interface Dao {
   daoName: string;
@@ -43,144 +31,13 @@ const JoinPlatform: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
   const [multiSigAddr, setMultiSigAddr] = useState("");
   const [memberDaos, setMemberDaos] = useState<string[]>([]); // Array of all DAOs member belongs to
-  const [memberAddr, setMemberAddr] = useState<Account | undefined>(undefined);
   const [txHash, setTxHash] = useState("");
   // const [usrBal, setUsrBal] = useState("");
   const [completedSteps, setCompletedSteps] = useState<number>(0);
-
-  // const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);
-  // const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);
-  const activeAccount = useActiveAccount();
-  // const activeWallet = useActiveWallet();
+  const location = useLocation();
+  const memberAddr = location.state?.memberAddr;
 
   console.log(email);
-
-  const urlToRedirectTo = `http://localhost:5173/Owner/${memberAddr}`;
-
-  function handleGetActiveAccount(): string | undefined {
-    if (activeAccount?.address) {
-      console.log("Active Account Address:", activeAccount.address);
-      setMemberAddr(activeAccount); // Update the state
-      return activeAccount.address; // Return the address
-    }
-    console.error("No active account found.");
-    return undefined;
-  }
-  console.log(activeAccount);
-  
-
-  // handleGetActiveAccount();
-
-  // function handleGetActiveWallet(): void {
-  //   setCurrActiveWall(activeWallet);
-  //   console.log("Current Active wallet is", currActiveWall);
-  // }
-
-  const wallets = [
-    inAppWallet({
-      auth: {
-        mode: "popup", //options are "popup" | "redirect" | "window"
-        options: ["email", "google", "phone"], //["discord", "google", "apple", "email", "phone", "farcaster"]
-        redirectUrl: urlToRedirectTo,
-      },
-    }),
-  ];
-  const customTheme = lightTheme({
-    colors: {
-      primaryButtonBg: "#d0820c", // Background color for the button
-      primaryButtonText: "#fbfaf8", // Text color for the button
-    },
-  });
-  //TODO: switch to celoAlfajoresTestnet when in prod and mainnet when deployed
-  const currInUseChain = arbitrumSepolia;
-
-  // Automatically trigger login when the wallet is connected
-  useEffect(() => {
-    if (activeAccount?.address) {
-      const loginMember = async () => {
-        const address = handleGetActiveAccount();
-        if (!address) {
-          console.error("Please connect your wallet first.");
-          return;
-        }
-
-        try {
-          const response = await fetch(
-            "http://localhost:8080/JiungeNaDao/DaoDetails/login",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ memberAddr: address }),
-            }
-          );
-
-          const result = await response.json();
-          if (response.ok) {
-            console.log("Login successful:", result.message);
-            dispatch(
-              setCurrentUser({
-                memberAddr: result.member.memberAddr,
-                daoMultiSig: result.member.daoMultiSig || "",
-                firstName: result.member.firstName,
-                lastName: result.member.lastName,
-                role: result.member.memberRole,
-                phoneNumber: result.member.phoneNumber,
-              })
-            );
-
-            if (result?.member?.memberAddr) {
-              navigate(
-                result.member.memberRole === "Owner" ||
-                  result.member.memberRole === "Member"
-                  ? `/Owner/${result.member.memberAddr}`
-                  : `/Funder/${result.member.memberAddr}`
-              );
-            } else {
-              console.error("Member address is undefined:", result);
-            }
-          } else {
-            console.error("Login failed:", result.error);
-          }
-        } catch (error) {
-          console.error("Login request failed:", error);
-        }
-      };
-
-      loginMember(); // Trigger login automatically
-    }
-  }, [activeAccount, dispatch, navigate]);
-
-  // async function connect() {
-  //   try {
-  //     const provider = new ethers.BrowserProvider(window.ethereum, "any");
-  //     const accounts = await provider.send("eth_requestAccounts", []);
-  //     const account = accounts[0];
-  //     const signer = await provider.getSigner();
-  //     const address = await signer.getAddress(); // Get the address from the signer
-  //     setMemberAddr(address);
-  //     console.log({ account: account });
-
-  //     const balance = await provider.getBalance(address);
-  //     const balanceInEth = ethers.formatEther(balance);
-  //     setUsrBal(balanceInEth);
-
-  //     // Use window.ethereum.on for account change events
-  //     window.ethereum.on("accountsChanged", (accounts: string[]) => {
-  //       if (accounts.length > 0) {
-  //         setMemberAddr(accounts[0]); // Update address on account change
-  //         console.log("New address:", accounts[0]);
-  //       }
-  //     });
-
-  //     return address; // Return the address to be used in the loginMember function
-  //   } catch (error) {
-  //     console.error("Failed to connect wallet:", error);
-  //     return null; // Return null if there's an error
-  //   }
-  // }
-  // console.log({ usrBal: usrBal });
 
   useEffect(() => {
     if (role !== "Owner") {
@@ -245,22 +102,15 @@ const JoinPlatform: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    const address = handleGetActiveAccount();
-    console.log("memberAddr after setting:", memberAddr);
-    if (!address) {
-      console.error("Please connect your wallet first.");
-      return;
-    }
-
     // Build payload data
     const payload = {
-      memberAddr: address || "",
+      memberAddr: memberAddr || "",
       firstName,
       lastName,
       phoneNumber: phoneNumber || 0,
       nationalIdNo: nationalIdNo || 0,
       memberRole: role,
-      daoMultiSig: role === "Owner" ? address : multiSigAddr,
+      daoMultiSig: role === "Owner" ? memberAddr : multiSigAddr,
       memberDaos: role === "Owner" ? [] : memberDaos, // Leave empty if role is Owner
     };
 
@@ -301,7 +151,7 @@ const JoinPlatform: React.FC = () => {
         // Navigate to profile page based on role
         navigate(
           role === "Owner" || role === "Member"
-            ? `/Owner/${address}`
+            ? `/Owner/${memberAddr}`
             : `/Funder/${memberAddr}`
         );
       } else {
@@ -324,24 +174,6 @@ const JoinPlatform: React.FC = () => {
             <br /> DAO operations
           </p>
         </div>
-
-        <form className="hazina digitalWallet">
-          <div className="formDiv">
-            <p>Already have an account? Log in here</p>
-
-            <button type="submit">
-              <ConnectButton
-                client={client}
-                theme={customTheme}
-                accountAbstraction={{
-                  chain: currInUseChain,
-                  sponsorGas: false,
-                }}
-                wallets={wallets}
-              />
-            </button>
-          </div>
-        </form>
 
         <div className="circle-container">
           {Array.from({ length: 5 }, (_, index) => (
@@ -407,26 +239,7 @@ const JoinPlatform: React.FC = () => {
               },
             ]}
           />
-
-          <div className="hazina digitalWallet">
-            <div className="left">
-              <h2>Digital Wallet</h2>
-              <p>Connect and fund impact DAOs and community saving groups</p>
-            </div>
-            <div className="formDiv">
-              <p>Connect To A Payment System of your choice</p>
-              <ConnectButton
-                client={client}
-                theme={customTheme}
-                accountAbstraction={{
-                  chain: currInUseChain,
-                  sponsorGas: false,
-                }}
-                wallets={wallets}
-              />
-            </div>
-          </div>
-
+          
           {role && role !== "Owner" && (
             <div className="findAndJoin">
               <div className="one">
