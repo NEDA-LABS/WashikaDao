@@ -31,6 +31,10 @@ export interface IDao {
     daoMultiSigAddr: string;
     multiSigPhoneNo: number;
     kiwango: number;
+    accountNo: number;
+    nambaZaHisa: number;
+    kiasiChaHisa: number;
+    interestOnLoans: number;
     proposals: IProposal;  //relationship with proposal entity
     members: IMemberDetails;  //relationship with memberDetails entity
 
@@ -41,6 +45,7 @@ export interface IMemberDetails {
     firstName: string;
     lastName: string;
     phoneNumber: number;
+    email: string;
     nationalIdNo: number;
     memberRole: string;  //funder, owner, member
     memberAddr: string;

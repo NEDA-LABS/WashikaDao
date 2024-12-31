@@ -17,10 +17,13 @@ export class MemberDetails {
     phoneNumber: number
 
     @Column({ unique: true })
+    email: string
+
+    @Column({ unique: true })
     nationalIdNo: number
 
     @Column()
-    memberRole: string//funder, owner, member 
+    memberRole: string//funder, chairperson, member, treasurer, secretary
 
     //optional member address 
     @Column({nullable: true, unique: true })

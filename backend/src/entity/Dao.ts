@@ -28,11 +28,26 @@ export class Dao {
   @Column({ unique: true })
   multiSigPhoneNo: number
 
-  @Column()
+  @Column({ unique: true })
   kiwango: number
 
   @Column()
+  accountNo: number
+
+  @Column()
+  nambaZaHisa: number
+
+  @Column()
+  kiasiChaHisa: number
+
+  @Column()
+  interestOnLoans: number
+
+  @Column()
   daoImageIpfsHash: string
+
+  @Column()
+  daoRegDocs: string
 
   @Column({ unique: true })
   daoMultiSigAddr: string  

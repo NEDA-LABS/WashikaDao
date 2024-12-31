@@ -1,13 +1,13 @@
 // src/features/user/userSlice.ts
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Account } from 'thirdweb/wallets';
 
 interface UserState {
-  memberAddr: string | null | Account;
-  daoMultiSig: string | undefined | Account;
+  memberAddr: string | null;
+  daoMultiSig: string | undefined;
   firstName: string;
   lastName: string;
   role: string;
+  email: string;
   phoneNumber: number;
 }
 
@@ -17,6 +17,7 @@ const initialState: UserState = {
   firstName: '',
   lastName: '',
   role: '',
+  email: "",
   phoneNumber: 0,
 };
 
@@ -31,6 +32,7 @@ const userSlice = createSlice({
       state.firstName = action.payload.firstName;
       state.lastName = action.payload.lastName;
       state.role = action.payload.role;
+      state.email = action.payload.email;
       state.phoneNumber = action.payload.phoneNumber;
     },
     clearCurrentUser(state) {
@@ -40,6 +42,7 @@ const userSlice = createSlice({
       state.firstName = initialState.firstName;
       state.lastName = initialState.lastName;
       state.role = initialState.role;
+      state.email = initialState.email;
       state.phoneNumber = initialState.phoneNumber;
     },
   },
