@@ -1,8 +1,9 @@
-import React from "react"; 
+import React from "react";
 import { createThirdwebClient } from "thirdweb";
 import {ConnectButton} from "thirdweb/react";
 import { lightTheme } from "thirdweb/react";
-import { arbitrumSepolia, celoAlfajoresTestnet } from "thirdweb/chains";
+//import { arbitrumSepolia, celoAlfajoresTestnet } from "thirdweb/chains";
+import { arbitrumSepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
 /**
  *
@@ -28,7 +29,7 @@ export default function ConnectWallet() {
       primaryButtonText: "#fbfaf8", // Text color for the button
     },
   });
-  const chain = arbitrumSepolia;  
+  const chain = arbitrumSepolia;
   //TODO: Switch to celo mainnet when in prod
   return (
     <div className="connectButton">

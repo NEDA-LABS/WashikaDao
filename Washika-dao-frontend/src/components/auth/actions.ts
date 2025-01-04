@@ -1,27 +1,29 @@
 import { useActiveWallet } from "thirdweb/react";
 import { inAppWallet } from "thirdweb/wallets";
-export default function getCurrentConnectedAccount(){ 
+export default function getCurrentConnectedAccount(){
     const activeWallet = useActiveWallet();
     if(activeWallet !== null || activeWallet !== undefined){
     return activeWallet;
     console.log(activeWallet);
-    } 
+    }
     return null;
 
 }
 
 export function getCurrentConnectedAccount2(){
- const activeWallet = inAppWallet(); 
+ const activeWallet = inAppWallet();
  console.log(activeWallet);
- return activeWallet; 
+ return activeWallet;
 
-} 
-import { Navigate } from 'react-router-dom';
+}
+//import { Navigate } from 'react-router-dom';
 //import { useAddress } from 'thirdweb/react';
 
+/*
 interface ProtectedRouteProps {
   children: React.ReactNode;
 }
+*/
 
 //const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
 //  const address = useAddress();
@@ -38,7 +40,7 @@ interface ProtectedRouteProps {
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 */
-/** 
+/**
 const SampleApp = () => {
   return (
     <Router>
@@ -74,7 +76,7 @@ const SampleApp = () => {
  // );
 //};
 
-//daoUtils.ts 
+//daoUtils.ts
 //import { useContract, useContractRead } from "thirdweb/react";
 /*
 interface DAOMembershipStatus {
@@ -86,7 +88,7 @@ interface DAOMembershipStatus {
 
 export function useCheckDAOMembership(daoAddress: string, userAddress: string): DAOMembershipStatus {
   const { contract } = useContract(daoAddress);
-  
+
   // Check member status
   const { data: isMember, isLoading: memberLoading, error: memberError } = useContractRead(
     contract,
@@ -107,8 +109,8 @@ export function useCheckDAOMembership(daoAddress: string, userAddress: string): 
     isLoading: memberLoading || adminLoading,
     error: memberError || adminError
   };
-} 
-//DaoCard.tsx--> DaoList or DaoDetail 
+}
+//DaoCard.tsx--> DaoList or DaoDetail
 import { useAddress } from "thirdweb/react";
 import { useCheckDAOMembership } from "../../utils/daoUtils";
 
@@ -150,7 +152,7 @@ const DAOCard: React.FC<DAOCardProps> = ({ daoAddress, daoName }) => {
   );
 };
 
-//ListOfDaosPage.tsx 
+//ListOfDaosPage.tsx
 import { useAddress } from "thirdweb/react";
 import DAOCard from "../components/dao/DAOCard";
 
@@ -162,7 +164,7 @@ const ListOfDaosPage: React.FC = () => {
   return (
     <div className="daos-grid">
       {daos.map((dao) => (
-        <DAOCard 
+        <DAOCard
           key={dao.address}
           daoAddress={dao.address}
           daoName={dao.name}
@@ -172,7 +174,7 @@ const ListOfDaosPage: React.FC = () => {
   );
 };
 
-//localStorageUtils.ts 
+//localStorageUtils.ts
 const CACHE_KEY = 'dao_memberships_cache';
 const CACHE_DURATION = 30 * 24 * 60 * 60 * 1000; // 30 days in milliseconds
 
@@ -182,7 +184,7 @@ export const getMembershipCache = () => {
 
   try {
     const { data, timestamp } = JSON.parse(cached);
-    
+
     // Check if cache is expired
     if (Date.now() - timestamp > CACHE_DURATION) {
       localStorage.removeItem(CACHE_KEY);
@@ -201,8 +203,8 @@ export const setMembershipCache = (data: any) => {
     timestamp: Date.now()
   };
   localStorage.setItem(CACHE_KEY, JSON.stringify(cacheData));
-}; 
-//daoUtils.ts 
+};
+//daoUtils.ts
 import { useContract } from "thirdweb/react";
 import { getMembershipCache, setMembershipCache } from "./localStorageUtils";
 
@@ -215,7 +217,7 @@ export async function checkMembership(userAddress: string, daoAddress: string) {
   }
 
   const { contract } = useContract(daoAddress);
-  
+
   try {
     const isAdmin = await contract.call("hasRole", ["ADMIN_ROLE", userAddress]);
     const isMember = await contract.call("isMember", [userAddress]);
@@ -233,7 +235,7 @@ export async function checkMembership(userAddress: string, daoAddress: string) {
     return { isAdmin: false, isMember: false }; // Default to false on error
   }
 }
-//ListOfDaoPage.tsx 
+//ListOfDaoPage.tsx
 import { useAddress } from "thirdweb/react";
 import { useState, useEffect } from "react";
 import { checkMembership } from "../utils/daoUtils";
@@ -278,7 +280,7 @@ const ListOfDaosPage = () => {
   return (
     <div className="daos-grid">
       {daos.map((dao) => (
-        <DAOCard 
+        <DAOCard
           key={dao.address}
           name={dao.name}
           address={dao.address}
