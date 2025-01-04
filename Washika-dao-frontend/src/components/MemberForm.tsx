@@ -2,6 +2,7 @@
 interface Member {
   firstName: string;
   lastName: string;
+  email: string;
   phoneNumber: string;
   nationalIdNo: string;
   memberRole: string;
@@ -59,11 +60,18 @@ const MemberForm: React.FC<MemberFormProps> = ({
                 className="short"
               >
                 <option value="" disabled>Role</option>
-                <option value="Owner">Owner</option>
-                <option value="Funder">Funder</option>
-                <option value="Member">Member</option>
+                <option value="Treasurer">Treasurer</option>
+                <option value="Secretary">Secretary</option>
               </select>
             </div>
+          </div>
+          <div className="input">
+            <label>Email</label>
+            <input
+              type="email"
+              value={currentMember.email}
+              onChange={(e) => onMemberChange("email", e.target.value)}
+            />
           </div>
           <div className="input">
             <label>Contact</label>
@@ -83,7 +91,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
           </div>
           <div className="buttons">
             <button type="button" className="button-1" onClick={onAddMember}>
-              Ongeza mwingine
+              Mwongeze
             </button>
             <button type="button" className="button-2">
               Mkaribishe

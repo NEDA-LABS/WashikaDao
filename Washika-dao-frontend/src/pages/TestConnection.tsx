@@ -1,9 +1,10 @@
-import { useState } from "react";
+import React from "react";
+import {  useState } from "react";
 import { createThirdwebClient } from "thirdweb";
-import { ConnectButton, ThirdwebProvider, useSetActiveWallet, useConnect, useActiveWallet, useDisconnect, lightTheme } from "thirdweb/react";
+import { ConnectButton, useActiveWallet, lightTheme } from "thirdweb/react";
 import { useActiveAccount } from "thirdweb/react";
-import { Account, inAppWallet, Wallet } from "thirdweb/wallets"; 
-import { celoAlfajoresTestnet, arbitrumSepolia } from "thirdweb/chains";
+import { Account, inAppWallet, Wallet } from "thirdweb/wallets";
+import {arbitrumSepolia } from "thirdweb/chains";
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
@@ -13,16 +14,16 @@ export default function TestConnection(){
     const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);
     const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);
     const activeAccount = useActiveAccount();
-    const activeWallet = useActiveWallet(); 
+    const activeWallet = useActiveWallet();
 
-    const urlToRedirectTo = "http://localhost:5173/userDashboard";//TODO: Change to point to MemberProfile Page
+//    const urlToRedirectTo = "http://localhost:5173/userDashboard";//TODO: Change to point to MemberProfile Page
 
-    function handleGetActiveAccount(){ 
+    function handleGetActiveAccount(){
         console.log("active account is", activeAccount?.address);
         setCurrActiveAcc(activeAccount);
     }
 
-    function handleGetActiveWallet(): void { 
+    function handleGetActiveWallet(): void {
         setCurrActiveWall(activeWallet);
         console.log("Current Active wallet is", currActiveWall)
     }
@@ -41,14 +42,14 @@ export default function TestConnection(){
                     },
         });
     //TODO: switch to celoAlfajoresTestnet when in prod and mainnet when deployed
-    const currInUseChain = arbitrumSepolia; 
+    const currInUseChain = arbitrumSepolia;
     return (
         <div>
-            <ConnectButton 
-             client={client} 
+            <ConnectButton
+             client={client}
              theme={customTheme}
               accountAbstraction={{ chain: currInUseChain, sponsorGas: false }}
-              wallets={wallets} /> 
+              wallets={wallets} />
         <button onClick={handleGetActiveAccount}>Get Active Account</button>
         <div>
             {currActiveAcc?.address}

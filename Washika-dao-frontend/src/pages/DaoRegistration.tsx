@@ -12,9 +12,6 @@ import React from "react";
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
  */
 interface FormData {
-  // input1: string | number | undefined;
-  // input2: string | number | undefined;
-  // input3: string | number | undefined;
   daoName: string;
   daoLocation: string;
   targetAudience: string;
@@ -22,51 +19,56 @@ interface FormData {
   daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
+  daoRegDocs: string;
   multiSigAddr: string;
   multiSigPhoneNo: number;
   kiwango: number;
+  accountNo: number;
+  nambaZaHisa: string;
+  kiasiChaHisa: string;
+  interestOnLoans: string;
 }
 
 interface Member {
   firstName: string;
   lastName: string;
+  email: string;
   phoneNumber: string;
   nationalIdNo: string;
   memberRole: string;
 }
 
-const uploadImageToCloudinary = async (file: File) => {
+const uploadFileToCloudinary = async (file: File, resourceType: string) => {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "ml_default");
 
+  const uploadUrl = `https://api.cloudinary.com/v1_1/da50g6laa/${resourceType}/upload`;
+
   try {
-    const response = await fetch(
-      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload",
-      {
-        method: "POST",
-        body: formData,
-      }
-    );
+    const response = await fetch(uploadUrl, {
+      method: "POST",
+      body: formData,
+    });
 
     const data = await response.json();
-    return data.secure_url; // Return the URL of the uploaded image
+    return data.secure_url; // Return the uploaded file's URL
   } catch (error) {
-    console.error("Error uploading image:", error);
+    console.error("Error uploading file:", error);
     return null;
   }
 };
 
+
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
-  //TODO: Extract multiSigAddr from Navbar connectWallet data and save to formData
 
   const { role, memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
-  console.log({ phoneNumber: phoneNumber });
-  console.log({ role: role });
-  console.log({ memberAddr: memberAddr });
+  // console.log({ phoneNumber: phoneNumber });
+  // console.log({ role: role });
+  // console.log({ memberAddr: memberAddr });
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
@@ -85,12 +87,14 @@ const DaoRegistration: React.FC = () => {
     daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
-    multiSigAddr: typeof memberAddr === "string" ? memberAddr.toLowerCase() : "",
-    multiSigPhoneNo: phoneNumber, // Set initial value to daoMultiSig
+    daoRegDocs: "",
+    multiSigAddr: typeof memberAddr === "string" ? memberAddr : "",
+    multiSigPhoneNo: phoneNumber,
     kiwango: 0,
-    // input1: "",
-    // input2: "",
-    // input3: "",
+    accountNo: 0,
+    nambaZaHisa: "",
+    kiasiChaHisa: "",
+    interestOnLoans: "",
   });
 
   // State to hold the list of members
@@ -100,6 +104,7 @@ const DaoRegistration: React.FC = () => {
   const [currentMember, setCurrentMember] = useState<Member>({
     firstName: "",
     lastName: "",
+    email: "",
     phoneNumber: "",
     nationalIdNo: "",
     memberRole: "",
@@ -155,6 +160,7 @@ const DaoRegistration: React.FC = () => {
       setCurrentMember({
         firstName: "",
         lastName: "",
+        email: "",
         phoneNumber: "",
         nationalIdNo: "",
         memberRole: "",
@@ -165,17 +171,21 @@ const DaoRegistration: React.FC = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0]; // Access the file if it exists
-
+    const fieldName = target.name;
+  
     if (file) {
-      const imageUrl = await uploadImageToCloudinary(file); // Upload the file and get the image URL
-      if (imageUrl) {
+      const resourceType = fieldName === "daoImageIpfsHash" ? "image" : "raw"; // Use 'raw' for non-image files
+      const fileUrl = await uploadFileToCloudinary(file, resourceType);
+  
+      if (fileUrl) {
         setFormData((prevData) => ({
           ...prevData,
-          daoImageIpfsHash: imageUrl, // Update the form with the image URL
+          [fieldName]: fileUrl, // Update the specific field with the file URL
         }));
       }
     }
   };
+  
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -207,10 +217,11 @@ const DaoRegistration: React.FC = () => {
       const data = await response.json();
       console.log(data);
       // Parse the response JSON
-
+      const daoMultiSigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
+      console.log(daoMultiSigAddr);
+      
       // Check if the response indicates success
       if (response.ok) {
-        const daoMultiSigAddr = data.multiSigAddr; // Extract multi-sig address from response
         console.log("DAO created successfully", data);
         navigate(`/DaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
       } else {
@@ -224,7 +235,7 @@ const DaoRegistration: React.FC = () => {
   return (
     <>
       <NavBar className={""} />
-      {role === "Owner" ? ( // Only show form if user role is "owner"
+      {role === "Chairperson" ? ( // Only show form if user role is "owner"
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
@@ -290,7 +301,7 @@ const DaoRegistration: React.FC = () => {
                   label: "Akaunti namba ya fedha",
                   type: "number",
                   name: "accountNo",
-                  // value: formData.accountNo,
+                  value: formData.accountNo,
                   onChange: handleChange,
                 },
               ]}
@@ -328,22 +339,22 @@ const DaoRegistration: React.FC = () => {
                     {
                       label: "Weka Namba za HISA",
                       type: "text",
-                      name: "input1",
-                      // value: formData.input1,
+                      name: "nambaZaHisa",
+                      value: formData.nambaZaHisa,
                       onChange: handleChange,
                     },
                     {
                       label: "Weka Kiasi cha HISA",
                       type: "text",
-                      name: "input2",
-                      // value: formData.input2,
+                      name: "kiasiChaHisa",
+                      value: formData.kiasiChaHisa,
                       onChange: handleChange,
                     },
                     {
                       label: "Riba za Mikopo",
                       type: "text",
-                      name: "input3",
-                      // value: formData.input3,
+                      name: "interestOnLoans",
+                      value: formData.interestOnLoans,
                       placeholder: "%",
                       onChange: handleChange,
                     },

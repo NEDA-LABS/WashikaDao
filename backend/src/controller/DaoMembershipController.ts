@@ -1,7 +1,7 @@
 import { eventNames } from "process";
 //import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
-import { getRepository, QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
+import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
 import { Dao } from "../entity/Dao";
 import { Proposal } from "../entity/Proposal";
 import { Vote } from "../entity/Vote";
@@ -30,7 +30,7 @@ const daoRepository = AppDataSource.getRepository(Dao);
  * - If any error occurs, it returns a 500 status code with the error message.
  */
 export async function CreateInitialOwner(req: Request, res: Response) {
-  const { firstName, lastName, phoneNumber, memberRole, nationalIdNo, memberAddr, daoMultiSig, daos } =
+  const { firstName, lastName, email, phoneNumber, memberRole, nationalIdNo, memberAddr, daoMultiSig, daos } =
     req.body;
     console.log("Request Body:", req.body);
   // Validate required fields
@@ -43,6 +43,7 @@ export async function CreateInitialOwner(req: Request, res: Response) {
     const initialOwner: Partial<MemberDetails> = {
       firstName,
       lastName,
+      email,
       phoneNumber,
       nationalIdNo,
       memberRole, // Setting role as InitialDaoOwner
@@ -67,6 +68,8 @@ export async function CreateInitialOwner(req: Request, res: Response) {
         errorMessage = "The phone number is already in use.";
       } else if (error.message.includes("nationalIdNo")) {
         errorMessage = "The national ID number is already in use.";
+      } else if (error.message.includes("email")) {
+        errorMessage = "The email is already in use.";
       } else if (error.message.includes("memberAddr")) {
         errorMessage = "The member address is already in use.";
       }
@@ -115,6 +118,7 @@ export async function loginMember(req: Request, res: Response) {
       member: {
         firstName: member.firstName,
         lastName: member.lastName,
+        email: member.email,
         phoneNumber: member.phoneNumber,
         memberRole: member.memberRole,
         memberAddr: member.memberAddr,
@@ -195,6 +199,7 @@ export async function RequestToJoinDao(req: Request, res: Response) {
   const {
     firstName,
     lastName,
+    email,
     phoneNumber,
     nationalIdNo,
     memberRole,
@@ -222,6 +227,7 @@ export async function RequestToJoinDao(req: Request, res: Response) {
     const memberRequest = {
       firstName,
       lastName,
+      email,
       phoneNumber,
       nationalIdNo,
       memberRole,

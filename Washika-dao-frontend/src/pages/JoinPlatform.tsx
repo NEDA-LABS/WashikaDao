@@ -35,12 +35,11 @@ const JoinPlatform: React.FC = () => {
   // const [usrBal, setUsrBal] = useState("");
   const [completedSteps, setCompletedSteps] = useState<number>(0);
   const location = useLocation();
-  const memberAddr = location.state?.memberAddr;
-
-  console.log(email);
+  const memberAddr = location.state?.address;
+  console.log("The memberAddr is", memberAddr);
 
   useEffect(() => {
-    if (role !== "Owner") {
+    if (role !== "Chairperson") {
       const fetchDaos = async () => {
         try {
           const response = await fetch(
@@ -107,20 +106,21 @@ const JoinPlatform: React.FC = () => {
       memberAddr: memberAddr || "",
       firstName,
       lastName,
+      email,
       phoneNumber: phoneNumber || 0,
       nationalIdNo: nationalIdNo || 0,
       memberRole: role,
-      daoMultiSig: role === "Owner" ? memberAddr : multiSigAddr,
-      memberDaos: role === "Owner" ? [] : memberDaos, // Leave empty if role is Owner
+      daoMultiSig: role === "Chairperson" ? memberAddr : multiSigAddr,
+      memberDaos: role === "Chairperson" ? [] : memberDaos, // Leave empty if role is Owner
     };
 
     console.log("Payload:", payload);
 
     try {
       const endpoint =
-        role === "Owner"
+        role === "Chairperson"
           ? "http://localhost:8080/JiungeNaDao/DaoDetails/CreateOwner"
-          : `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr}/AddMember`;
+          : `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr.toLowerCase()}/AddMember`;
 
       const response = await fetch(endpoint, {
         method: "POST",
@@ -143,6 +143,7 @@ const JoinPlatform: React.FC = () => {
             daoMultiSig: payload.daoMultiSig,
             firstName,
             lastName,
+            email,
             role,
             phoneNumber: payload.phoneNumber,
           })
@@ -150,9 +151,9 @@ const JoinPlatform: React.FC = () => {
 
         // Navigate to profile page based on role
         navigate(
-          role === "Owner" || role === "Member"
-            ? `/Owner/${memberAddr}`
-            : `/Funder/${memberAddr}`
+          role === "Chairperson" || role === "Member"
+            ? `/Owner/${memberAddr.toLowerCase()}`
+            : `/Funder/${memberAddr.toLowerCase()}`
         );
       } else {
         console.error(`Error: ${result.error}`);
@@ -231,7 +232,7 @@ const JoinPlatform: React.FC = () => {
                     disabled: true,
                     selected: true,
                   },
-                  { label: "Owner", value: "Owner" },
+                  { label: "Chairperson", value: "Chairperson" },
                   { label: "Member", value: "Member" },
                   { label: "Funder", value: "Funder" },
                 ],
@@ -240,7 +241,7 @@ const JoinPlatform: React.FC = () => {
             ]}
           />
           
-          {role && role !== "Owner" && (
+          {role && role !== "Chairperson" && (
             <div className="findAndJoin">
               <div className="one">
                 <h2>Find and join your DAO with ease</h2>

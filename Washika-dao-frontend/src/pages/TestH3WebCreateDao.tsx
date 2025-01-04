@@ -1,9 +1,10 @@
+import React from "react";
 import { useState } from "react";
 import { createThirdwebClient, getContract, prepareContractCall } from "thirdweb";
-import { ConnectButton, ThirdwebProvider, useSetActiveWallet, useConnect, useActiveWallet, useDisconnect, lightTheme, useSendTransaction } from "thirdweb/react";
+import { ConnectButton, useActiveWallet, lightTheme, useSendTransaction } from "thirdweb/react";
 import { useActiveAccount } from "thirdweb/react";
-import { Account, inAppWallet, Wallet } from "thirdweb/wallets"; 
-import { celoAlfajoresTestnet, arbitrumSepolia } from "thirdweb/chains";
+import { Account, inAppWallet, Wallet } from "thirdweb/wallets";
+import { arbitrumSepolia } from "thirdweb/chains";
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
@@ -11,21 +12,21 @@ import { celoAlfajoresTestnet, arbitrumSepolia } from "thirdweb/chains";
   const client = createThirdwebClient({ clientId: _clientId });
 export default function TestH3WebCreateDao(){
     const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);//handles state of currently connected account
-    const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);//Defines the current wallet type if (wallet === smart) => then its msig --> use this for authentication 
+    const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);//Defines the current wallet type if (wallet === smart) => then its msig --> use this for authentication
     const activeAccount = useActiveAccount();//Thirdweb hooks
-    const activeWallet = useActiveWallet(); 
-	//Using loading state for createDao Button will be extracted to be used in the form 
-	const [isLoading, setIsLoading] = useState(false); 
-	const [error, setError] = useState<string | null>(null);
+    const activeWallet = useActiveWallet();
+	//Using loading state for createDao Button will be extracted to be used in the form
+	const [isLoading, _setIsLoading] = useState(false);
+	const [error, _setError] = useState<string | null>(null);
 
-    const urlToRedirectTo = "http://localhost:5173/userDashboard";//TODO: Change to point to MemberProfile Page
+    //const urlToRedirectTo = "http://localhost:5173/userDashboard";//TODO: Change to point to MemberProfile Page
 
-    function handleGetActiveAccount(){ 
+    function handleGetActiveAccount(){
         console.log("active account is", activeAccount?.address);
         setCurrActiveAcc(activeAccount);
     }
 
-    function handleGetActiveWallet(): void { 
+    function handleGetActiveWallet(): void {
         setCurrActiveWall(activeWallet);
         console.log("Current Active wallet is", currActiveWall)
     }
@@ -45,10 +46,10 @@ export default function TestH3WebCreateDao(){
                     },
         });
     //TODO: switch to celoAlfajoresTestnet when in prod and mainnet when deployed
-    const currInUseChain = arbitrumSepolia; 
-    const testingAsMsig = 0x590Ab3FfA33644F1fDC648627Cd5eC937a271A20; 
+    const currInUseChain = arbitrumSepolia;
+    //const testingAsMsig = 0x590Ab3FfA33644F1fDC648627Cd5eC937a271A20;
     /** Sample Data for creating the Dao */
-    const TESTER_WALLET_AS_MSIG = activeAccount;
+    //const TESTER_WALLET_AS_MSIG = activeAccount;
     const _daoName: string =   "ChrisDao";
     const _location: string = "Africa";
     const _targetAudience: string = "Bitcoiners";
@@ -56,11 +57,11 @@ export default function TestH3WebCreateDao(){
     const _daoDescription: string = "ChrisBitcoinersDao";
     const _daoOverview: string = "Chrisandbtcmaxis";
     const _daoImageUrlHash: string = "ImageUrlWillgoHere";
-    const _multiSigAddr:Account | undefined = TESTER_WALLET_AS_MSIG;
+    //const _multiSigAddr:Account | undefined = TESTER_WALLET_AS_MSIG;
     const _multiSigPhoneNo  =  BigInt(726140388);
 
     /**function to create dao*/
-    //Maybe get the Dao first 
+    //Maybe get the Dao first
     /**
      * Creates a Thirdweb contract by combining the Thirdweb client and contract options.
     @param options — The options for creating the contract.
@@ -1040,7 +1041,7 @@ export default function TestH3WebCreateDao(){
 			"type": "function"
 		}],
     });
-    const { mutate: sendTx, data: transactionResult } = useSendTransaction(); 
+    const { mutate: sendTx, data: transactionResult } = useSendTransaction();
     function handleCreateDao() {
 		console.log("Initializing Dao Creation process, Running necessary checks first")
         if (!currActiveAcc?.address) {
@@ -1048,7 +1049,7 @@ export default function TestH3WebCreateDao(){
             return;
         }
 		console.log("ACtive Account found, check passed", currActiveAcc.address)
-        //do the stuff to send the transaction to blockchain to create Dao 
+        //do the stuff to send the transaction to blockchain to create Dao
 		try {
         const createDaoTx = prepareContractCall({
             contract: FullDaoContract,
@@ -1066,16 +1067,16 @@ export default function TestH3WebCreateDao(){
 			console.error("Error in creating dao", error)
 		}
         console.log("Current transaction result", transactionResult);
-        
+
     }
 
     return (
         <>
-            <ConnectButton 
-             client={client} 
+            <ConnectButton
+             client={client}
              theme={customTheme}
               accountAbstraction={{ chain: currInUseChain, sponsorGas: false }}
-              wallets={wallets} /> 
+              wallets={wallets} />
         <button onClick={handleGetActiveAccount}>Get Active Account</button>
         <div>
             {currActiveAcc?.address}
@@ -1084,7 +1085,7 @@ export default function TestH3WebCreateDao(){
         <div>
             {currActiveWall?.id}
         </div>
-        <ul> 
+        <ul>
             <li>{_daoName}</li>
             <li>{_location}</li>
             <li>{_targetAudience}</li>
@@ -1093,7 +1094,7 @@ export default function TestH3WebCreateDao(){
             <li>{_daoOverview}</li>
             <li>{_daoImageUrlHash}</li>
         </ul>
-        <button 
+        <button
 		onClick={handleCreateDao}
 		disabled={isLoading || !currActiveAcc}
 		>
@@ -1103,13 +1104,13 @@ export default function TestH3WebCreateDao(){
 		      {isLoading && <div>Transaction in progress...</div>}
 		{/**show error state */}
 			{error && (
-					<div style={{color: 'red'}}> 
-					Error: {error} 
+					<div style={{color: 'red'}}>
+					Error: {error}
 					</div>
 			)}
 			{/** Show transaction result if available */}
 			{transactionResult && (
-				<div> 
+				<div>
 					Transaction Result: {JSON.stringify(transactionResult, null, 2)}
 				</div>
 			)}

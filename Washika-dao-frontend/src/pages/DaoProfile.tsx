@@ -120,8 +120,8 @@ const PublicDaoProfile: React.FC = () => {
                   </p>
             </div>
 
-            <p className="section-21">{daoDetails.daoOverview}</p>
-            <p className="section-22">{daoDetails.daoDescription}</p>
+            <p className="section-21">{daoDetails.daoDescription}</p>
+            <p className="section-22">{daoDetails.daoOverview}</p>
             
             <div className="DaoOperations">
               <h1>DAO operations</h1>
