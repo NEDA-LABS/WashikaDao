@@ -23,6 +23,26 @@ import TestConnection from "./pages/TestConnection.tsx";
 import TestH3WebCreateDao from "./pages/TestH3WebCreateDao.tsx";
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation.
+/**
+ * The `App` component serves as the root of the React application.
+ * It configures the client-side routing using `react-router-dom` to manage navigation
+ * between different pages of the application. The component is wrapped in 
+ * `ThirdwebProvider` and `HelmetProvider` to provide context and manage side effects.
+ * 
+ * @returns {React.FC} The main application component with defined routes.
+ * 
+ * @component
+ * @example
+ * return (
+ *   <App />
+ * )
+ * 
+ * @remarks
+ * - The application includes routes for various pages such as HomePage, DaoRegistration,
+ *   JifunzeElimu, CreateProposal, and more.
+ * - Testing functionality components like TestHoleskyCreateDao and TestConnection are also included.
+ * - The component is designed to support dynamic routing with parameters for certain paths.
+ */
 const App: React.FC = () => {
   // const chain = celoAlfajoresTestnet; // Set up testnet chain
 

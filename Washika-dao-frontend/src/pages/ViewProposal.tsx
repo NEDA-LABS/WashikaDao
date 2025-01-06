@@ -16,6 +16,22 @@ interface ProposalData {
  * @Auth Policy: Visible to all 
  * @returns 
  */
+/**
+ * A React functional component that displays detailed information about a specific proposal.
+ * It fetches proposal data from a backend service using the proposal ID and multi-signature address
+ * obtained from the URL parameters. The component renders a loading state while fetching data
+ * and displays the proposal details once the data is available.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component displaying proposal details, including title,
+ * description, amount requested, currency, and additional information. It also provides
+ * navigation options to view linked resources, view votes, re-propose, and fund the project.
+ * 
+ * @remarks
+ * - Utilizes `useParams` to extract URL parameters and `useNavigate` for navigation.
+ * - Handles errors during data fetching and logs them to the console.
+ * - Displays a loading message until the proposal data is successfully fetched.
+ */
 const ViewProposal: React.FC = () => {
   const { proposalId } = useParams<{ proposalId: string }>(); // Get proposalId from the URL
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>(); // Get multiSigAddr from the URL

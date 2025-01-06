@@ -5,6 +5,22 @@ interface TreasuryEntry {
   value: string;
   icon: string;
 }
+/**
+ * A React functional component that displays a mini statement of treasury transactions.
+ * 
+ * This component renders a list of treasury entries, each representing a financial transaction
+ * such as a deposit or withdrawal. Each entry includes details like the transaction type, date,
+ * amount, value, and an associated icon. The component also provides a button to view the full statement.
+ * 
+ * @interface TreasuryEntry
+ * @property {("Withdraw" | "Deposit")} type - The type of the transaction.
+ * @property {string} date - The date of the transaction.
+ * @property {string} amount - The amount involved in the transaction, including currency.
+ * @property {string} value - The value of the transaction in USD.
+ * @property {string} icon - The URL of the icon representing the transaction type.
+ * 
+ * @returns {JSX.Element} A JSX element representing the mini statement UI.
+ */
 const TreasuryHistory: React.FC = () => {
   const treasuryData: TreasuryEntry[] = [
     {

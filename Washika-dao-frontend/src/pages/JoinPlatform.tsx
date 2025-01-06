@@ -18,6 +18,34 @@ interface Dao {
  *@Auth policy: checks if isLoggedIn if not requires you to else proceed
  * @returns
  */
+
+/**
+ * Component for joining a platform and managing DAO memberships.
+ * 
+ * This component allows users to create an account, select a role, and join a DAO.
+ * It manages user input for personal details and role selection, fetches available DAOs,
+ * and handles form submission to register the user with the selected DAO.
+ * 
+ * @component
+ * @returns {React.FC} A React functional component.
+ * 
+ * @remarks
+ * - Utilizes React hooks for state management and side effects.
+ * - Fetches DAO details from a specified endpoint and updates the state accordingly.
+ * - Handles form submission by sending user data to the server and navigating based on the role.
+ * 
+ * @example
+ * <JoinPlatform />
+ * 
+ * @dependencies
+ * - `useNavigate` from `react-router-dom` for navigation.
+ * - `useDispatch` from `react-redux` for dispatching actions.
+ * - `useLocation` from `react-router-dom` for accessing location state.
+ * 
+ * @see DaoForm
+ * @see NavBar
+ * @see Footer
+ */
 const JoinPlatform: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();

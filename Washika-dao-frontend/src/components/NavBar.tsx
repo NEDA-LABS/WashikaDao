@@ -17,7 +17,28 @@ const client = createThirdwebClient({ clientId: _clientId });
 interface NavBarProps {
   className: string;
 }
-
+/**
+ * NavBar component renders a navigation bar with links and buttons for user interaction.
+ * It manages user authentication state and navigation based on the active account status.
+ * 
+ * @param {NavBarProps} props - The properties for the NavBar component.
+ * @param {string} props.className - The CSS class name for styling the navigation bar.
+ * 
+ * @returns {JSX.Element} The rendered navigation bar component.
+ * 
+ * @remarks
+ * - Utilizes `react-redux` for state management and `react-router-dom` for navigation.
+ * - Integrates with `thirdweb` for blockchain wallet connections and account management.
+ * - Handles user login/logout and displays appropriate navigation options based on user role.
+ * - Displays a popup if the user attempts to access restricted areas without logging in.
+ * 
+ * @example
+ * <NavBar className="navbarOwner" />
+ * 
+ * @see {@link https://react-redux.js.org/} for more on react-redux.
+ * @see {@link https://reactrouter.com/} for more on react-router-dom.
+ * @see {@link https://portal.thirdweb.com/} for more on thirdweb integration.
+ */
 const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();

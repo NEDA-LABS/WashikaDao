@@ -18,6 +18,22 @@ interface Blog {
  * 
  * @auth Policy: Accessible to all, no need to check if user is authenticated to access this route 
  */
+/**
+ * BlogPage component fetches and displays a blog post based on the URL slug.
+ * 
+ * Utilizes React hooks to manage state and side effects:
+ * - `useParams` to extract the slug from the URL.
+ * - `useState` to store the blog data.
+ * - `useEffect` to fetch blog metadata and content asynchronously.
+ * 
+ * Fetches metadata from a JSON file and markdown content from a file named after the slug.
+ * Combines metadata and content into a single blog object for rendering.
+ * 
+ * Displays a navigation bar, blog content, metadata, and a footer.
+ * If the blog is not found, it displays a "Blog not found" message.
+ * 
+ * @returns JSX.Element representing the blog page.
+ */
 const BlogPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const [blog, setBlog] = useState<Blog | null>(null);

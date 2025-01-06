@@ -17,6 +17,29 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * @Auth Policy: Requires auth in order to be able to fetch data concerning the owner 
  * @returns 
  */
+/**
+ * Owner component serves as the main dashboard for DAO owners, providing an overview
+ * of financial operations and proposals. It displays user-specific information such as
+ * the user's first name and various financial metrics including total deposits, loans,
+ * shares, repayments, and interest earned. The component also includes navigation
+ * elements and interactive buttons for financial actions and settings adjustments.
+ * 
+ * @component
+ * @returns {JSX.Element} A JSX element representing the owner's dashboard.
+ * 
+ * @remarks
+ * - Requires authentication to access user-specific data.
+ * - Utilizes `useSelector` from `react-redux` to fetch user data from the Redux store.
+ * - Integrates FontAwesome icons for visual representation of financial metrics.
+ * 
+ * @dependencies
+ * - `NavBar`, `Footer`, `ProposalGroups`, and `Strip` components for layout.
+ * - `react-redux` for state management.
+ * - `@fortawesome/react-fontawesome` for icons.
+ * 
+ * @example
+ * <Owner />
+ */
 const Owner: React.FC = () => {
   // const navigate = useNavigate();
   const { firstName } = useSelector((state: RootState) => state.user);

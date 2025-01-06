@@ -11,7 +11,21 @@ import {
 interface FooterProps {
   className: string;
 }
-
+/**
+ * Footer component that renders a footer section with useful links and social media icons.
+ *
+ * @param {FooterProps} props - The properties for the Footer component.
+ * @param {string} props.className - A CSS class name to style the footer.
+ *
+ * @returns {JSX.Element} A JSX element representing the footer.
+ *
+ * The footer includes:
+ * - A list of useful links to different sections of the website.
+ * - Social media icons with links to external social media pages.
+ * - A logo image displayed at the bottom of the footer.
+ *
+ * The social media links open in a new tab and are styled with FontAwesome icons.
+ */
 const Footer: React.FC<FooterProps> = ({ className }) => {
   return (
     <footer className={className}>

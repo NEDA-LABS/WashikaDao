@@ -31,6 +31,17 @@ interface Field {
 }
 
 // Functional component definition for DaoForm, using React.FC with the defined props interface.
+/**
+ * A React functional component that renders a dynamic form based on the provided fields.
+ * 
+ * @param {DaoFormProps} props - The properties for the DaoForm component.
+ * @param {string} props.className - The CSS class name for styling the main container.
+ * @param {string} props.title - The title displayed at the top of the form.
+ * @param {string} props.description - A description displayed below the title.
+ * @param {Field[]} props.fields - An array of field objects defining the form inputs.
+ * 
+ * @returns {JSX.Element} A JSX element representing the form.
+ */
 const DaoForm: React.FC<DaoFormProps> = ({
   className,
   title,

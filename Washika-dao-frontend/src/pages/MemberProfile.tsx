@@ -13,6 +13,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * @Auth policy: Should definitely be authenticated to make sense
  * @returns 
  */
+/**
+ * Renders the MemberProfile component, which provides an overview of a DAO member's financial
+ * information and activities. This component includes sections for credit score, financial
+ * transactions, and current proposals. It utilizes various FontAwesome icons for visual
+ * representation and includes navigation and footer components.
+ *
+ * @returns {JSX.Element} The JSX code for rendering the MemberProfile component.
+ * @remarks This component is intended for authenticated users to view and manage their financial
+ * data within the DAO platform.
+ */
 const MemberProfile: React.FC = () => {
   return (
     <>

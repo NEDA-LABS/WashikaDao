@@ -1,4 +1,4 @@
-import React from "react";
+//import React from "react";
 import {  useState } from "react";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveWallet, lightTheme } from "thirdweb/react";
@@ -10,6 +10,27 @@ import {arbitrumSepolia } from "thirdweb/chains";
   //@ts-ignore
   const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
   const client = createThirdwebClient({ clientId: _clientId });
+  /**
+ * A React component that establishes a connection to the Thirdweb client and manages
+ * the active account and wallet state. It provides UI elements for connecting to a wallet
+ * and displaying the current active account and wallet information.
+ *
+ * The component utilizes Thirdweb's `ConnectButton` to facilitate wallet connections
+ * and uses hooks such as `useActiveAccount` and `useActiveWallet` to track the active
+ * account and wallet. It also applies a custom theme to the `ConnectButton`.
+ *
+ * @remarks
+ * - The component initializes a Thirdweb client using an environment variable for the client ID.
+ * - It supports in-app wallet authentication with options for email, Google, and phone.
+ * - The current chain in use is set to `arbitrumSepolia`, with a TODO note to switch to
+ *   `celoAlfajoresTestnet` in production and mainnet when deployed.
+ *
+ * @component
+ * @example
+ * ```tsx
+ * <TestConnection />
+ * ```
+ */
 export default function TestConnection(){
     const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);
     const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);

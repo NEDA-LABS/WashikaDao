@@ -9,6 +9,14 @@ import { useState } from "react";
  * @returns 
  */
 // Upload function for Cloudinary (as before)
+/**
+ * Uploads an image file to Cloudinary and returns the secure URL of the uploaded image.
+ *
+ * @param file - The image file to be uploaded.
+ * @returns A promise that resolves to the secure URL of the uploaded image, or null if an error occurs.
+ *
+ * @throws Will log an error message to the console if the upload fails.
+ */
 const uploadImageToCloudinary = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
@@ -30,7 +38,24 @@ const uploadImageToCloudinary = async (file: File) => {
     return null;
   }
 };
-
+/**
+ * A React functional component that renders a form for creating a proposal.
+ * It includes fields for proposal details such as title, summary, description,
+ * amount requested, and status. The component also handles file uploads to
+ * Cloudinary and form submission to a backend server.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ *
+ * @remarks
+ * - Utilizes React Router's `useNavigate` and `useParams` hooks for navigation
+ *   and extracting URL parameters.
+ * - Manages form state using React's `useState` hook.
+ * - Handles file uploads by calling `uploadImageToCloudinary`.
+ * - Submits form data to a specified backend endpoint.
+ *
+ * @throws Will log an error message to the console if the form submission fails.
+ */
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();

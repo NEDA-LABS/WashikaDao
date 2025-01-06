@@ -1,4 +1,4 @@
-import React from "react";
+//import React from "react";
 import { createThirdwebClient } from "thirdweb";
 import {ConnectButton} from "thirdweb/react";
 import { lightTheme } from "thirdweb/react";

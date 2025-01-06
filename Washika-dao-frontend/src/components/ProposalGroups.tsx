@@ -7,7 +7,14 @@ interface ProposalData {
   amountRequested: string;
   currency: string;
 }
-
+/**
+ * A React functional component that displays a list of proposal groups.
+ * Each proposal includes a title, status, description, requested amount, and currency.
+ * The component allows users to navigate to a detailed view of each proposal
+ * by clicking on the "Vote on Proposal" or "View linked resources" buttons.
+ * 
+ * @returns A JSX element containing a list of proposals with their details and navigation buttons.
+ */
 const ProposalGroups: React.FC = () => {
   const navigate =useNavigate();
 

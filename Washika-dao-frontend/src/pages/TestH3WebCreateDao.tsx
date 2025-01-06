@@ -1,4 +1,4 @@
-import React from "react";
+//import React from "react";
 import { useState } from "react";
 import { createThirdwebClient, getContract, prepareContractCall } from "thirdweb";
 import { ConnectButton, useActiveWallet, lightTheme, useSendTransaction } from "thirdweb/react";
@@ -10,13 +10,40 @@ import { arbitrumSepolia } from "thirdweb/chains";
   //@ts-ignore
   const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
   const client = createThirdwebClient({ clientId: _clientId });
-export default function TestH3WebCreateDao(){
+/**
+ * A React component that facilitates the creation of a DAO using the Thirdweb library.
+ * 
+ * This component manages the state of the currently connected account and wallet,
+ * and provides functionality to create a DAO on the blockchain. It uses various
+ * Thirdweb hooks and components to interact with the blockchain and manage wallet connections.
+ * 
+ * @component
+ * 
+ * @remarks
+ * - Utilizes Thirdweb's `useActiveAccount` and `useActiveWallet` hooks to manage account and wallet states.
+ * - Employs `useSendTransaction` to handle blockchain transactions.
+ * - Configures wallet authentication options and themes using Thirdweb's `inAppWallet` and `lightTheme`.
+ * - Includes error handling for transaction failures, particularly related to gas sponsorship issues.
+ * 
+ * @returns {JSX.Element} A JSX element that renders the DAO creation interface, including buttons for
+ *                        connecting wallets, displaying account information, and initiating DAO creation.
+ * 
+ * @example
+ * <TestH3WebCreateDao />
+ * 
+ * @todo
+ * - Update the redirect URL to point to the MemberProfile page.
+ * - Switch to `celoAlfajoresTestnet` in production and mainnet when deployed.
+ */
+  export default function TestH3WebCreateDao(){
     const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);//handles state of currently connected account
     const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);//Defines the current wallet type if (wallet === smart) => then its msig --> use this for authentication
     const activeAccount = useActiveAccount();//Thirdweb hooks
     const activeWallet = useActiveWallet();
 	//Using loading state for createDao Button will be extracted to be used in the form
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [isLoading, _setIsLoading] = useState(false);
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const [error, _setError] = useState<string | null>(null);
 
     //const urlToRedirectTo = "http://localhost:5173/userDashboard";//TODO: Change to point to MemberProfile Page
@@ -1058,10 +1085,11 @@ export default function TestH3WebCreateDao(){
         });
 		console.log("Transaction prepared", createDaoTx)
 		console.log("Initiating sending transaction to the blockchain")
-        sendTx(createDaoTx as any);
+			sendTx(createDaoTx as never);
         console.log("Transaction sent successfully");
-        } catch (error: any) {
-            if (error?.message?.includes("AA21")) {
+        } catch (error: unknown) {
+            // @ts-ignore
+			if (error?.message?.includes("AA21")) {
                 console.error("Gas sponsorship issue detected, user is low on gas");
             }
 			console.error("Error in creating dao", error)
