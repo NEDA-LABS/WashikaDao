@@ -13,7 +13,19 @@ interface MemberFormProps {
   onMemberChange: (field: keyof Member, value: string) => void; // Function to handle changes to member fields
   onAddMember: () => void; // Function to add a new member
 }
-
+/**
+ * MemberForm is a React functional component that renders a form for managing
+ * member information within a group. It allows users to view and edit details
+ * of a current member, including their first name, last name, role, email,
+ * contact number, and national ID number.
+ *
+ * @param {MemberFormProps} props - The properties passed to the component.
+ * @param {Member} props.currentMember - The current member's information to be displayed and edited.
+ * @param {(field: keyof Member, value: string) => void} props.onMemberChange - Callback function to handle changes to the member's fields.
+ * @param {() => void} props.onAddMember - Callback function to add a new member.
+ *
+ * @returns {JSX.Element} A JSX element representing the member form UI.
+ */
 const MemberForm: React.FC<MemberFormProps> = ({
   currentMember, // Destructure props
   onMemberChange,

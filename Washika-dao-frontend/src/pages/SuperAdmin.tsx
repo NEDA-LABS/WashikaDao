@@ -8,7 +8,17 @@ import {
 import NavBar from "../components/NavBar";
 import ProposalGroups from "../components/ProposalGroups";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
+/**
+ * Renders the SuperAdmin component, which serves as the main dashboard interface
+ * for super administrators. This component includes various sections such as
+ * notifications, DAO operations, financial summaries, and current proposals.
+ * 
+ * The component utilizes FontAwesome icons for visual representation of financial
+ * data and includes interactive elements like buttons for navigating through
+ * different DAO functionalities.
+ * 
+ * @returns {JSX.Element} The rendered SuperAdmin component.
+ */
 const SuperAdmin: React.FC = () => {
   return (
     <>

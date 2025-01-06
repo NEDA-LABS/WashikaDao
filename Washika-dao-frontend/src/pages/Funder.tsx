@@ -5,6 +5,19 @@ import Strip from "../components/Strip";
 /*
 *@Auth policy -> Should be authenticated to access this page
 */
+/**
+ * Funder component is a React functional component that renders the main interface
+ * for managing DAO operations. It includes a navigation bar, a main section with
+ * introductory content and project search functionality, and additional components
+ * for group information, a strip, and a footer.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered component.
+ * 
+ * @remarks
+ * - The user must be authenticated to access this page.
+ * - Utilizes components: NavBar, GroupInfo, Strip, and Footer.
+ */
 const Funder: React.FC = () => {
   return (
     <>

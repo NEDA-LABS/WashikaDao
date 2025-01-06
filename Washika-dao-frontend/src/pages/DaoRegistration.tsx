@@ -59,7 +59,29 @@ const uploadFileToCloudinary = async (file: File, resourceType: string) => {
   }
 };
 
-
+/**
+ * DaoRegistration component allows users with the "Chairperson" role to register a new DAO.
+ * It manages form data for DAO details and member information, handles file uploads to Cloudinary,
+ * and submits the combined data to a backend API for DAO creation.
+ * 
+ * @component
+ * @returns {React.ReactElement} The rendered component.
+ * 
+ * @remarks
+ * - Utilizes React hooks for state management and side effects.
+ * - Uses `useNavigate` from `react-router-dom` for navigation upon successful DAO creation.
+ * - Relies on `useSelector` from `react-redux` to access user information from the Redux store.
+ * 
+ * @requires ../components/Footer
+ * @requires ../components/DaoForm
+ * @requires ../components/NavBar
+ * @requires ../components/MemberForm
+ * 
+ * @example
+ * <DaoRegistration />
+ * 
+ * @see {@link https://reactjs.org/docs/hooks-intro.html} for more about React hooks.
+ */
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
 

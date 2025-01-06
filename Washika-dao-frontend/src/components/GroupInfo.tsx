@@ -14,7 +14,34 @@ interface Dao {
   kiwango: number;
   memberCount: number; // Add memberCount field
 }
-
+/**
+ * A React functional component that displays a list of DAOs (Decentralized Autonomous Organizations)
+ * with their details and member counts. It fetches DAO data from a backend service and updates the
+ * component state accordingly. The component also adjusts its layout based on screen size.
+ *
+ * @component
+ * @returns {JSX.Element} A JSX element representing the list of DAOs with their respective details.
+ *
+ * @remarks
+ * - Utilizes `useEffect` to fetch DAO data and member counts asynchronously from specified endpoints.
+ * - Handles screen resizing to adjust the display of DAO addresses.
+ * - Displays DAO information including title, location, description, image, and member count.
+ *
+ * @interface Dao
+ * @property {string} daoName - The name of the DAO.
+ * @property {string} daoLocation - The location of the DAO.
+ * @property {string} targetAudience - The target audience of the DAO.
+ * @property {string} daoTitle - The title of the DAO.
+ * @property {string} daoDescription - A brief description of the DAO.
+ * @property {string} daoOverview - An overview of the DAO.
+ * @property {string} daoImageIpfsHash - The IPFS hash for the DAO's image.
+ * @property {string} daoMultiSigAddr - The multi-signature address used for fetching member count.
+ * @property {number} kiwango - The financial value associated with the DAO.
+ * @property {number} memberCount - The number of members in the DAO.
+ *
+ * @example
+ * <GroupInfo />
+ */
 const GroupInfo: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]); // State to store DAOs with member count
   const [isSmallScreen, setIsSmallScreen] = useState(false);

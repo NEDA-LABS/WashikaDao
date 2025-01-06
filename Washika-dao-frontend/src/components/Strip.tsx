@@ -1,3 +1,11 @@
+/**
+ * A functional React component that renders a section with three articles,
+ * each highlighting a feature of the platform: Verified projects, Funder Rewards,
+ * and Easy Onboarding. Each article includes an icon, a title, and a descriptive
+ * paragraph explaining the feature.
+ *
+ * @returns A JSX element representing the section with feature highlights.
+ */
 const Strip: React.FC = () => {
   return (
     <section className="third">
