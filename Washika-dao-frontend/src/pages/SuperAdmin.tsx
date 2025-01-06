@@ -6,6 +6,18 @@ import Cards from "../components/Cards";
 import { useState } from "react";
 import DaoForm from "../components/DaoForm";
 
+/**
+ * Renders the SuperAdmin component, which serves as the main dashboard interface
+ * for super administrators. This component includes various sections such as
+ * notifications, DAO operations, financial summaries, and current proposals.
+ * 
+ * The component utilizes FontAwesome icons for visual representation of financial
+ * data and includes interactive elements like buttons for navigating through
+ * different DAO functionalities.
+ * 
+ * @returns {JSX.Element} The rendered SuperAdmin component.
+ */
+
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
