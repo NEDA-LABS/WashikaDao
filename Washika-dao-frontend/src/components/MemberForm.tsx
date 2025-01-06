@@ -35,20 +35,20 @@ const MemberForm: React.FC<MemberFormProps> = ({
     <div className="wanakikundi">
       <div className="left">
         <div>
-          <h2>Wanakikundi chako</h2>
-          <p>Taarifa za wanachama kwenye kikundi</p>
+          <h2>Member Information</h2>
+          <p>Add founding members information here</p>
         </div>
         <div className="two">
           <img src="images/Group.png" alt="profile logo" />
         </div>
       </div>
       <div className="right">
-        <div className="top">Taarifa za wanachama</div>
+        <div className="top">Member Information</div>
         <div className="formDiv">
           <div className="div">
              <div className="first">
             <div className="input">
-              <label>Jina la mwanachama</label>
+              <label>Add members Name</label>
               <div className="memberNames">
                 <input
                   type="text"
@@ -65,7 +65,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
               </div>
             </div>
             <div className="input">
-              <label>Nafasi yake</label>
+              <label>Members Role</label>
               <select
                 value={currentMember.memberRole}
                 onChange={(e) => onMemberChange("memberRole", e.target.value)}
@@ -94,7 +94,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
             />
           </div>
           <div className="input">
-            <label>No. ya kitambulisho</label>
+            <label>Identification Number</label>
             <input
               type="number"
               value={currentMember.nationalIdNo}
@@ -103,10 +103,10 @@ const MemberForm: React.FC<MemberFormProps> = ({
           </div>
           <div className="buttons">
             <button type="button" className="button-1" onClick={onAddMember}>
-              Mwongeze
+              Add another member
             </button>
             <button type="button" className="button-2">
-              Mkaribishe
+              Send Invite
             </button>
           </div>
           </div>

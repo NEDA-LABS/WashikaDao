@@ -106,10 +106,9 @@ const JifunzeElimu: React.FC = () => {
       <main className="jifunze">
         <div className="onee">
           <div className="left">
-            <h2>Karibu kwa WashikaDAO</h2>
+            <h2>This is us, WashikaDAO!</h2>
             <p>
-              Tunawezesha vikundi kufanikisha malengo yao kwa usawa na usalama
-              wa mali zao
+              We enable community saving groups to reach their goals and actualize wealth with transparency and ease!
             </p>
           </div>
           <div className="image">

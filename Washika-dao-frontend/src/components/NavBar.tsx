@@ -215,10 +215,10 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       </div>
       <ul>
         <li>
-          <Link to="/DaoRegistration">Fungua DAO</Link>
+          <Link to="/DaoRegistration">Register Dao</Link>
         </li>
         <li>
-          <Link to="/JifunzeElimu">Jifunze/Elimu</Link>
+          <Link to="/JifunzeElimu">Education/Blogs</Link>
         </li>
         {renderProfileLink()}
         {showPopup && (

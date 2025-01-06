@@ -261,12 +261,12 @@ const DaoRegistration: React.FC = () => {
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
-              Fungua Kikundi chako <br />
-              kirahisi, upate faida kibao
+              Start here! <br />
+              Open your DAO with a simple Step-by-step form
             </h1>
             <p>
-              Tumia teknolojia yetu kuunda, kuendesha, <br />
-              na kuboresha kikundi chako
+              Our platform allows you to manage and govern <br />
+              your savings group with ease and transparency
             </p>
           </div>
 
@@ -288,39 +288,39 @@ const DaoRegistration: React.FC = () => {
           <form className="combinedForms" onSubmit={handleSubmit}>
             <DaoForm
               className="form one"
-              title="Jaza fomu hii kufungua kikundi"
-              description="Taarifa za awali ya kikundi chako"
+              title="Fill this form to your DAO"
+              description="Tell us about your group"
               fields={[
                 {
-                  label: "Jina la kikundi",
+                  label: "Name of your Group",
                   type: "text",
                   name: "daoName",
                   value: formData.daoName,
                   onChange: handleChange,
                 },
                 {
-                  label: "Mahali kilipo",
+                  label: "Location",
                   type: "text",
                   name: "daoLocation",
                   value: formData.daoLocation,
                   onChange: handleChange,
                 },
                 {
-                  label: "Kikundi ni cha kina nani",
+                  label: "What is your Savings Group about?",
                   type: "text",
                   name: "targetAudience",
                   value: formData.targetAudience,
                   onChange: handleChange,
                 },
                 {
-                  label: "Kiwango cha kuanzia",
+                  label: "Initial Amount",
                   type: "number",
                   name: "kiwango",
                   value: formData.kiwango,
                   onChange: handleChange,
                 },
                 {
-                  label: "Akaunti namba ya fedha",
+                  label: "Bank account number",
                   type: "number",
                   name: "accountNo",
                   value: formData.accountNo,
@@ -331,25 +331,25 @@ const DaoRegistration: React.FC = () => {
 
             <DaoForm
               className="form two"
-              title="Kuhusu kikundi"
-              description="Taarifa za maelezo mafupi kuhusu kikundi chako na nia yenu."
+              title="About the group"
+              description="Group overview and its objective"
               fields={[
                 {
-                  label: "Kichwa cha Juu",
+                  label: "Header Bio",
                   type: "text",
                   name: "daoTitle",
                   value: formData.daoTitle,
                   onChange: handleChange,
                 },
                 {
-                  label: "Maelezo mafupi/utangulizi",
+                  label: "Short description",
                   type: "textarea",
                   name: "daoDescription",
                   value: formData.daoDescription,
                   onChange: handleChange,
                 },
                 {
-                  label: "Maerezo marefu",
+                  label: "Additional information if any and Group By-laws",
                   type: "textarea",
                   name: "daoOverview",
                   value: formData.daoOverview,
@@ -359,21 +359,21 @@ const DaoRegistration: React.FC = () => {
                   group: true,
                   fields: [
                     {
-                      label: "Weka Namba za HISA",
+                      label: "Number os SHARES",
                       type: "text",
                       name: "nambaZaHisa",
                       value: formData.nambaZaHisa,
                       onChange: handleChange,
                     },
                     {
-                      label: "Weka Kiasi cha HISA",
+                      label: "Amount per SHARE",
                       type: "text",
                       name: "kiasiChaHisa",
                       value: formData.kiasiChaHisa,
                       onChange: handleChange,
                     },
                     {
-                      label: "Riba za Mikopo",
+                      label: "Loan Interest",
                       type: "text",
                       name: "interestOnLoans",
                       value: formData.interestOnLoans,

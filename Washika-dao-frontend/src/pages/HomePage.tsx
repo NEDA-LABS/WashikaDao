@@ -118,30 +118,30 @@ const HomePage: React.FC = () => {
               alt="logo"
             />
             <p className="main">
-              Uongozi wa <br />
-              Kidijitali kwa <br />
-              Vikundi vya kifedha
+              Govern and Manage <br />
+              your community <br />
+              Saving Group
             </p>
             <p>
-              Tumia teknologia yetu kuunda, kuendesha <br />
-              na kuboresha vikundi vidogo vya kiuchumi
+              Welcome to WashikaDAO, a one stop solution <br />
+              for all your community group needs
             </p>
           </div>
         </section>
 
         <div className="buttons">
           <button className="button-1" onClick={handleDaoRegistration}>
-            Fungua DAO
+            Create a DAO
           </button>
           <button className="button-2" onClick={handleJifunzeElimu}>
-            DAO ni nini?
+            What is a DAO?
           </button>
         </div>
 
         <p className="parag-container">
-          Tunawezesha vikundi kutunza
-          <br /> kumbukumbu zao, kufanya maamuzi na
-          <br /> kupata faida nyingi
+          We enable Saving Groups to manage and  transparency
+          <br /> grow their savings with Ease and
+          <br />transparency
         </p>
 
         <section className="main-container">
@@ -149,11 +149,10 @@ const HomePage: React.FC = () => {
             <div className="box one">
               <div className="box-left">
                 <div>
-                  <h1>Salama na Kisasa</h1>
+                  <h1>Safe and Modern</h1>
                   <p>
-                    Fahamu kila kitu kuhusu kikundi chako kama vile
-                    <span> kiwango kilichopo, hisa za wanakikundi</span> na
-                    jinsi ya kupata <span>mikopo</span>.
+                    Securely manage your DAO's activities. With real time
+                    <span> Account balance, Share balance</span> and easy apply for <span>loans</span>.
                   </p>
                 </div>
               </div>
@@ -170,11 +169,10 @@ const HomePage: React.FC = () => {
             <div className="box two">
               <div className="box-left two">
                 <div>
-                  <h1>Elimu ya kifedha</h1>
+                  <h1>Education HUB</h1>
                   <p>
-                    Pata mafunzo mbali mbali ya Elimu ya
-                    <span> Uchumi wa kidijitali</span>. Fahamu jinsi gani na
-                    wewe unaweza kunufaika na Teknolojia
+                    With a dedicated portal for education,
+                    <span> Learn about the digital economy</span>. Learn how you can grow your income with technology
                   </p>
                 </div>
               </div>
@@ -183,11 +181,11 @@ const HomePage: React.FC = () => {
 
             <div className="half-box box-left">
               <div>
-                <h1>Pata mikopo kirahisi</h1>
+                <h1>Apply for Loans with Ease</h1>
                 <p>
-                  Kuza kipata chako kwa kupata
-                  <span> mikopo kirahisi kwa dhamana ya kikundi chako</span>.
-                  Jiunge na mtandao wetu wa wajasiriamali
+                  Grow your income with ease.
+                  <span> Get access to loans with trust collateral and low interest</span>.
+                  Building a trust economy that is community first
                 </p>
               </div>
             </div>
@@ -196,10 +194,10 @@ const HomePage: React.FC = () => {
           <GroupInfo />
         </section>
         <div className="parag-container-two">
-          <h2>Karibu kwa WashikaDAO</h2>
+          <h2>This is us, WashikaDAO!</h2>
           <p className="sub-parag-container">
-            Tunawezesha vikundi kufanikisha <br />malengo yao kwa usawa na usalama wa<br />
-            mali zao
+            We enable community saving groups to reach <br />their goals and actualize wealth with transparency <br />
+            and ease!
           </p>
         </div>
         <div className="search-filter">
