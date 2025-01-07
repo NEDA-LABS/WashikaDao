@@ -11,11 +11,11 @@ import React from "react";
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
  */
-interface FormData {
+ export interface FormData {
   daoName: string;
   daoLocation: string;
   targetAudience: string;
-  daoTitle: string;
+  daoTitle: string; 
   daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
