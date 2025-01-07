@@ -5,6 +5,8 @@ import Dashboard from "../components/Dashboard";
 import Cards from "../components/Cards";
 import { useState } from "react";
 import DaoForm from "../components/DaoForm";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -21,7 +23,8 @@ import DaoForm from "../components/DaoForm";
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
-
+  const { memberAddr } = useSelector((state: RootState) => state.user);
+  const daoMultiSig = memberAddr;
   // Form data state
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -29,7 +32,7 @@ const SuperAdmin: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState<number | string>("");
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
   const [role, setRole] = useState<string>("");
-  const [guaranter, setGuaranter] = useState<string>("");
+  // const [guaranter, setGuaranter] = useState<string>("");
 
   // Handle role change
   const handleRoleChange = (
@@ -38,12 +41,53 @@ const SuperAdmin: React.FC = () => {
     >
   ) => {
     setRole(e.target.value);
+    // setGuaranter(e.target.value);
   };
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
     setShowForm(!showForm);
   };
+
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      
+      // Build payload data
+      const payload = {
+        memberAddr: "",
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        nationalIdNo,
+        memberRole: role,
+        daoMultiSig,
+        memberDaos: "",
+        // guaranter,
+      };
+  
+      console.log("Payload:", payload);
+  
+      try {
+        const response = await fetch(`http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+  
+        const result = await response.json();
+  
+        if (response.ok) {
+          console.log(`Success: ${result.message}`);
+        } else {
+          console.error(`Error: ${result.error}`);
+        }
+      } catch (error) {
+        console.error("Submission failed:", error);
+      }
+    };
 
   return (
     <>
@@ -142,7 +186,7 @@ const SuperAdmin: React.FC = () => {
         {/* Render form popup when Add Member is clicked */}
         {showForm && (
           <div className="popup">
-            <form>
+            <form onSubmit={handleSubmit}>
               <DaoForm
                 className="form"
                 title="Add Member"

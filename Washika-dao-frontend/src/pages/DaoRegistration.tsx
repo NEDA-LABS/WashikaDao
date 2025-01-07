@@ -257,7 +257,7 @@ const DaoRegistration: React.FC = () => {
   return (
     <>
       <NavBar className={""} />
-      {role === "Chairperson" ? ( // Only show form if user role is "owner"
+      {role ? ( // Only show form if user role is "owner"
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
