@@ -118,8 +118,9 @@
   color: #e28b06;
 }
 
-.createProposal .five label {
-  padding-left: 24px;
+.createProposal .boxed {
+  display: flex;
+  gap: 24px;
 }
 
 .createProposal .five input, .createProposal select {
@@ -130,6 +131,10 @@
   height: 64px;
   border-radius: 15px;
   background-color: #d9d9d9;
+}
+
+.createProposal .five.two input {
+  width: 136px;
 }
 
 .createProposal .six {

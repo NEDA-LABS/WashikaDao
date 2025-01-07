@@ -244,23 +244,23 @@ body :has(.member) {
   background-color: #ffc0c5;
 }
 
-.dashboard .bargraph, .allBars {
+ .dashboard .bargraph, .allBars {
   display: flex;
   gap: 24px;
   padding: 20px 0 0;
   width: 100%;
-}
-
-.allBars {
   overflow: scroll;
 }
 
+
 .dashboard .bargraph .oneBar {
   width: 100%;
-  height: 164px;
-  display: grid;
-  grid-template-rows: 3fr 2fr 1fr 1fr;
+  height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
   gap: 1px;
+  position: relative;
 }
 
 .dashboard .bargraph .level {
@@ -271,19 +271,16 @@ body :has(.member) {
   font-size: 14px;
 }
 
-.dashboard .bargraph .oneBar .bar-1 {
-  background-color: #33c759;
+.bar-1,
+.bar-2,
+.bar-3,
+.bar-4,
+.bar-5 {
+  width: 100%;
+  transition: height 0.3s ease-in-out;
 }
 
-.dashboard .bargraph .oneBar .bar-2 {
-  background-color: #30ade6;
-}
-
-.dashboard .bargraph .oneBar .bar-3 {
-  background-color: #00c7be;
-}
-
-.dashboard .bargraph .oneBar .bar-4 {
+.month-label {
   text-align: center;
   color: #525866;
   font-size: 14px;

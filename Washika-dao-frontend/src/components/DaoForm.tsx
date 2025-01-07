@@ -108,27 +108,7 @@ const DaoForm: React.FC<DaoFormProps> = ({
                         : "long-textarea"
                     }
                   ></textarea>
-                ) : // field.type === "button" ? (
-                //   <div className="button-group">
-                //     <button
-                //       type="button"
-                //       id={field.id}
-                //       name={field.name}
-                //       className="button-1"
-                //       onClick={field.onClick}
-                //     >
-                //       Connect Wallet
-                //     </button>
-                //     <button
-                //       type="button"
-                //       id={`${field.id}-create`}
-                //       name={`${field.name}-create`}
-                //       className="button-2"
-                //     >
-                //       Create New Wallet
-                //     </button>
-                //   </div>
-                // ) :
+                ) : 
                 field.type === "select" ? ( // Conditional rendering for select input
                   <select
                     name={field.name}
