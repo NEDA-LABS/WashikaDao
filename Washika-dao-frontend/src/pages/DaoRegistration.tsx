@@ -245,7 +245,7 @@ const DaoRegistration: React.FC = () => {
       // Check if the response indicates success
       if (response.ok) {
         console.log("DAO created successfully", data);
-        navigate(`/DaoProfile/${daoMultiSigAddr}`); // Navigate to the DAO profile page
+        navigate(`/SuperAdmin/${daoMultiSigAddr}`); // Navigate to the DAO profile page
       } else {
         console.error("Error creating DAO:", data.message);
       }

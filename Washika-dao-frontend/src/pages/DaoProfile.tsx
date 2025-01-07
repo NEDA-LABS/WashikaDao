@@ -17,15 +17,15 @@ interface DaoDetails {
 }
 /**
  * Component representing the public profile of a DAO (Decentralized Autonomous Organization).
- * 
+ *
  * This component fetches and displays detailed information about a DAO, including its name,
  * location, description, and treasury details. It also provides options for DAO operations
  * such as creating proposals, purchasing shares, requesting loans, and making payments.
- * 
+ *
  * The component uses the `useParams` hook to retrieve the DAO's multi-signature address
  * from the URL and fetches the DAO details and member count from the server. It also
  * adjusts its layout based on the screen size.
- * 
+ *
  * @returns A React functional component that renders the DAO's public profile page.
  */
 const PublicDaoProfile: React.FC = () => {
@@ -121,20 +121,20 @@ const PublicDaoProfile: React.FC = () => {
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
               <p className="email">
-                    {daoMultiSigAddr
-                      ? isSmallScreen
-                        ? `${daoMultiSigAddr.slice(
-                            0,
-                            14
-                          )}...${daoMultiSigAddr.slice(-9)}`
-                        : `${daoMultiSigAddr}`
-                      : "N/A"}
-                  </p>
+                {daoMultiSigAddr
+                  ? isSmallScreen
+                    ? `${daoMultiSigAddr.slice(
+                        0,
+                        14
+                      )}...${daoMultiSigAddr.slice(-9)}`
+                    : `${daoMultiSigAddr}`
+                  : "N/A"}
+              </p>
             </div>
 
             <p className="section-21">{daoDetails.daoDescription}</p>
             <p className="section-22">{daoDetails.daoOverview}</p>
-            
+
             <div className="DaoOperations">
               <h1>DAO operations</h1>
               <div className="button-group">
@@ -143,7 +143,7 @@ const PublicDaoProfile: React.FC = () => {
                 </button>
                 <button className="button-2">Nunua Share</button>
                 <button className="button-2" onClick={handleClick}>
-                Omba Mkopo
+                  Omba Mkopo
                 </button>
                 <button className="button-2">Fanya Malipo</button>
               </div>

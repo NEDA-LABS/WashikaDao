@@ -3,22 +3,35 @@ import ProposalGroups from "../components/ProposalGroups";
 import WanachamaList from "../components/WanachamaList";
 import Dashboard from "../components/Dashboard";
 import Cards from "../components/Cards";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { useParams } from "react-router-dom";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
  * for super administrators. This component includes various sections such as
  * notifications, DAO operations, financial summaries, and current proposals.
- * 
+ *
  * The component utilizes FontAwesome icons for visual representation of financial
  * data and includes interactive elements like buttons for navigating through
  * different DAO functionalities.
- * 
+ *
  * @returns {JSX.Element} The rendered SuperAdmin component.
  */
+
+interface DaoDetails {
+  daoName: string;
+  daoLocation: string;
+  targetAudience: string;
+  daoTitle: string;
+  daoDescription: string;
+  daoOverview: string;
+  daoImageIpfsHash: string;
+  multiSigAddr: string;
+  kiwango: number;
+}
 
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
@@ -33,7 +46,65 @@ const SuperAdmin: React.FC = () => {
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
   const [role, setRole] = useState<string>("");
   // const [guaranter, setGuaranter] = useState<string>("");
+  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
 
+  const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
+  const [memberCount, setMemberCount] = useState<number>(0);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  useEffect(() => {
+    const fetchDaoDetails = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/DaoProfile/DaoDetails/${daoMultiSigAddr}`
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setDaoDetails(data.daoDetails);
+        } else {
+          console.error("Error fetching daoDetails:", data.message);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    const fetchMemberCount = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSigAddr}/members`
+        );
+        const data = await response.json();
+        if (response.ok) {
+          setMemberCount(data.memberCount);
+        } else {
+          console.error("Error fetching member count:", data.message);
+        }
+      } catch (error) {
+        console.error("Failed to fetch member count:", error);
+      }
+    };
+
+    if (daoMultiSigAddr) {
+      fetchDaoDetails();
+      fetchMemberCount();
+    }
+
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
+    };
+
+    // Initial check and event listener
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [daoMultiSigAddr]);
+  console.log(daoDetails);
+
+ 
   // Handle role change
   const handleRoleChange = (
     e: React.ChangeEvent<
@@ -50,44 +121,47 @@ const SuperAdmin: React.FC = () => {
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-      
-      // Build payload data
-      const payload = {
-        memberAddr: "",
-        firstName,
-        lastName,
-        email,
-        phoneNumber,
-        nationalIdNo,
-        memberRole: role,
-        daoMultiSig,
-        memberDaos: "",
-        // guaranter,
-      };
-  
-      console.log("Payload:", payload);
-  
-      try {
-        const response = await fetch(`http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`, {
+    event.preventDefault();
+
+    // Build payload data
+    const payload = {
+      memberAddr: "",
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      nationalIdNo,
+      memberRole: role,
+      daoMultiSig,
+      memberDaos: "",
+      // guaranter,
+    };
+
+    console.log("Payload:", payload);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`,
+        {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(payload),
-        });
-  
-        const result = await response.json();
-  
-        if (response.ok) {
-          console.log(`Success: ${result.message}`);
-        } else {
-          console.error(`Error: ${result.error}`);
         }
-      } catch (error) {
-        console.error("Submission failed:", error);
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(`Success: ${result.message}`);
+      } else {
+        console.error(`Error: ${result.error}`);
       }
-    };
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
+  };
 
   return (
     <>
@@ -117,12 +191,21 @@ const SuperAdmin: React.FC = () => {
         </div>
         <div className="top">
           <div className="one onesy">
-            <h1>Kikundi cha Jukumu</h1>
+            <h1>{daoDetails?.daoName}</h1>
             <div className="location">
-              <p>Dar-es-Salaam, Tanzania</p>
+            <p>{daoDetails?.daoLocation}</p>
               <img src="/images/locationIcon.png" width="27" height="31" />
             </div>
-            <p className="email">@JukumuDao.ETH</p>
+            <p className="email">
+                {daoMultiSigAddr
+                  ? isSmallScreen
+                    ? `${daoMultiSigAddr.slice(
+                        0,
+                        14
+                      )}...${daoMultiSigAddr.slice(-9)}`
+                    : `${daoMultiSigAddr}`
+                  : "N/A"}
+              </p>
           </div>
           <div className="two">
             <div className="first">
@@ -130,7 +213,7 @@ const SuperAdmin: React.FC = () => {
                 <p className="left">TSH</p>
                 <p className="right">Thamani ya hazina</p>
               </div>
-              <p className="amount">3,000,000</p>
+              <p className="amount">{daoDetails?.kiwango.toLocaleString()}</p>
             </div>
             <div className="section">
               <img src="/images/profile.png" alt="idadi" />
@@ -138,7 +221,7 @@ const SuperAdmin: React.FC = () => {
                 Idadi ya
                 <br /> wanachama
               </h2>
-              <p>23</p>
+              <p>{memberCount}</p>
             </div>
 
             <button
