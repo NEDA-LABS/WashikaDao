@@ -1,13 +1,13 @@
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { clearCurrentUser, setCurrentUser } from "../redux/users/userSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveAccount, lightTheme } from "thirdweb/react";
 import { inAppWallet } from "thirdweb/wallets";
 import { arbitrumSepolia } from "thirdweb/chains";
-import { useEffect, useRef, useState } from "react";
+import { useEffect,  useState } from "react";
+import DaoRegistration from "../pages/DaoRegistration";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -44,34 +44,43 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const activeAccount = useActiveAccount();
-  const address = handleGetActiveAccount();
+  const address = GetActiveAccount();
   // const urlToRedirectTo = `http://localhost:5173/Owner/${address?.toLowerCase()}`;
-  const hasLoggedIn = useRef(false);
+ 
   const [showPopup, setShowPopup] = useState(false);
   const { role } = useSelector((state: RootState) => state.user);
 
-  function handleGetActiveAccount(): string | undefined {
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+
+  type CustomErrorMessages = Error;
+  type ActiveAccRetType = string | undefined;
+
+  function GetActiveAccount(): ActiveAccRetType | CustomErrorMessages {
     if (activeAccount?.address) {
       console.log("The account details are", activeAccount);
-      
       console.log("Active Account Address:", activeAccount.address);
       return activeAccount.address.toLowerCase(); // Return the address
-    }
-    console.error("No active account found.");
-    return undefined;
+    } else if (activeAccount === undefined) {
+      console.log("Undefined value for the active account, try connecting to a wallet")
+      return undefined; 
+    } else {
+    console.error("Error Getting Active account");
+    const _customErrMessage: CustomErrorMessages = Error("operationalError"); 
+    return _customErrMessage;
   }
+  } 
 
-  const logout = () => {
-    hasLoggedIn.current = false;
-    dispatch(clearCurrentUser());
-    navigate("/", { replace: true });
-  };
-
-  useEffect(() => {
-    if (!activeAccount?.address && hasLoggedIn.current == true) {
-      logout();
+  function handleUserLogin(): void{
+    const userAcc = GetActiveAccount(); 
+    //check if user is an instance of CustomErrorMessages
+    if (userAcc instanceof Error || userAcc === undefined) {
+      console.log("FAILED, please retry operation")//TODO: add better way to inform user of failed login
+      setIsLoggedIn(false); 
+    } else {
+      setIsLoggedIn(true);
     }
-  }, [activeAccount, dispatch, navigate]);
+    
+  }
 
   const wallets = [
     inAppWallet({
@@ -93,52 +102,26 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
   // Automatically trigger login when the wallet is connected
   useEffect(() => {
-    const loginMember = async (address: string) => {
-      try {
-        const response = await fetch(
-          "http://localhost:8080/JiungeNaDao/DaoDetails/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ memberAddr: address.toLowerCase() }),
-          }
-        );
+  handleUserLogin()
 
-        const result = await response.json();
-        if (response.ok) {
-          console.log("Login successful:", result.message);
-          dispatch(
-            setCurrentUser({
-              memberAddr: result.member.memberAddr,
-              daoMultiSig: result.member.daoMultiSig || "",
-              firstName: result.member.firstName,
-              lastName: result.member.lastName,
-              email: result.member.email,
-              role: result.member.memberRole,
-              phoneNumber: result.member.phoneNumber,
-            })
-          );
-          hasLoggedIn.current = true;
-        } else {
-          console.error("Login failed:", result.error);
-          navigate("/JoinPlatform", { state: { address } });
-        }
-      } catch (error) {
-        console.error("Login request failed:", error);
-      }
-    };
-
-    if (activeAccount?.address && !hasLoggedIn.current) {
-      loginMember(activeAccount.address.toLowerCase());
+        
+  }, [activeAccount, isLoggedIn]);
+  
+  function handleRegisterDaoLink(e: React.MouseEvent): void {
+    e.preventDefault(); 
+    if(isLoggedIn === true) {
+      navigate("DaoRegistration")
+    } else if (isLoggedIn === false) {
+      window.alert("Click on Connect to log in or create account first");
+    } else {
+      console.warn("Invalid operation attempted");
     }
-  }, [activeAccount, dispatch, location, navigate]);
+  }
 
-  const daoMultiSig = address?.toLowerCase();
+  const daoMultiSig = typeof address === 'string' ? address.toLowerCase() : undefined;
 
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
-    if (address && hasLoggedIn.current == false) {
+    if (address && !isLoggedIn) {
       e.preventDefault();
       navigate("/JoinPlatform", { state: { address } });
     } else if (!address) {
@@ -181,9 +164,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         <button
           onClick={() =>
             navigate(
-              role === "Chairperson" || role === "Member"
-                ? `/Owner/${address.toLowerCase()}`
-                : `/Funder/${address.toLowerCase()}`
+              role === "Chairperson" || role === "Member" 
+                ? `/Owner/${typeof address === 'string' ? address.toLowerCase() : ''}`
+                : `/Funder/${typeof address === 'string' ? address.toLowerCase() : ''}`
             )
           }
         >
@@ -215,7 +198,10 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       </div>
       <ul>
         <li>
-          <Link to="/DaoRegistration">Register Dao</Link>
+          <Link 
+          to="/DaoRegistration"
+          onClick={handleRegisterDaoLink}
+          >Create Dao</Link>
         </li>
         <li>
           <Link to="/JifunzeElimu">Education/Blogs</Link>

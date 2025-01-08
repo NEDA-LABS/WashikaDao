@@ -4,7 +4,7 @@ import {ConnectButton} from "thirdweb/react";
 import { lightTheme } from "thirdweb/react";
 //import { arbitrumSepolia, celoAlfajoresTestnet } from "thirdweb/chains";
 import { arbitrumSepolia } from "thirdweb/chains";
-import { inAppWallet } from "thirdweb/wallets";
+import { createWallet, inAppWallet } from "thirdweb/wallets";
 /**
  *
  * Connect Wallet Component is from thirdweb & is responsible for the modal for plugging in in app wallet functionality
@@ -16,13 +16,18 @@ export default function ConnectWallet() {
   //@ts-ignore
   const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
   const client = createThirdwebClient({ clientId: _clientId });
-  const wallets = [inAppWallet({
+  const wallets = [
+    inAppWallet({
     auth: {
       mode: "popup", //options are "popup" | "redirect" | "window"
       options: ["email", "google", "phone", "apple"]
     //redirectUrl:"desiredredirectlocation"
     }
-  })]
+  }),
+  createWallet("io.metamask")
+  
+]
+
   const customTheme = lightTheme({
     colors: {
       primaryButtonBg: "#d0820c", // Background color for the button
