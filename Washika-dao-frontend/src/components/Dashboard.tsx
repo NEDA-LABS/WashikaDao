@@ -9,7 +9,7 @@ const Dashboard: React.FC = () => {
     },
     {
       month: "Feb",
-      balances: [50000, 10000, 12000, 60000, 32000],
+      balances: [50000, 10000, 12000, 60000, 132000],
     },
     {
       month: "Mar",

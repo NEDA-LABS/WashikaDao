@@ -109,6 +109,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         const result = await response.json();
         if (response.ok) {
           console.log("Login successful:", result.message);
+          console.log(role);
+          
           dispatch(
             setCurrentUser({
               memberAddr: result.member.memberAddr,
@@ -133,7 +135,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     if (activeAccount?.address && !hasLoggedIn.current) {
       loginMember(activeAccount.address.toLowerCase());
     }
-  }, [activeAccount, dispatch, location, navigate]);
+  }, [activeAccount, dispatch, location, navigate, role]);
 
   const daoMultiSig = address?.toLowerCase();
 
@@ -173,20 +175,26 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const renderButton = () => {
     if (
       address &&
-      className != "DaoProfile" &&
-      className != "navbarOwner" &&
-      className != "joinPlatformNav"
+      className !== "DaoProfile" &&
+      className !== "navbarOwner" &&
+      className !== "joinPlatformNav"
     ) {
+      // Determine the navigation path based on the role
+      const getNavigationPath = () => {
+        if (role === "Funder") {
+          return `/Funder/${address.toLowerCase()}`;
+        } else if (role === "Chairperson") {
+          return `/SuperAdmin/${address.toLowerCase()}`;
+        } else if (role === "Member") {
+          return `/Owner/${address.toLowerCase()}`;
+        } else {
+          console.warn(`Unknown role: ${role}`);
+          return "/"; // Default or fallback path
+        }
+      };
+  
       return (
-        <button
-          onClick={() =>
-            navigate(
-              role === "Chairperson" || role === "Member"
-                ? `/Owner/${address.toLowerCase()}`
-                : `/Funder/${address.toLowerCase()}`
-            )
-          }
-        >
+        <button onClick={() => navigate(getNavigationPath())}>
           Profile
         </button>
       );
@@ -204,7 +212,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       );
     }
   };
-
+  
   return (
     <nav className={className}>
       <div>
