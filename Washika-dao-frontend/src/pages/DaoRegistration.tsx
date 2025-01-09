@@ -14,56 +14,99 @@ const DaoRegistration: React.FC =  () => {
         const currActiveAcc = useActiveAccount(); 
         const { mutate: sendTx, data: transactionResult } = useSendTransaction();
 
-        //Managing state of the input fields 
-        const [_daoName, setDaoName] = useState("daoName");
-        const [_location, setLocation] = useState("location");
-        const [_targetAudience, setTargetAudience] = useState("targetAudience");
-        const [_daoTitle, setDaoTitle] = useState("daoTitle");
-        const [_daoDescription, setDaoDescription] = useState("daoDescription");
-        const [_daoOverview, setDaoOverview] = useState("daoOverview");
-        const [_daoImageUrlHash, setDaoImageUrlHash] = useState("daoImageUrlHash");
-        const [_multiSigPhoneNo, setMultiSigPhoneNo] = useState<BigInt>();
- 
-            //Function to handle the creation of the DAO
-            async function handleCreateDao() {
+        //a better way to do forms? 
+        const [formData, setFormData] = useState({
+          _daoName: "",
+          _location: "",
+          _targetAudience: "",
+          _daoTitle: "",
+          _daoDescription: "",
+          _daoOverview: "",
+          _daoImageUrlHash: "",
+          _multiSigPhoneNo: "",//store as string initially
+        }); 
+        
+        const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            const { name, value } = event.target; 
+            setFormData(prevFormData => ({
+                ...prevFormData, [name]: value,
+            })); 
+        };
+
+            //Grooming the Dao transaction
+            const prepareCreateDaoTx = (_multiSigPhoneNo: BigInt): Boolean | any => {
+              if (currActiveAcc === undefined) {
+                console.error("undefined value for current active account is not allowed")
+                return false; //Failed to prepare transaction since account isn't pluggged in
+              }
               try {
-                  if (!currActiveAcc) {
-                    console.error("Fatal Error reading account");
-                      return;
-                  }
-                    const createDaoTx = prepareContractCall({
-                          contract: FullDaoContract,
+                console.log("Preparing dao Creation transaction")
+               const _createDaotx = prepareContractCall({
+                  contract: FullDaoContract,
                           method: "createDao",
                           params: [
-                          _daoName,
-                          _location,
-                          _targetAudience,
-                          _daoTitle,
-                          _daoDescription,
-                          _daoOverview,
-                          _daoImageUrlHash,
-                          currActiveAcc.address, //multisig address 
-                          //@ts-ignore
-                          _multiSigPhoneNo, // Add null coalescing operator to handle undefined
+                          formData._daoName,
+                          formData._location,
+                          formData._targetAudience,
+                          formData._daoTitle,
+                          formData._daoDescription,
+                          formData._daoOverview,
+                          formData._daoImageUrlHash,
+                          currActiveAcc.address, //multisig address
+                          BigInt(_multiSigPhoneNo?.toString() ?? "0"), // Convert to BigInt and handle undefined
                           ],
-                    });
-                      console.log("Transaction ready", createDaoTx);
-                      console.log("Initializing sending transaction to the blockchain"); 
-                      //@ts-ignore
-                      await sendTx(createDaoTx as never);
-              } catch (error: unknown) {
-                if (error instanceof Error && error.message.includes("AA21")) {
-                  prompt("Gas sponsorship issue, please top up your account or request for gas sponsorship"); 
-                } else {
-                  console.error("Error creating dao", error);
-                }
-                  console.log(`Current transaction result ${transactionResult}`)
-                }
+                })
+                console.log("Dao Creation transaction prepared", _createDaotx); 
+                return _createDaotx;
+              } catch(error) {
+                console.error("Error preparing transaction:", error); 
+                return false; //error caused the preparation to fail
+              }
+              return true; //else everything looks good and should return true
             }
-  function handleDaoCreation(e: any): void {
-    e.preventDefault();
-    handleCreateDao();
-  };
+
+            //function to actually now send the transaction 
+            const sendCreateDaoTx = async(_createDaotx: any) => {
+                  if(_createDaotx === undefined) {
+                    console.warn("undefined transaction");
+                    return; 
+                  }
+                  try {
+                   const createDaoTxReceipt =  await sendTx(_createDaotx); 
+                    console.log("It would occur that the transaction has been sent successfully", createDaoTxReceipt);
+                   // console.log("Transaction Hash:", createDaoTxReceipt?.transactionHash)
+                  } catch (error) {
+                    if (error instanceof Error && error.message.includes("AA21")) {
+                      prompt("Gas sponsorship issue, please top up your account or request for gas sponsorship"); 
+                    } else {
+                      console.error("Error creating dao", error);
+                    }
+                      console.log(`Current transaction result ${transactionResult}`)
+                    }
+                  }
+
+            const handleCreateDao = async (event: React.FormEvent<HTMLFormElement>) => {
+                event.preventDefault();
+                try {
+                   //Converting multisigPhoneNo to BigInt with default value
+                const multisigPhoneNoBigInt = BigInt(formData._multiSigPhoneNo || "0");
+                console.log("Phone number to bind to multisig for dao", multisigPhoneNoBigInt); 
+                console.log("--------------Now Calling prepareCreateDaoTx--------")
+                const finalTx = await prepareCreateDaoTx(multisigPhoneNoBigInt);
+                if (finalTx) {
+                  await sendCreateDaoTx(finalTx); 
+                  console.log("Tx was a success");
+                } else {
+                  console.log("looks like tx failed")
+                }
+                } catch (error: unknown) {
+                  if (error instanceof Error && error.message.includes("AA21")) {
+                      prompt("Gas sponsorship issue, please top up your account or request for gas sponsorship");
+                  } else {
+                      console.error("Error creating dao", error);
+                  }
+              };
+            }
 
 
   return (
@@ -80,55 +123,71 @@ const DaoRegistration: React.FC =  () => {
               your savings group with ease and transparency
             </p>
           </div>
-                <form onSubmit={handleDaoCreation}>
+                <form onSubmit={handleCreateDao}>
                   <label className="idk">Name of Dao</label>
                   <input
                     type="text"
-                    value={_daoName}
+                    name="_daoName"
+                    value={formData._daoName}
                     placeholder="Name of Dao"
-                    onChange={(e) => setDaoName(e.target.value)}/> 
+                    onChange={handleInputChange}
+                    /> 
                   <label className="idk">Location</label>
                   <input
                     type="text"
-                    value={_location}
+                    name="_location"
+                    value={formData._location}
                     placeholder="Location"
-                    onChange={(e) => setLocation(e.target.value)}/>
+                    onChange={handleInputChange}
+                    />
                   <label className="idk">Target Audience</label>
                   <input
                     type="text"
-                    value={_targetAudience}
+                    name="_targetAudience"
+                    value={formData._targetAudience}
                     placeholder="Target Audience"
-                    onChange={(e) => setTargetAudience(e.target.value)}/>
+                    onChange={handleInputChange}
+                    />
                   <label className="idk">Dao Title</label>
                   <input
                     type="text"
-                    value={_daoTitle}
+                    name="_daoTitle"
+                    value={formData._daoTitle}
                     placeholder="Dao Title"
-                    onChange={(e) => setDaoTitle(e.target.value)}/>
+                    onChange={handleInputChange}
+                    />
                   <label className="idk">Dao Description</label>
                   <input
                     type="text"
-                    value={_daoDescription}
+                    name="_daoDescription"
+                    value={formData._daoDescription}
                     placeholder="Dao Description"
-                    onChange={(e) => setDaoDescription(e.target.value)}/>
+                    onChange={handleInputChange}
+                    />
                   <label className="idk">Dao Overview</label>
                   <input
                     type="text"
-                    value={_daoOverview}
+                    name="_daoOverview"
+                    value={formData._daoOverview}
                     placeholder="Dao Overview"
-                    onChange={(e) => setDaoOverview(e.target.value)}/>
+                    onChange={handleInputChange}
+                    />
                   <label className="idk">Dao Image URL Hash</label>
                   <input
                     type="text"
-                    value={_daoImageUrlHash}
+                    name="_daoImageUrlHash"
+                    value={formData._daoImageUrlHash}
                     placeholder="Dao Image URL Hash"
-                    onChange={(e) => setDaoImageUrlHash(e.target.value)}/>
+                    onChange={handleInputChange}
+                    />
                   <label className="idk">Multi-Sig Phone Number</label>
                   <input
                     type="text"
-                    value={_multiSigPhoneNo}
+                    name="_multiSigPhoneNo"
+                    value={formData._multiSigPhoneNo}
                     placeholder="Multi-Sig Phone Number"
-                    onChange={(e) => setMultiSigPhoneNo(BigInt((e.target.value)))}/>
+                    onChange={handleInputChange}
+                    />
 
               <center>
                 <button className="createDao" type="submit">
