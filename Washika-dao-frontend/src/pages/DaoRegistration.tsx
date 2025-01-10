@@ -7,6 +7,9 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import React from "react";
+import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { prepareContractCall } from "thirdweb";
+import { FullDaoContract } from "../utils/handlers/Handlers";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -63,23 +66,23 @@ const uploadFileToCloudinary = async (file: File, resourceType: string) => {
  * DaoRegistration component allows users with the "Chairperson" role to register a new DAO.
  * It manages form data for DAO details and member information, handles file uploads to Cloudinary,
  * and submits the combined data to a backend API for DAO creation.
- * 
+ *
  * @component
  * @returns {React.ReactElement} The rendered component.
- * 
+ *
  * @remarks
  * - Utilizes React hooks for state management and side effects.
  * - Uses `useNavigate` from `react-router-dom` for navigation upon successful DAO creation.
  * - Relies on `useSelector` from `react-redux` to access user information from the Redux store.
- * 
+ *
  * @requires ../components/Footer
  * @requires ../components/DaoForm
  * @requires ../components/NavBar
  * @requires ../components/MemberForm
- * 
+ *
  * @example
  * <DaoRegistration />
- * 
+ *
  * @see {@link https://reactjs.org/docs/hooks-intro.html} for more about React hooks.
  */
 const DaoRegistration: React.FC = () => {
@@ -88,9 +91,6 @@ const DaoRegistration: React.FC = () => {
   const { role, memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
-  // console.log({ phoneNumber: phoneNumber });
-  // console.log({ role: role });
-  // console.log({ memberAddr: memberAddr });
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
@@ -194,11 +194,11 @@ const DaoRegistration: React.FC = () => {
     const target = e.target as HTMLInputElement;
     const file = target.files?.[0]; // Access the file if it exists
     const fieldName = target.name;
-  
+
     if (file) {
       const resourceType = fieldName === "daoImageIpfsHash" ? "image" : "raw"; // Use 'raw' for non-image files
       const fileUrl = await uploadFileToCloudinary(file, resourceType);
-  
+
       if (fileUrl) {
         setFormData((prevData) => ({
           ...prevData,
@@ -207,7 +207,46 @@ const DaoRegistration: React.FC = () => {
       }
     }
   };
-  
+  const currActiveAcc = useActiveAccount();
+  const { mutate: sendTx, data: transactionResult } = useSendTransaction();
+
+  async function handleCreateDao() {
+    try {
+      if (!currActiveAcc) {
+        console.error("Fatal Error reading account");
+        return;
+      }
+      const createDaoTx = prepareContractCall({
+        contract: FullDaoContract,
+        method: "createDao",
+        params: [
+          formData.daoName,
+          formData.daoLocation,
+          formData.targetAudience,
+          formData.daoTitle,
+          formData.daoDescription,
+          formData.daoOverview,
+          formData.daoImageIpfsHash,
+          formData.multiSigAddr,
+          BigInt(formData.multiSigPhoneNo),
+        ],
+      });
+      console.log("Transaction ready", createDaoTx);
+      console.log("Initializing sending transaction to the blockchain");
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      //@ts-ignore
+      await sendTx(createDaoTx as never);
+    } catch (error: unknown) {
+      if (error instanceof Error && error.message.includes("AA21")) {
+        prompt(
+          "Gas sponsorship issue, please top up your account or request for gas sponsorship"
+        );
+      } else {
+        console.error("Error creating dao", error);
+      }
+      console.log(`Current transaction result ${transactionResult}`);
+    }
+  }
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -217,7 +256,7 @@ const DaoRegistration: React.FC = () => {
       alert("MultiSig Address is required");
       return;
     }
-
+    handleCreateDao();
     // Combine form data and member data
     const combinedData = {
       ...formData,
@@ -241,7 +280,7 @@ const DaoRegistration: React.FC = () => {
       // Parse the response JSON
       const daoMultiSigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
       console.log(daoMultiSigAddr);
-      
+
       // Check if the response indicates success
       if (response.ok) {
         console.log("DAO created successfully", data);
@@ -253,6 +292,11 @@ const DaoRegistration: React.FC = () => {
       console.error("Error creating DAO:", error);
     }
   };
+
+  const onHandleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    handleCreateDao();
+    handleSubmit(event);
+  }
 
   return (
     <>
@@ -285,7 +329,7 @@ const DaoRegistration: React.FC = () => {
             ))}
           </div>
 
-          <form className="combinedForms" onSubmit={handleSubmit}>
+          <form className="combinedForms" onSubmit={onHandleSubmit}>
             <DaoForm
               className="form one"
               title="Fill this form to your DAO"
@@ -359,7 +403,7 @@ const DaoRegistration: React.FC = () => {
                   group: true,
                   fields: [
                     {
-                      label: "Number os SHARES",
+                      label: "Number of SHARES",
                       type: "text",
                       name: "nambaZaHisa",
                       value: formData.nambaZaHisa,
