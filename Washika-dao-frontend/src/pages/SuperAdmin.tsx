@@ -104,7 +104,6 @@ const SuperAdmin: React.FC = () => {
   }, [daoMultiSigAddr]);
   console.log(daoDetails);
 
- 
   // Handle role change
   const handleRoleChange = (
     e: React.ChangeEvent<
@@ -166,37 +165,38 @@ const SuperAdmin: React.FC = () => {
   return (
     <>
       <NavBar className={"SuperAdmin"} />
-      <main className="member superAdmin">
-        <div className="centered">
-          <div className="daoImage one">
-            <img
-              src="/images/WhatsApp Image 2023-09-24 at 03.24 1(2).png"
-              alt="DaoImage"
-            />
-          </div>
-        </div>
-
-        <div className="notification">
-          <div>
-            <img src="/images/Info.png" alt="info icon" />
-          </div>
-          <div className="notifications">
-            <h3>Notification</h3>
-            <p>New Member Request</p>
-            <button>View</button>
-          </div>
-          <div>
-            <img src="/images/X.png" alt="cancel icon" />
-          </div>
-        </div>
-        <div className="top">
-          <div className="one onesy">
-            <h1>{daoDetails?.daoName}</h1>
-            <div className="location">
-            <p>{daoDetails?.daoLocation}</p>
-              <img src="/images/locationIcon.png" width="27" height="31" />
+      {daoDetails ? (
+        <main className="member superAdmin">
+          <div className="centered">
+            <div className="daoImage one">
+              <img
+                src="/images/WhatsApp Image 2023-09-24 at 03.24 1(2).png"
+                alt="DaoImage"
+              />
             </div>
-            <p className="email">
+          </div>
+
+          <div className="notification">
+            <div>
+              <img src="/images/Info.png" alt="info icon" />
+            </div>
+            <div className="notifications">
+              <h3>Notification</h3>
+              <p>New Member Request</p>
+              <button>View</button>
+            </div>
+            <div>
+              <img src="/images/X.png" alt="cancel icon" />
+            </div>
+          </div>
+          <div className="top">
+            <div className="one onesy">
+              <h1>{daoDetails?.daoName}</h1>
+              <div className="location">
+                <p>{daoDetails?.daoLocation}</p>
+                <img src="/images/locationIcon.png" width="27" height="31" />
+              </div>
+              <p className="email">
                 {daoMultiSigAddr
                   ? isSmallScreen
                     ? `${daoMultiSigAddr.slice(
@@ -206,258 +206,264 @@ const SuperAdmin: React.FC = () => {
                     : `${daoMultiSigAddr}`
                   : "N/A"}
               </p>
-          </div>
-          <div className="two">
-            <div className="first">
-              <div className="one">
-                <p className="left">TSH</p>
-                <p className="right">Thamani ya hazina</p>
+            </div>
+            <div className="two">
+              <div className="first">
+                <div className="one">
+                  <p className="left">TSH</p>
+                  <p className="right">Thamani ya hazina</p>
+                </div>
+                <p className="amount">{daoDetails?.kiwango.toLocaleString()}</p>
               </div>
-              <p className="amount">{daoDetails?.kiwango.toLocaleString()}</p>
-            </div>
-            <div className="section">
-              <img src="/images/profile.png" alt="idadi" />
-              <h2>
-                Idadi ya
-                <br /> wanachama
-              </h2>
-              <p>{memberCount}</p>
-            </div>
+              <div className="section">
+                <img src="/images/profile.png" alt="idadi" />
+                <h2>
+                  Idadi ya
+                  <br /> wanachama
+                </h2>
+                <p>{memberCount}</p>
+              </div>
 
-            <button
-              className="taarifa"
-              onClick={() => setActiveSection("wanachama")}
-            >
-              Taarifa za wanachama
+              <button
+                className="taarifa"
+                onClick={() => setActiveSection("wanachama")}
+              >
+                Taarifa za wanachama
+              </button>
+            </div>
+          </div>
+
+          <div className="DaoOperations">
+            <h1>DAO operations</h1>
+          </div>
+          <div className="button-group buttons">
+            <button onClick={() => setActiveSection("daoOverview")}>
+              Dao Overview
             </button>
+            <button onClick={handleAddMemberClick}>Add Members</button>
+            <button onClick={() => setActiveSection("mikopo")}>
+              Taarifa za mikopo
+            </button>
+            <button>Edit Settings</button>
           </div>
-        </div>
 
-        <div className="DaoOperations">
-          <h1>DAO operations</h1>
-        </div>
-        <div className="button-group buttons">
-          <button onClick={() => setActiveSection("daoOverview")}>
-            Dao Overview
-          </button>
-          <button onClick={handleAddMemberClick}>Add Members</button>
-          <button onClick={() => setActiveSection("mikopo")}>
-            Taarifa za mikopo
-          </button>
-          <button>Edit Settings</button>
-        </div>
-
-        {activeSection === "daoOverview" && (
-          <>
-            <div className="dashboard-wrapper">
-              <div className="fullStatement">
-                <button>Full Statement</button>
+          {activeSection === "daoOverview" && (
+            <>
+              <div className="dashboard-wrapper">
+                <div className="fullStatement">
+                  <button>Full Statement</button>
+                </div>
+                <Dashboard />
               </div>
-              <Dashboard />
+              <button className="create">Create a Proposal</button>
+              <section className="second">
+                <div className="sec">
+                  <img src="/images/Vector(4).png" alt="logo" />
+                  <h1>Current Proposals</h1>
+                </div>
+                <ProposalGroups />
+              </section>
+            </>
+          )}
+
+          {/* Render form popup when Add Member is clicked */}
+          {showForm && (
+            <div className="popup">
+              <form onSubmit={handleSubmit}>
+                <DaoForm
+                  className="form"
+                  title="Add Member"
+                  description=""
+                  fields={[
+                    {
+                      label: "First Name",
+                      type: "text",
+                      onChange: (e) => setFirstName(e.target.value),
+                    },
+                    {
+                      label: "Last Name",
+                      type: "text",
+                      onChange: (e) => setLastName(e.target.value),
+                    },
+                    {
+                      label: "Email",
+                      type: "email",
+                      onChange: (e) => setEmail(e.target.value),
+                    },
+                    {
+                      label: "Phone Number",
+                      type: "number",
+                      onChange: (e) => setPhoneNumber(e.target.value),
+                    },
+                    {
+                      label: "National ID",
+                      type: "number",
+                      onChange: (e) => setNationalIdNo(e.target.value),
+                    },
+                    {
+                      label: "Role",
+                      type: "select",
+                      options: [
+                        {
+                          label: "Select Role",
+                          value: "",
+                          disabled: true,
+                          selected: true,
+                        },
+                        { label: "Chairperson", value: "Chairperson" },
+                        { label: "Member", value: "Member" },
+                        { label: "Funder", value: "Funder" },
+                      ],
+                      onChange: handleRoleChange,
+                    },
+                    {
+                      label: "Guaranter",
+                      type: "select",
+                      options: [
+                        {
+                          label: "Select Guaranter",
+                          value: "",
+                          disabled: true,
+                          selected: true,
+                        },
+                        { label: "Chairperson", value: "Chairperson" },
+                        { label: "Member", value: "Member" },
+                        { label: "Funder", value: "Funder" },
+                      ],
+                      onChange: handleRoleChange,
+                    },
+                  ]}
+                />
+                <div className="center">
+                  <button type="submit">Submit</button>
+                  <button type="button" onClick={handleAddMemberClick}>
+                    Close
+                  </button>
+                </div>
+              </form>
             </div>
-            <button className="create">Create a Proposal</button>
-            <section className="second">
-              <div className="sec">
-                <img src="/images/Vector(4).png" alt="logo" />
-                <h1>Current Proposals</h1>
-              </div>
-              <ProposalGroups />
-            </section>
-          </>
-        )}
+          )}
 
-        {/* Render form popup when Add Member is clicked */}
-        {showForm && (
-          <div className="popup">
-            <form onSubmit={handleSubmit}>
-              <DaoForm
-                className="form"
-                title="Add Member"
-                description=""
-                fields={[
-                  {
-                    label: "First Name",
-                    type: "text",
-                    onChange: (e) => setFirstName(e.target.value),
-                  },
-                  {
-                    label: "Last Name",
-                    type: "text",
-                    onChange: (e) => setLastName(e.target.value),
-                  },
-                  {
-                    label: "Email",
-                    type: "email",
-                    onChange: (e) => setEmail(e.target.value),
-                  },
-                  {
-                    label: "Phone Number",
-                    type: "number",
-                    onChange: (e) => setPhoneNumber(e.target.value),
-                  },
-                  {
-                    label: "National ID",
-                    type: "number",
-                    onChange: (e) => setNationalIdNo(e.target.value),
-                  },
-                  {
-                    label: "Role",
-                    type: "select",
-                    options: [
-                      {
-                        label: "Select Role",
-                        value: "",
-                        disabled: true,
-                        selected: true,
-                      },
-                      { label: "Chairperson", value: "Chairperson" },
-                      { label: "Member", value: "Member" },
-                      { label: "Funder", value: "Funder" },
-                    ],
-                    onChange: handleRoleChange,
-                  },
-                  {
-                    label: "Guaranter",
-                    type: "select",
-                    options: [
-                      {
-                        label: "Select Guaranter",
-                        value: "",
-                        disabled: true,
-                        selected: true,
-                      },
-                      { label: "Chairperson", value: "Chairperson" },
-                      { label: "Member", value: "Member" },
-                      { label: "Funder", value: "Funder" },
-                    ],
-                    onChange: handleRoleChange,
-                  },
-                ]}
-              />
-              <div className="center">
-                <button type="submit">Submit</button>
-                <button type="button" onClick={handleAddMemberClick}>
-                  Close
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        {activeSection === "mikopo" && (
-          <>
-            <h2 className="heading">Wanachama wenye mikopo</h2>
-            <section className="thirdy">
-              <div className="left">
-                <div className="one">
-                  <h2>Keywords</h2>
-                  <ul>
-                    <li>
-                      Jina <img src="/images/X.png" alt="" />
-                    </li>
-                    <li>
-                      Kiasi <img src="/images/X.png" alt="" />
-                    </li>
-                    <li>
-                      Ada <img src="/images/X.png" alt="" />
-                    </li>
-                  </ul>
-                </div>
-                <div className="two">
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <div>
-                      <label>Label</label>
-                      <p>Description</p>
+          {activeSection === "mikopo" && (
+            <>
+              <h2 className="heading">Wanachama wenye mikopo</h2>
+              <section className="thirdy">
+                <div className="left">
+                  <div className="one">
+                    <h2>Keywords</h2>
+                    <ul>
+                      <li>
+                        Jina <img src="/images/X.png" alt="" />
+                      </li>
+                      <li>
+                        Kiasi <img src="/images/X.png" alt="" />
+                      </li>
+                      <li>
+                        Ada <img src="/images/X.png" alt="" />
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="two">
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <div>
+                        <label>Label</label>
+                        <p>Description</p>
+                      </div>
+                    </div>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <div>
+                        <label>Label</label>
+                        <p>Description</p>
+                      </div>
+                    </div>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <div>
+                        <label>Label</label>
+                        <p>Description</p>
+                      </div>
                     </div>
                   </div>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <div>
-                      <label>Label</label>
-                      <p>Description</p>
-                    </div>
-                  </div>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <div>
-                      <label>Label</label>
-                      <p>Description</p>
-                    </div>
-                  </div>
-                </div>
-                <div>
                   <div>
-                    <label>Label</label>
-                    <p>$0 - 10,000</p>
+                    <div>
+                      <label>Label</label>
+                      <p>$0 - 10,000</p>
+                    </div>
+                    <input type="range" name="" id="" />
                   </div>
-                  <input type="range" name="" id="" />
+                  <div className="two">
+                    <h2>Color</h2>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <label>Label</label>
+                    </div>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <label>Label</label>
+                    </div>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <label>Label</label>
+                    </div>
+                  </div>
+                  <div>
+                    <h2>Size</h2>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <label>Label</label>
+                    </div>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <label>Label</label>
+                    </div>
+                    <div className="content">
+                      <input type="checkbox" name="" id="" />
+                      <label>Label</label>
+                    </div>
+                  </div>
                 </div>
-                <div className="two">
-                  <h2>Color</h2>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <label>Label</label>
-                  </div>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <label>Label</label>
-                  </div>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <label>Label</label>
-                  </div>
-                </div>
-                <div>
-                  <h2>Size</h2>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <label>Label</label>
-                  </div>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <label>Label</label>
-                  </div>
-                  <div className="content">
-                    <input type="checkbox" name="" id="" />
-                    <label>Label</label>
-                  </div>
-                </div>
-              </div>
-              <div className="right">
-                <div className="one">
-                  <div className="search">
-                    <input type="search" name="" id="" placeholder="Search" />
-                    <img src="/images/Search.png" alt="" />
-                  </div>
+                <div className="right">
+                  <div className="one">
+                    <div className="search">
+                      <input type="search" name="" id="" placeholder="Search" />
+                      <img src="/images/Search.png" alt="" />
+                    </div>
 
-                  <div className="sort active">
-                    <img src="/images/Check.png" alt="" />
-                    Mikopo Mipya
+                    <div className="sort active">
+                      <img src="/images/Check.png" alt="" />
+                      Mikopo Mipya
+                    </div>
+                    <div className="sort">Mikopo inayo daiwa</div>
+                    <div className="sort">Mikopo iliyo lipwa</div>
+                    <div className="sort">Ada</div>
                   </div>
-                  <div className="sort">Mikopo inayo daiwa</div>
-                  <div className="sort">Mikopo iliyo lipwa</div>
-                  <div className="sort">Ada</div>
+                  <Cards />
                 </div>
-                <Cards />
-              </div>
-            </section>
-          </>
-        )}
+              </section>
+            </>
+          )}
 
-        {activeSection === "wanachama" && (
-          <>
-            <h2 className="heading">Taarifa za Wanachama</h2>
-            <section className="fourth">
-              <div className="search">
-                <input type="search" name="" id="" placeholder="Search" />
-                <img src="/images/Search.png" alt="" />
-              </div>
-              <WanachamaList />
-            </section>
-          </>
-        )}
-      </main>
+          {activeSection === "wanachama" && (
+            <>
+              <h2 className="heading">Taarifa za Wanachama</h2>
+              <section className="fourth">
+                <div className="search">
+                  <input type="search" name="" id="" placeholder="Search" />
+                  <img src="/images/Search.png" alt="" />
+                </div>
+                <WanachamaList />
+              </section>
+            </>
+          )}
+        </main>
+      ) : (
+        <div className="no-dao">
+          <h2>No DAO Found</h2>
+          <p>Please create or join a DAO to access this dashboard.</p>
+        </div>
+      )}
     </>
   );
 };

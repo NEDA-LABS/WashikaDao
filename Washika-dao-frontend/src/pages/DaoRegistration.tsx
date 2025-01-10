@@ -87,6 +87,7 @@ const uploadFileToCloudinary = async (file: File, resourceType: string) => {
  */
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { role, memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
@@ -235,9 +236,20 @@ const DaoRegistration: React.FC = () => {
       console.log("Initializing sending transaction to the blockchain");
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
-      await sendTx(createDaoTx as never);
-      console.log("Transaction sent successfully");
-      return true; //To indicate success
+      sendTx(createDaoTx as never);
+      // Listen for transaction success
+      if (transactionResult) {
+        console.log("Transaction sent successfully:", transactionResult);
+
+        // Handle success (e.g., notify user, update state, etc.)
+        alert("DAO created successfully!");
+        return true; // Indicate success
+      } else {
+        console.error(
+          "Transaction result is unavailable. Please verify the blockchain state."
+        );
+        return false;
+      }
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("AA21")) {
         prompt(
@@ -246,7 +258,11 @@ const DaoRegistration: React.FC = () => {
       } else {
         console.error("Error creating dao", error);
       }
-      console.log(`Current transaction result ${transactionResult}`);
+      // Log transaction result if available
+      if (transactionResult) {
+        console.log(`Transaction result:`, transactionResult);
+      }
+      return false; // Indicate failure
     }
   }
 
@@ -259,6 +275,7 @@ const DaoRegistration: React.FC = () => {
       return;
     }
 
+    setIsSubmitting(true); // Set loading state to true
     try {
       // Call handleCreateDao and wait for it to complete
       const transactionResult = await handleCreateDao();
@@ -299,6 +316,8 @@ const DaoRegistration: React.FC = () => {
       }
     } catch (error) {
       console.error("Error creating DAO:", error);
+    } finally {
+      setIsSubmitting(false); // Reset loading state
     }
   };
 
@@ -472,7 +491,11 @@ const DaoRegistration: React.FC = () => {
             />
 
             <center>
-              <button className="createDao" type="submit">
+              <button
+                disabled={isSubmitting}
+                className={`createDao ${isSubmitting ? "loading" : ""}`}
+                type="submit"
+              >
                 Create DAO
               </button>
             </center>
