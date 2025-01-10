@@ -1,20 +1,20 @@
-import Footer from "../components/Footer";
-import DaoForm from "../components/DaoForm";
-import NavBar from "../components/NavBar";
-import MemberForm from "../components/MemberForm";
-import { useNavigate } from "react-router-dom";
+//import Footer from "../components/Footer";
+//import DaoForm from "../components/DaoForm";
+import NavBar from "../components/NavBar.tsx";
+//import MemberForm from "../components/MemberForm";
+//import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
-import { DaoCreationFormInputs, daoCreationTxResult } from "../utils/Types";
+//import { DaoCreationFormInputs, daoCreationTxResult } from "../utils/Types";
 import { prepareContractCall } from "thirdweb";
-import { FullDaoContract } from "../utils/handlers/Handlers";
+import { FullDaoContract } from "../utils/handlers/Handlers.ts";
 
 
 const DaoRegistration: React.FC =  () => {
-        const currActiveAcc = useActiveAccount(); 
+        const currActiveAcc = useActiveAccount();
         const { mutate: sendTx, data: transactionResult } = useSendTransaction();
 
-        //a better way to do forms? 
+        //a better way to do forms?
         const [formData, setFormData] = useState({
           _daoName: "",
           _location: "",
@@ -24,13 +24,13 @@ const DaoRegistration: React.FC =  () => {
           _daoOverview: "",
           _daoImageUrlHash: "",
           _multiSigPhoneNo: "",//store as string initially
-        }); 
-        
+        });
+
         const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-            const { name, value } = event.target; 
+            const { name, value } = event.target;
             setFormData(prevFormData => ({
                 ...prevFormData, [name]: value,
-            })); 
+            }));
         };
 
             //Grooming the Dao transaction
@@ -56,28 +56,28 @@ const DaoRegistration: React.FC =  () => {
                           BigInt(_multiSigPhoneNo?.toString() ?? "0"), // Convert to BigInt and handle undefined
                           ],
                 })
-                console.log("Dao Creation transaction prepared", _createDaotx); 
+                console.log("Dao Creation transaction prepared", _createDaotx);
                 return _createDaotx;
               } catch(error) {
-                console.error("Error preparing transaction:", error); 
+                console.error("Error preparing transaction:", error);
                 return false; //error caused the preparation to fail
               }
               return true; //else everything looks good and should return true
             }
 
-            //function to actually now send the transaction 
+            //function to actually now send the transaction
             const sendCreateDaoTx = async(_createDaotx: any) => {
                   if(_createDaotx === undefined) {
                     console.warn("undefined transaction");
-                    return; 
+                    return;
                   }
                   try {
-                   const createDaoTxReceipt =  await sendTx(_createDaotx); 
+                   const createDaoTxReceipt =  await sendTx(_createDaotx);
                     console.log("It would occur that the transaction has been sent successfully", createDaoTxReceipt);
                    // console.log("Transaction Hash:", createDaoTxReceipt?.transactionHash)
                   } catch (error) {
                     if (error instanceof Error && error.message.includes("AA21")) {
-                      prompt("Gas sponsorship issue, please top up your account or request for gas sponsorship"); 
+                      prompt("Gas sponsorship issue, please top up your account or request for gas sponsorship");
                     } else {
                       console.error("Error creating dao", error);
                     }
@@ -90,11 +90,11 @@ const DaoRegistration: React.FC =  () => {
                 try {
                    //Converting multisigPhoneNo to BigInt with default value
                 const multisigPhoneNoBigInt = BigInt(formData._multiSigPhoneNo || "0");
-                console.log("Phone number to bind to multisig for dao", multisigPhoneNoBigInt); 
+                console.log("Phone number to bind to multisig for dao", multisigPhoneNoBigInt);
                 console.log("--------------Now Calling prepareCreateDaoTx--------")
                 const finalTx = await prepareCreateDaoTx(multisigPhoneNoBigInt);
                 if (finalTx) {
-                  await sendCreateDaoTx(finalTx); 
+                  await sendCreateDaoTx(finalTx);
                   console.log("Tx was a success");
                 } else {
                   console.log("looks like tx failed")
@@ -131,7 +131,7 @@ const DaoRegistration: React.FC =  () => {
                     value={formData._daoName}
                     placeholder="Name of Dao"
                     onChange={handleInputChange}
-                    /> 
+                    />
                   <label className="idk">Location</label>
                   <input
                     type="text"
@@ -199,4 +199,4 @@ const DaoRegistration: React.FC =  () => {
   );
 }
 
-export default DaoRegistration; 
+export default DaoRegistration;
