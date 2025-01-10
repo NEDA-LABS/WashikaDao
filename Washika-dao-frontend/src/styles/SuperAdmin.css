@@ -5,28 +5,29 @@ nav.SuperAdmin {
   border-radius: 0 0 8px 8px;
 }
 
-main.superAdmin {
-    padding-top: clamp(324px,32vw,520px);
+.member.superAdmin {
+  padding-top: clamp(324px, 32vw, 520px);
+  background: #ffffff;
 }
 
 .superAdmin .daoImage.one {
-  width: clamp(400px,32vw,648px);
-  height: clamp(240px,22vw,380px);
+  width: clamp(400px, 32vw, 648px);
+  height: clamp(240px, 22vw, 380px);
   padding: 0;
   margin: 0 48px;
-  top: clamp(48px,8vw,120px);
+  top: clamp(48px, 8vw, 120px);
   display: flex;
   align-items: start;
   border-radius: 40px;
 }
 
 .notification {
-  width: clamp(235px,20vw,300px);
-  height: clamp(100px,9vw,130px);
+  width: clamp(235px, 20vw, 300px);
+  height: clamp(100px, 9vw, 130px);
   border: 1px solid #757575;
   position: absolute;
   right: 48px;
-  top: clamp(48px,8vw,120px);
+  top: clamp(48px, 8vw, 120px);
   z-index: 2;
   border-radius: 10px;
   display: grid;
@@ -49,30 +50,31 @@ main.superAdmin {
 
 .notifications button {
   border-radius: 10px;
-  background-color: #14AE56;
+  background-color: #14ae56;
   padding: 6px;
   color: #f5f5f5;
 }
 
 .superAdmin .top {
   display: flex;
-  margin: 0 clamp(48px, 5vw,96px);
+  margin: 0 clamp(48px, 5vw, 96px);
   justify-content: space-between;
 }
 
 .superAdmin .top .one {
-  padding-bottom: clamp(9px,1vw,20px);
+  padding-bottom: clamp(9px, 1vw, 20px);
 }
 
 .superAdmin .DaoOperations {
-  margin-left: clamp(24px,5vw,96px);
+  margin-left: clamp(24px, 5vw, 96px);
 }
 
 .superAdmin .top .two {
   background-color: transparent;
   position: absolute;
   right: 24px;
-  top: clamp(240px,20vw,304px);
+  z-index: 10;
+  top: clamp(240px, 20vw, 304px);
 }
 
 .superAdmin .top .two .first {
@@ -87,22 +89,22 @@ main.superAdmin {
   transform: translateY(-20%) scaleX(0.9) scaleY(1.2);
 }
 
-.superAdmin .section{
+.superAdmin .section {
   display: grid;
   grid-template-columns: 1.5fr 4fr 2fr;
-  padding:clamp(16px,4vw,24px) 0;
+  padding: clamp(16px, 4vw, 24px) 0;
   margin-bottom: 12px;
   align-items: center;
   position: relative;
 }
 
 .superAdmin .section h2 {
-  font-size: clamp(16px,1.5vw,28px);
+  font-size: clamp(16px, 1.5vw, 28px);
 }
 
 .superAdmin .section p {
   padding: 6px 0 0 20px;
-  font-size: clamp(26px,3vw,54px);
+  font-size: clamp(26px, 3vw, 54px);
 }
 
 .superAdmin .center {
@@ -110,10 +112,11 @@ main.superAdmin {
   justify-content: center;
 }
 .superAdmin .taarifa {
-  width: 86%;
+  width: 100%;
   font-weight: bold;
-  padding: 18px;
-  margin-top: clamp(10px,1vw,24px);
+  font-size: 29px;
+  padding: 24px 18px;
+  margin-top: clamp(10px, 2vw, 24px);
 }
 
 .superAdmin .button-group.buttons {
@@ -135,12 +138,312 @@ main.superAdmin {
   margin-bottom: 24px;
 }
 
-@media only screen and (max-width: 900px) {
-.superAdmin .centered {
-  display: flex;
-  justify-content: center;
-  width: 100vw;
+.popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
 }
+
+.popup form {
+  background-color: #4b4546;
+  padding: 20px;
+  border-radius: 29px;
+  width: 70vw;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.popup .form {
+  flex-direction: column;
+  margin: 24px;
+}
+
+.popup .form .left {
+  width: 100%;
+}
+
+.popup .form .left h2 {
+  padding: 0;
+}
+
+.popup .form .formDiv {
+  padding: 0;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.popup input,
+.popup .keyDiv select {
+  height: clamp(40px, 5vw, 63px);
+  width: 100%;
+  border-radius: 15px;
+  background-color: #d9d9d9;
+  padding-left: 24px;
+  color: #433939;
+  font-size: clamp(18px, 2.4vw, 30px);
+}
+
+.popup .center {
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.popup button {
+  width: 197px;
+  height: 51px;
+  color: #ffffff;
+  background-color: #c8954b;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.popup button[type="button"] {
+  background-color: #f44336;
+}
+
+.heading {
+  font-size: clamp(18px, 3vw, 33px);
+  margin-left: clamp(24px, 5vw, 96px);
+}
+
+.thirdy {
+  margin: 36px clamp(24px, 4vw, 96px);
+  display: flex;
+  gap: 48px;
+  font-size: 17px;
+}
+
+.thirdy h2 {
+  font-weight: normal;
+}
+
+.thirdy p {
+  font-weight: lighter;
+}
+
+.thirdy .left {
+  border: 1px solid #d9d9d9;
+  border-radius: 9px;
+  padding: 16px;
+  color: #1e1e1e;
+}
+
+.thirdy .left .one {
+  gap: 6px;
+  display: flex;
+  flex-direction: column;
+}
+
+.thirdy .left .two {
+  margin: 16px 0;
+}
+
+.thirdy .left .one ul,
+.thirdy .left .one li {
+  display: flex;
+  gap: 9px;
+}
+
+.thirdy .left .one li {
+  align-items: center;
+  gap: 3px;
+  border-radius: 9px;
+  background-color: #f5f5f5;
+}
+
+.thirdy .left .one img {
+  width: 18px;
+}
+
+.thirdy .content {
+  display: flex;
+  align-items: start;
+  gap: 6px;
+}
+
+.thirdy .content input {
+  margin-top: 5px;
+  color: #000000;
+}
+
+.thirdy .content p {
+  color: #757575;
+}
+
+.thirdy .right {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.thirdy .right .one {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 9px;
+}
+
+.thirdy .right .one div {
+  background-color: #fff;
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+}
+
+.thirdy .right .one .search,
+.fourth .search {
+  border: 1px solid #d9d9d9;
+  border-radius: 16px;
+}
+
+.thirdy .right .one .sort {
+  background-color: #f5f5f5;
+  color: #757575;
+  border-radius: 9px;
+}
+
+.thirdy .right .one .sort.active {
+  background-color: #000000;
+  color: #f5f5f5;
+}
+
+.thirdy .right .cards {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.thirdy .right .cards .card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #d9d9d9;
+  border-radius: 9px;
+  padding: 12px;
+}
+
+.thirdy .right .cards .card .buttonss {
+  display: flex;
+  gap: 12px;
+}
+
+.thirdy .right .cards .card .buttonss button {
+  width: 64px;
+  font-size: 10px;
+  color: #f3f3f3;
+  padding: 6px;
+  border-radius: 5px;
+}
+
+.thirdy .right .cards .card .buttonss button.onee {
+  background-color: #259725;
+  border: 1px solid #ffbd59;
+}
+
+.thirdy .right .cards .card .buttonss button.twoo {
+  background-color: #ec221f;
+  border: 1px solid #2c2c2c8e;
+}
+
+.thirdy .right .card p {
+  color: #1e1e1e;
+  font-size: 17px;
+  padding-top: 6px;
+}
+
+.thirdy .right .card .cash {
+  font-weight: bold;
+}
+
+.fourth {
+  margin: 36px clamp(24px, 5vw, 96px);
+  width: 70%;
+}
+
+.fourth .search {
+  display: flex;
+  align-items: center;
+  padding: 6px 12px;
+  justify-content: space-between;
+}
+
+.fourth .search input {
+  flex-grow: 1;
+}
+
+.fourth .wanachama {
+  margin-top: 32px;
+}
+
+.fourth .mwanachama {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 12px;
+  color: #1e1e1e;
+  margin-top: 16px;
+}
+
+.fourth .mwanachama .name {
+  font-weight: bold;
+}
+
+.fourth .mwanachama .phoneNo {
+  color: #757575;
+  font-size: 12px;
+}
+
+.fourth .mwanachama button {
+  width: 59px;
+  background-color: #e3e3e3;
+  padding: 3px;
+  font-size: 12px;
+  border: 1px solid #767676;
+  border-radius: 8px;
+}
+
+.Pagination {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.Pagination button {
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: transparent;
+  color: #1e1e1e;
+  cursor: pointer;
+}
+
+.Pagination button:hover {
+  background-color: #2c2c2c !important;
+  color: #f5f5f5;
+}
+
+.Pagination button.active {
+  background: #2c2c2c;
+  color: #f5f5f5;
+  font-weight: bold;
+}
+
+@media only screen and (max-width: 900px) {
+  .superAdmin .centered {
+    display: flex;
+    justify-content: center;
+    width: 100vw;
+  }
 
   .superAdmin .daoImage.one {
     width: auto;
@@ -189,5 +492,9 @@ main.superAdmin {
 
   .superAdmin .DaoOperations h1::after {
     display: none;
+  }
+
+  .superAdmin .taarifa {
+    font-size: 20px;
   }
 }

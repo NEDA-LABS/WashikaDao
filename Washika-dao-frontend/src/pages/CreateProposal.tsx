@@ -185,24 +185,35 @@ const CreateProposal: React.FC = () => {
 
           <div className="label four">
             <label className="andika">
-              Andika taarifa fupi ya mchango wako
+              Write a brief description about your proposal
             </label>
             <textarea
               name="proposalDescription"
-              placeholder="Anza hapa..."
+              placeholder="Start here..."
               value={proposalData.proposalDescription}
               onChange={handleChange}
             ></textarea>
           </div>
 
-          <div className="label five">
-            <label>Amount Requested</label>
+          <div className="boxed">
+            <div className="label five">
+              <label>Amount Requested</label>
             <input
               type="number"
               name="amountRequested"
               value={proposalData.amountRequested}
               onChange={handleChange}
             />
+            </div>
+            <div className="label five two">
+              <label>Profit Share %</label>
+            <input
+              type="number"
+              name="amountRequested"
+              value={proposalData.amountRequested}
+              onChange={handleChange}
+            />
+            </div>
           </div>
 
           <div className="label">
