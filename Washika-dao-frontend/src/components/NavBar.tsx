@@ -146,6 +146,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     } else if (!address) {
       e.preventDefault();
       setShowPopup(true);
+    } else if (address && role === "Chairperson") {
+      e.preventDefault();
+      navigate(`/SuperAdmin/${daoMultiSig?.toLowerCase()}`)
     }
   };
 
@@ -177,15 +180,13 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       address &&
       className !== "DaoProfile" &&
       className !== "navbarOwner" &&
-      className !== "joinPlatformNav"
+      className !== "joinPlatformNav" 
     ) {
       // Determine the navigation path based on the role
       const getNavigationPath = () => {
         if (role === "Funder") {
           return `/Funder/${address.toLowerCase()}`;
-        } else if (role === "Chairperson") {
-          return `/SuperAdmin/${address.toLowerCase()}`;
-        } else if (role === "Member") {
+        } else if (role === "Chairperson" || role === "Member") {
           return `/Owner/${address.toLowerCase()}`;
         } else {
           console.warn(`Unknown role: ${role}`);

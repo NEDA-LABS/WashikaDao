@@ -214,7 +214,7 @@ const DaoRegistration: React.FC = () => {
     try {
       if (!currActiveAcc) {
         console.error("Fatal Error reading account");
-        return;
+        return null;
       }
       const createDaoTx = prepareContractCall({
         contract: FullDaoContract,
@@ -236,6 +236,8 @@ const DaoRegistration: React.FC = () => {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       await sendTx(createDaoTx as never);
+      console.log("Transaction sent successfully");
+      return true; //To indicate success
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes("AA21")) {
         prompt(
@@ -256,37 +258,44 @@ const DaoRegistration: React.FC = () => {
       alert("MultiSig Address is required");
       return;
     }
-    handleCreateDao();
-    // Combine form data and member data
-    const combinedData = {
-      ...formData,
-      members,
-    };
 
     try {
-      // Send combined data to the backend API
-      const response = await fetch(
-        "http://localhost:8080/FunguaDao/createDao",
-        {
-          method: "POST", // HTTP method
-          headers: {
-            "Content-Type": "application/json", // Specify JSON content type
-          },
-          body: JSON.stringify(combinedData), // Send combined data
-        }
-      );
-      const data = await response.json();
-      console.log(data);
-      // Parse the response JSON
-      const daoMultiSigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
-      console.log(daoMultiSigAddr);
+      // Call handleCreateDao and wait for it to complete
+      const transactionResult = await handleCreateDao();
 
-      // Check if the response indicates success
-      if (response.ok) {
-        console.log("DAO created successfully", data);
-        navigate(`/SuperAdmin/${daoMultiSigAddr}`); // Navigate to the DAO profile page
+      if (transactionResult) {
+        // Combine form data and member data
+        const combinedData = {
+          ...formData,
+          members,
+        };
+
+        // Send combined data to the backend API
+        const response = await fetch(
+          "http://localhost:8080/FunguaDao/createDao",
+          {
+            method: "POST", // HTTP method
+            headers: {
+              "Content-Type": "application/json", // Specify JSON content type
+            },
+            body: JSON.stringify(combinedData), // Send combined data
+          }
+        );
+        const data = await response.json();
+        console.log(data);
+        // Parse the response JSON
+        // Check if the response indicates success
+        if (response.ok) {
+          console.log("DAO created successfully", data);
+          const daoMultiSigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
+          console.log(daoMultiSigAddr);
+
+          navigate(`/SuperAdmin/${daoMultiSigAddr}`); // Navigate to the DAO profile page
+        } else {
+          console.error("Error creating DAO:", data.message);
+        }
       } else {
-        console.error("Error creating DAO:", data.message);
+        console.error("Transaction failed, Dao creation aborted.");
       }
     } catch (error) {
       console.error("Error creating DAO:", error);
@@ -294,9 +303,8 @@ const DaoRegistration: React.FC = () => {
   };
 
   const onHandleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    handleCreateDao();
     handleSubmit(event);
-  }
+  };
 
   return (
     <>
