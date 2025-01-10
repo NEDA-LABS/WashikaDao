@@ -311,9 +311,7 @@ const DaoRegistration: React.FC = () => {
         } else {
           console.error("Error creating DAO:", data.message);
         }
-      } else {
-        console.error("Transaction failed, Dao creation aborted.");
-      }
+      } 
     } catch (error) {
       console.error("Error creating DAO:", error);
     } finally {

@@ -459,10 +459,10 @@ const SuperAdmin: React.FC = () => {
           )}
         </main>
       ) : (
-        <div className="no-dao">
+        <main className="member superAdmin">
           <h2>No DAO Found</h2>
           <p>Please create or join a DAO to access this dashboard.</p>
-        </div>
+          </main>
       )}
     </>
   );
