@@ -9,6 +9,7 @@ interface UserState {
   role: string;
   email: string;
   phoneNumber: number;
+  nationalIdNo: number;
 }
 
 const initialState: UserState = {
@@ -19,6 +20,7 @@ const initialState: UserState = {
   role: '',
   email: "",
   phoneNumber: 0,
+  nationalIdNo: 0,
 };
 
 const userSlice = createSlice({
@@ -34,6 +36,7 @@ const userSlice = createSlice({
       state.role = action.payload.role;
       state.email = action.payload.email;
       state.phoneNumber = action.payload.phoneNumber;
+      state.nationalIdNo = action.payload.nationalIdNo;
     },
     clearCurrentUser(state) {
       // Reset state to initial state values
@@ -44,6 +47,7 @@ const userSlice = createSlice({
       state.role = initialState.role;
       state.email = initialState.email;
       state.phoneNumber = initialState.phoneNumber;
+      state.nationalIdNo = initialState.nationalIdNo;
     },
   },
 });

@@ -102,6 +102,51 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
   // Automatically trigger login when the wallet is connected
   useEffect(() => {
+    const loginMember = async (address: string) => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/JiungeNaDao/DaoDetails/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ memberAddr: address.toLowerCase() }),
+          }
+        );
+
+        const result = await response.json();
+        if (response.ok) {
+          console.log("Login successful:", result.message);
+          console.log(role);
+          
+          dispatch(
+            setCurrentUser({
+              memberAddr: result.member.memberAddr,
+              daoMultiSig: result.member.daoMultiSig || "",
+              firstName: result.member.firstName,
+              lastName: result.member.lastName,
+              email: result.member.email,
+              role: result.member.memberRole,
+              phoneNumber: result.member.phoneNumber,
+              nationalIdNo: result.member.nationalIdNo,
+            })
+          );
+          hasLoggedIn.current = true;
+        } else {
+          console.error("Login failed:", result.error);
+          navigate("/JoinPlatform", { state: { address } });
+        }
+      } catch (error) {
+        console.error("Login request failed:", error);
+      }
+    };
+
+    if (activeAccount?.address && !hasLoggedIn.current) {
+      loginMember(activeAccount.address.toLowerCase());
+    }
+  }, [activeAccount, dispatch, location, navigate, role]);
+
   handleUserLogin()
 
 
@@ -156,11 +201,27 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const renderButton = () => {
     if (
       address &&
-      className != "DaoProfile" &&
-      className != "navbarOwner" &&
-      className != "joinPlatformNav"
+      className !== "DaoProfile" &&
+      className !== "navbarOwner" &&
+      className !== "joinPlatformNav"
     ) {
+      // Determine the navigation path based on the role
+      const getNavigationPath = () => {
+        if (role === "Funder") {
+          return `/Funder/${address.toLowerCase()}`;
+        } else if (role === "Chairperson") {
+          return `/SuperAdmin/${address.toLowerCase()}`;
+        } else if (role === "Member") {
+          return `/Owner/${address.toLowerCase()}`;
+        } else {
+          console.warn(`Unknown role: ${role}`);
+          return "/"; // Default or fallback path
+        }
+      };
+  
       return (
+
+        <button onClick={() => navigate(getNavigationPath())}>
         <button
           onClick={() =>
             navigate(
@@ -187,7 +248,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       );
     }
   };
-
+  
   return (
     <nav className={className}>
       <div>

@@ -173,6 +173,7 @@ const JoinPlatform: React.FC = () => {
             lastName,
             email,
             role,
+            nationalIdNo: payload.nationalIdNo,
             phoneNumber: payload.phoneNumber,
           })
         );

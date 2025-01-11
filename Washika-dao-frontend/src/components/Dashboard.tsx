@@ -5,51 +5,51 @@ const Dashboard: React.FC = () => {
   const monthlyBalances = [
     {
       month: "Jan",
-      balances: [86000, 28000, 14000, 9000, 36000], // [Deposit, Loan, Shares, Repayments, Interest]
+      balances: [2000, 1000, 3000, 1500, 4000], // [Deposit, Loan, Shares, Repayments, Interest]
     },
     {
       month: "Feb",
-      balances: [50000, 10000, 12000, 60000, 32000],
+      balances: [1000, 5000, 3000, 1200, 1400],
     },
     {
       month: "Mar",
-      balances: [65000, 12000, 23000, 18500, 38000],
+      balances: [0, 0, 0, 10000, 0],
     },
     {
       month: "Apr",
-      balances: [88000, 33000, 7000, 8000, 39000],
+      balances: [0, 0, 6000, 0, 0],
     },
     {
       month: "May",
-      balances: [70000, 20000, 25000, 11500, 30000],
+      balances: [0, 0, 0, 0, 1000],
     },
     {
       month: "Jun",
-      balances: [42000, 10000, 16000, 30000, 42000],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Jul",
-      balances: [94000, 26000, 17000, 10500, 44000],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Aug",
-      balances: [126000, 17000, 11000, 14000, 36000],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Sep",
-      balances: [58000, 48000, 19000, 11500, 28000],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Oct",
-      balances: [110000, 39000, 29000, 8000, 40000],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Nov",
-      balances: [82000, 30000, 21000, 12500, 32000],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Dec",
-      balances: [34000, 31000, 12000, 16000, 44000],
+      balances: [0, 0, 0, 0, 0],
     },
   ];
 

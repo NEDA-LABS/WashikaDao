@@ -113,6 +113,8 @@ const DaoRegistration: React.FC =  () => {
 
     <div className="daoRegistration">
       <NavBar className={""} />
+      {memberAddr && role ? ( // Only show form if user role is "owner"
+        <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
               Start here! <br />

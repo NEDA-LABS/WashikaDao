@@ -2,6 +2,15 @@ import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import ProposalGroups from "../components/ProposalGroups";
 import Dashboard from "../components/Dashboard";
+import { useEffect, useState } from "react";
+import DaoForm from "../components/DaoForm";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+
+interface Dao {
+  daoName: string;
+  daoMultiSigAddr: string;
+}
 /**
  * @Auth policy: Should definitely be authenticated to make sense
  * @returns 
@@ -17,6 +26,79 @@ import Dashboard from "../components/Dashboard";
  * data within the DAO platform.
  */
 const MemberProfile: React.FC = () => {
+    // const [guaranter, setGuaranter] = useState<string>("");
+    const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
+    const { firstName, lastName, email, phoneNumber, role, daoMultiSig } = useSelector((state: RootState) => state.user);
+
+    useEffect(() => {
+      const fetchDaos = async () => {
+        try {
+          const response = await fetch(
+            "http://localhost:8080/FunguaDao/GetDaoDetails"
+          );
+
+          if (!response.ok)
+            throw new Error(`HTTP error! status: ${response.status}`);
+
+          // Parse JSON data safely
+          const data = await response.json();
+          console.log("Fetched DAOs:", data);
+
+          // Check if daoList exists and is an array
+          if (Array.isArray(data.daoList)) {
+            setDaos(data.daoList);
+          } else {
+            console.error("daoList is missing or not an array");
+          }
+        } catch (error) {
+          console.error("Failed to fetch DAOs:", error);
+        }
+      };
+      fetchDaos();
+      }, []);
+ 
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    // Build payload data
+    const payload = {
+      memberAddr: "",
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      nationalIdNo,
+      memberRole: role,
+      daoMultiSig,
+      memberDaos: "",
+      // guaranter,
+    };
+
+    console.log("Payload:", payload);
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log(`Success: ${result.message}`);
+      } else {
+        console.error(`Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Submission failed:", error);
+    }
+  };
   return (
     <>
       <NavBar className={"navbarDaoMember"} />
@@ -76,6 +158,64 @@ const MemberProfile: React.FC = () => {
           </div>
           <ProposalGroups />
         </section>
+        <div className="popupp">
+              <form onSubmit={handleSubmit}>
+                <DaoForm
+                  className="form"
+                  title="Add Member"
+                  description=""
+                  fields={[
+                    {
+                      label: "First Name",
+                      type: "text",
+                      value: firstName,
+                    },
+                    {
+                      label: "Last Name",
+                      type: "text",
+                      value: lastName,
+                    },
+                    {
+                      label: "Email",
+                      type: "email",
+                      value: email,
+                    },
+                    {
+                      label: "Phone Number",
+                      type: "number",
+                      value: phoneNumber,
+                    },
+                    {
+                      label: "National ID",
+                      type: "number",
+                      value: "",
+                    },
+                    {
+                      label: "Guaranter",
+                      type: "select",
+                      options: [
+                        {
+                          label: "Select Guaranter",
+                          value: "",
+                          disabled: true,
+                          selected: true,
+                        },
+                        { label: "Chairperson", value: "Chairperson" },
+                        { label: "Member", value: "Member" },
+                        { label: "Funder", value: "Funder" },
+                      ],
+                      value: "",
+                    },
+                  ]}
+                />
+                <div className="center">
+                  <button type="submit">Submit</button>
+                  <button type="button">
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
       </main>
       <Footer className={"footerDaoMember"} />
     </>
