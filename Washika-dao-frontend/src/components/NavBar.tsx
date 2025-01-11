@@ -120,6 +120,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
               email: result.member.email,
               role: result.member.memberRole,
               phoneNumber: result.member.phoneNumber,
+              nationalIdNo: result.member.nationalIdNo,
             })
           );
           hasLoggedIn.current = true;

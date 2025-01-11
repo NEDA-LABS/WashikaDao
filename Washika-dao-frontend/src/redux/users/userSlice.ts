@@ -9,6 +9,7 @@ interface UserState {
   role: string;
   email: string;
   phoneNumber: number;
+  nationalIdNo: number;
 }
 
 const initialState: UserState = {
@@ -19,6 +20,7 @@ const initialState: UserState = {
   role: '',
   email: "",
   phoneNumber: 0,
+  nationalIdNo: 0,
 };
 
 const userSlice = createSlice({

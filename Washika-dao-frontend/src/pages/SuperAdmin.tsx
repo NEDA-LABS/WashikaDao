@@ -176,7 +176,7 @@ const SuperAdmin: React.FC = () => {
           </div>
         </div>
 
-        <div className="notification">
+        {/* <div className="notification">
           <div>
             <img src="/images/Info.png" alt="info icon" />
           </div>
@@ -188,7 +188,7 @@ const SuperAdmin: React.FC = () => {
           <div>
             <img src="/images/X.png" alt="cancel icon" />
           </div>
-        </div>
+        </div> */}
         <div className="top">
           <div className="one onesy">
             <h1>{daoDetails?.daoName}</h1>
