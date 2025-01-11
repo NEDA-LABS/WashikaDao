@@ -48,7 +48,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   // const urlToRedirectTo = `http://localhost:5173/Owner/${address?.toLowerCase()}`;
 
   const [showPopup, setShowPopup] = useState(false);
-  const { role } = useSelector((state: RootState) => state.user);
+  const { role } = useSelector((state: any) => state.user);
 
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
