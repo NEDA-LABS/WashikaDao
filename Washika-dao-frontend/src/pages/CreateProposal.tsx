@@ -4,9 +4,9 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 
 /**
- * 
- * @Auth policy: Check if user is authenticated before allowing access 
- * @returns 
+ *
+ * @Auth policy: Check if user is authenticated before allowing access
+ * @returns
  */
 // Upload function for Cloudinary (as before)
 /**
