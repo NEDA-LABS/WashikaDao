@@ -20,21 +20,21 @@ interface NavBarProps {
 /**
  * NavBar component renders a navigation bar with links and buttons for user interaction.
  * It manages user authentication state and navigation based on the active account status.
- * 
+ *
  * @param {NavBarProps} props - The properties for the NavBar component.
  * @param {string} props.className - The CSS class name for styling the navigation bar.
- * 
+ *
  * @returns {JSX.Element} The rendered navigation bar component.
- * 
+ *
  * @remarks
  * - Utilizes `react-redux` for state management and `react-router-dom` for navigation.
  * - Integrates with `thirdweb` for blockchain wallet connections and account management.
  * - Handles user login/logout and displays appropriate navigation options based on user role.
  * - Displays a popup if the user attempts to access restricted areas without logging in.
- * 
+ *
  * @example
  * <NavBar className="navbarOwner" />
- * 
+ *
  * @see {@link https://react-redux.js.org/} for more on react-redux.
  * @see {@link https://reactrouter.com/} for more on react-router-dom.
  * @see {@link https://portal.thirdweb.com/} for more on thirdweb integration.
@@ -50,15 +50,28 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const [showPopup, setShowPopup] = useState(false);
   const { role } = useSelector((state: RootState) => state.user);
 
-  function handleGetActiveAccount(): string | undefined {
+  type CustomErrorMessages = Error;
+  type ActiveAccRetType = string | undefined;
+
+  function handleGetActiveAccount():
+    | string
+    | undefined
+    | ActiveAccRetType
+    | CustomErrorMessages {
     if (activeAccount?.address) {
       console.log("The account details are", activeAccount);
-      
       console.log("Active Account Address:", activeAccount.address);
       return activeAccount.address.toLowerCase(); // Return the address
+    } else if (activeAccount === undefined) {
+      console.log(
+        "Undefined value for the active account, try connecting to a wallet"
+      );
+      return undefined;
+    } else {
+      console.error("Error Getting Active account");
+
+      return undefined;
     }
-    console.error("No active account found.");
-    return undefined;
   }
 
   const logout = () => {
@@ -71,6 +84,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     if (!activeAccount?.address && hasLoggedIn.current == true) {
       logout();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount, dispatch, navigate]);
 
   const wallets = [
@@ -110,7 +124,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         if (response.ok) {
           console.log("Login successful:", result.message);
           console.log(role);
-          
+
           dispatch(
             setCurrentUser({
               memberAddr: result.member.memberAddr,
@@ -120,6 +134,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
               email: result.member.email,
               role: result.member.memberRole,
               phoneNumber: result.member.phoneNumber,
+              nationalIdNo: result.member.nationalIdNo,
             })
           );
           hasLoggedIn.current = true;
@@ -137,7 +152,20 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     }
   }, [activeAccount, dispatch, location, navigate, role]);
 
-  const daoMultiSig = address?.toLowerCase();
+  const daoMultiSig = address;
+
+
+  function handleRegisterDaoLink(e: React.MouseEvent) {
+    e.preventDefault();
+    if(address && hasLoggedIn.current == true) {
+      navigate("/DaoRegistration")
+    } else if (hasLoggedIn.current == false) {
+      window.alert("Click on Connect to log in or create account first");
+    } else {
+      console.warn("Invalid operation attempted");
+    }
+  }
+
 
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
     if (address && hasLoggedIn.current == false) {
@@ -148,7 +176,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       setShowPopup(true);
     } else if (address && role === "Chairperson") {
       e.preventDefault();
-      navigate(`/SuperAdmin/${daoMultiSig?.toLowerCase()}`)
+      navigate(`/SuperAdmin/${daoMultiSig}`)
     }
   };
 
@@ -165,7 +193,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       return (
         <li className="three">
           <Link
-            to={`/DaoProfile/${daoMultiSig?.toLowerCase() || ""}`}
+            to={`/DaoProfile/${daoMultiSig || ""}`}
             onClick={handleDaoToolKitClick}
           >
             DAO Tool Kit
@@ -185,19 +213,17 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       // Determine the navigation path based on the role
       const getNavigationPath = () => {
         if (role === "Funder") {
-          return `/Funder/${address.toLowerCase()}`;
-        } else if (role === "Chairperson" || role === "Member") {
-          return `/Owner/${address.toLowerCase()}`;
+          return `/Funder/${address}`;
+        } else if (role === "Chairperson"|| role === "Member") {
+          return `/Owner/${address}`;
         } else {
           console.warn(`Unknown role: ${role}`);
           return "/"; // Default or fallback path
         }
       };
-  
+
       return (
-        <button onClick={() => navigate(getNavigationPath())}>
-          Profile
-        </button>
+        <button onClick={() => navigate(getNavigationPath())}>Profile</button>
       );
     } else {
       return (
@@ -213,7 +239,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       );
     }
   };
-  
+
   return (
     <nav className={className}>
       <div>
@@ -224,7 +250,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       </div>
       <ul>
         <li>
-          <Link to="/DaoRegistration">Register Dao</Link>
+          <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>Register Dao</Link>
         </li>
         <li>
           <Link to="/JifunzeElimu">Education/Blogs</Link>
