@@ -48,11 +48,11 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   // const urlToRedirectTo = `http://localhost:5173/Owner/${address?.toLowerCase()}`;
 
   const [showPopup, setShowPopup] = useState(false);
-  const { role } = useSelector((state: any) => state.user);
+  const { role } = useSelector((state: any) => state.user);//Keeping track of backend login state
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);//Blockchain login 
 
-  type CustomErrorMessages = Error;
+  type CustomErrorMessages = Error;// A custom error should be constructed from the error class 
   type ActiveAccRetType = string | undefined;
 
   function GetActiveAccount(): ActiveAccRetType | CustomErrorMessages {
@@ -79,7 +79,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     } else {
       setIsLoggedIn(true);
     }
-
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeAccount, dispatch, navigate]);
   }
 
   const wallets = [
@@ -119,7 +120,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         if (response.ok) {
           console.log("Login successful:", result.message);
           console.log(role);
-          
+
           dispatch(
             setCurrentUser({
               memberAddr: result.member.memberAddr,
@@ -147,10 +148,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     }
   }, [activeAccount, dispatch, location, navigate, role]);
 
-  handleUserLogin()
 
-
-  }, [activeAccount, isLoggedIn]);
+  const daoMultiSig = address;
 
   function handleRegisterDaoLink(e: React.MouseEvent): void {
     e.preventDefault();
@@ -166,12 +165,13 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   const daoMultiSig = typeof address === 'string' ? address.toLowerCase() : undefined;
 
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
+    e.preventDefault();
     if (address && !isLoggedIn) {
-      e.preventDefault();
       navigate("/JoinPlatform", { state: { address } });
     } else if (!address) {
-      e.preventDefault();
       setShowPopup(true);
+    } else if (address && role === "Chairperson") {
+      navigate(`/SuperAdmin/${daoMultiSig}`)
     }
   };
 
@@ -188,7 +188,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       return (
         <li className="three">
           <Link
-            to={`/DaoProfile/${daoMultiSig?.toLowerCase() || ""}`}
+            to={`/DaoProfile/${daoMultiSig || ""}`}
             onClick={handleDaoToolKitClick}
           >
             DAO Tool Kit
@@ -203,25 +203,22 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       address &&
       className !== "DaoProfile" &&
       className !== "navbarOwner" &&
-      className !== "joinPlatformNav"
+      className !== "joinPlatformNav" 
     ) {
       // Determine the navigation path based on the role
       const getNavigationPath = () => {
         if (role === "Funder") {
-          return `/Funder/${address.toLowerCase()}`;
-        } else if (role === "Chairperson") {
-          return `/SuperAdmin/${address.toLowerCase()}`;
-        } else if (role === "Member") {
-          return `/Owner/${address.toLowerCase()}`;
+          return `/Funder/${address}`;
+        } else if (role === "Chairperson"|| role === "Member") {
+          return `/Owner/${address}`;
         } else {
           console.warn(`Unknown role: ${role}`);
           return "/"; // Default or fallback path
         }
       };
-  
-      return (
 
-        <button onClick={() => navigate(getNavigationPath())}>
+      return (
+        <button onClick={() => navigate(getNavigationPath())}>Profile</button>
         <button
           onClick={() =>
             navigate(
@@ -248,7 +245,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       );
     }
   };
-  
+
   return (
     <nav className={className}>
       <div>

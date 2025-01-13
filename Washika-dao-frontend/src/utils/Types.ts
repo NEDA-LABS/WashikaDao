@@ -6,9 +6,27 @@ export type DaoCreationFormInputs = {
     _daoDescription: string; 
     _daoOverview: string; 
     _daoImageUrlHash: string; 
-    _multiSigPhoneNo: any
+    _multiSigPhoneNo: any;
    }
 
+   export interface FormData {
+    daoName: string;
+    daoLocation: string;
+    targetAudience: string;
+    daoTitle: string;
+    daoDescription: string;
+    daoOverview: string;
+    daoImageIpfsHash: string;
+    daoRegDocs: string;
+    multiSigAddr: string;
+    multiSigPhoneNo: number;
+    kiwango: number;
+    accountNo: number;
+    nambaZaHisa: string;
+    kiasiChaHisa: string;
+    interestOnLoans: string;
+  }
+  
 export type FormInputsData = {
     daoName: string;
     daoLocation: string;

@@ -107,24 +107,20 @@ const DaoRegistration: React.FC =  () => {
                   }
               };
             }
-
-
+            
+  const onHandleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    handleSubmit(event);
+  };
+  //TODO: Place function to create Dao on the backend here for modularity 
+  /**
+  function handleBackendDaoCreation(){
+  //Code to send form data to the Express Backend
+  //get response 
+  //Code to redirect user to super admin page as dao creation transaction is mined onchain 
+  //Small notification popup in Dao superAdmin page containing a url to a block Explorer Concatenated with the txHash to allow user to directly click and view the transaction onchain
+  }
+**/
   return (
-
-    <div className="daoRegistration">
-      <NavBar className={""} />
-      {memberAddr && role ? ( // Only show form if user role is "owner"
-        <main className="daoRegistration">
-          <div className="funguaKikundi">
-            <h1>
-              Start here! <br />
-              Open your DAO with a simple Step-by-step form
-            </h1>
-            <p>
-              Our platform allows you to manage and govern <br />
-              your savings group with ease and transparency
-            </p>
-          </div>
                 <form onSubmit={handleCreateDao}>
                   <label className="idk">Name of Dao</label>
                   <input

@@ -27,9 +27,9 @@ interface Dao {
  */
 const MemberProfile: React.FC = () => {
     // const [guaranter, setGuaranter] = useState<string>("");
-    const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
-    const { firstName, lastName, email, phoneNumber, role, daoMultiSig } = useSelector((state: RootState) => state.user);
-
+    const [, setDaos] = useState<Dao[]>([]); // DAOs for selection
+    const { firstName, lastName, email, phoneNumber, role, daoMultiSig, nationalIdNo } = useSelector((state: RootState) => state.user);
+    
     useEffect(() => {
       const fetchDaos = async () => {
         try {
