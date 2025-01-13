@@ -272,7 +272,7 @@ export async function RequestToJoinDao(req: Request, res: Response) {
  * - If the member is successfully added to the whitelist, it returns a 200 status code with a success message.
  * - If any other error occurs, it returns a 500 status code with the error message.
  */
-export async function WhiteListUser(req: Request, res: Response) {
+export async function WhiteListUser(req: Request, res: Response): Promise<Response> {
   const { _daoMultiSig } = req.params;
   const memberDetails: typeof MemberDetails = req.body;
 
@@ -326,7 +326,7 @@ export async function WhiteListUser(req: Request, res: Response) {
  * - If the member is successfully deleted from the whitelist, it returns a 200 status code with a success message.
  * - If any other error occurs, it returns a 500 status code with the error message.
  */
-export async function BlackListMember(req: Request, res: Response) {
+export async function BlackListMember(req: Request, res: Response): Promise<Response> {
   const { multiSigAddr, memberAddr } = req.params; //dao to delete user from
   if (!multiSigAddr || !memberAddr) {
     return res.status(400).json({ error: "Missing required" });

@@ -33,7 +33,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     daoRegDocs,
     multiSigAddr,
     multiSigPhoneNo,
-    kiwango,
+    kiwango, //Amount
     accountNo,
     nambaZaHisa,
     kiasiChaHisa,
@@ -161,7 +161,7 @@ export async function CreateNewDao(req: Request, res: Response) {
  * - HTTP 200: If the DAO list is successfully retrieved, it returns an array of DAOs.
  * - HTTP 500: If an error occurs while retrieving the DAO list.
  */
-export async function GetAllDaoDetails(req: Request, res: Response) {
+export async function GetAllDaosInPlatform(req: Request, res: Response) {
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
 
@@ -252,6 +252,7 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
  * - HTTP 404: If the DAO with the given multi-signature address is not found.
  * - HTTP 500: If an error occurs while updating the DAO details.
  */
+
 export async function UpdateDaoDetails(req: Request, res: Response) {
   const { multiSigAddr } = req.params;
   if (!multiSigAddr) {
@@ -350,9 +351,9 @@ export async function FundDao(req: Request, res: Response) {
   try {
     //TODO: mechanisms to transfer funds goes here
     //check if fundAmount is a positive number
-    // if (fundAmount <= 0) {
-    //     return res.status(400).json({ error: 'Invalid fund amount' });
-    //}
+     if (fundAmount <= 0) {
+         return res.status(400).json({ error: 'Invalid fund amount' });
+    }
     //check if funderAddr is valid
     //check if fundAmount is sufficient
     //update the fundAmount in the DAO model

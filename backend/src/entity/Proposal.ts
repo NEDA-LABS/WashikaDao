@@ -29,10 +29,10 @@ export class Proposal {
     daoMultiSigAddr: string; 
 
     @Column() 
-    numUpvotes: number; 
+    numUpVotes: number;
 
     @Column()
-    numDownvotes: number; 
+    numDownVotes: number;
 
     @OneToMany(() => Vote, (vote) => vote.proposalId)
     votes: Vote;
