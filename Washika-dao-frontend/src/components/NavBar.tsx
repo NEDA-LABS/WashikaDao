@@ -1,13 +1,13 @@
-import { useDispatch } from "react-redux";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { clearCurrentUser, setCurrentUser } from "../redux/users/userSlice";
+//import { useDispatch } from "react-redux";
+import { Link,useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+//import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveAccount, lightTheme } from "thirdweb/react";
 import { inAppWallet } from "thirdweb/wallets";
 import { arbitrumSepolia } from "thirdweb/chains";
-import { useEffect, useRef, useState } from "react";
+import { useEffect,  useState } from "react";
+//import DaoRegistration from "../pages/DaoRegistration";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -40,52 +40,48 @@ interface NavBarProps {
  * @see {@link https://portal.thirdweb.com/} for more on thirdweb integration.
  */
 const NavBar: React.FC<NavBarProps> = ({ className }) => {
-  const dispatch = useDispatch();
+  //const dispatch = useDispatch();
   const navigate = useNavigate();
-  const location = useLocation();
+ // const location = useLocation();
   const activeAccount = useActiveAccount();
-  const address = handleGetActiveAccount();
+  const address = GetActiveAccount();
   // const urlToRedirectTo = `http://localhost:5173/Owner/${address?.toLowerCase()}`;
-  const hasLoggedIn = useRef(false);
-  const [showPopup, setShowPopup] = useState(false);
-  const { role } = useSelector((state: RootState) => state.user);
 
-  type CustomErrorMessages = Error;
+  const [showPopup, setShowPopup] = useState(false);
+  const { role } = useSelector((state: any) => state.user);//Keeping track of backend login state
+
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);//Blockchain login 
+
+  type CustomErrorMessages = Error;// A custom error should be constructed from the error class 
   type ActiveAccRetType = string | undefined;
 
-  function handleGetActiveAccount():
-    | string
-    | undefined
-    | ActiveAccRetType
-    | CustomErrorMessages {
+  function GetActiveAccount(): ActiveAccRetType | CustomErrorMessages {
     if (activeAccount?.address) {
       console.log("The account details are", activeAccount);
       console.log("Active Account Address:", activeAccount.address);
       return activeAccount.address.toLowerCase(); // Return the address
     } else if (activeAccount === undefined) {
-      console.log(
-        "Undefined value for the active account, try connecting to a wallet"
-      );
+      console.log("Undefined value for the active account, try connecting to a wallet")
       return undefined;
     } else {
-      console.error("Error Getting Active account");
-
-      return undefined;
-    }
+    console.error("Error Getting Active account");
+    const _customErrMessage: CustomErrorMessages = Error("operationalError");
+    return _customErrMessage;
+  }
   }
 
-  const logout = () => {
-    hasLoggedIn.current = false;
-    dispatch(clearCurrentUser());
-    navigate("/", { replace: true });
-  };
-
-  useEffect(() => {
-    if (!activeAccount?.address && hasLoggedIn.current == true) {
-      logout();
+  function handleUserLogin(): void{
+    const userAcc = GetActiveAccount();
+    //check if user is an instance of CustomErrorMessages
+    if (userAcc instanceof Error || userAcc === undefined) {
+      console.log("FAILED, please retry operation")//TODO: add better way to inform user of failed login
+      setIsLoggedIn(false);
+    } else {
+      setIsLoggedIn(true);
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount, dispatch, navigate]);
+  }
 
   const wallets = [
     inAppWallet({
@@ -152,30 +148,29 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     }
   }, [activeAccount, dispatch, location, navigate, role]);
 
+
   const daoMultiSig = address;
 
-
-  function handleRegisterDaoLink(e: React.MouseEvent) {
+  function handleRegisterDaoLink(e: React.MouseEvent): void {
     e.preventDefault();
-    if(address && hasLoggedIn.current == true) {
-      navigate("/DaoRegistration")
-    } else if (hasLoggedIn.current == false) {
+    if(isLoggedIn === true) {
+      navigate("DaoRegistration")
+    } else if (isLoggedIn === false) {
       window.alert("Click on Connect to log in or create account first");
     } else {
       console.warn("Invalid operation attempted");
     }
   }
 
+  const daoMultiSig = typeof address === 'string' ? address.toLowerCase() : undefined;
 
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
-    if (address && hasLoggedIn.current == false) {
-      e.preventDefault();
+    e.preventDefault();
+    if (address && !isLoggedIn) {
       navigate("/JoinPlatform", { state: { address } });
     } else if (!address) {
-      e.preventDefault();
       setShowPopup(true);
     } else if (address && role === "Chairperson") {
-      e.preventDefault();
       navigate(`/SuperAdmin/${daoMultiSig}`)
     }
   };
@@ -224,6 +219,17 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
       return (
         <button onClick={() => navigate(getNavigationPath())}>Profile</button>
+        <button
+          onClick={() =>
+            navigate(
+              role === "Chairperson" || role === "Member"
+                ? `/Owner/${typeof address === 'string' ? address.toLowerCase() : ''}`
+                : `/Funder/${typeof address === 'string' ? address.toLowerCase() : ''}`
+            )
+          }
+        >
+          Profile
+        </button>
       );
     } else {
       return (
@@ -250,7 +256,10 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       </div>
       <ul>
         <li>
-          <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>Register Dao</Link>
+          <Link
+          to="/DaoRegistration"
+          onClick={handleRegisterDaoLink}
+          >Create Dao</Link>
         </li>
         <li>
           <Link to="/JifunzeElimu">Education/Blogs</Link>

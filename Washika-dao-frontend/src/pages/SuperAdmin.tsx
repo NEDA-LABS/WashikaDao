@@ -176,10 +176,6 @@ const SuperAdmin: React.FC = () => {
             </div>
           </div>
 
-          <div className="notification">
-            <div>
-              <img src="/images/Info.png" alt="info icon" />
-            </div>
             <div className="notifications">
               <h3>Notification</h3>
               <p>New Member Request</p>

@@ -6,7 +6,7 @@ export type DaoCreationFormInputs = {
     _daoDescription: string; 
     _daoOverview: string; 
     _daoImageUrlHash: string; 
-    _multiSigPhoneNo: number;
+    _multiSigPhoneNo: any;
    }
 
    export interface FormData {
@@ -27,8 +27,6 @@ export type DaoCreationFormInputs = {
     interestOnLoans: string;
   }
   
-  
-
 export type FormInputsData = {
     daoName: string;
     daoLocation: string;
