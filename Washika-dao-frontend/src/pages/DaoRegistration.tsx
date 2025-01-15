@@ -109,7 +109,7 @@ const DaoRegistration: React.FC =  () => {
             }
             
   const onHandleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    handleSubmit(event);
+    onHandleSubmit(event);
   };
   //TODO: Place function to create Dao on the backend here for modularity 
   /**
@@ -193,7 +193,6 @@ const DaoRegistration: React.FC =  () => {
                 </button>
               </center>
             </form>
-    </div>
   );
 }
 

@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 //import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveAccount, lightTheme } from "thirdweb/react";
-import { inAppWallet } from "thirdweb/wallets";
+import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { arbitrumSepolia } from "thirdweb/chains";
 import { useEffect,  useState } from "react";
 //import DaoRegistration from "../pages/DaoRegistration";
@@ -82,12 +82,12 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount, dispatch, navigate]);
   }
-
+ 
   const wallets = [
     inAppWallet({
       auth: {
         mode: "popup", //options are "popup" | "redirect" | "window"
-        options: ["email", "google", "phone"], //["discord", "google", "apple", "email", "phone", "farcaster"]
+        options: ["email", "google", "phone", "wallet"], //["discord", "google", "apple", "email", "phone", "farcaster"]
         // redirectUrl: urlToRedirectTo,
       },
     }),
