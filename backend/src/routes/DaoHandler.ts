@@ -1,8 +1,9 @@
-const express = require('express'); 
+const express = require('express');
 const router = express.Router();
-const DaoController = require('../controller/DaoController'); 
+const DaoController = require('../controller/DaoController');
 const DaoMembershipController = require("../controller/DaoMembershipController");
 import { Request, Response } from "express";
+import { authenticator } from "../utils/Authenticator/Authenticator";
 /**
  * Handles the creation of a new DAO.
  *
@@ -16,13 +17,13 @@ import { Request, Response } from "express";
  * @returns {void} - This function does not return a value.
  * It sends a response back to the client indicating the success or failure of the DAO creation process.
  */
-router.post('/CreateDao', (req: Request, res: Response) => DaoController.CreateNewDao(req, res));
-//user searches for dao information using multisig address, any multisig of a dao can be used to display its details. 
-router.get('/DaoDetails/:daoMultiSigAddr', (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
-router.get('/GetAllDaos', (req: Request, res: Response) => DaoController.GetAllDaosInPlatform(req, res));
+router.post('/CreateDao',  authenticator, (req: Request, res: Response) => DaoController.CreateNewDao(req, res));
+//user searches for dao information using multisig address, any multisig of a dao can be used to display its details.
+router.get('/DaoDetails/:daoMultiSigAddr', authenticator, (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
+router.get('/GetAllDaos',  authenticator, (req: Request, res: Response) => DaoController.GetAllDaosInPlatform(req, res));
 //implement inside url later speed for now
 //router.get('/DaoDetails', (req: Request, res: Response) => DaoController.GetDaoDetailsByMultisig(req, res));
 //updating dao information
-router.put('/DaoDetails/:multiSigAddr', (req: Request, res: Response) => DaoController.UpdateDaoDetails(req, res));
-router.post('/DaoDetails/FundDao/:multiSigAddr', (req: Request, res: Response) => DaoController.FundDao(req, res));
+router.put('/DaoDetails/:multiSigAddr',  authenticator, (req: Request, res: Response) => DaoController.UpdateDaoDetails(req, res));
+router.post('/DaoDetails/FundDao/:multiSigAddr', authenticator, (req: Request, res: Response) => DaoController.FundDao(req, res));
 module.exports = router ;

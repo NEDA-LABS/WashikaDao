@@ -1,8 +1,8 @@
 // Unit test for CreateNewDao function
 
 import { Request, Response } from 'express';
-import { CreateNewDao } from '../src/controller/DaoController'; // Import the correct path to the DaoController file
-import { DaoRepositoryMock, MemberDetailsRepositoryMock } from './mocks';
+import { CreateNewDao } from '../controller/DaoController'; // Import the correct path to the DaoController file
+import { DaoRepositoryMock, MemberDetailsRepositoryMock } from "./mocks";
 
 const mockRequest = (body: any): Request => {
   return {
