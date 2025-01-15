@@ -23,3 +23,11 @@ Current Fixes: Making Application Production Ready
 4. Authentication & Implementation of protected Routes 
 5. Normal User Management
 6. Admin User Management
+
+<h1>TESTING - Testing Module for the project </h1>
+<h3>Types of Tests Used & Purpose</h3>
+<ul> 
+<li>Unit Testing: Isolating each unit of code & evaluating its functioning, focusing on isolated modules & functions</li>
+<li>Integration Testing:  involves testing software modules and the interaction between them. It tests groups of logically integrated modules.</li>
+</ul>
+Structural whitebox testing techniques are implemented which involves dev designing test cases based on the internal structure of the code. 
