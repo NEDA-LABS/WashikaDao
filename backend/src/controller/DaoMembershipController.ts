@@ -10,7 +10,6 @@ import { AppDataSource } from "../data-source";
 import { IDao, IMemberDetails } from "../Interfaces/EntityTypes";
 import { In, ObjectLiteral } from "typeorm";
 
-
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
 
@@ -30,9 +29,18 @@ const daoRepository = AppDataSource.getRepository(Dao);
  * - If any error occurs, it returns a 500 status code with the error message.
  */
 export async function CreateInitialOwner(req: Request, res: Response) {
-  const { firstName, lastName, email, phoneNumber, memberRole, nationalIdNo, memberAddr, daoMultiSig, daos } =
-    req.body;
-    console.log("Request Body:", req.body);
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    memberRole,
+    nationalIdNo,
+    memberAddr,
+    daoMultiSig,
+    daos,
+  } = req.body;
+  console.log("Request Body:", req.body);
   // Validate required fields
   if (!firstName || !lastName || !memberAddr) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -55,9 +63,7 @@ export async function CreateInitialOwner(req: Request, res: Response) {
     const createdOwner = memberDetailsRepository.create(initialOwner);
     await memberDetailsRepository.save(createdOwner);
 
-    return res
-      .status(201)
-      .json({ message: "Dao Owner created successfully" });
+    return res.status(201).json({ message: "Dao Owner created successfully" });
   } catch (error) {
     console.error("Error creating Dao owner:", error);
     // Check if the error is due to a unique constraint violation
@@ -105,11 +111,18 @@ export async function loginMember(req: Request, res: Response) {
 
   try {
     // Check if a member with the given memberAddr exists
-    const member = await memberDetailsRepository.findOne({ where: { memberAddr } });
+    const member = await memberDetailsRepository.findOne({
+      where: { memberAddr },
+    });
 
     if (!member) {
       // If member is not found, return an error message
-      return res.status(404).json({ error: "Member not found. Please check the member address and try again." });
+      return res
+        .status(404)
+        .json({
+          error:
+            "Member not found. Please check the member address and try again.",
+        });
     }
 
     // If member exists, return a success message and member details (without sensitive data)
@@ -127,7 +140,11 @@ export async function loginMember(req: Request, res: Response) {
     });
   } catch (error) {
     console.error("Error logging in member:", error);
-    res.status(500).json({ error: "An error occurred while logging in. Please try again later." });
+    res
+      .status(500)
+      .json({
+        error: "An error occurred while logging in. Please try again later.",
+      });
   }
 }
 
@@ -205,7 +222,7 @@ export async function RequestToJoinDao(req: Request, res: Response) {
     memberRole,
     memberAddr,
     memberDaos, // This is an array of DAO names from the frontend
-    daoMultiSig
+    daoMultiSig,
   } = req.body;
 
   console.log(req.body);
@@ -223,6 +240,10 @@ export async function RequestToJoinDao(req: Request, res: Response) {
       return res.status(404).json({ error: "DAO not found" });
     }
 
+    // Treat empty memberAddr as null
+    const sanitizedMemberAddr =
+      memberAddr && memberAddr.trim() !== "" ? memberAddr : null;
+
     // Create the member request entry
     const memberRequest = {
       firstName,
@@ -231,9 +252,9 @@ export async function RequestToJoinDao(req: Request, res: Response) {
       phoneNumber,
       nationalIdNo,
       memberRole,
-      memberAddr,
+      sanitizedMemberAddr,
       daoMultiSig,
-      daos: memberDaos
+      daos: memberDaos,
     };
 
     console.log({ memberRequest });
@@ -386,9 +407,12 @@ export async function BlackListMember(req: Request, res: Response): Promise<Resp
  * - If the members are successfully retrieved, it returns a 200 status code with a list of members.
  * - If any other error occurs, it returns a 500 status code with the error message.
  */
-export async function GetAllMembers(req: Request, res: Response): Promise<Response> {
+export async function GetAllMembers(
+  req: Request,
+  res: Response
+): Promise<Response> {
   const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
-  console.log('daoMultiSigAddr:', daoMultiSigAddr);
+  console.log("daoMultiSigAddr:", daoMultiSigAddr);
 
   if (!daoMultiSigAddr) {
     return res.status(400).json({ error: "Missing required parameter" });
@@ -405,12 +429,18 @@ export async function GetAllMembers(req: Request, res: Response): Promise<Respon
     const memberCount = members.length;
 
     if (memberCount === 0) {
-      return res.status(404).json({ error: "No members found for the specified DAO multisig address" });
+      return res
+        .status(404)
+        .json({
+          error: "No members found for the specified DAO multisig address",
+        });
     }
 
     return res.status(200).json({ members, memberCount });
   } catch (error) {
     console.error("Error fetching members:", error);
-    return res.status(500).json({ error: "Internal Server Error Occurred When Fetching Members" });
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error Occurred When Fetching Members" });
   }
 }

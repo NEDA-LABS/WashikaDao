@@ -58,9 +58,9 @@ const Owner: React.FC = () => {
         </div>
 
         <div className="button-group buttons">
-          <button>Taarifa za Fedha</button>
-          <button>Fanya Malipo</button>
-          <button>Omba Mkopo</button>
+          <button>Account Information</button>
+          <button>Deposit Payments</button>
+          <button>Fund a DAO</button>
           <button>Edit Settings</button>
         </div>
 

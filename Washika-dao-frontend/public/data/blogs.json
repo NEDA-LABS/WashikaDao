@@ -1,28 +1,28 @@
 [
     {
       "slug": "Article1",
-      "title": "Umuhimu wa Uchumi wa Kidijitali",
+      "title": "The Importance of the Digital Economy",
       "category": "DAO",
       "image": "/images/Article1.jpg",
       "date": "2024-01-01"
     },
     {
       "slug": "Article2",
-      "title": "Teknolojia ya Blockchain Inabadilisha",
+      "title": "Blockchain Technology is Transforming",
       "category": "Education",
       "image": "/images/Article2.jpg",
       "date": "2024-01-10"
     },
     {
       "slug": "Article3",
-      "title": "Umuhimu wa Kuokoa na Kuweka Mchango",
+      "title": "The Importance of Saving and Contributing",
       "category": "Toolkit",
       "image": "/images/Article3.jpg",
       "date": "2024-01-01"
     },
     {
       "slug": "Article4",
-      "title": "Faida za Vikundi vya Akiba na Mikopo ya Jamii",
+      "title": "Benefits of Savings and Credit Groups in the Community",
       "category": "DAO",
       "image": "/images/Article4.jpg",
       "date": "2024-01-10"
