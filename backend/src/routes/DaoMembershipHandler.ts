@@ -22,9 +22,7 @@ router.get('/DaoDetails/:daoMultiSigAddr/members', authenticator, (req: Request,
 //adding member to a particular dao
 router.post('/DaoDetails/:multiSigAddr/members/AddMember', authenticator, (req: Request, res: Response) => DaoMembershipController.WhiteListUser(req, res));
 //deleting a member from a particular dao or blacklisting them
-router.post('/DaoDetails/:multiSigAddr/members/:memberAddr', (req: Request, res: Response) => DaoMembershipController.BlackListMember(req, res));
-router.post('/DaoDetails/inviteMemberEmail', (req: Request, res: Response) => EmailController.handleSendInvite(req, res)); 
-router.post('/DaoDetails/inviteMemberSMS', (req: Request, res: Response) => SMSController.handleSendInviteSMS(req, res)); 
+router.post('/DaoDetails/:multiSigAddr/members/:memberAddr', authenticator, (req: Request, res: Response) => DaoMembershipController.BlackListMember(req, res));
 
 module.exports = router ;
 //TODO: add middleware to check if user is an owner of the dao or has sufficient permissions to access the endpoint

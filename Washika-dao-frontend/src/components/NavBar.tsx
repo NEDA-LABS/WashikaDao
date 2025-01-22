@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveAccount, lightTheme } from "thirdweb/react";
-import { inAppWallet } from "thirdweb/wallets";
+import {  inAppWallet } from "thirdweb/wallets";//Add createWallet to allow funders to use metamask to fund dao operations
 import { arbitrumSepolia } from "thirdweb/chains";
 import { useEffect, useRef, useState } from "react";
 
@@ -39,9 +39,9 @@ interface NavBarProps {
  * @see {@link https://reactrouter.com/} for more on react-router-dom.
  * @see {@link https://portal.thirdweb.com/} for more on thirdweb integration.
  */
-const NavBar: React.FC<NavBarProps> = ({ className }) => {
+const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps): JSX.Element => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
   const activeAccount = useActiveAccount();
   const [address, setAddress] = useState<string | null>(null);
   // const address = restoredAccount || activeAccount?.address?.toLowerCase();
@@ -104,12 +104,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount, dispatch, navigate]);
+  }
+ 
 
   const wallets = [
     inAppWallet({
       auth: {
         mode: "popup", //options are "popup" | "redirect" | "window"
-        options: ["email", "google", "phone"], //["discord", "google", "apple", "email", "phone", "farcaster"]
+        options: ["email", "google", "phone", "wallet"], //["discord", "google", "apple", "email", "phone", "farcaster"]
         // redirectUrl: urlToRedirectTo,
       },
     }),
