@@ -4,17 +4,21 @@ import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
 
 interface ProposalData {
-  proposalId: number; // Assuming you have a proposalId
-  title: string;
-  description: string;
-  amountRequested: string;
-  currency: string;
-  about: string;
+  proposalId: number;
+  proposalOwner: string;
+  proposalTitle: string;
+  projectSummary: string;
+  proposalDescription: string;
+  proposalStatus: string;
+  amountRequested: number;
+  profitSharePercent: number;
   daoMultiSigAddr: string;
+  numUpvotes: number;
+  numDownvotes: number;
 }
 /**
- * @Auth Policy: Visible to all 
- * @returns 
+ * @Auth Policy: Visible to all
+ * @returns
  */
 /**
  * A React functional component that displays detailed information about a specific proposal.
@@ -26,15 +30,17 @@ interface ProposalData {
  * @returns {JSX.Element} The rendered component displaying proposal details, including title,
  * description, amount requested, currency, and additional information. It also provides
  * navigation options to view linked resources, view votes, re-propose, and fund the project.
- * 
+ *
  * @remarks
  * - Utilizes `useParams` to extract URL parameters and `useNavigate` for navigation.
  * - Handles errors during data fetching and logs them to the console.
  * - Displays a loading message until the proposal data is successfully fetched.
  */
 const ViewProposal: React.FC = () => {
-  const { proposalId } = useParams<{ proposalId: string }>(); // Get proposalId from the URL
-  const { multiSigAddr } = useParams<{ multiSigAddr: string }>(); // Get multiSigAddr from the URL
+  const { proposalId, multiSigAddr } = useParams<{
+    proposalId: string;
+    multiSigAddr: string;
+  }>(); // Get both proposalId and multiSigAddr from the URL
   const navigate = useNavigate();
   const [proposalData, setProposalData] = useState<ProposalData | null>(null); // State to hold proposal data
 
@@ -42,7 +48,7 @@ const ViewProposal: React.FC = () => {
     const fetchProposalData = async () => {
       try {
         const response = await fetch(
-          `/http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}`
+          `http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -63,6 +69,11 @@ const ViewProposal: React.FC = () => {
       navigate(`/DaoProfile/${multiSigAddr}`);
     }
   };
+
+  console.log("ProposalData is", proposalData);
+
+  console.log("multiSigAddr:", multiSigAddr);
+  console.log("proposalId:", proposalId);
 
   // Render loading state if proposal data is not yet available
   if (!proposalData) {
@@ -85,24 +96,26 @@ const ViewProposal: React.FC = () => {
         </div>
 
         <article>
-          <h1>{proposalData.title}</h1>
-          <p>{proposalData.description}</p>
+          <h1>{proposalData.proposalTitle}</h1>
+          <p>{proposalData.projectSummary}</p>
         </article>
 
         <section>
           <button>View linked resources</button>
-          <div>
+          <div className="dooh">
             <p className="first">Amount Requested</p>
-            <p className="second">
-              {proposalData.amountRequested}
-              <span>{proposalData.currency}</span>
-            </p>
+            <div className="second">
+              <p>
+                <span> {proposalData.amountRequested.toLocaleString()}</span>
+              </p>
+              <p className="left">Tsh</p>
+            </div>
           </div>
         </section>
 
         <div className="about">
           <h1>About proposal</h1>
-          <p>{proposalData.about}</p>
+          <p>{proposalData.proposalDescription}</p>
         </div>
 
         <div className="buttonGroup">

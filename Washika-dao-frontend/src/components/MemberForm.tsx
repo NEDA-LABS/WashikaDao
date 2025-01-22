@@ -12,6 +12,7 @@ interface MemberFormProps {
   currentMember: Member;
   onMemberChange: (field: keyof Member, value: string) => void; // Function to handle changes to member fields
   onAddMember: () => void; // Function to add a new member
+  onInviteMember: () => void; // Function to send  an invite to the new member
 }
 /**
  * MemberForm is a React functional component that renders a form for managing
@@ -23,6 +24,8 @@ interface MemberFormProps {
  * @param {Member} props.currentMember - The current member's information to be displayed and edited.
  * @param {(field: keyof Member, value: string) => void} props.onMemberChange - Callback function to handle changes to the member's fields.
  * @param {() => void} props.onAddMember - Callback function to add a new member.
+ * @param {() => void} props.onInviteMember - Callback function to send an invite to new member.
+ * 
  *
  * @returns {JSX.Element} A JSX element representing the member form UI.
  */
@@ -30,6 +33,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
   currentMember, // Destructure props
   onMemberChange,
   onAddMember,
+  onInviteMember,
 }) => {
   return (
     <div className="wanakikundi">
@@ -105,7 +109,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
             <button type="button" className="button-1" onClick={onAddMember}>
               Add another member
             </button>
-            <button type="button" className="button-2">
+            <button type="button" className="button-2" onClick={onInviteMember}>
               Send Invite
             </button>
           </div>

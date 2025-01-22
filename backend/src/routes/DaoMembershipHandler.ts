@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 import DaoController = require("../controller/DaoController");
+import EmailController = require("../controller/EmailController");
+import SMSController = require("../controller/SMSController");
 import DaoMembershipController = require("../controller/DaoMembershipController");
 import { Request, Response } from "express";
 import { authenticator } from "../utils/Authenticator/Authenticator";
@@ -20,7 +22,9 @@ router.get('/DaoDetails/:daoMultiSigAddr/members', authenticator, (req: Request,
 //adding member to a particular dao
 router.post('/DaoDetails/:multiSigAddr/members/AddMember', authenticator, (req: Request, res: Response) => DaoMembershipController.WhiteListUser(req, res));
 //deleting a member from a particular dao or blacklisting them
-router.post('/DaoDetails/:multiSigAddr/members/:memberAddr', authenticator, (req: Request, res: Response) => DaoMembershipController.BlackListMember(req, res));
+router.post('/DaoDetails/:multiSigAddr/members/:memberAddr', (req: Request, res: Response) => DaoMembershipController.BlackListMember(req, res));
+router.post('/DaoDetails/inviteMemberEmail', (req: Request, res: Response) => EmailController.handleSendInvite(req, res)); 
+router.post('/DaoDetails/inviteMemberSMS', (req: Request, res: Response) => SMSController.handleSendInviteSMS(req, res)); 
 
 module.exports = router ;
 //TODO: add middleware to check if user is an owner of the dao or has sufficient permissions to access the endpoint

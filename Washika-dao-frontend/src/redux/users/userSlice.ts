@@ -9,7 +9,7 @@ interface UserState {
   role: string;
   email: string;
   phoneNumber: number;
-  nationalIdNo: number;
+  nationalIdNo: number | null | undefined;
 }
 
 const initialState: UserState = {

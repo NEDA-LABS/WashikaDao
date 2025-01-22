@@ -89,7 +89,6 @@ const SuperAdmin: React.FC = () => {
       fetchDaoDetails();
       fetchMemberCount();
     }
-
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
     };
@@ -102,7 +101,7 @@ const SuperAdmin: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
   }, [daoMultiSigAddr]);
-  console.log(daoDetails);
+  // console.log(daoDetails);
 
   // Handle role change
   const handleRoleChange = (
@@ -117,6 +116,33 @@ const SuperAdmin: React.FC = () => {
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
     setShowForm(!showForm);
+  };
+
+  const handleInviteMember = async () => {
+    try {
+      // Send an email to the new member
+      const response = await fetch(
+        "http://localhost:8080/JiungeNaDao/DaoDetails/inviteMemberEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+            firstName: firstName,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        console.log("Member added and email sent successfully.");
+      } else {
+        console.error("Failed to send email.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -154,6 +180,8 @@ const SuperAdmin: React.FC = () => {
 
       if (response.ok) {
         console.log(`Success: ${result.message}`);
+        handleInviteMember();
+        setShowForm(!showForm);
       } else {
         console.error(`Error: ${result.error}`);
       }
@@ -165,8 +193,8 @@ const SuperAdmin: React.FC = () => {
   return (
     <>
       <NavBar className={"SuperAdmin"} />
-      {daoDetails ? (
-        <main className="member superAdmin">
+      <main className="member superAdmin">
+        <>
           <div className="centered">
             <div className="daoImage one">
               <img
@@ -176,6 +204,10 @@ const SuperAdmin: React.FC = () => {
             </div>
           </div>
 
+          {/* <div className="notification">
+            <div>
+              <img src="/images/Info.png" alt="info icon" />
+            </div>
             <div className="notifications">
               <h3>Notification</h3>
               <p>New Member Request</p>
@@ -184,7 +216,7 @@ const SuperAdmin: React.FC = () => {
             <div>
               <img src="/images/X.png" alt="cancel icon" />
             </div>
-          </div>
+          </div> */}
           <div className="top">
             <div className="one onesy">
               <h1>{daoDetails?.daoName}</h1>
@@ -207,15 +239,15 @@ const SuperAdmin: React.FC = () => {
               <div className="first">
                 <div className="one">
                   <p className="left">TSH</p>
-                  <p className="right">Thamani ya hazina</p>
+                  <p className="right">Treasury Balance</p>
                 </div>
                 <p className="amount">{daoDetails?.kiwango.toLocaleString()}</p>
               </div>
               <div className="section">
                 <img src="/images/profile.png" alt="idadi" />
                 <h2>
-                  Idadi ya
-                  <br /> wanachama
+                  Number of
+                  <br /> members
                 </h2>
                 <p>{memberCount}</p>
               </div>
@@ -224,7 +256,7 @@ const SuperAdmin: React.FC = () => {
                 className="taarifa"
                 onClick={() => setActiveSection("wanachama")}
               >
-                Taarifa za wanachama
+                Member Details
               </button>
             </div>
           </div>
@@ -238,7 +270,7 @@ const SuperAdmin: React.FC = () => {
             </button>
             <button onClick={handleAddMemberClick}>Add Members</button>
             <button onClick={() => setActiveSection("mikopo")}>
-              Taarifa za mikopo
+              Loan Details
             </button>
             <button>Edit Settings</button>
           </div>
@@ -453,13 +485,8 @@ const SuperAdmin: React.FC = () => {
               </section>
             </>
           )}
-        </main>
-      ) : (
-        <main className="member superAdmin">
-          <h2>No DAO Found</h2>
-          <p>Please create or join a DAO to access this dashboard.</p>
-          </main>
-      )}
+        </>
+      </main>
     </>
   );
 };

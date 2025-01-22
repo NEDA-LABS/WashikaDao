@@ -26,6 +26,9 @@ export class Proposal {
     amountRequested: number;  
 
     @Column() 
+    profitSharePercent: number;  
+
+    @Column() 
     daoMultiSigAddr: string; 
 
     @Column() 

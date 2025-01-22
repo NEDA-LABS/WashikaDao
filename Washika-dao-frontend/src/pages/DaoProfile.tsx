@@ -141,11 +141,11 @@ const PublicDaoProfile: React.FC = () => {
                 <button className="button-1" onClick={handleClick}>
                   Dao Overview
                 </button>
-                <button className="button-2">Nunua Share</button>
+                <button className="button-2">Buy Shares</button>
                 <button className="button-2" onClick={handleClick}>
-                  Omba Mkopo
+                  Apply for Loan
                 </button>
-                <button className="button-2">Fanya Malipo</button>
+                <button className="button-2">Make Payments</button>
               </div>
             </div>
           </div>
@@ -154,7 +154,7 @@ const PublicDaoProfile: React.FC = () => {
             <div className="first">
               <div className="one">
                 <p className="left">TSH</p>
-                <p className="right">Thamani ya hazina</p>
+                <p className="right">Treasury Balance</p>
               </div>
               <p className="amount">{daoDetails.kiwango.toLocaleString()}</p>
             </div>
@@ -162,10 +162,10 @@ const PublicDaoProfile: React.FC = () => {
             <div className="section-3">
               <div className="top">
                 <img src="/images/profile.png" alt="idadi" />
-                <div className="taarifa">Taarifa za wanachama</div>
+                <div className="taarifa">Member Details</div>
               </div>
               <div className="bottom">
-                <h2>Idadi ya wanachama</h2>
+                <h2>Number of members</h2>
                 <p>{memberCount}</p>
               </div>
               <div className="fundDao">

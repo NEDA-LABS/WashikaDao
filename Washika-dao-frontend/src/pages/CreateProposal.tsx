@@ -1,7 +1,10 @@
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import React from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 /**
  *
@@ -58,17 +61,20 @@ const uploadImageToCloudinary = async (file: File) => {
  */
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
-  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
+  const [completedSteps, setCompletedSteps] = useState<number>(0);
   // Extract multiSigAddr from URL params
-
+  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
+  const { memberAddr } = useSelector((state: RootState) => state.user);
   // State to manage form data
   const [proposalData, setProposalData] = useState({
-    proposalOwner: "",
+    proposalOwner: memberAddr,
+    otherMember: "",
     proposalTitle: "",
     projectSummary: "",
     proposalDescription: "",
     proposalStatus: "open", // default to 'open'
     amountRequested: "",
+    profitSharePercent: "",
     daoMultiSigAddr: daoMultiSigAddr || "", // Populate daoMultiSigAddr from URL params
     numUpvotes: 0, // default value
     numDownvotes: 0, // default value
@@ -102,6 +108,24 @@ const CreateProposal: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    let stepsCompleted = 0;
+
+    if (daoMultiSigAddr) stepsCompleted++;
+    if (proposalData.amountRequested) stepsCompleted++;
+    if (proposalData.proposalTitle) stepsCompleted++;
+    if (proposalData.proposalDescription) stepsCompleted++;
+    if (proposalData.fileUrl) stepsCompleted++;
+
+    setCompletedSteps(stepsCompleted);
+  }, [
+    daoMultiSigAddr,
+    proposalData.fileUrl,
+    proposalData.proposalDescription,
+    proposalData.amountRequested,
+    proposalData.proposalTitle,
+  ]);
+
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -121,7 +145,9 @@ const CreateProposal: React.FC = () => {
       const data = await response.json();
 
       if (response.ok) {
-        const proposalId = data.proposalId;
+        console.log(data);
+        
+        const proposalId = data.createdProposal?.proposalId;
         console.log("Proposal created successfully, ID:", proposalId);
         navigate(`/ViewProposal/${daoMultiSigAddr}/${proposalId}`);
       } else {
@@ -134,7 +160,7 @@ const CreateProposal: React.FC = () => {
 
   return (
     <>
-      <NavBar className={""} />
+      <NavBar className={"CreateProposal"} />
       <main className="createProposal">
         <div className="proposalParag">
           <div className="top">
@@ -147,24 +173,24 @@ const CreateProposal: React.FC = () => {
             here.
           </p>
         </div>
-
         <div className="circle-container">
-          <div className="circle one">1</div>
-          <div className="line"></div>
-          <div className="circle">2</div>
-          <div className="line"></div>
-          <div className="circle">3</div>
-          <div className="line"></div>
-          <div className="circle">4</div>
+          {Array.from({ length: 5 }, (_, index) => (
+            <React.Fragment key={`circle-${index}`}>
+              <div
+                className={`circle ${
+                  index + 1 <= completedSteps ? "green" : ""
+                }`}
+              >
+                {index + 1}
+              </div>
+              {index < 4 && <div className="line" />}
+            </React.Fragment>
+          ))}
         </div>
 
         <form onSubmit={handleSubmit}>
-          <div className="label one">
-            <label>Owner of the proposal</label>
-            <button>Connect wallet</button>
-          </div>
 
-          <div className="label two">
+        <div className="label two">
             <label>Title of proposal</label>
             <input
               type="text"
@@ -198,33 +224,34 @@ const CreateProposal: React.FC = () => {
           <div className="boxed">
             <div className="label five">
               <label>Amount Requested</label>
-            <input
-              type="number"
-              name="amountRequested"
-              value={proposalData.amountRequested}
-              onChange={handleChange}
-            />
+              <input
+                type="number"
+                name="amountRequested"
+                value={proposalData.amountRequested}
+                onChange={handleChange}
+              />
             </div>
             <div className="label five two">
               <label>Profit Share %</label>
-            <input
-              type="number"
-              name="amountRequested"
-              value={proposalData.amountRequested}
-              onChange={handleChange}
-            />
+              <input
+                type="number"
+                name="profitSharePercent"
+                value={proposalData.profitSharePercent}
+                onChange={handleChange}
+              />
             </div>
           </div>
 
           <div className="label">
-            <label>Proposal Status</label>
+            <label>Add another member (Optional)</label>
             <select
               name="proposalStatus"
-              value={proposalData.proposalStatus}
+              value={proposalData.otherMember}
               onChange={handleChange}
             >
-              <option value="open">Open</option>
-              <option value="closed">Closed</option>
+              <option value="members">
+                Members
+              </option>
             </select>
           </div>
 
