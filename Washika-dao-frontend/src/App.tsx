@@ -68,7 +68,7 @@ const App: React.FC = () => {
               element={<DaoProfile />}
             />
             <Route
-              path="/SuperAdmin/:daoMultiSigAddr"
+              path="/SuperAdmin"
               element={<SuperAdmin />}
             />
             <Route
