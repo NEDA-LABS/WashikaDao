@@ -3,7 +3,7 @@ import { arbitrumSepolia } from "thirdweb/chains";
 /**Reusable Blockchain Action Handlers */
 //FullDao Contract Object
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-
+// @ts-ignore
 const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
 export const client = createThirdwebClient({ clientId: _clientId });
 export const FullDaoContract = getContract({
