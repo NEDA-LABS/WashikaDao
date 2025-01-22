@@ -339,7 +339,11 @@ const DaoRegistration: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
     // Ensure multiSigAddr is properly set
-    if (!formData.multiSigAddr || formData.multiSigAddr.trim() === "") {
+    //if (!formData.multiSigAddr || formData.multiSigAddr.trim() === "") {
+     // alert("MultiSig Address is required");
+      //return;
+    //}
+    if (!currActiveAcc) {
       alert("MultiSig Address is required");
       return;
     }
