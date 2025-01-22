@@ -1,6 +1,6 @@
 //import Footer from "../components/Footer";
 //import DaoForm from "../components/DaoForm";
-import NavBar from "../components/NavBar.tsx";
+//import NavBar from "../components/NavBar.tsx";
 //import MemberForm from "../components/MemberForm";
 //import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";

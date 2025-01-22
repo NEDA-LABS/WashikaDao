@@ -176,15 +176,15 @@ const SuperAdmin: React.FC = () => {
             </div>
           </div>
 
-            <div className="notifications">
-              <h3>Notification</h3>
-              <p>New Member Request</p>
-              <button>View</button>
-            </div>
+          <div className="notifications">
+            <h3>Notification</h3>
+            <p>New Member Request</p>
+            <button>View</button>
             <div>
               <img src="/images/X.png" alt="cancel icon" />
             </div>
           </div>
+
           <div className="top">
             <div className="one onesy">
               <h1>{daoDetails?.daoName}</h1>

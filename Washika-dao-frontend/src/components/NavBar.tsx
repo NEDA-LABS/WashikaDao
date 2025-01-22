@@ -4,7 +4,7 @@ import { useSelector } from "react-redux";
 //import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveAccount, lightTheme } from "thirdweb/react";
-import { createWallet, inAppWallet } from "thirdweb/wallets";
+import {  inAppWallet } from "thirdweb/wallets";//Add createWallet to allow funders to use metamask to fund dao operations
 import { arbitrumSepolia } from "thirdweb/chains";
 import { useEffect,  useState } from "react";
 //import DaoRegistration from "../pages/DaoRegistration";
