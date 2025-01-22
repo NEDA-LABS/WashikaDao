@@ -1,7 +1,7 @@
 import NavBar from "../components/NavBar";
-import ProposalGroups from "../components/ProposalGroups";
+//import ProposalGroups from "../components/ProposalGroups";
 import WanachamaList from "../components/WanachamaList";
-import Dashboard from "../components/Dashboard";
+//import Dashboard from "../components/Dashboard";
 import Cards from "../components/Cards";
 import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
@@ -60,7 +60,7 @@ const SuperAdmin: React.FC = () => {
         );
         const data = await response.json();
         if (response.ok) {
-          setDaoDetails(data.daoDetails);
+          setDaoDetails(daoDetails);//Data.daoDetails
         } else {
           console.error("Error fetching daoDetails:", data.message);
         }
@@ -76,7 +76,7 @@ const SuperAdmin: React.FC = () => {
         );
         const data = await response.json();
         if (response.ok) {
-          setMemberCount(data.memberCount);
+          setMemberCount(memberCount);//data.memberCount
         } else {
           console.error("Error fetching member count:", data.message);
         }
@@ -90,6 +90,7 @@ const SuperAdmin: React.FC = () => {
       fetchMemberCount();
     }
     const handleResize = () => {
+      if(isSmallScreen)
       setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
     };
 
@@ -117,7 +118,9 @@ const SuperAdmin: React.FC = () => {
   const handleAddMemberClick = () => {
     setShowForm(!showForm);
   };
-
+  if (activeSection) {
+    setActiveSection("");
+  }
   const handleInviteMember = async () => {
     try {
       // Send an email to the new member
