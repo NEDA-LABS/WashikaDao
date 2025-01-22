@@ -25,12 +25,9 @@
   font-size: 38px;
   font-weight: bold;
   font-family: "Syne", sans-serif;
-  margin-top: 56px;
 }
 
 .viewProposal article h1 {
-  width: 731px;
-  height: 141px;
   color: #000000;
   font-size: 61px;
   line-height: 56px;
@@ -39,7 +36,6 @@
 .viewProposal article p {
   margin: 24px 0 64px;
   width: 857px;
-  height: 207px;
   color: #000000;
   font-size: 32px;
 }
@@ -61,40 +57,40 @@
   text-decoration: underline;
 }
 
-.viewProposal section div {
-  margin-right: 24px;
+.viewProposal section .dooh {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: end;
   gap: 12px;
 }
 
-.viewProposal section .first {
-  width: 420px;
-  height: 33px;
+.viewProposal section .dooh .first {
   color: #433939;
   font-size: 29px;
-  text-align: center;
   font-weight: bold;
+  padding-right: 24px;
 }
 
 .viewProposal section .second {
-  width: 503px;
-  height: 46px;
+  display: flex;
+  align-items: center;
+  justify-content: end;
   color: #433939;
+  transform: scaleX(0.9) scaleY(1.2);
+}
+
+.viewProposal section .second p.left {
+  padding-top: 12px;
+  font-size: 16px;
+  font-family: "Druk Text Wide Web", sans-serif;
+  letter-spacing: 2px;
+}
+
+.viewProposal section .second span {
   font-size: 40px;
   font-weight: 100;
   letter-spacing: 5px;
-  transform: scaleX(0.9) scaleY(1.2);
   font-family: "Druk Text Wide Web", sans-serif;
-}
-
-.viewProposal section span {
-  letter-spacing: 0px;
-  font-size: 24px;
-  font-weight: bold;
-  transform: scaleY(0.6);
-  display: inline-block;
 }
 
 .viewProposal .about h1 {

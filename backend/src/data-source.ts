@@ -13,6 +13,7 @@ import path from "path";
  * This DataSource is used to connect to a MySQL database and manage entities.
  */
 /*  INFO: Developer DB Localhost & ? Server ?
+/*  INFO: Developer DB Localhost & ? Server ?
 export const AppDataSource = new DataSource({
    // type: "mysql", /** * The type of the database. In this case, it's MySQL.*/
    // host: "localhost",

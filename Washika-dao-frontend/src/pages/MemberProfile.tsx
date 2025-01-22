@@ -140,14 +140,14 @@ const MemberProfile: React.FC = () => {
         </section>
 
         <div className="button-group buttons">
-          <button>Taarifa za Fedha</button>
-          <button>Fanya Malipo</button>
-          <button>Omba Mkopo</button>
+          <button>Account Information</button>
+          <button>Make Payments</button>
+          <button>Apply for Loan</button>
           <button>Edit Settings</button>
         </div>
 
         <div className="dashboard-wrapper">
-          <h2>Taarifa za fedha</h2>
+          <h2>This is your account information</h2>
           <Dashboard />
         </div>
         <button className="create">Create a Proposal</button>
@@ -162,7 +162,7 @@ const MemberProfile: React.FC = () => {
               <form onSubmit={handleSubmit}>
                 <DaoForm
                   className="form"
-                  title="Add Member"
+                  title="Apply to be a Member"
                   description=""
                   fields={[
                     {

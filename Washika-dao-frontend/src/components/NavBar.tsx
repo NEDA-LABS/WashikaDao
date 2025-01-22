@@ -1,13 +1,13 @@
-//import { useDispatch } from "react-redux";
-import { Link,useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { Link, useNavigate } from "react-router-dom";
+import { clearCurrentUser, setCurrentUser } from "../redux/users/userSlice";
 import { useSelector } from "react-redux";
-//import { RootState } from "../redux/store";
+import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
 import { ConnectButton, useActiveAccount, lightTheme } from "thirdweb/react";
 import {  inAppWallet } from "thirdweb/wallets";//Add createWallet to allow funders to use metamask to fund dao operations
 import { arbitrumSepolia } from "thirdweb/chains";
-import { useEffect,  useState } from "react";
-//import DaoRegistration from "../pages/DaoRegistration";
+import { useEffect, useRef, useState } from "react";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -39,50 +39,74 @@ interface NavBarProps {
  * @see {@link https://reactrouter.com/} for more on react-router-dom.
  * @see {@link https://portal.thirdweb.com/} for more on thirdweb integration.
  */
-const NavBar: React.FC<NavBarProps> = ({ className }) => {
-  //const dispatch = useDispatch();
-  const navigate = useNavigate();
- // const location = useLocation();
+const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps): JSX.Element => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate(); 
   const activeAccount = useActiveAccount();
-  const address = GetActiveAccount();
+  const [address, setAddress] = useState<string | null>(null);
+  // const address = restoredAccount || activeAccount?.address?.toLowerCase();
+  // const address = handleGetActiveAccount();
   // const urlToRedirectTo = `http://localhost:5173/Owner/${address?.toLowerCase()}`;
-
+  const hasLoggedIn = useRef(false);
   const [showPopup, setShowPopup] = useState(false);
-  const { role } = useSelector((state: any) => state.user);//Keeping track of backend login state
+  const { role, daoMultiSig } = useSelector((state: RootState) => state.user);
 
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);//Blockchain login 
+  // type CustomErrorMessages = Error;
+  // type ActiveAccRetType = string | undefined;
 
-  type CustomErrorMessages = Error;// A custom error should be constructed from the error class 
-  type ActiveAccRetType = string | undefined;
+  // function handleGetActiveAccount():
+  //   | string
+  //   | undefined
+  //   | ActiveAccRetType
+  //   | CustomErrorMessages {
+  //   if (activeAccount?.address) {
+  //     localStorage.setItem("activeAccount", activeAccount.address.toLowerCase());
+  //     // console.log("The account details are", activeAccount);
+  //     // console.log("Active Account Address:", activeAccount.address);
+  //     return activeAccount.address.toLowerCase(); // Return the address
+  //   } else if (activeAccount === undefined) {
+  //     console.log(
+  //       "Undefined value for the active account, try connecting to a wallet"
+  //     );
+  //     return undefined;
+  //   } else {
+  //     console.error("Error Getting Active account");
+  //     const _customErrMessage: CustomErrorMessages = Error("operationalError");
+  //     return _customErrMessage;
+  //   }
+  // }
 
-  function GetActiveAccount(): ActiveAccRetType | CustomErrorMessages {
+  useEffect(() => {
+    // Save active account to localStorage
     if (activeAccount?.address) {
-      console.log("The account details are", activeAccount);
-      console.log("Active Account Address:", activeAccount.address);
-      return activeAccount.address.toLowerCase(); // Return the address
-    } else if (activeAccount === undefined) {
-      console.log("Undefined value for the active account, try connecting to a wallet")
-      return undefined;
-    } else {
-    console.error("Error Getting Active account");
-    const _customErrMessage: CustomErrorMessages = Error("operationalError");
-    return _customErrMessage;
-  }
-  }
+      localStorage.setItem("activeAccount", activeAccount.address.toLowerCase());
+    }
+  }, [activeAccount]);
 
-  function handleUserLogin(): void{
-    const userAcc = GetActiveAccount();
-    //check if user is an instance of CustomErrorMessages
-    if (userAcc instanceof Error || userAcc === undefined) {
-      console.log("FAILED, please retry operation")//TODO: add better way to inform user of failed login
-      setIsLoggedIn(false);
-    } else {
-      setIsLoggedIn(true);
+  useEffect(() => {
+    // Restore active account from localStorage on mount
+    const savedAddress = localStorage.getItem("activeAccount");
+    if (savedAddress) {
+      setAddress(savedAddress);
+    }
+  }, []);
+
+  const logout = () => {
+    hasLoggedIn.current = false;
+    localStorage.removeItem("activeAccount");
+    dispatch(clearCurrentUser());
+    navigate("/", { replace: true });
+  };
+
+  useEffect(() => {
+    if (!address && hasLoggedIn.current == true) {
+      logout();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount, dispatch, navigate]);
   }
  
+
   const wallets = [
     inAppWallet({
       auth: {
@@ -119,7 +143,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         const result = await response.json();
         if (response.ok) {
           console.log("Login successful:", result.message);
-          console.log(role);
+          // console.log(role);
 
           dispatch(
             setCurrentUser({
@@ -143,45 +167,69 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       }
     };
 
-    if (activeAccount?.address && !hasLoggedIn.current) {
-      loginMember(activeAccount.address.toLowerCase());
+    if (address && !hasLoggedIn.current) {
+      loginMember(address.toLowerCase());
     }
-  }, [activeAccount, dispatch, location, navigate, role]);
+  }, [address, dispatch, navigate, role]);
 
+  console.log( "The address is", address);
+  
 
-  const daoMultiSig = address;
-
-  function handleRegisterDaoLink(e: React.MouseEvent): void {
+  function handleRegisterDaoLink(e: React.MouseEvent) {
     e.preventDefault();
-    if(isLoggedIn === true) {
-      navigate("DaoRegistration")
-    } else if (isLoggedIn === false) {
+    if(address && hasLoggedIn.current == true) {
+      navigate("/DaoRegistration")
+    } else /*if (hasLoggedIn.current == false)*/ {
       window.alert("Click on Connect to log in or create account first");
-    } else {
-      console.warn("Invalid operation attempted");
-    }
+    } 
+    // else {
+    //   console.warn("Invalid operation attempted");
+    // }
   }
 
-  const daoMultiSig = typeof address === 'string' ? address.toLowerCase() : undefined;
 
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (address && !isLoggedIn) {
+    if (address && hasLoggedIn.current == false) {
+      e.preventDefault();
       navigate("/JoinPlatform", { state: { address } });
     } else if (!address) {
+      e.preventDefault();
       setShowPopup(true);
     } else if (address && role === "Chairperson") {
+      e.preventDefault();
       navigate(`/SuperAdmin/${daoMultiSig}`)
     }
   };
 
   const closePopup = () => setShowPopup(false);
 
+  const renderRegisterDao = () => {
+    if (className === "navbarFunder") {
+      return
+    } 
+    else if (className === "CreateProposal" || className === "DaoRegister"|| className === "SuperAdmin") {
+      return;
+    }
+     else {
+      return (
+        <li>
+          <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>Open Dao</Link>
+        </li>
+      )
+    }
+  }
+
   const renderProfileLink = () => {
     if (className === "DaoProfile" || className === "navbarProposal") {
       return (
         <li className="three">
-          <Link to="/funder">FUNDERS</Link>
+          <Link to={`/Funder/${daoMultiSig}`}>FUNDER</Link>
+        </li>
+      );
+    } else if (className === "SuperAdmin") {
+      return (
+        <li className="three">
+          <Link to={`/CreateProposal/${daoMultiSig || ""}`}>Create Proposal</Link>
         </li>
       );
     } else {
@@ -203,7 +251,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
       address &&
       className !== "DaoProfile" &&
       className !== "navbarOwner" &&
-      className !== "joinPlatformNav" 
+      className !== "joinPlatformNav" &&
+      className !== "SuperAdmin" 
     ) {
       // Determine the navigation path based on the role
       const getNavigationPath = () => {
@@ -219,18 +268,11 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
 
       return (
         <button onClick={() => navigate(getNavigationPath())}>Profile</button>
-        <button
-          onClick={() =>
-            navigate(
-              role === "Chairperson" || role === "Member"
-                ? `/Owner/${typeof address === 'string' ? address.toLowerCase() : ''}`
-                : `/Funder/${typeof address === 'string' ? address.toLowerCase() : ''}`
-            )
-          }
-        >
-          Profile
-        </button>
       );
+    } else if ( className === "SuperAdmin"){
+      return (
+        <button onClick={() => navigate(`/Funder/${address}`)}>Notifications</button>
+      )
     } else {
       return (
         <ConnectButton
@@ -255,14 +297,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }) => {
         </Link>
       </div>
       <ul>
+        {renderRegisterDao()}
         <li>
-          <Link
-          to="/DaoRegistration"
-          onClick={handleRegisterDaoLink}
-          >Create Dao</Link>
-        </li>
-        <li>
-          <Link to="/JifunzeElimu">Education/Blogs</Link>
+          <Link to="/Blogs">EducationHUB</Link>
         </li>
         {renderProfileLink()}
         {showPopup && (

@@ -55,7 +55,7 @@ const App: React.FC = () => {
             {/* Define routes for the application */}
             <Route path="/" element={<HomePage />} />
             <Route path="/DaoRegistration" element={<DaoRegistration />} />
-            <Route path="/JifunzeElimu" element={<JifunzeElimu />} />
+            <Route path="/Blogs" element={<JifunzeElimu />} />
             <Route
               path="/CreateProposal/:daoMultiSigAddr"
               element={<CreateProposal />}
@@ -72,7 +72,7 @@ const App: React.FC = () => {
               element={<SuperAdmin />}
             />
             <Route
-              path="/ViewProposal/:daoMultiSigAddr/:proposalId"
+              path="/ViewProposal/:multiSigAddr/:proposalId"
               element={<ViewProposal />}
             />
             <Route path="/MemberProfile" element={<MemberProfile />} />

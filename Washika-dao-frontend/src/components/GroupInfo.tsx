@@ -142,7 +142,7 @@ const GroupInfo: React.FC = () => {
                   </p>
                 </div>
                 <div className="right">
-                  <h3>Thamani ya hazina</h3>
+                  <h3>Treasury Balance</h3>
                   <div>
                     <p className="currency">TSH</p>
                     <p className="amount">{group.kiwango.toLocaleString()}</p>
@@ -153,10 +153,10 @@ const GroupInfo: React.FC = () => {
               <div className="section-3">
                 <div className="top">
                   <img src="/images/profile.png" alt="idadi" />
-                  <div className="taarifa">Taarifa za wanachama</div>
+                  <div className="taarifa">Member Details</div>
                 </div>
                 <div className="bottom">
-                  <h2>Idadi ya wanachama</h2>
+                  <h2>Number of Members</h2>
                   <p>{group.memberCount}</p>
                 </div>
               </div>

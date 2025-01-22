@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import NavBar from "../components/NavBar";
-import Footer from "../components/Footer";
 import { Helmet } from "react-helmet-async";
+import { Link } from "react-router-dom";
+import Footer from "../components/Footer";
+import NavBar from "../components/NavBar";
 
 interface Blog {
   slug: string;

@@ -54,7 +54,7 @@ const JoinPlatform: React.FC = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<number | "">("");
-  const [nationalIdNo, setNationalIdNo] = useState<number | "">("");
+  const [nationalIdNo, setNationalIdNo] = useState<number>();
   const [selectedDao, setSelectedDao] = useState(""); // Currently selected DAO
   const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
   const [multiSigAddr, setMultiSigAddr] = useState("");
@@ -270,7 +270,7 @@ const JoinPlatform: React.FC = () => {
             ]}
           />
           
-          {role && role !== "Chairperson" && (
+          {role && role === "Member" && (
             <div className="findAndJoin">
               <div className="one">
                 <h2>Find and join your DAO with ease</h2>

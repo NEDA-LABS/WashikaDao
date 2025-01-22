@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 import DaoController = require("../controller/DaoController");
+import EmailController = require("../controller/EmailController");
+import SMSController = require("../controller/SMSController");
 import DaoMembershipController = require("../controller/DaoMembershipController");
 import { Request, Response } from "express";
 import { authenticator } from "../utils/Authenticator/Authenticator";

@@ -312,6 +312,14 @@ body :has(.member) {
   font-size: 31px;
 }
 
+.popupp form {
+  border: 1px solid black;
+}
+
+.popupp .form {
+  display: initial;
+}
+
 .footerDaoMember {
   background-color: #282424;
 }

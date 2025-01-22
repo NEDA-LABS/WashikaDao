@@ -1,21 +1,23 @@
 export interface IVote {
-    voteId?: string; 
-    proposalId: string; 
+    voteId?: number; 
+    proposalId?: number; 
     voterAddr: string;
     voteValue: boolean;  //true for upvote, false for downvote
-    proposal: IProposal;  //relationship with proposal entity
+    proposal?: IProposal;  //relationship with proposal entity
 }
 export interface IProposal{
-    proposalId?: string; 
+    proposalId?: number; 
     proposalOwner: string; 
     proposalTitle: string; 
     projectSummary: string; 
     proposalDescription: string; 
     proposalStatus: string;
     amountRequested: number; 
+    profitSharePercent: number;  
     daoMultiSigAddr: string; 
-    numUpVotes: number; 
-    votes: IVote; 
+    numUpvotes: number;
+    numDownvotes: number;  
+    votes?: IVote[]; 
 }
 
 export interface IDao {

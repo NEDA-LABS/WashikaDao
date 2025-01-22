@@ -34,8 +34,8 @@ nav img,
 }
 
 nav ul {
-  width: 764px;
-  height: 41px;
+  gap: 54px;
+  gap: clamp(54px, 4vw, 84px);
   display: flex;
   align-items: center;
   justify-content: space-between;
