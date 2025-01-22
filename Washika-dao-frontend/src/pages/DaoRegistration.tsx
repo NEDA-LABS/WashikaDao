@@ -245,6 +245,10 @@ const DaoRegistration: React.FC = () => {
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx, data: transactionResult } = useSendTransaction();
 
+  //url builder 
+  var buildCDExplorerUrl = (_createDaoTxHash: string) => {
+    return  `https:testnet.routescan.io/transaction/${_createDaoTxHash}`;
+  }
   //Grooming the Dao transaction
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const prepareCreateDaoTx = (_multiSigPhoneNo: bigint): any => {
@@ -287,12 +291,17 @@ const DaoRegistration: React.FC = () => {
       return;
     }
     try {
-      const createDaoTxReceipt = sendTx(_createDaotx);
+      const createDaoTxReceipt: any = sendTx(_createDaotx);
       console.log(
         "It would occur that the transaction has been sent successfully",
         createDaoTxReceipt
       );
+      var _createDaoTxHash = await createDaoTxReceipt.transactionHash;
+      const _explorerUrl = buildCDExplorerUrl(_createDaoTxHash);
+      window.location.href = _explorerUrl; //Redirecting users to the explorer url 
+      return _createDaoTxHash;
       // console.log("Transaction Hash:", createDaoTxReceipt?.transactionHash);
+      
     } catch (error) {
       if (error instanceof Error && error.message.includes("AA21")) {
         prompt(
@@ -352,8 +361,9 @@ const DaoRegistration: React.FC = () => {
     try {
       // First, call handleCreateDao
       const isCreateDaoSuccessful = await handleCreateDao();
-
-      if (isCreateDaoSuccessful) {
+      if (isCreateDaoSuccessful) {//TODO: Fix To check for truthy values
+        //redirect user to Superadmin page 
+        navigate(`/SuperAdmin`); // Navigate to the DAO profile
         // Combine form data and member data
         const combinedData = {
           ...formData,
