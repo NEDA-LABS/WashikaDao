@@ -39,42 +39,15 @@ interface NavBarProps {
  * @see {@link https://reactrouter.com/} for more on react-router-dom.
  * @see {@link https://portal.thirdweb.com/} for more on thirdweb integration.
  */
-const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps): JSX.Element => {
+const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
   const dispatch = useDispatch();
   const navigate = useNavigate(); 
+
   const activeAccount = useActiveAccount();
   const [address, setAddress] = useState<string | null>(null);
-  // const address = restoredAccount || activeAccount?.address?.toLowerCase();
-  // const address = handleGetActiveAccount();
-  // const urlToRedirectTo = `http://localhost:5173/Owner/${address?.toLowerCase()}`;
   const hasLoggedIn = useRef(false);
   const [showPopup, setShowPopup] = useState(false);
   const { role, daoMultiSig } = useSelector((state: RootState) => state.user);
-
-  // type CustomErrorMessages = Error;
-  // type ActiveAccRetType = string | undefined;
-
-  // function handleGetActiveAccount():
-  //   | string
-  //   | undefined
-  //   | ActiveAccRetType
-  //   | CustomErrorMessages {
-  //   if (activeAccount?.address) {
-  //     localStorage.setItem("activeAccount", activeAccount.address.toLowerCase());
-  //     // console.log("The account details are", activeAccount);
-  //     // console.log("Active Account Address:", activeAccount.address);
-  //     return activeAccount.address.toLowerCase(); // Return the address
-  //   } else if (activeAccount === undefined) {
-  //     console.log(
-  //       "Undefined value for the active account, try connecting to a wallet"
-  //     );
-  //     return undefined;
-  //   } else {
-  //     console.error("Error Getting Active account");
-  //     const _customErrMessage: CustomErrorMessages = Error("operationalError");
-  //     return _customErrMessage;
-  //   }
-  // }
 
   useEffect(() => {
     // Save active account to localStorage
@@ -104,8 +77,6 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps): JSX.Element 
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeAccount, dispatch, navigate]);
-  }
- 
 
   const wallets = [
     inAppWallet({
@@ -173,14 +144,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps): JSX.Element 
   }, [address, dispatch, navigate, role]);
 
   console.log( "The address is", address);
-  
 
   function handleRegisterDaoLink(e: React.MouseEvent) {
     e.preventDefault();
     if(address && hasLoggedIn.current == true) {
       navigate("/DaoRegistration")
     } else /*if (hasLoggedIn.current == false)*/ {
-      window.alert("Click on Connect to log in or create account first");
+      navigate("/DaoRegistration");
+      //window.alert("Click on Connect to log in or create account first");//TODO: FIX, something is wrong with how loggedin state is being managed
     } 
     // else {
     //   console.warn("Invalid operation attempted");
@@ -315,5 +286,6 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps): JSX.Element 
     </nav>
   );
 };
+
 
 export default NavBar;

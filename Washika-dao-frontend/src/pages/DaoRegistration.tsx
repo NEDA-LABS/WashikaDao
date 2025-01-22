@@ -17,6 +17,8 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import MemberForm from "../components/MemberForm";
+import Footer from "../components/Footer";
+
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -96,7 +98,7 @@ const uploadFileToCloudinary = async (file: File, resourceType: string) => {
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const currUsrAcc = useActiveAccount();
   const { memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
@@ -388,11 +390,11 @@ const DaoRegistration: React.FC = () => {
       setIsSubmitting(false); // Reset loading state
     }
   };
-
+  //TODO: Fix below to check including role
   return (
     <>
       <NavBar className={"DaoRegister"} />
-      {memberAddr ? ( // Only show form if user role is logged in
+      {currUsrAcc ? ( // Only show form if user role is logged in
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
