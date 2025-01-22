@@ -45,8 +45,8 @@ export const  AppDataSource = new DataSource({
     port: process.env.NODE_ENV === 'development' ? undefined : Number(process.env.DATABASE_PORT) || 3306, //no port of sqlite
     username: process.env.NODE_ENV === 'development' ? undefined : process.env.DATABASE_USER,
     password: process.env.NODE_ENV === 'development' ? undefined : process.env.DATABASE_PASSWORD,
-    synchronize: process.env.NODE_ENV === 'development'? true :  false,//synchronize only in development
-    logging: process.env.NODE_ENV === 'development' ? true : false,//Log only in development
+    synchronize: process.env.NODE_ENV === 'development',//synchronize only in development
+    logging: process.env.NODE_ENV === 'development',//Log only in development
     entities:[Dao, MemberDetails, Proposal, Vote],
     migrations: [path.join(__dirname, "./migrations/*{.ts,.js}")],  //Configure migrations as needed
     subscribers: [],
