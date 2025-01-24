@@ -1,60 +1,66 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 interface ProposalData {
-  title: string;
-  status: "Rejected" | "In progress"; 
-  description: string;
-  amountRequested: string;
-  currency: string;
+  proposalId: number;
+  proposalOwner: string;
+  proposalTitle: string;
+  projectSummary: string;
+  proposalDescription: string;
+  proposalStatus: "open" | "closed"; 
+  amountRequested: number;
+  profitSharePercent: number;
+  daoMultiSigAddr: string;
+  numUpVotes: number;
+  numDownVotes: number;
 }
-/**
- * A React functional component that displays a list of proposal groups.
- * Each proposal includes a title, status, description, requested amount, and currency.
- * The component allows users to navigate to a detailed view of each proposal
- * by clicking on the "Vote on Proposal" or "View linked resources" buttons.
- * 
- * @returns A JSX element containing a list of proposals with their details and navigation buttons.
- */
-const ProposalGroups: React.FC = () => {
-  const navigate =useNavigate();
 
+const ProposalGroups: React.FC = () => {
+  const { daoMultiSig } = useSelector(
+    (state: RootState) => state.user
+  );
+  const navigate = useNavigate();
+  const [proposals, setProposals] = useState<ProposalData[]>([]);
+
+  // Fetch proposals from the API
+  useEffect(() => {
+    const fetchProposals = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/ViewProposal/DaoDetails/${daoMultiSig}/proposals`
+        );
+        const data = await response.json();
+        setProposals(data.proposals);
+        
+      } catch (error) {
+        console.error("Error fetching proposals:", error);
+      }
+    };
+
+    fetchProposals();
+  }, [daoMultiSig]);
+  console.log(proposals);
   const handleProposalClick = () => {
-    navigate('/viewProposal')
-  }
-  const proposalData: ProposalData[] = [
-    {
-      title: "Proposal for Buying new spare part of machinery",
-      status: "Rejected",
-      description:
-        "We are Nipe Fagio, an environmental non-profit organization committed to cleaning and preserving our beaches. Our goal is to collect and remove at least 10 tons of plastic waste through community clean-up events and outreach programs.",
-      amountRequested: "3,000,000",
-      currency: "Tsh",
-    },
-    {
-      title: "Proposal for Beach clean up - msasani to Mbezi",
-      status: "In progress",
-      description:
-        "We are Nipe Fagio, an environmental non-profit organization committed to cleaning and preserving our beaches. Our goal is to collect and remove at least 10 tons of plastic waste through community clean-up events and outreach programs.",
-      amountRequested: "500,000",
-      currency: "Tsh",
-    },
-  ];
+    navigate('/viewProposal');
+  };
 
   return (
     <div className="proposal-groups">
-      {proposalData.map((proposal, index) => (
-        <div className="proposal" key={index}>
+      {proposals?.map((proposal) => (
+        <div className="proposal" key={proposal.proposalId}>
           <div className="one">
-            <h1>{proposal.title}</h1>
+            <h1>{proposal.proposalTitle}</h1>
             <div
               className={
-                proposal.status === "Rejected" ? "rejected" : "inProgress"
+                proposal.proposalStatus === "open" ? "inProgress" : "rejected"
               }
             >
-              {proposal.status}
+              {proposal.proposalStatus}
             </div>
           </div>
-          <p className="two">{proposal.description}</p>
+          <p className="two">{proposal.proposalDescription}</p>
           <div className="three">
             <div className="button-group button">
               <button onClick={handleProposalClick}>Vote on Proposal</button>
@@ -64,7 +70,7 @@ const ProposalGroups: React.FC = () => {
               <h2>Amount Requested</h2>
               <p>
                 {proposal.amountRequested}
-                <span>{proposal.currency}</span>
+                <span>Tsh</span>
               </p>
             </div>
           </div>

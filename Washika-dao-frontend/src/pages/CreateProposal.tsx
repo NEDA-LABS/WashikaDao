@@ -232,7 +232,7 @@ const CreateProposal: React.FC = () => {
               />
             </div>
             <div className="label five two">
-              <label>Profit Share %</label>
+              <label>Interest on share %</label>
               <input
                 type="number"
                 name="profitSharePercent"

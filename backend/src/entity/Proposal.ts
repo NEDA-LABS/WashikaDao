@@ -20,7 +20,7 @@ export class Proposal {
     proposalDescription: string; 
     
     @Column() 
-    proposalStatus: string; //closed, open --is this proposal closed or open to voting. 
+    proposalStatus: string; 
 
     @Column() 
     amountRequested: number;  
@@ -31,10 +31,10 @@ export class Proposal {
     @Column() 
     daoMultiSigAddr: string; 
 
-    @Column() 
+    @Column({ default: 0 })
     numUpVotes: number;
 
-    @Column()
+    @Column({ default: 0 })
     numDownVotes: number;
 
     @OneToMany(() => Vote, (vote) => vote.proposalId)

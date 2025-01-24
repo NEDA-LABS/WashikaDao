@@ -72,7 +72,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
   };
 
   useEffect(() => {
-    if (!address && hasLoggedIn.current == true) {
+    if (!activeAccount?.address && hasLoggedIn.current == true) {
       logout();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -138,10 +138,10 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
       }
     };
 
-    if (address && !hasLoggedIn.current) {
-      loginMember(address.toLowerCase());
+    if (activeAccount?.address && !hasLoggedIn.current) {
+      loginMember(activeAccount.address.toLowerCase());
     }
-  }, [address, dispatch, navigate, role]);
+  }, [activeAccount?.address, dispatch, navigate, role]);
 
   console.log( "The address is", address);
 
@@ -149,9 +149,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
     e.preventDefault();
     if(address && hasLoggedIn.current == true) {
       navigate("/DaoRegistration")
+<<<<<<< HEAD
     } else /*if (hasLoggedIn.current == false)*/ {
       navigate("/DaoRegistration");
       //window.alert("Click on Connect to log in or create account first");//TODO: FIX, something is wrong with how loggedin state is being managed
+=======
+    } else if (hasLoggedIn.current == false) {
+      window.alert("Click on Connect to log in or create account first");
+>>>>>>> c18d5fb (update frontend)
     } 
     // else {
     //   console.warn("Invalid operation attempted");
@@ -160,13 +165,13 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
 
 
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
-    if (address && hasLoggedIn.current == false) {
+    if (activeAccount?.address && hasLoggedIn.current == false) {
       e.preventDefault();
       navigate("/JoinPlatform", { state: { address } });
-    } else if (!address) {
+    } else if (!activeAccount?.address) {
       e.preventDefault();
       setShowPopup(true);
-    } else if (address && role === "Chairperson") {
+    } else if (activeAccount?.address && role === "Chairperson") {
       e.preventDefault();
       navigate(`/SuperAdmin/${daoMultiSig}`)
     }
@@ -219,7 +224,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
 
   const renderButton = () => {
     if (
-      address &&
+      activeAccount?.address &&
       className !== "DaoProfile" &&
       className !== "navbarOwner" &&
       className !== "joinPlatformNav" &&

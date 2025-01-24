@@ -156,6 +156,7 @@
   color: #ffffff;
   border: 1px solid #dcb273;
   cursor: pointer;
+  overflow: auto;
 }
 
 .createProposal .six input {

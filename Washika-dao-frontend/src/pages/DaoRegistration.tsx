@@ -386,6 +386,7 @@ const DaoRegistration: React.FC = () => {
         // Parse the response JSON
         // Check if the response indicates success
         if (response.ok) {
+          alert("Dao created successfully")
           console.log("DAO created successfully", data);
           const daoMultiSigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
           console.log(daoMultiSigAddr);

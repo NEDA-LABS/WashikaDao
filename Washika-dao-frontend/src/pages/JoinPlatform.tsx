@@ -71,7 +71,7 @@ const JoinPlatform: React.FC = () => {
       const fetchDaos = async () => {
         try {
           const response = await fetch(
-            "http://localhost:8080/FunguaDao/GetDaoDetails"
+            "http://localhost:8080/FunguaDao/GetAllDaos"
           );
 
           if (!response.ok)
@@ -163,6 +163,7 @@ const JoinPlatform: React.FC = () => {
       console.log(txHash);
 
       if (response.ok) {
+        alert("Registration successful")
         console.log(`Success: ${result.message}`);
         // Dispatch the current user information to the store
         dispatch(

@@ -51,7 +51,7 @@ const GroupInfo: React.FC = () => {
       try {
         // Fetch the DAOs from the backend
         const response = await fetch(
-          "http://localhost:8080/FunguaDao/GetDaoDetails"
+          "http://localhost:8080/FunguaDao/GetAllDaos"
         );
 
         if (!response.ok)
