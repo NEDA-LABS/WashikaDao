@@ -34,7 +34,7 @@ const MemberProfile: React.FC = () => {
       const fetchDaos = async () => {
         try {
           const response = await fetch(
-            "http://localhost:8080/FunguaDao/GetDaoDetails"
+            "http://localhost:8080/FunguaDao/GetAllDaos"
           );
 
           if (!response.ok)

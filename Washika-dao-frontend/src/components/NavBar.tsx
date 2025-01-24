@@ -149,14 +149,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
     e.preventDefault();
     if(address && hasLoggedIn.current == true) {
       navigate("/DaoRegistration")
-<<<<<<< HEAD
-    } else /*if (hasLoggedIn.current == false)*/ {
-      navigate("/DaoRegistration");
-      //window.alert("Click on Connect to log in or create account first");//TODO: FIX, something is wrong with how loggedin state is being managed
-=======
     } else if (hasLoggedIn.current == false) {
       window.alert("Click on Connect to log in or create account first");
->>>>>>> c18d5fb (update frontend)
     } 
     // else {
     //   console.warn("Invalid operation attempted");

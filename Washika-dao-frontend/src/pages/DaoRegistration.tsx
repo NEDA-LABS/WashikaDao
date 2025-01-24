@@ -1,14 +1,9 @@
-//import Footer from "../components/Footer";
-//import DaoForm from "../components/DaoForm";
-//import NavBar from "../components/NavBar.tsx";
-//import MemberForm from "../components/MemberForm";
-//import { useNavigate } from "react-router-dom";
-import React, { useState } from "react";
-//import Footer from "../components/Footer";
+import Footer from "../components/Footer";
 import DaoForm from "../components/DaoForm";
-import NavBar from "../components/NavBar";
-// import MemberForm from "../components/MemberForm";
+import NavBar from "../components/NavBar.tsx";
+import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
@@ -16,8 +11,6 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 //import { DaoCreationFormInputs, daoCreationTxResult } from "../utils/Types";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
-import MemberForm from "../components/MemberForm";
-import Footer from "../components/Footer";
 
 
 /**
@@ -246,7 +239,7 @@ const DaoRegistration: React.FC = () => {
   const { mutate: sendTx, data: transactionResult } = useSendTransaction();
 
   //url builder 
-  var buildCDExplorerUrl = (_createDaoTxHash: string) => {
+  const buildCDExplorerUrl = (_createDaoTxHash: string) => {
     return  `https:testnet.routescan.io/transaction/${_createDaoTxHash}`;
   }
   //Grooming the Dao transaction
@@ -291,12 +284,13 @@ const DaoRegistration: React.FC = () => {
       return;
     }
     try {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const createDaoTxReceipt: any = sendTx(_createDaotx);
       console.log(
         "It would occur that the transaction has been sent successfully",
         createDaoTxReceipt
       );
-      var _createDaoTxHash = await createDaoTxReceipt.transactionHash;
+      const _createDaoTxHash = await createDaoTxReceipt.transactionHash;
       const _explorerUrl = buildCDExplorerUrl(_createDaoTxHash);
       window.location.href = _explorerUrl; //Redirecting users to the explorer url 
       return _createDaoTxHash;
@@ -361,9 +355,7 @@ const DaoRegistration: React.FC = () => {
     try {
       // First, call handleCreateDao
       const isCreateDaoSuccessful = await handleCreateDao();
-      if (isCreateDaoSuccessful) {//TODO: Fix To check for truthy values
-        //redirect user to Superadmin page 
-        navigate(`/SuperAdmin`); // Navigate to the DAO profile
+      if (isCreateDaoSuccessful) {
         // Combine form data and member data
         const combinedData = {
           ...formData,
