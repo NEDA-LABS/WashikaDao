@@ -42,7 +42,7 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
             <Link to="/explore">Explore</Link>
           </li>
           <li>
-            <Link to="/karibu">Karibu</Link>
+            <Link to="/karibu">Welcome</Link>
           </li>
         </ul>
       </div>

@@ -256,22 +256,19 @@ export async function GetAllProposalsInDao(req: Request, res: Response) {
   }
 
   try {
-    // Check if DAO exists
-    const daoSought = await daoRepository.findOne({
+    // Retrieve proposals directly associated with the provided multiSigAddr
+    const proposals = await proposalRepository.find({
       where: { daoMultiSigAddr: multiSigAddr },
-      relations: ["proposal"], // Ensure the proposals relation is loaded
     });
 
-    if (!daoSought) {
-      return res.status(404).json({ message: "DAO not found" });
+    if (!proposals || proposals.length === 0) {
+      return res.status(404).json({ message: "No proposals found for this DAO" });
     }
-
-    // Retrieve all proposals associated with this DAO
-    const proposals = daoSought.proposal;
 
     return res.status(200).json({ proposals });
   } catch (error) {
-    console.error(error);
-    return res.status(400).json({ message: "Error getting proposals" });
+    console.error("Error fetching proposals:", error);
+    return res.status(500).json({ message: "Error getting proposals" });
   }
 }
+

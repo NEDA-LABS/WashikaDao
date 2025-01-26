@@ -336,11 +336,10 @@ main.daoMain {
 }
 
 section.second {
-  position: relative;
   margin-bottom: 120px;
 }
 
-section.second::before {
+.second .proposal-groups::before {
   content: "";
   position: absolute;
   left: 36px;
@@ -371,6 +370,7 @@ section.second::after {
 }
 
 .second .proposal-groups {
+  position: relative;
   margin: 28px 0 64px 0;
   display: flex;
   flex-direction: column;
@@ -378,6 +378,8 @@ section.second::after {
   overflow-y: scroll;
   scrollbar-width: none;
 }
+
+
 
 .second .proposal-groups::-webkit-scrollbar {
   display: none;

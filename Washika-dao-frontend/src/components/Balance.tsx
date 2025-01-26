@@ -38,7 +38,7 @@ const Balance: React.FC<YearlyBalanceProps> = ({
       color: "#33C759",
       title: "TOTAL DEPOSIT",
       amount: deposit,
-      change: "+5%",
+      change: "0%",
       isPositive: true,
     },
     {
@@ -46,7 +46,7 @@ const Balance: React.FC<YearlyBalanceProps> = ({
       color: "#30ADE6",
       title: "TOTAL LOAN TAKEN",
       amount: loan,
-      change: "+3%",
+      change: "0%",
       isPositive: false,
     },
     {
@@ -54,7 +54,7 @@ const Balance: React.FC<YearlyBalanceProps> = ({
       color: "#00C7BE",
       title: "TOTAL SHARES BOUGHT",
       amount: shares,
-      change: "+7%",
+      change: "0%",
       isPositive: true,
     },
     {
@@ -62,7 +62,7 @@ const Balance: React.FC<YearlyBalanceProps> = ({
       color: "#FF9A00",
       title: "TOTAL REPAYMENTS",
       amount: repayments,
-      change: "+5%",
+      change: "0%",
       isPositive: false,
     },
     {
@@ -70,7 +70,7 @@ const Balance: React.FC<YearlyBalanceProps> = ({
       color: "#6F00D7",
       title: "TOTAL INTEREST EARNED",
       amount: interest,
-      change: "+5%",
+      change: "0%",
       isPositive: false,
     },
   ];

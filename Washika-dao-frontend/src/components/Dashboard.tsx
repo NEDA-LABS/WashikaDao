@@ -5,23 +5,23 @@ const Dashboard: React.FC = () => {
   const monthlyBalances = [
     {
       month: "Jan",
-      balances: [2000, 1000, 3000, 1500, 4000], // [Deposit, Loan, Shares, Repayments, Interest]
+      balances: [0, 0, 0, 0, 0], // [Deposit, Loan, Shares, Repayments, Interest]
     },
     {
       month: "Feb",
-      balances: [1000, 5000, 3000, 1200, 1400],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Mar",
-      balances: [0, 0, 0, 10000, 0],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Apr",
-      balances: [0, 0, 6000, 0, 0],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "May",
-      balances: [0, 0, 0, 0, 1000],
+      balances: [0, 0, 0, 0, 0],
     },
     {
       month: "Jun",
