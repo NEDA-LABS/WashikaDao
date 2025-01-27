@@ -85,7 +85,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     dao.daoImageIpfsHash = daoImageIpfsHash;
     dao.daoRegDocs = daoRegDocs;
     dao.daoMultiSigAddr = multiSigAddr;
-    dao.daoMultiSigs = [multiSigAddr]; // Assuming it's an array of multisigs
+   // dao.daoMultiSigs = multiSigAddr; // Assuming it's an array of multisigs
     dao.multiSigPhoneNo = multiSigPhoneNo;
     dao.kiwango = kiwango;
     dao.accountNo = accountNo;
@@ -93,60 +93,16 @@ export async function CreateNewDao(req: Request, res: Response) {
     dao.kiasiChaHisa = kiasiChaHisa;
     dao.interestOnLoans = interestOnLoans;
 
+    const createdDao =  daoRepository.create(dao);
     // Initialize the DAO repository
-    await daoRepository.save(dao);
+    await daoRepository.save(createdDao);
 
-    // Now handle saving members and linking them to the DAO
-    if (members && Array.isArray(members)) {
-      const memberDetailsRepository =
-        AppDataSource.getRepository(MemberDetails);
-
-      for (const member of members) {
-        const {
-          firstName,
-          lastName,
-          email,
-          phoneNumber,
-          nationalIdNo,
-          memberRole,
-        } = member;
-
-        // Validate each member's required fields
-        if (
-          !firstName ||
-          !lastName ||
-          !email ||
-          !phoneNumber ||
-          !nationalIdNo ||
-          !memberRole
-        ) {
-          return res
-            .status(400)
-            .json({ error: "Missing required member details" });
-        }
-
-        // Create and save the member
-        const memberDetails = new MemberDetails();
-        memberDetails.firstName = firstName;
-        memberDetails.lastName = lastName;
-        memberDetails.email = email;
-        memberDetails.phoneNumber = phoneNumber;
-        memberDetails.nationalIdNo = nationalIdNo;
-        memberDetails.memberRole = memberRole;
-        memberDetails.daoMultiSig = multiSigAddr;
-        memberDetails.daos = [dao]; // Link member to the created DAO
-
-        await memberDetailsRepository.save(memberDetails);
-      }
-    }
-
-    res.status(201).json({
-      message: "DAO created and members added successfully",
-      daoMultisigAddr: dao.daoMultiSigAddr,
-    });
+   return   res
+            .status(201)
+            .json({  message: "DAO created  successfully",  daoMultisigAddr: dao.daoMultiSigAddr  });
   } catch (error) {
-    console.error("Error creating DAO and members:", error);
-    res.status(500).json({ error: "Error creating DAO and members" });
+    console.log("Error creating DAO ", error);
+    res.status(500).json({ error: "Error creating DAO" });
   }
 }
 
@@ -258,7 +214,8 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   if (!multiSigAddr) {
     return res.status(400).json({ error: "Missing required url params" }); //return 400 status if required fields are missing
   }
-  const {
+
+    const {
     _daoName,
     _daoLocation,
     _targetAudience,

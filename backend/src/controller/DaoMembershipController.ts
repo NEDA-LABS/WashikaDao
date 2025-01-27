@@ -1,17 +1,40 @@
-import { eventNames } from "process";
-//import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
 import { Dao } from "../entity/Dao";
-import { Proposal } from "../entity/Proposal";
-import { Vote } from "../entity/Vote";
 import { MemberDetails } from "../entity/MemberDetails";
 import { AppDataSource } from "../data-source";
-import { IDao, IMemberDetails } from "../Interfaces/EntityTypes";
-import { In, ObjectLiteral } from "typeorm";
+import { IDao } from "../Interfaces/EntityTypes";
+import { ObjectLiteral } from "typeorm";
 
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
+
+async function addMemberTONewDao(req: Request, res:Response){
+    const { daoMultiSigAddr } = req.params;
+    if (!daoMultiSigAddr) {
+        res.status(400).json({ error: "Missing required field" });
+    }
+    const { firstName, lastName, email, phoneNumber, nationalIdNo, memberRole } = req.body;
+    // Validate each member's required fields
+     if (!firstName ||!lastName || !email ||!phoneNumber ||!nationalIdNo || !memberRole) {
+          return res
+            .status(400)
+            .json({ error: "Missing required member details" });
+        }
+
+        // Create and save the member
+        const memberDetails = new MemberDetails();
+        memberDetails.firstName = firstName;
+        memberDetails.lastName = lastName;
+        memberDetails.email = email;
+        memberDetails.phoneNumber = phoneNumber;
+        memberDetails.nationalIdNo = nationalIdNo;
+        memberDetails.memberRole = memberRole;
+        memberDetails.daoMultiSig = daoMultiSigAddr;
+        //memberDetails.daos = [dao]; // Link member to the created DAO
+
+        await memberDetailsRepository.save(memberDetails);
+  }
 
 /**
  * Creates the initial owner of a DAO, setting them as a InitialDaoOwner.

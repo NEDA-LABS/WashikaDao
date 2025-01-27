@@ -51,10 +51,10 @@ export async function CreateProposal(req: Request, res: Response) {
       //if proposal doesn't exist create or build a new proposal using the data from the form submission
       const createdProposal = proposalRepository.create(proposalData);
       await proposalRepository.save(createdProposal);
-      res.status(201).json({ 
-        message: "Proposal created successfully", 
+      res.status(201).json({
+        message: "Proposal created successfully",
         // proposalId: createdProposal.proposalId,  // Ensure proposalId is included
-        createdProposal 
+        createdProposal
       });
       //TODO: BLOCKCHAIN INTEGRATION
     // }
