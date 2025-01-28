@@ -9,7 +9,7 @@ import { ObjectLiteral } from "typeorm";
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
 
-async function addMemberTONewDao(req: Request, res:Response){
+export async function AddMemberToNewDao(req: Request, res:Response){
     const { daoMultiSigAddr } = req.params;
     if (!daoMultiSigAddr) {
         res.status(400).json({ error: "Missing required field" });

@@ -7,6 +7,6 @@ module.exports = {
         "^.+\\.tsx?$": ["ts-jest", {}],
     },
     verbose: true,
-    setupFilesAfterEnv: ["<rootDir>/src/test/setup.ts"],
-    globalTeardown: "/Users/user/Clinton/prodProjects/WashikaDao/backend/src/test/setup.ts",
+   // setupFilesAfterEnv: ["<rootDir>/src/test/setup.ts"],
+    //globalTeardown: "/Users/user/Clinton/prodProjects/WashikaDao/backend/src/test/setup.ts",
 };

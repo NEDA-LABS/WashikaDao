@@ -1,13 +1,12 @@
-// import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
 import { AppDataSource } from "../data-source";
-import { MemberDetails } from "../entity/MemberDetails";
+import { GlobalErrorHandler } from "../ErrorHandling/GlobalExceptionHandler";
+import { CreateCustomErrMsg } from "../ErrorHandling/CustomErrorHandler";
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
  * It also creates a new member detail for the creator of the DAO.
- * NOTE: Will Contain logic to filter out details & sending a blockchain transaction to create a Dao.
  * @param req - The Express request object containing the DAO and member details in the request body.
  * @param res - The Express response object to send back the HTTP response.
  *
@@ -38,7 +37,6 @@ export async function CreateNewDao(req: Request, res: Response) {
     nambaZaHisa,
     kiasiChaHisa,
     interestOnLoans,
-    members, // members is an array of objects with member details
   } = req.body;
 
   // Validate required DAO fields
@@ -63,15 +61,20 @@ export async function CreateNewDao(req: Request, res: Response) {
   }
 
   const daoRepository = AppDataSource.getRepository(Dao);
-  const existingDao = await daoRepository.findOne({
-    where: { daoMultiSigAddr: multiSigAddr },
-  });
-
-  if (existingDao) {
-    return res
+ //function to check whether dao exists or not and returns a boolean
+ async function doesDaoWithThisMsigExist(_daoMultiSigAddr: any):Promise<boolean> {
+    const _doesMsigExist = await daoRepository.findOne({ where: { daoMultiSigAddr: multiSigAddr }, });
+        if (_doesMsigExist) {
+            return true;
+        }
+        return false;
+    }
+    const doesMsigExist: boolean = await doesDaoWithThisMsigExist(multiSigAddr);
+    if (doesMsigExist === true) {
+     return res
       .status(400)
       .json({ error: "DAO with this multiSigAddr already exists." });
-  }
+    }
 
   try {
     // Save DAO details to the database
@@ -102,7 +105,9 @@ export async function CreateNewDao(req: Request, res: Response) {
             .json({  message: "DAO created  successfully",  daoMultisigAddr: dao.daoMultiSigAddr  });
   } catch (error) {
     console.log("Error creating DAO ", error);
-    res.status(500).json({ error: "Error creating DAO" });
+     return res
+            .status(500)
+            .json({ error: "Error creating DAO" });
   }
 }
 
@@ -120,10 +125,8 @@ export async function CreateNewDao(req: Request, res: Response) {
 export async function GetAllDaosInPlatform(req: Request, res: Response) {
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
-
     // Fetch all DAOs
     const daoList = await daoRepository.find();
-
     return res.status(200).json({ daoList });
   } catch (error) {
     return res.status(500).json({ error: "Error retrieving DAO list" });
@@ -172,7 +175,7 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           daoOverview: daoDetails.daoOverview,
           daoImageIpfsHash: daoDetails.daoImageIpfsHash,
           daoRegDocs: daoDetails.daoRegDocs,
-          daoMultiSigs: daoDetails.daoMultiSigs,
+          //daoMultiSigs: daoDetails.daoMultiSigs,
           multiSigAddr: daoDetails.daoMultiSigAddr,
           multiSigPhoneNo: daoDetails.multiSigPhoneNo,
           kiwango: daoDetails.kiwango,
@@ -300,7 +303,8 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
  * - HTTP 500: If an error occurs while processing the fund request.
  */
 export async function FundDao(req: Request, res: Response) {
-  const { _daoMultiSig } = req.params; //Dao to fund
+  const  _daoMultiSig  = req.params.multiSigAddr; //Dao to fund
+  const fundData = req.body;
   if (!_daoMultiSig) {
     return res.status(400).json({ error: "Missing required url params" }); //return 400 status if required fields are missing  //TODO: this should be a validation middleware function  to prevent potential errors
   }
@@ -324,12 +328,17 @@ export async function FundDao(req: Request, res: Response) {
     const daoDetails = await daoRepository.findOneBy({
       daoMultiSigAddr: _daoMultiSig,
     });
-    if (typeof daoDetails === undefined || daoDetails.daoId === undefined) {
+    if (!daoDetails) {
       return res.status(404).json({ message: "DAO not found" });
     }
     //after crosschecked with the blockchain transaction/function
+
     res.status(200).json({ message: "Funding successfully" });
   } catch (error) {
-    res.status(500).json({ error: "Error funding DAO" });
+    res.status(500).json({ error: "Error funding DAO Due to an internal Server Error" });
   }
+}
+
+export async function GetAllDaoFunds(req: Request, res: Response){
+ console.log("I am yet to be implemented");
 }

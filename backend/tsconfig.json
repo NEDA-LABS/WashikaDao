@@ -5,13 +5,15 @@
          "es6"
       ],
       "target": "es6",
-      "module": "commonjs",
+      "module": "es6",
       "esModuleInterop": true,
       "skipLibCheck": true,
       "moduleResolution": "node",
       "outDir": "./dist",
       "emitDecoratorMetadata": true,
+    "strict": false,
       "experimentalDecorators": true,
+      "forceConsistentCasingInFileNames": true,
       "sourceMap": true
    },
    "include": ["src/**/*"],

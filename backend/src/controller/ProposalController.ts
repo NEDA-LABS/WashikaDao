@@ -123,113 +123,113 @@ export async function GetProposalDetailsById(req: Request, res: Response) {
 //  *
 //  * @returns - An HTTP response with a status code and a JSON object containing a message.
 //  */
-// export async function UpvoteProposalById (req: Request, res: Response) {
-//     const {multiSigAddr} = req.params;
-//     const { proposalId } = req.params;
+ export async function UpvoteProposalById (req: Request, res: Response) {
+     const {multiSigAddr} = req.params;
+     const { proposalId } = req.params;
 
-//     if (!multiSigAddr ||!proposalId) {
-//         return res.status(400).json({ error: 'Missing required from url params' })
-//     }
+     if (!multiSigAddr ||!proposalId) {
+         return res.status(400).json({ error: 'Missing required from url params' })
+     }
 
-//     const voterAddr = req.cookies.voterAddr || req.body.voterAddr;
+     const voterAddr = req.cookies.voterAddr || req.body.voterAddr;
 
-//     if (!voterAddr) {
-//         return res.status(401).json({ error: 'Unauthorized' })
-//     }
+     if (!voterAddr) {
+         return res.status(401).json({ error: 'Unauthorized' })
+     }
 
-//     const voteDetails: typeof Vote = req.body;
-//     voteDetails.voteValue = true;
-//     voteDetails.proposalId = proposalId;
-//     voteDetails.voterAddr = voterAddr;
+     const voteDetails: typeof Vote = req.body;
+     voteDetails.voteValue = true;
+     voteDetails.proposalId = proposalId;
+     voteDetails.voterAddr = voterAddr;
 
-//     try {
-//         // Find proposal by proposalId
-//         const foundProposal: typeof Proposal = await proposalRepository.findOneBy({ proposalId: proposalId });
+     try {
+         // Find proposal by proposalId
+         const foundProposal = await proposalRepository.findOneBy({ proposalId: proposalId });
 
-//         if (foundProposal.proposalId === undefined || foundProposal.proposalId === null) {
-//             return res.status(404).json({ message: 'Proposal not found' })
-//         }
+         if (foundProposal.proposalId === undefined || foundProposal.proposalId === null) {
+             return res.status(404).json({ message: 'Proposal not found' })
+         }
 
-//         // Check if voter has already voted for this proposal
-//         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
+         // Check if voter has already voted for this proposal
+         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
 
-//         if (proposalsVoted.includes(proposalId)) {
-//             return res.status(400).json({ error: 'Voter has already voted for this proposal' })
-//         }
+         if (proposalsVoted.includes(proposalId)) {
+             return res.status(400).json({ error: 'Voter has already voted for this proposal' })
+         }
 
-//         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
-//         await voteRepository.save(createdVote);
+         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
+        await voteRepository.save(createdVote);
 
-//         res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
+         res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
 
-//         // Updating the proposal
-//         foundProposal.numUpvotes += 1;
+         // Updating the proposal
+         foundProposal.numUpvotes += 1;
 
-//         // Updating the proposal
-//         await proposalRepository.save(foundProposal);
+         // Updating the proposal
+         await proposalRepository.save(foundProposal);
 
-//         res.status(200).json({ message: 'updated proposal successfully' });
+         res.status(200).json({ message: 'updated proposal successfully' });
 
-//         // TODO: BLOCKCHAIN INTEGRATION
-//     } catch (error) {
-//         res.status(500).json({ error: 'Error processing or casting  upvote' })
-//     }
-// }
+         // TODO: BLOCKCHAIN INTEGRATION
+     } catch (error) {
+         res.status(500).json({ error: 'Error processing or casting  upvote' })
+     }
+ }
 
-// //write for downvote then refactor the different sections to make it easier to debug
-// /**
-//  * Handles a POST request to downvote a proposal by its ID.
-//  *
-//  * @param req - The Express request object containing the proposal ID and voter address in the parameters and request body.
-//  * @param res - The Express response object to send back the HTTP response.
-//  *
-//  * @remarks
-//  * This function extracts the proposal ID and voter address from the request parameters and body.
-//  * It checks if the required parameters are present and if the voter is authorized.
-//  * If all checks pass, it creates a new vote with a vote value of false, associates it with the proposal and voter, and saves it to the database.
-//  * It then updates the proposal's downvote count and saves the updated proposal.
-//  * Finally, it sends a success response or an error response based on the outcome.
-//  *
-//  * @returns - An HTTP response with a status code and a JSON object containing a message.
-//  */
-// export const DownVoteProposalById = async (req: Request, res: Response) => {
-//     const {multiSigAddr} = req.params;
-//     const { proposalId } = req.params;
-//     if (!multiSigAddr ||!proposalId) {
-//         return res.status(400).json({ error: 'Missing required from url params' })
-//     }
-//     const voterAddr = req.cookies.voterAddr || req.body.voterAddr;
-//     if (!voterAddr) {
-//         return res.status(401).json({ error: 'Unauthorized' })
-//     }
-//     const voteDetails: typeof Vote = req.body;//can also be named as downvote type of Vote
-//     voteDetails.voteValue = false;
-//     voteDetails.proposalId = proposalId;
-//     voteDetails.voterAddr = voterAddr;
-//     try {
-//         //find proposal by proposalId
-//         const foundProposal: typeof Proposal = await proposalRepository.findOneBy({ proposalId: proposalId });
-//         if (foundProposal.proposalId === undefined || foundProposal.proposalId === null) {
-//             return res.status(404).json({ message: 'Proposal not found' })
-//         }
-//         //Check if voter has already voted for this proposal
-//         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
-//          if (proposalsVoted.includes(proposalId)) {
-//             return res.status(400).json({ error: 'Voter has already voted for this proposal' })
-//         }
-//         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
-//         await voteRepository.save(createdVote);
-//         res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
-//         //updating the proposal
-//         foundProposal.numDownvotes += 1;
-//         //updating the proposal
-//         await proposalRepository.save(foundProposal);
-//         res.status(200).json({ message: 'updated proposal successfully' });
-//         //TODO: BLOCKCHAIN INTEGRATION
-//     } catch (error) {
-//         res.status(500).json({ error: 'Error processing or casting  upvote' })
-//     }
-// }
+ //write for downvote then refactor the different sections to make it easier to debug
+ /**
+  * Handles a POST request to downvote a proposal by its ID.
+  *
+  * @param req - The Express request object containing the proposal ID and voter address in the parameters and request body.
+  * @param res - The Express response object to send back the HTTP response.
+  *
+  * @remarks
+  * This function extracts the proposal ID and voter address from the request parameters and body.
+  * It checks if the required parameters are present and if the voter is authorized.
+  * If all checks pass, it creates a new vote with a vote value of false, associates it with the proposal and voter, and saves it to the database.
+  * It then updates the proposal's downvote count and saves the updated proposal.
+  * Finally, it sends a success response or an error response based on the outcome.
+  *
+  * @returns - An HTTP response with a status code and a JSON object containing a message.
+  */
+ export const DownVoteProposalById = async (req: Request, res: Response) => {
+     const {multiSigAddr} = req.params;
+     const { proposalId } = req.params;
+     if (!multiSigAddr ||!proposalId) {
+         return res.status(400).json({ error: 'Missing required from url params' })
+     }
+     const voterAddr = req.cookies.voterAddr || req.body.voterAddr;
+     if (!voterAddr) {
+         return res.status(401).json({ error: 'Unauthorized' })
+     }
+     const voteDetails: typeof Vote = req.body;//can also be named as downvote type of Vote
+     voteDetails.voteValue = false;
+     voteDetails.proposalId = proposalId;
+    voteDetails.voterAddr = voterAddr;
+     try {
+         //find proposal by proposalId
+         const foundProposal: typeof Proposal = await proposalRepository.findOneBy({ proposalId: proposalId });
+        if (foundProposal.proposalId === undefined || foundProposal.proposalId === null) {
+             return res.status(404).json({ message: 'Proposal not found' })
+         }
+         //Check if voter has already voted for this proposal
+         const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
+          if (proposalsVoted.includes(proposalId)) {
+             return res.status(400).json({ error: 'Voter has already voted for this proposal' })
+         }
+         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
+         await voteRepository.save(createdVote);
+         res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
+         //updating the proposal
+         foundProposal.numDownvotes += 1;
+         //updating the proposal
+         await proposalRepository.save(foundProposal);
+        res.status(200).json({ message: 'updated proposal successfully' });
+         //TODO: BLOCKCHAIN INTEGRATION
+     } catch (error) {
+         res.status(500).json({ error: 'Error processing or casting  upvote' })
+     }
+ }
 
 /**
  * Retrieves all proposals associated with a specific DAO.

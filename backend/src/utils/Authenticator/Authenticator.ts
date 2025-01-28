@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-export const authenticator = (req: Request, res: Response, next: NextFunction) => {
+export const RouteOAuthManager = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(' ')[1]; // Bearer Token
 

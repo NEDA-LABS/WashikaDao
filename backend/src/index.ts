@@ -1,17 +1,24 @@
 import logger from "./utils/Helpers/Logger";
-
 require('dotenv').config();
-import express = require('express');
+import express, { Express } from "express";
 const router = express.Router();
 const PORT = process.env.PORT || 8080;
 
 import "reflect-metadata"
-import cors = require("cors");
-
+import cors from 'cors';
 
 import { AppDataSource } from "./data-source";
+import { GlobalErrorHandler } from "./ErrorHandling/GlobalExceptionHandler";
 
-const app = express();
+//Routes bro
+import DaoGenesisHandler from "./routes/DaoGenesisHandler";
+import DaoKitHandler from "./routes/DaoKitHandler";
+import DaoMembershipHandler from "./routes/DaoMembershipHandler";
+import ProposalHandler from "./routes/ProposalHandler";
+import DaoFundingHandler from "./routes/DaoFundingHandler";
+import BlogContentHandler from "./routes/BlogContentHandler";
+
+export const app = express();
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173']
 const corsOptions = {
     origin: function (origin, callback) {
@@ -22,18 +29,18 @@ const corsOptions = {
         }
     }
 }
+
 app.use(cors(corsOptions), logger);
 app.use(express.json());// specifying we will be receiving the data in json format
+app.use(GlobalErrorHandler)
 //Endpoints to be used
 
-app.use("/FunguaDao", require("./routes/DaoHandler"));//funguaDao Page --> CreateDao
-//app.use("/Jifunze", require("./routes/JifunzePageHandler.ts"));//Elimu/Jifunze Page
-//app.use("/DaoToolKit", require("./routes/DaoToolKitPageHandler"));//daoToolKit Page
-app.use("/JiungeNaDao", require("./routes/DaoMembershipHandler"))//jiungeNaDao Page
-app.use("/CreateProposal", require("./routes/ProposalHandler"))//CreateProposalPageHandler Page
-app.use("/ViewProposal", require("./routes/ProposalHandler"))//ViewProposalPageHandler Page
-app.use("/FundDao", require("./routes/DaoHandler"))//FundDaoPageHandler Page
-app.use("/DaoProfile", require("./routes/DaoHandler"))//DaoProfilePageHandler Page
+app.use("/DaoGenesis", DaoGenesisHandler);//funguaDao Page --> CreateDao
+app.use("/DaoKit/DaoDetails", DaoKitHandler);// All in Dao Activities like creating & managing membership & the various membership tiers
+app.use("/DaoKit/MemberShip", DaoMembershipHandler);
+app.use("/DaoKit/Proposals", ProposalHandler)//CreateProposalPageHandler Page
+app.use("/DaoKit/Funding", DaoFundingHandler);
+app.use("/LearnBlogs", BlogContentHandler);//Elimu/Jifunze Page
 //Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
