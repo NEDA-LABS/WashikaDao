@@ -6,10 +6,10 @@ import { FundDao } from "../controller/DaoController";
 
 
 //TODO: Add more logic for money management within the Dao setting things like interest rates and all these other regulations
-router.get('/:multiSigAddr/Funding', (req: Request, res: Response) => GetAllDaoFunds(req, res));//Obtaining all the funds in the dao
+router.get('/AllFunds/:multiSigAddr', (req: Request, res: Response) => GetAllDaoFunds(req, res));//Obtaining all the funds in the dao
 
 
-router.post('/:multiSigAddr/Funding/FundDao', async (req: Request, res: Response) => {
+router.post('/FundDao/:multiSigAddr', async (req: Request, res: Response) => {
    await  FundDao(req, res)});
 
 

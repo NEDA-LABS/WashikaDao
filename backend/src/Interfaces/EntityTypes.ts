@@ -1,35 +1,34 @@
 export interface IVote {
-    voteId?: number; 
-    proposalId?: number; 
+    voteId?: number;
+    proposalId?: number;
     voterAddr: string;
     voteValue: boolean;  //true for upvote, false for downvote
     proposal?: IProposal;  //relationship with proposal entity
 }
 export interface IProposal{
-    proposalId?: number; 
-    proposalOwner: string; 
-    proposalTitle: string; 
-    projectSummary: string; 
-    proposalDescription: string; 
+    proposalId?: number;
+    proposalOwner: string;
+    proposalTitle: string;
+    projectSummary: string;
+    proposalDescription: string;
     proposalStatus: string;
-    amountRequested: number; 
-    profitSharePercent: number;  
-    daoMultiSigAddr: string; 
+    amountRequested: number;
+    profitSharePercent: number;
+    daoMultiSigAddr: string;
     numUpvotes: number;
-    numDownvotes: number;  
-    votes?: IVote[]; 
+    numDownvotes: number;
+    votes?: IVote[];
 }
 
 export interface IDao {
-    daoId?: string; 
+    daoId?: string;
     daoName: string
-    daoLocation: string; 
+    daoLocation: string;
     targetAudience: string;
     daoTitle: string;
     daoDescription: string;
-    daoOverview: string; 
+    daoOverview: string;
     daoImageIpfsHash: string;
-    daoMultiSigs: string[];
     daoMultiSigAddr: string;
     multiSigPhoneNo: number;
     kiwango: number;
@@ -51,7 +50,6 @@ export interface IMemberDetails {
     nationalIdNo: number;
     memberRole: string;  //funder, owner, member
     memberAddr: string;
-    daoMultiSig: string;
-    daos?: IDao[]; 
+    daos?: IDao[];
 }
 

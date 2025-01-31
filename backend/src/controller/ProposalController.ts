@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
 import { Proposal } from "../entity/Proposal";
 import { Vote } from "../entity/Vote";
-import { AppDataSource } from "../data-source";
+import  AppDataSource  from "../data-source";
 import { ObjectLiteral } from "typeorm";
 import { IProposal } from "../Interfaces/EntityTypes";
 import { log } from "console";
@@ -125,7 +125,7 @@ export async function GetProposalDetailsById(req: Request, res: Response) {
 //  */
  export async function UpvoteProposalById (req: Request, res: Response) {
      const {multiSigAddr} = req.params;
-     const { proposalId } = req.params;
+     const { proposalId } = req.body;
 
      if (!multiSigAddr ||!proposalId) {
          return res.status(400).json({ error: 'Missing required from url params' })
@@ -137,14 +137,16 @@ export async function GetProposalDetailsById(req: Request, res: Response) {
          return res.status(401).json({ error: 'Unauthorized' })
      }
 
-     const voteDetails: typeof Vote = req.body;
+     const voteDetails = req.body;
      voteDetails.voteValue = true;
      voteDetails.proposalId = proposalId;
      voteDetails.voterAddr = voterAddr;
 
      try {
          // Find proposal by proposalId
-         const foundProposal = await proposalRepository.findOneBy({ proposalId: proposalId });
+         const foundProposal = await proposalRepository.findOneBy({
+            proposalId
+        });
 
          if (foundProposal.proposalId === undefined || foundProposal.proposalId === null) {
              return res.status(404).json({ message: 'Proposal not found' })
@@ -153,17 +155,17 @@ export async function GetProposalDetailsById(req: Request, res: Response) {
          // Check if voter has already voted for this proposal
          const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
 
-         if (proposalsVoted.includes(proposalId)) {
+        if (proposalId === proposalsVoted.proposalId) {
              return res.status(400).json({ error: 'Voter has already voted for this proposal' })
          }
 
-         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
+         const createdVote =  voteRepository.create(voteDetails);
         await voteRepository.save(createdVote);
 
          res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
 
          // Updating the proposal
-         foundProposal.numUpvotes += 1;
+         foundProposal.numUpVotes += 1;
 
          // Updating the proposal
          await proposalRepository.save(foundProposal);
@@ -194,7 +196,7 @@ export async function GetProposalDetailsById(req: Request, res: Response) {
   */
  export const DownVoteProposalById = async (req: Request, res: Response) => {
      const {multiSigAddr} = req.params;
-     const { proposalId } = req.params;
+     const { proposalId } = req.body;
      if (!multiSigAddr ||!proposalId) {
          return res.status(400).json({ error: 'Missing required from url params' })
      }
@@ -202,26 +204,26 @@ export async function GetProposalDetailsById(req: Request, res: Response) {
      if (!voterAddr) {
          return res.status(401).json({ error: 'Unauthorized' })
      }
-     const voteDetails: typeof Vote = req.body;//can also be named as downvote type of Vote
+     const voteDetails = req.body;//can also be named as downvote type of Vote
      voteDetails.voteValue = false;
      voteDetails.proposalId = proposalId;
     voteDetails.voterAddr = voterAddr;
      try {
          //find proposal by proposalId
-         const foundProposal: typeof Proposal = await proposalRepository.findOneBy({ proposalId: proposalId });
+         const foundProposal =  await proposalRepository.findOneBy({ proposalId: proposalId });
         if (foundProposal.proposalId === undefined || foundProposal.proposalId === null) {
              return res.status(404).json({ message: 'Proposal not found' })
          }
          //Check if voter has already voted for this proposal
          const proposalsVoted = await proposalRepository.findOne({ where: {proposalId}, relations: ['votes']})
-          if (proposalsVoted.includes(proposalId)) {
+         if (proposalId === proposalsVoted.proposalId) {
              return res.status(400).json({ error: 'Voter has already voted for this proposal' })
          }
-         const createdVote: typeof Vote =  voteRepository.create(voteDetails);
+         const createdVote =  voteRepository.create(voteDetails);
          await voteRepository.save(createdVote);
          res.status(200).json({ message: 'Vote successfully recorded & proposal updated with our new vote, an upvote' });
          //updating the proposal
-         foundProposal.numDownvotes += 1;
+         foundProposal.numDownVotes += 1;
          //updating the proposal
          await proposalRepository.save(foundProposal);
         res.status(200).json({ message: 'updated proposal successfully' });

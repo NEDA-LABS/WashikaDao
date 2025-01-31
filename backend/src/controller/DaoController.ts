@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
-import { AppDataSource } from "../data-source";
+import  AppDataSource  from "../data-source";
 import { GlobalErrorHandler } from "../ErrorHandling/GlobalExceptionHandler";
 import { CreateCustomErrMsg } from "../ErrorHandling/CustomErrorHandler";
 
@@ -152,7 +152,7 @@ export async function GetAllDaosInPlatform(req: Request, res: Response) {
  * - HTTP 500: If an error occurs while retrieving the DAO details.
  */
 export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
-  const daoMultiSigAddr: string = req.params.daoMultiSigAddr;
+  const  { daoMultiSigAddr } = req.body;
 
   if (!daoMultiSigAddr) {
     return res.status(400).json({ message: "Missing required params!" });
@@ -213,20 +213,20 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
  */
 
 export async function UpdateDaoDetails(req: Request, res: Response) {
-  const { multiSigAddr } = req.params;
-  if (!multiSigAddr) {
+  const { daoMultiSigAddr } = req.body;
+  if (!daoMultiSigAddr) {
     return res.status(400).json({ error: "Missing required url params" }); //return 400 status if required fields are missing
   }
 
     const {
-    _daoName,
-    _daoLocation,
-    _targetAudience,
-    _daoTitle,
-    _daoDescription,
-    _daoOverview,
-    _daoImageIpfsHash,
-    _daoRegDocs,
+    daoName,
+    daoLocation,
+    targetAudience,
+    daoTitle,
+    daoDescription,
+    daoOverview,
+    daoImageIpfsHash,
+    daoRegDocs,
     multiSigPhoneNo,
     kiwango,
     accountNo,
@@ -238,15 +238,15 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   //check missing details
   //TODO: Refactor to an extensible function or helper function in utils to check missing required
   if (
-    !multiSigAddr ||
-    !_daoName ||
-    !_daoLocation ||
-    !_targetAudience ||
-    !_daoTitle ||
-    !_daoDescription ||
-    !_daoOverview ||
-    !_daoImageIpfsHash ||
-    !_daoRegDocs ||
+    !daoMultiSigAddr ||
+    !daoName ||
+    !daoLocation ||
+    !targetAudience ||
+    !daoTitle ||
+    !daoDescription ||
+    !daoOverview ||
+    !daoImageIpfsHash ||
+    !daoRegDocs ||
     !multiSigPhoneNo ||
     !accountNo ||
     !nambaZaHisa ||
@@ -257,21 +257,31 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   }
 
   try {
+
     const daoRepository = AppDataSource.getRepository(Dao);
-    const daoDetails = await daoRepository.findOneBy({
-      daoMultiSigAddr: multiSigAddr,
-    });
-    if (daoDetails.daoId === undefined) {
-      return res.status(404).json({ message: "DAO not found" });
+     let _daoDetails;
+ async function doesDaoWithThisMsigExist(_daoMultiSigAddr: any):Promise<boolean> {
+    const _doesMsigExist = await daoRepository.findOne({ where: { daoMultiSigAddr: _daoMultiSigAddr }, });
+        if (_doesMsigExist) {
+            _daoDetails = _doesMsigExist;
+            return true;
+        }
+        return false;
     }
-    //daoID won't change when dao details are being updated  also not the way to add a multisig, a different method to add multisig will be implemented.
-    daoDetails.daoName = _daoName;
-    daoDetails.daoLocation = _daoLocation;
-    daoDetails.targetAudience = _targetAudience;
-    daoDetails.daoTitle = _daoTitle;
-    daoDetails.daoDescription = _daoDescription;
-    daoDetails.daoOverview = _daoOverview;
-    daoDetails.daoImageIpfsHash = _daoImageIpfsHash;
+    const doesMsigExist: boolean = await doesDaoWithThisMsigExist(daoMultiSigAddr);
+    if (doesMsigExist === false) {
+     return res
+               .status(404).json({ message: "Dao With that Multisig has not been found" });
+    }
+    const daoDetails = _daoDetails;
+   //daoID won't change when dao details are being updated  also not the way to add a multisig, a different method to add multisig will be implemented.
+    daoDetails.daoName = daoName;
+    daoDetails.daoLocation = daoLocation;
+    daoDetails.targetAudience = targetAudience;
+    daoDetails.daoTitle = daoTitle;
+    daoDetails.daoDescription = daoDescription;
+    daoDetails.daoOverview = daoOverview;
+    daoDetails.daoImageIpfsHash = daoImageIpfsHash;
     daoDetails.multiSigPhoneNo = multiSigPhoneNo;
     daoDetails.kiwango = kiwango;
     daoDetails.accountNo = accountNo;
@@ -279,8 +289,8 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     daoDetails.kiasiChaHisa = kiasiChaHisa;
     daoDetails.interestOnLoans = interestOnLoans;
     await daoRepository.save(daoDetails);
-    res.status(200).json({ message: "DAO details updated" });
-  } catch (err) {
+    res.status(200).json({ message:  ` Updated to ${[daoDetails]} details updated` });
+  } catch (error) {
     res.status(500).json({ error: "Error updating DAO" });
   }
 }
@@ -303,12 +313,14 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
  * - HTTP 500: If an error occurs while processing the fund request.
  */
 export async function FundDao(req: Request, res: Response) {
-  const  _daoMultiSig  = req.params.multiSigAddr; //Dao to fund
-  const fundData = req.body;
-  if (!_daoMultiSig) {
+  const  daoMultiSig  = req.params.multiSigAddr; //Dao to fund
+  const fundAmount = req.body;
+  console.log(fundAmount);
+  if (!daoMultiSig) {
     return res.status(400).json({ error: "Missing required url params" }); //return 400 status if required fields are missing  //TODO: this should be a validation middleware function  to prevent potential errors
   }
-  const { funderAddr, fundAmount } = req.body; //funder and the amount they want to fund
+
+
   try {
     //TODO: mechanisms to transfer funds goes here
     //check if fundAmount is a positive number
@@ -321,17 +333,23 @@ export async function FundDao(req: Request, res: Response) {
     //add the funderAddr to the daoMultisigs array
     //save the updated DAO model to the database
     //send a notification to all the members in the DAO about the new fund request
-    //use a blockchain function & Transaction for ease even to check balance
 
     //Use thirdparty funding api & check response using webhook or callback.
     const daoRepository = AppDataSource.getRepository(Dao);
-    const daoDetails = await daoRepository.findOneBy({
-      daoMultiSigAddr: _daoMultiSig,
-    });
-    if (!daoDetails) {
-      return res.status(404).json({ message: "DAO not found" });
+  //function to check whether dao exists or not and returns a boolean
+ async function _doesDaoWithThisMsigExist(_daoMultiSig: any):Promise<boolean> {
+    const _doesMsigExist = await daoRepository.findOne({ where: { daoMultiSigAddr: _daoMultiSig }, });
+        if (_doesMsigExist) {
+            return true;
+        }
+        return false;
     }
-    //after crosschecked with the blockchain transaction/function
+    const doesMsigExist: boolean = await _doesDaoWithThisMsigExist(daoMultiSig);
+    if (doesMsigExist === true) {
+     return res
+      .status(201)
+      .json({ message: "DAO with this multiSigAddr already exists and has been found." });
+    }
 
     res.status(200).json({ message: "Funding successfully" });
   } catch (error) {

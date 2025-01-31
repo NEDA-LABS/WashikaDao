@@ -2,7 +2,6 @@
   "name": "backend",
   "version": "1.0.0",
   "description": "Awesome project developed with TypeORM.",
-  "type": "commonjs",
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
@@ -14,7 +13,7 @@
     "nodemon": "^3.1.9",
     "supertest": "^7.0.0",
     "ts-jest": "^29.2.5",
-    "ts-node": "10.9.2",
+    "ts-node": "^10.9.2",
     "typescript": "^5.7.3"
   },
   "dependencies": {
@@ -31,9 +30,9 @@
     "typeorm": "0.3.20"
   },
   "scripts": {
-    "start": "ts-node src/index.ts",
-    "start:dev": "NODE_ENV=development ts-node src/index.ts",
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
+    "start": "npx tsc && node dist/index.js",
+    "start:dev": "npx tsc && NODE_ENV=development node dist/index.js",
+    "dev": "nodemon --watch src --ext ts --exec \"npm run build && node dist/index.js",
     "build": "tsc",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm migration:generate -n InitialMigration -d ./src/data-source.ts",
