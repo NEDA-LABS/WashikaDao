@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-const nodemailer = require("nodemailer");
+import nodemailer from "nodemailer";
 
 const sendEmail = async (email: string, subject: string, text: string) => {
   const transporter = nodemailer.createTransport({
@@ -37,3 +37,5 @@ export const handleSendInvite = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to send email." });
   }
 };
+
+

@@ -4,13 +4,19 @@
          "es5",
          "es6"
       ],
-      "target": "es5",
-      "module": "commonjs",
+      "target": "es6",
+      "module": "CommonJS",
       "esModuleInterop": true,
+      "skipLibCheck": true,
       "moduleResolution": "node",
-      "outDir": "./build",
+      "outDir": "./dist",
+      "rootDir": "./src",
       "emitDecoratorMetadata": true,
+    "strict": false,
       "experimentalDecorators": true,
+      "forceConsistentCasingInFileNames": true,
       "sourceMap": true
-   }
+   },
+   "include": ["src/**/*"],
+   "exclude": ["node_modules", "**/*.spec.ts"]
 }

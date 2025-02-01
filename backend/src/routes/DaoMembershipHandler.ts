@@ -1,30 +1,61 @@
-const express = require('express');
+import express, { Express, Request, Response } from "express";
 const router = express.Router();
-import DaoController = require("../controller/DaoController");
-import EmailController = require("../controller/EmailController");
-import SMSController = require("../controller/SMSController");
-import DaoMembershipController = require("../controller/DaoMembershipController");
-import { Request, Response } from "express";
-import { authenticator } from "../utils/Authenticator/Authenticator";
 
+import { CreateInitialOwner, GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
+import { handleSendInvite } from "../controller/EmailController";
+import { handleSendInviteSMS } from "../controller/SMSController";
+/** Dao Ownership Management Activities available **/
+// @ts-ignore
+/**
+ * @ Remarks: The only ownership activities available are creating a new owner to allow for ownership transfer & adding another multisig to a dao & adding a user to a particular Dao
+ */
 //Creatint the initial Owner of a Dao
-router.post('/DaoDetails/CreateOwner', (req: Request, res: Response) => DaoMembershipController.CreateInitialOwner(req, res))
-//Logging in user
-router.post('/DaoDetails/login', (req: Request, res: Response) => DaoMembershipController.loginMember(req, res))
-//Adding a particular user to be an owner of a particular dao too
-//TODO: implement this to be a protected route   ---now resolved
-router.post('/DaoDetails/AddMultisig/:multiSigAddr', (req: Request, res: Response) => DaoMembershipController.AddAnotherMultisigToDao(req, res));
-//adding a user to member of a particular dao or whitelisting them
-//TODO: implement this to be a protected route, ensure user has enough permissions to access this since it is direct no other checks ---now resolved
-router.post('/DaoDetails/:multiSigAddr/AddMember', (req: Request, res: Response) => DaoMembershipController.RequestToJoinDao(req, res));
-//displaying all members of this dao
-router.get('/DaoDetails/:daoMultiSigAddr/members', (req: Request, res: Response) => DaoMembershipController.GetAllMembers(req, res));
-//adding member to a particular dao
-router.post('/DaoDetails/:multiSigAddr/members/AddMember', (req: Request, res: Response) => DaoMembershipController.WhiteListUser(req, res));
-//deleting a member from a particular dao or blacklisting them
-router.post('/DaoDetails/:multiSigAddr/members/:memberAddr', (req: Request, res: Response) => DaoMembershipController.BlackListMember(req, res));
-router.post('/DaoDetails/inviteMemberEmail', (req: Request, res: Response) => EmailController.handleSendInvite(req, res)); 
-router.post('/DaoDetails/inviteMemberSMS', (req: Request, res: Response) => SMSController.handleSendInviteSMS(req, res)); 
 
-module.exports = router ;
+router.post('/CreateInitialOwner', (req: Request, res: Response) =>  { CreateInitialOwner(req, res)})
+//Adding a particular user to be an owner of a particular dao too
+//TODO: implement this to be a protected route, ensure user has enough permissions to access this since it is direct no other checks ---now resolved
+/** Dao MemberShip Activities available  **/
+/**
+    * INFO: Gets all the members of a particular Dao
+    * The multisig of the dao is passed as url params
+    * @returns a Json Array Object containing an array of all the members of a DAO
+    */
+router.get('/AllDaoMembers', (req: Request, res: Response) => {GetAllMembers(req, res)});
+/**
+    * INFO: Sends a Request to Join a particular Dao
+    * @params The multisig of the Dao to send request to
+    * @request Body - The Necessary Details of the member who wants to join
+    * @returns a success or failed status code & or message
+    */
+router.post('/RequestToJoinDao', (req: Request, res: Response) => {RequestToJoinDao(req, res)});
+/**
+    * INFO: Updates the Details of a member of a particular Dao
+    * @Params - Multisig of the Dao
+    * @request Body - Member Details to Update
+    * @returns - a success code or error message
+    */
+router.post('/AddMember', (req: Request, res: Response) =>  { WhiteListUser(req, res) });//INFO: update member to a certain rank or sth else
+/**
+    * INFO: Adds Member to Dao Black list
+    * @Params - Multisig of the Dao
+    * @request Body - Member Details to Add to Blacklist
+    * @returns - success code & message or member not found error or failed to blacklist error
+    */
+router.post('/BlackListMember', (req: Request, res: Response) => { BlackListMember(req, res)});
+/**
+    * INFO: Sends an invite email to a member to Join Dao
+    * @Params - Multisig of the Dao
+    * @request Body - Details of the Member to issue invite to must include the email
+    * @returns - success code & or email not in body or Dao not found or internal server Error
+    */
+router.post('/InviteMemberEmail/:daoMultiSigAddr', (req: Request, res: Response) => handleSendInvite(req, res));
+/**
+    * INFO: Sends an invite to Join Dao via SMS
+    * @Params - Multisig of the Dao
+    * @request Body - Details of the Member to issue invite to, must include the phone number since this is an SMS
+    * @returns - Status code & or error  message
+    */
+router.post('/InviteMemberSMS/:daoMultiSigAddr', (req: Request, res: Response) => handleSendInviteSMS(req, res));
+
+export default router;
 //TODO: add middleware to check if user is an owner of the dao or has sufficient permissions to access the endpoint

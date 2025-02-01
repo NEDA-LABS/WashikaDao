@@ -1,21 +1,21 @@
-const express = require('express')
+import express from "express";
 const router = express.Router()
-const ProposalController = require('../controller/ProposalController');
+
+import { GetProposalDetails, GetAllProposalsInDao, CreateProposal, UpVoteProposal, DownVoteProposal } from "../controller/ProposalController";
 
 import { Request, Response } from "express";
-import { authenticator } from "../utils/Authenticator/Authenticator";
+import { RouteOAuthManager } from "../utils/Authenticator/Authenticator";
+
 //TODO: Include better documentation for this feature
-//Creating  a new proposal
-router.post('/DaoDetails/:multiSigAddr/createProposal',  (req: Request, res: Response) => {ProposalController.CreateProposal(req, res)});
-//searching for a proposal by their id
-router.get('/DaoDetails/:multiSigAddr/proposal/:proposalId', (req: Request, res: Response) => ProposalController.GetProposalDetailsById(req, res));
+
+
+router.get('/GetAllProposalsInDao', async(req: Request, res: Response) => {await GetAllProposalsInDao(req, res)});
+
+router.get('/GetProposalDetails', async(req: Request, res: Response) => { await GetProposalDetails(req, res)});
+router.post('/CreateProposal',  async (req: Request, res: Response) => {await CreateProposal(req, res)});
 //upvoting a proposal
-router.post('/DaoDetails/:multiSigAddr/proposal/:proposalId/upvote', (req: Request, res: Response) => ProposalController.UpvoteProposalById(req, res));
+router.post('/UpVoteProposal', async (req: Request, res: Response) =>{ await  UpVoteProposal(req, res)});
 //downvoting a proposal
-router.post('/DaoDetails/:multiSigAddr/proposal/:proposalId/downvote', (req: Request, res: Response) => ProposalController.DownvoteProposalById(req, res));
+router.post('/DownVoteProposal', async(req: Request, res: Response) => { await DownVoteProposal(req, res)});
 //Get all proposals from a DAO
-router.get('/DaoDetails/:multiSigAddr/proposals', (req: Request, res: Response) => ProposalController.GetAllProposalsInDao(req, res));
-
-
-
-module.exports = router ;
+export default router;

@@ -1,19 +1,19 @@
-import {  PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm"; 
-import { Proposal } from "./Proposal"; 
+import {  PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne, Unique } from "typeorm";
+import { Proposal } from "./Proposal";
 
-@Entity() 
-@Unique(["proposalId", "voterAddr"])
+@Entity()
+@Unique(["proposalCustomIdentifier", "voterAddr"])
 export class Vote{
-    @PrimaryGeneratedColumn() 
-    voteId: number; 
+    @PrimaryGeneratedColumn()
+    voteId: number;
 
-    @Column() 
+    @Column()
     voterAddr: string;
 
-    @Column() 
+    @Column()
     voteValue: boolean;  //true for upvote, false for downvote
 
-    @ManyToOne(() => Proposal, proposal =>  proposal.votes) 
-    @JoinColumn({ name: "proposalId" })
-    proposalId?: Proposal;
+    @ManyToOne(() => Proposal, proposal =>  proposal.votes)
+    @JoinColumn({ name: "proposalCustomIdentifier" })
+    proposalCustomIdentifier?: Proposal;
 }
