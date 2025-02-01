@@ -11,7 +11,7 @@ import { handleSendInviteSMS } from "../controller/SMSController";
  */
 //Creatint the initial Owner of a Dao
 
-router.post('/CreateInitialOwner/:daoMultiSigAddr', (req: Request, res: Response) =>  { CreateInitialOwner(req, res)})
+router.post('/CreateInitialOwner', (req: Request, res: Response) =>  { CreateInitialOwner(req, res)})
 //Adding a particular user to be an owner of a particular dao too
 //TODO: implement this to be a protected route, ensure user has enough permissions to access this since it is direct no other checks ---now resolved
 /** Dao MemberShip Activities available  **/
@@ -27,21 +27,21 @@ router.get('/AllDaoMembers', (req: Request, res: Response) => {GetAllMembers(req
     * @request Body - The Necessary Details of the member who wants to join
     * @returns a success or failed status code & or message
     */
-router.post('/RequestToJoinDao/:daoMultiSigAddr', (req: Request, res: Response) => {RequestToJoinDao(req, res)});
+router.post('/RequestToJoinDao', (req: Request, res: Response) => {RequestToJoinDao(req, res)});
 /**
     * INFO: Updates the Details of a member of a particular Dao
     * @Params - Multisig of the Dao
     * @request Body - Member Details to Update
     * @returns - a success code or error message
     */
-router.post('/UpdateMember/:daoMultiSigAddr', (req: Request, res: Response) =>  { WhiteListUser(req, res) });//INFO: update member to a certain rank or sth else
+router.post('/AddMember', (req: Request, res: Response) =>  { WhiteListUser(req, res) });//INFO: update member to a certain rank or sth else
 /**
     * INFO: Adds Member to Dao Black list
     * @Params - Multisig of the Dao
     * @request Body - Member Details to Add to Blacklist
     * @returns - success code & message or member not found error or failed to blacklist error
     */
-router.post('/BlackListMember/:daoMultiSigAddr', (req: Request, res: Response) => { BlackListMember(req, res)});
+router.post('/BlackListMember', (req: Request, res: Response) => { BlackListMember(req, res)});
 /**
     * INFO: Sends an invite email to a member to Join Dao
     * @Params - Multisig of the Dao

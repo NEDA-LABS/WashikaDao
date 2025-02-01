@@ -313,11 +313,10 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
  * - HTTP 500: If an error occurs while processing the fund request.
  */
 export async function FundDao(req: Request, res: Response) {
-  const  daoMultiSig  = req.params.multiSigAddr; //Dao to fund
-  const fundAmount = req.body;
+  const { daoMultiSigAddr, fundAmount } = req.body;
   console.log(fundAmount);
-  if (!daoMultiSig) {
-    return res.status(400).json({ error: "Missing required url params" }); //return 400 status if required fields are missing  //TODO: this should be a validation middleware function  to prevent potential errors
+  if (!daoMultiSigAddr) {
+    return res.status(400).json({ error: "Missing required multisig of Dao" }); //return 400 status if required fields are missing  //TODO: this should be a validation middleware function  to prevent potential errors
   }
 
 
@@ -325,14 +324,8 @@ export async function FundDao(req: Request, res: Response) {
     //TODO: mechanisms to transfer funds goes here
     //check if fundAmount is a positive number
      if (fundAmount <= 0) {
-         return res.status(400).json({ error: 'Invalid fund amount' });
+         return res.status(406).json({ error: 'Request Unacceptable, Invalid fund amount' });
     }
-    //check if funderAddr is valid
-    //check if fundAmount is sufficient
-    //update the fundAmount in the DAO model
-    //add the funderAddr to the daoMultisigs array
-    //save the updated DAO model to the database
-    //send a notification to all the members in the DAO about the new fund request
 
     //Use thirdparty funding api & check response using webhook or callback.
     const daoRepository = AppDataSource.getRepository(Dao);
@@ -344,14 +337,13 @@ export async function FundDao(req: Request, res: Response) {
         }
         return false;
     }
-    const doesMsigExist: boolean = await _doesDaoWithThisMsigExist(daoMultiSig);
-    if (doesMsigExist === true) {
+    const doesMsigExist: boolean = await _doesDaoWithThisMsigExist(daoMultiSigAddr);
+    if (doesMsigExist === false) {
      return res
-      .status(201)
-      .json({ message: "DAO with this multiSigAddr already exists and has been found." });
+      .status(404)
+      .json({ message: "DAO not found" });
     }
-
-    res.status(200).json({ message: "Funding successfully" });
+    res.status(202).json({ message: "Funding successfully" });
   } catch (error) {
     res.status(500).json({ error: "Error funding DAO Due to an internal Server Error" });
   }

@@ -1,9 +1,7 @@
 export interface IVote {
-    voteId?: number;
-    proposalId?: number;
+    proposalCustomIdentifier?: number;
     voterAddr: string;
     voteValue: boolean;  //true for upvote, false for downvote
-    proposal?: IProposal;  //relationship with proposal entity
 }
 export interface IProposal{
     proposalId?: number;

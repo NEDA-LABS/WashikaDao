@@ -32,7 +32,7 @@
   "scripts": {
     "start": "npx tsc && node dist/index.js",
     "start:dev": "npx tsc && NODE_ENV=development node dist/index.js",
-    "dev": "nodemon --watch src --ext ts --exec \"npm run build && node dist/index.js",
+    "dev": "nodemon --watch src --ext ts --exec \npm run build && node dist/index.js",
     "build": "tsc",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm migration:generate -n InitialMigration -d ./src/data-source.ts",
