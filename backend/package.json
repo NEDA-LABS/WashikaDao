@@ -24,7 +24,8 @@
     "jsonwebtoken": "^9.0.2",
     "mysql": "^2.14.1",
     "nodemailer": "^6.9.16",
-    "reflect-metadata": "^0.1.13",
+    "pg": "^8.13.1",
+    "reflect-metadata": "^0.1.14",
     "sqlite3": "^5.1.7",
     "twilio": "^5.4.2",
     "typeorm": "0.3.20"
@@ -36,8 +37,8 @@
     "build": "tsc",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "npm run typeorm migration:generate -n InitialMigration -d ./src/data-source.ts",
-    "migration:apply-curr": "npm run typeorm migration:run -d ./src/data-source.ts",
-    "migration:revert": "npm run typeorm migration:revert -d ./src/data-source.ts",
+    "migration:apply-curr": "npm run typeorm migration:run -d ./dist/data-source.js",
+    "migration:revert": "npm run typeorm migration:revert -d ./dist/data-source.js",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage"

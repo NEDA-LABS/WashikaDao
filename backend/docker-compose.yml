@@ -5,29 +5,9 @@ services:
     build: .  # Build the image from the current directory's Dockerfile.
     ports:
       - "8080:8080"  # Map port 8080 on the host to port 8080 in the container. all backends use 8080
-    depends_on:
-      db:  # Wait for the `db` service to be healthy before starting the `app` service.
-        condition: service_healthy  # Ensure the database is healthy.
-    command: sh -c "npm run migration:apply-curr && npm run test && npm run dev"  # Run migrations, tests, then the application.
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
     restart: on-failure  # Restart the container if it exits with a non-zero status code.
 
-  db:
-    image: postgres:15-alpine  # Use the official Postgres image with Alpine Linux base.
-    environment:
-      POSTGRES_USER: devuser  # Set the database username.
-      POSTGRES_PASSWORD: devpassword  # Set the database password (**not recommended for production!**).
-      POSTGRES_DB: devdb  # Set the database name.
-    ports:
-      - "5432:5432"  # Map port 5432 on the host to port 5432 in the container (standard Postgres port).
-    volumes:
-      - postgres-data:/var/lib/postgresql/data  # Persist database data between container restarts.
-    healthcheck:  # Define a health check for the database service.
-      test: ["CMD-SHELL", "pg_isready -U devuser -d devdb"]  # Check if the database is ready to accept connections.
-      interval: 10s  # Interval between health checks.
-      timeout: 5s  # Maximum time to wait for the database to respond.
-      retries: 5  # Number of retries before declaring the service unhealthy.
-      start_period: 10s  # Give the database sufficient time to initialize before health checks begin.
-
-volumes:
-  postgres-data:  # Define an unnamed volume to persist database data.
 
