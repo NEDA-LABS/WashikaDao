@@ -38,7 +38,7 @@ COPY --from=builder /app/src/migrations ./dist/migrations
 # Debug: List files in the final image to verify everything is copied correctly
 RUN ls -R /app
 
-EXPOSE 8080
+EXPOSE 3000
 
 ENV NODE_ENV=production
 
