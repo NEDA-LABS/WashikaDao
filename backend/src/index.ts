@@ -6,7 +6,7 @@ const PORT = process.env.PORT || 3000;
 import "reflect-metadata"
 import cors from 'cors';
 
-import  AppDataSource  from "./data-source";
+import AppDataSource from "./data-source";
 
 //Routes bro
 import DaoGenesisHandler from "./routes/DaoGenesisHandler";
@@ -57,10 +57,5 @@ AppDataSource.initialize()
         console.error("Error during Data Source initialization:", error);
     });
 
-    /*
-const server = app.listen(PORT, () => {
-    console.log(`App is running on PORT ${PORT}`);
-})
-*/
 
 module.exports = router ;

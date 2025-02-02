@@ -32,8 +32,8 @@ COPY --from=builder /app/dist ./dist
 COPY --from=builder /app/node_modules ./node_modules
 
 # Copy the TypeORM configuration and migration files
-COPY --from=builder /app/dist/data-source.js ./dist/data-source.js
-COPY --from=builder /app/src/migrations ./dist/migrations
+#COPY --from=builder /app/dist/data-source.js ./dist/data-source.js
+#COPY --from=builder /app/src/migrations ./dist/migrations
 
 # Debug: List files in the final image to verify everything is copied correctly
 RUN ls -R /app
@@ -42,5 +42,5 @@ EXPOSE 3000
 
 ENV NODE_ENV=production
 
-CMD sh -c "npm run migration:apply-curr && node dist/index.js"
+CMD sh -c "node dist/index.js"
 
