@@ -7,7 +7,7 @@ services:
       - "3000:3000"  # Map port 8080 on the host to port 8080 in the container. all backends use 8080
     environment:
       NODE_ENV: production
-      DATABASE_URL: #{DATABASE_URL}
+      DATABASE_URL: ${DATABASE_URL}
     restart: on-failure  # Restart the container if it exits with a non-zero status code.
 
 
