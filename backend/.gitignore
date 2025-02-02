@@ -7,5 +7,6 @@ temp/
 dist/
 .env
 *.sqlite
-postgres-data/ #ignore the volume named data 
-test-postgres-data/ # Ignore the volume named data 
+postgres-data/ #ignore the volume named data
+test-postgres-data/ # Ignore the volume named data
+migrations/

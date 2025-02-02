@@ -37,7 +37,7 @@
     "build": "tsc",
     "typeorm": "typeorm-ts-node-commonjs",
     "migration:generate": "typeorm-ts-node-commonjs migration:generate ./src/migrations/InitialMigration -d ./src/data-source.ts",
-    "migration:apply-curr": "npm run typeorm migration:run -d ./dist/data-source.js",
+    "migration:apply-curr": "npx typeorm migration:run -d ./dist/data-source.js",
     "migration:revert": "npm run typeorm migration:revert -d ./dist/data-source.js",
     "test": "jest --runInBand",
     "test:watch": "jest --watch",

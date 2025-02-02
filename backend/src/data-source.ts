@@ -21,7 +21,7 @@ import path from "path";
 const AppDataSource = new DataSource({
   type:  'postgres', // Use PostgreSQL in production, SQLite in development
   url:  process.env.DATABASE_URL, // Use DATABASE_URL in production
-  synchronize: false, // Disable synchronize in production (use migrations instead)
+  synchronize: true, // Disable synchronize in production (use migrations instead)
   logging: true, // Enable logging only in development
   entities: [Dao, MemberDetails, Proposal, Vote], // Your entities
   migrations: [path.join(__dirname, './migrations/*{.ts,.js}')], // Migration files
