@@ -17,24 +17,15 @@ import path from "path";
 })
 
 */
-//Determine the environment
-const isProduction = process.env.NODE_ENV === 'production';
 
- const AppDataSource = new DataSource({
+const AppDataSource = new DataSource({
   type:  'postgres', // Use PostgreSQL in production, SQLite in development
   url:  process.env.DATABASE_URL, // Use DATABASE_URL in production
-  synchronize: false, // Disable synchronize in production (use migrations instead)
+  synchronize: true, // Disable synchronize in production (use migrations instead)
   logging: true, // Enable logging only in development
   entities: [Dao, MemberDetails, Proposal, Vote], // Your entities
   migrations: [path.join(__dirname, './migrations/*{.ts,.js}')], // Migration files
   migrationsRun: true, // Automatically run migrations in production
-  extra: isProduction
-    ? {
-        ssl: {
-          rejectUnauthorized: false, // Required for some PostgreSQL providers (e.g., Coolify)
-        },
-      }
-    : undefined, // SSL configuration for production
 });
 
 export default AppDataSource;
