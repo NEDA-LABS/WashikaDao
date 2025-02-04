@@ -116,6 +116,14 @@ section.third {
     font-size: 16px;
   }
 
+  .owner .second .sec img {
+    width: 0px;
+  }
+
+  .owner .second .sec h1 {
+    font-size: 24px;
+  }
+
   .owner .second .myProposals {
     margin: 24px 0;
   }

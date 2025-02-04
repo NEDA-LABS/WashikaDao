@@ -9,7 +9,7 @@ interface ProposalData {
   proposalTitle: string;
   projectSummary: string;
   proposalDescription: string;
-  proposalStatus: "open" | "closed"; 
+  proposalStatus: "open" | "closed";
   amountRequested: number;
   profitSharePercent: number;
   daoMultiSigAddr: string;
@@ -18,9 +18,7 @@ interface ProposalData {
 }
 
 const ProposalGroups: React.FC = () => {
-  const { daoMultiSig } = useSelector(
-    (state: RootState) => state.user
-  );
+  const { daoMultiSig } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<ProposalData[]>([]);
 
@@ -33,7 +31,6 @@ const ProposalGroups: React.FC = () => {
         );
         const data = await response.json();
         setProposals(data.proposals);
-        
       } catch (error) {
         console.error("Error fetching proposals:", error);
       }
@@ -43,39 +40,48 @@ const ProposalGroups: React.FC = () => {
   }, [daoMultiSig]);
   console.log(proposals);
   const handleProposalClick = () => {
-    navigate('/viewProposal');
+    navigate("/viewProposal");
   };
 
   return (
     <div className="proposal-groups">
-      {proposals?.map((proposal) => (
-        <div className="proposal" key={proposal.proposalId}>
-          <div className="one">
-            <h1>{proposal.proposalTitle}</h1>
-            <div
-              className={
-                proposal.proposalStatus === "open" ? "inProgress" : "rejected"
-              }
-            >
-              {proposal.proposalStatus}
+      {proposals ? (
+        proposals.map((proposal) => (
+          <div className="proposal" key={proposal.proposalId}>
+            <div className="one">
+              <h1>{proposal.proposalTitle}</h1>
+              <div
+                className={
+                  proposal.proposalStatus === "open" ? "inProgress" : "rejected"
+                }
+              >
+                {proposal.proposalStatus}
+              </div>
+            </div>
+            <p className="two">{proposal.proposalDescription}</p>
+            <div className="three">
+              <div className="button-group button">
+                <button onClick={handleProposalClick}>Vote on Proposal</button>
+                <button className="button-2" onClick={handleProposalClick}>
+                  View linked resources
+                </button>
+              </div>
+              <div className="proposal-right">
+                <h2>Amount Requested</h2>
+                <p>
+                  {proposal.amountRequested}
+                  <span>Tsh</span>
+                </p>
+              </div>
             </div>
           </div>
-          <p className="two">{proposal.proposalDescription}</p>
-          <div className="three">
-            <div className="button-group button">
-              <button onClick={handleProposalClick}>Vote on Proposal</button>
-              <button className="button-2" onClick={handleProposalClick}>View linked resources</button>
-            </div>
-            <div className="proposal-right">
-              <h2>Amount Requested</h2>
-              <p>
-                {proposal.amountRequested}
-                <span>Tsh</span>
-              </p>
-            </div>
-          </div>
+        ))
+      ) : (
+        <div className="noProposals">
+          <p>No Proposals found</p>
+          <p>Created Proposals will appear here</p>
         </div>
-      ))}
+      )}
     </div>
   );
 };

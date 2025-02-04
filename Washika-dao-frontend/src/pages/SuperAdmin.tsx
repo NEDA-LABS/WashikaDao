@@ -5,9 +5,10 @@ import Dashboard from "../components/Dashboard";
 import Cards from "../components/Cards";
 import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -51,6 +52,12 @@ const SuperAdmin: React.FC = () => {
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const isVisible = useSelector(
+    (state: RootState) => state.notification.isVisible
+  );
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDaoDetails = async () => {
@@ -127,6 +134,7 @@ const SuperAdmin: React.FC = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
           body: JSON.stringify({
             email: email,
@@ -198,25 +206,26 @@ const SuperAdmin: React.FC = () => {
           <div className="centered">
             <div className="daoImage one">
               <img
-                src="/images/WhatsApp Image 2023-09-24 at 03.24 1(2).png"
+                src={daoDetails?.daoImageIpfsHash}
                 alt="DaoImage"
               />
             </div>
           </div>
-
-          {/* <div className="notification">
-            <div>
-              <img src="/images/Info.png" alt="info icon" />
+          {isVisible && (
+            <div className="notification">
+              <div>
+                <img src="/images/Info.png" alt="info icon" />
+              </div>
+              <div className="notifications">
+                <h3>Notification</h3>
+                <p>New Member Request</p>
+                <button>View</button>
+              </div>
+              <button onClick={() => dispatch(toggleNotificationPopup())}>
+                <img src="/images/X.png" alt="cancel icon" />
+              </button>
             </div>
-            <div className="notifications">
-              <h3>Notification</h3>
-              <p>New Member Request</p>
-              <button>View</button>
-            </div>
-            <div>
-              <img src="/images/X.png" alt="cancel icon" />
-            </div>
-          </div> */}
+          )}
           <div className="top">
             <div className="one onesy">
               <h1>{daoDetails?.daoName}</h1>
@@ -283,7 +292,7 @@ const SuperAdmin: React.FC = () => {
                 </div>
                 <Dashboard />
               </div>
-              <button className="create">Create a Proposal</button>
+              <button className="create" onClick={() => navigate(`/CreateProposal/${daoMultiSig || ""}`)}>Create a Proposal</button>
               <section className="second">
                 <div className="sec">
                   <img src="/images/Vector(4).png" alt="logo" />

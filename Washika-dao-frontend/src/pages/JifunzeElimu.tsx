@@ -143,7 +143,7 @@ const JifunzeElimu: React.FC = () => {
               >
                 <div>
                   <h2>{blog.title}</h2>
-                  <p>{blog.content}</p>
+                  {/* <p>{blog.content}</p> */}
                 </div>
               </article>
             </Link>

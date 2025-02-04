@@ -12,7 +12,6 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 
-
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
  */
@@ -32,7 +31,6 @@ interface FormData {
   nambaZaHisa: string;
   kiasiChaHisa: string;
   interestOnLoans: string;
-  
 }
 
 interface Member {
@@ -92,6 +90,8 @@ const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currUsrAcc = useActiveAccount();
+  const token = localStorage.getItem("token");
+  const [daoTxHash, setDaoTxHash] = useState("");
   const { memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
@@ -194,19 +194,23 @@ const DaoRegistration: React.FC = () => {
     }
   };
 
-  const handleInviteMember = async() => {
+  const handleInviteMember = async () => {
     try {
       // Send an email to the new member
-      const response = await fetch("http://localhost:8080/JiungeNaDao/DaoDetails/inviteMemberEmail", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email: currentMember.email,
-          firstName: currentMember.firstName,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:8080/JiungeNaDao/DaoDetails/inviteMemberEmail",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            email: currentMember.email,
+            firstName: currentMember.firstName,
+          }),
+        }
+      );
 
       if (response.ok) {
         alert("Member added and email sent successfully.");
@@ -216,7 +220,7 @@ const DaoRegistration: React.FC = () => {
     } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const target = e.target as HTMLInputElement;
@@ -237,19 +241,12 @@ const DaoRegistration: React.FC = () => {
   };
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx, data: transactionResult } = useSendTransaction();
-
-  //url builder 
-  const buildCDExplorerUrl = (_createDaoTxHash: string) => {
-    return  `https:testnet.routescan.io/transaction/${_createDaoTxHash}`;
-  }
+  
   //Grooming the Dao transaction
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const prepareCreateDaoTx = (_multiSigPhoneNo: bigint): any => {
-    if (currActiveAcc == undefined) {
-      console.error(
-        "undefined value for current active account is not allowed"
-      );
-      return false; //Failed to prepare transaction since amount isn't plugged in
+  const prepareCreateDaoTx = (_multiSigPhoneNo: bigint) => {
+    if (!currActiveAcc) {
+      console.error("Fatal Error, No Active Account found");
+      return; //Failed to prepare transaction since amount isn't plugged in
     }
     try {
       console.log("Preparing dao Creation transaction");
@@ -272,30 +269,30 @@ const DaoRegistration: React.FC = () => {
       return _createDaotx;
     } catch (error) {
       console.error("Error preparing transaction:", error);
-      return false; //error caused the transaction to fail
+      return; //error caused the transaction to fail
     }
   };
 
   //function to now send the transaction
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sendCreateDaoTx = async (_createDaotx: any) => {
-    if (_createDaotx === undefined) {
+    if (!_createDaotx) {
       console.warn("undefined transaction");
       return;
     }
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const createDaoTxReceipt: any = sendTx(_createDaotx);
-      console.log(
-        "It would occur that the transaction has been sent successfully",
-        createDaoTxReceipt
-      );
-      const _createDaoTxHash = await createDaoTxReceipt.transactionHash;
-      const _explorerUrl = buildCDExplorerUrl(_createDaoTxHash);
-      window.location.href = _explorerUrl; //Redirecting users to the explorer url 
-      return _createDaoTxHash;
-      // console.log("Transaction Hash:", createDaoTxReceipt?.transactionHash);
-      
+      console.log("Sending transaction...");
+      sendTx(_createDaotx, {
+        onSuccess: (receipt) => {
+          console.log("Transaction successful!", receipt);
+          setDaoTxHash(receipt.transactionHash);
+          window.location.href = `https://testnet.routescan.io/transaction/${daoTxHash}`;
+          console.log(`Current transaction result ${transactionResult}`);
+        },
+        onError: (error) => {
+          console.error("Transaction failed:", error);
+        },
+      });
     } catch (error) {
       if (error instanceof Error && error.message.includes("AA21")) {
         prompt(
@@ -304,7 +301,6 @@ const DaoRegistration: React.FC = () => {
       } else {
         console.error("Error creating dao", error);
       }
-      console.log(`Current transaction result ${transactionResult}`);
     }
   };
 
@@ -317,10 +313,10 @@ const DaoRegistration: React.FC = () => {
         multisigPhoneNoBigInt
       );
       console.log("------------Now Calling prepareCreateDaoTx------------");
-      const finalTx = await prepareCreateDaoTx(multisigPhoneNoBigInt);
+      const finalTx = prepareCreateDaoTx(multisigPhoneNoBigInt);
       if (finalTx) {
         await sendCreateDaoTx(finalTx);
-        console.log("Tx was a success");
+        console.log("Transaction sent successfully");
         return true;
       } else {
         console.log("Looks like transaction failed");
@@ -342,12 +338,12 @@ const DaoRegistration: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
     // Ensure multiSigAddr is properly set
-    //if (!formData.multiSigAddr || formData.multiSigAddr.trim() === "") {
-     // alert("MultiSig Address is required");
-      //return;
-    //}
+    // if (!formData.multiSigAddr || formData.multiSigAddr.trim() === "") {
+    //  alert("MultiSig Address is required");
+    //   return;
+    // }
     if (!currActiveAcc) {
-      alert("MultiSig Address is required");
+      alert("Member Address is required");
       return;
     }
 
@@ -355,7 +351,7 @@ const DaoRegistration: React.FC = () => {
     try {
       // First, call handleCreateDao
       const isCreateDaoSuccessful = await handleCreateDao();
-      if (isCreateDaoSuccessful) {
+      if (isCreateDaoSuccessful === true) {
         // Combine form data and member data
         const combinedData = {
           ...formData,
@@ -369,6 +365,7 @@ const DaoRegistration: React.FC = () => {
             method: "POST", // HTTP method
             headers: {
               "Content-Type": "application/json", // Specify JSON content type
+              Authorization: `Bearer ${token}`, // Include the token in the Authorization header
             },
             body: JSON.stringify(combinedData), // Send combined data
           }
@@ -378,7 +375,7 @@ const DaoRegistration: React.FC = () => {
         // Parse the response JSON
         // Check if the response indicates success
         if (response.ok) {
-          alert("Dao created successfully")
+          alert("Dao created successfully");
           console.log("DAO created successfully", data);
           const daoMultiSigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
           console.log(daoMultiSigAddr);
@@ -401,7 +398,7 @@ const DaoRegistration: React.FC = () => {
   return (
     <>
       <NavBar className={"DaoRegister"} />
-      {currUsrAcc ? ( // Only show form if user role is logged in
+      {currUsrAcc ? ( // Only show form if user is logged in
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
@@ -577,12 +574,12 @@ const DaoRegistration: React.FC = () => {
         </main>
       ) : (
         <p className="daoRegistration">
-         Please log in to create a Dao Contract
+          Please log in to create a Dao Contract
         </p>
       )}
       <Footer className={""} />
     </>
   );
-}
+};
 
 export default DaoRegistration;

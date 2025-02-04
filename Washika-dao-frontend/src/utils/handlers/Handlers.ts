@@ -59,7 +59,7 @@ export const FullDaoContract = getContract({
                 "indexed": false,
                 "internalType": "enum FullDaoContract.Role",
                 "name": "_role",
-                "type": "uint8"
+                "type": "string"
             }
         ],
         "name": "MEMBERADDED",
@@ -103,7 +103,7 @@ export const FullDaoContract = getContract({
             {
                 "internalType": "enum FullDaoContract.Role",
                 "name": "_role",
-                "type": "uint8"
+                "type": "string"
             },
             {
                 "internalType": "address",
@@ -443,7 +443,7 @@ export const FullDaoContract = getContract({
                     {
                         "internalType": "enum FullDaoContract.Role",
                         "name": "role",
-                        "type": "uint8"
+                        "type": "string"
                     },
                     {
                         "internalType": "address",
@@ -523,7 +523,7 @@ export const FullDaoContract = getContract({
                     {
                         "internalType": "enum FullDaoContract.Role",
                         "name": "role",
-                        "type": "uint8"
+                        "type": "string"
                     },
                     {
                         "internalType": "address",
@@ -854,7 +854,7 @@ export const FullDaoContract = getContract({
             {
                 "internalType": "enum FullDaoContract.Role",
                 "name": "role",
-                "type": "uint8"
+                "type": "string"
             },
             {
                 "internalType": "address",
@@ -944,7 +944,7 @@ export const FullDaoContract = getContract({
             {
                 "internalType": "enum FullDaoContract.Role",
                 "name": "",
-                "type": "uint8"
+                "type": "string"
             }
         ],
         "stateMutability": "view",

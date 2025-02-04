@@ -393,6 +393,9 @@
   background-size: cover;
   background-position: center;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .article-container article::before {
@@ -418,6 +421,7 @@
 .article-container h2 {
   color: #ffffff;
   font-size: clamp(12px, 2.5vw, 43px);
+  text-align: center;
 }
 
 .article-container p {
@@ -512,7 +516,8 @@
   .groups {
     position: initial;
     margin-top: -20px;
-    height: 560px;
+    height: auto;
+    max-height: 560px;
   }
 
   .group {

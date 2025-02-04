@@ -17,7 +17,7 @@ main.daoMain {
   padding: 0 24px;
   position: absolute;
   top: clamp(64px, 9vw, 164px);
-  z-index: 2;
+  z-index: 1;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -337,17 +337,7 @@ main.daoMain {
 
 section.second {
   margin-bottom: 120px;
-}
-
-.second .proposal-groups::before {
-  content: "";
-  position: absolute;
-  left: 36px;
-  top: 310px;
-  height: 257px;
-  width: 2px;
-  background-color: #d9d9d9;
-  opacity: 23%;
+  position: relative;
 }
 
 section.second::after {
@@ -379,7 +369,16 @@ section.second::after {
   scrollbar-width: none;
 }
 
-
+.second .proposal-groups::before {
+  content: "";
+  position: absolute;
+  left: 36px;
+  top: 310px;
+  height: auto;
+  width: 2px;
+  background-color: #d9d9d9;
+  opacity: 23%;
+}
 
 .second .proposal-groups::-webkit-scrollbar {
   display: none;
@@ -484,6 +483,21 @@ section.second::after {
   font-weight: bold;
   transform: scaleY(0.6);
   display: inline-block;
+}
+
+.noProposals {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: clamp(150px,16vw,400px);
+}
+
+.noProposals p {
+  font-size: 31px;
+  font-weight: bold;
+  color: #433939;
+  text-align: center;
 }
 
 @media only screen and (max-width: 900px) {

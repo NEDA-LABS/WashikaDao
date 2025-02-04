@@ -53,7 +53,7 @@ const HomePage: React.FC = () => {
     navigate("/DaoRegistration");
   };
   const handleJifunzeElimu = () => {
-    navigate("/JifunzeElimu");
+    navigate("/Blogs");
   };
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
@@ -228,7 +228,7 @@ const HomePage: React.FC = () => {
               >
                 <div>
                   <h2>{blog.title}</h2>
-                  <p>{blog.content}</p>
+                  {/* <p>{blog.content}</p> */}
                 </div>
               </article>
             </Link>

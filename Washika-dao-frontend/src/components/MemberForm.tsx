@@ -25,7 +25,7 @@ interface MemberFormProps {
  * @param {(field: keyof Member, value: string) => void} props.onMemberChange - Callback function to handle changes to the member's fields.
  * @param {() => void} props.onAddMember - Callback function to add a new member.
  * @param {() => void} props.onInviteMember - Callback function to send an invite to new member.
- * 
+ *
  *
  * @returns {JSX.Element} A JSX element representing the member form UI.
  */
@@ -50,71 +50,78 @@ const MemberForm: React.FC<MemberFormProps> = ({
         <div className="top">Member Information</div>
         <div className="formDiv">
           <div className="div">
-             <div className="first">
-            <div className="input">
-              <label>Add members Name</label>
-              <div className="memberNames">
-                <input
-                  type="text"
-                  value={currentMember.firstName}
-                  onChange={(e) => onMemberChange("firstName", e.target.value)}
-                  placeholder="first name"
-                />
-                <input
-                  type="text"
-                  value={currentMember.lastName}
-                  onChange={(e) => onMemberChange("lastName", e.target.value)}
-                   placeholder="last name"
-                />
+            <div className="first">
+              <div className="input">
+                <label>Add members Name</label>
+                <div className="memberNames">
+                  <input
+                    type="text"
+                    value={currentMember.firstName}
+                    onChange={(e) =>
+                      onMemberChange("firstName", e.target.value)
+                    }
+                    placeholder="first name"
+                  />
+                  <input
+                    type="text"
+                    value={currentMember.lastName}
+                    onChange={(e) => onMemberChange("lastName", e.target.value)}
+                    placeholder="last name"
+                  />
+                </div>
+              </div>
+              <div className="input">
+                <label>Members Role</label>
+                <select
+                  value={currentMember.memberRole}
+                  onChange={(e) => onMemberChange("memberRole", e.target.value)}
+                  className="short"
+                >
+                  <option value="" disabled>
+                    Role
+                  </option>
+                  <option value="Treasurer">Treasurer</option>
+                  <option value="Secretary">Secretary</option>
+                </select>
               </div>
             </div>
             <div className="input">
-              <label>Members Role</label>
-              <select
-                value={currentMember.memberRole}
-                onChange={(e) => onMemberChange("memberRole", e.target.value)}
-                className="short"
+              <label>Email</label>
+              <input
+                type="email"
+                value={currentMember.email}
+                onChange={(e) => onMemberChange("email", e.target.value)}
+              />
+            </div>
+            <div className="input">
+              <label>Contact</label>
+              <input
+                type="number"
+                value={currentMember.phoneNumber}
+                onChange={(e) => onMemberChange("phoneNumber", e.target.value)}
+              />
+            </div>
+            <div className="input">
+              <label>Identification Number</label>
+              <input
+                type="number"
+                value={currentMember.nationalIdNo}
+                onChange={(e) => onMemberChange("nationalIdNo", e.target.value)}
+              />
+            </div>
+            <div className="buttons">
+              <button type="button" className="button-1" onClick={onAddMember}>
+                Add another member
+              </button>
+              <button
+                type="button"
+                className="button-2"
+                onClick={onInviteMember}
               >
-                <option value="" disabled>Role</option>
-                <option value="Treasurer">Treasurer</option>
-                <option value="Secretary">Secretary</option>
-              </select>
+                Send Invite
+              </button>
             </div>
           </div>
-          <div className="input">
-            <label>Email</label>
-            <input
-              type="email"
-              value={currentMember.email}
-              onChange={(e) => onMemberChange("email", e.target.value)}
-            />
-          </div>
-          <div className="input">
-            <label>Contact</label>
-            <input
-              type="number"
-              value={currentMember.phoneNumber}
-              onChange={(e) => onMemberChange("phoneNumber", e.target.value)}
-            />
-          </div>
-          <div className="input">
-            <label>Identification Number</label>
-            <input
-              type="number"
-              value={currentMember.nationalIdNo}
-              onChange={(e) => onMemberChange("nationalIdNo", e.target.value)}
-            />
-          </div>
-          <div className="buttons">
-            <button type="button" className="button-1" onClick={onAddMember}>
-              Add another member
-            </button>
-            <button type="button" className="button-2" onClick={onInviteMember}>
-              Send Invite
-            </button>
-          </div>
-          </div>
-         
         </div>
       </div>
     </div>

@@ -180,7 +180,7 @@
   justify-content: center;
 }
 
-.findAndJoin .select-1 {
+.findAndJoin .select-1, .popupp form select {
   width: clamp(200px, 20vw, 435px);
   height: clamp(36px, 3vw, 69px);
   border-radius: 16px;

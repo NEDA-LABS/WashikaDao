@@ -13,7 +13,7 @@ interface Dao {
 }
 /**
  * @Auth policy: Should definitely be authenticated to make sense
- * @returns 
+ * @returns
  */
 /**
  * Renders the MemberProfile component, which provides an overview of a DAO member's financial
@@ -26,37 +26,52 @@ interface Dao {
  * data within the DAO platform.
  */
 const MemberProfile: React.FC = () => {
-    // const [guaranter, setGuaranter] = useState<string>("");
-    const [, setDaos] = useState<Dao[]>([]); // DAOs for selection
-    const { firstName, lastName, email, phoneNumber, role, daoMultiSig, nationalIdNo } = useSelector((state: RootState) => state.user);
-    
-    useEffect(() => {
-      const fetchDaos = async () => {
-        try {
-          const response = await fetch(
-            "http://localhost:8080/FunguaDao/GetAllDaos"
-          );
+  // const [guaranter, setGuaranter] = useState<string>("");
+  const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
+  const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    role,
+    daoMultiSig,
+    nationalIdNo,
+  } = useSelector((state: RootState) => state.user);
+  console.log(nationalIdNo);
 
-          if (!response.ok)
-            throw new Error(`HTTP error! status: ${response.status}`);
+  useEffect(() => {
+    const fetchDaos = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/FunguaDao/GetAllDaos"
+        );
 
-          // Parse JSON data safely
-          const data = await response.json();
-          console.log("Fetched DAOs:", data);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
 
-          // Check if daoList exists and is an array
-          if (Array.isArray(data.daoList)) {
-            setDaos(data.daoList);
-          } else {
-            console.error("daoList is missing or not an array");
-          }
-        } catch (error) {
-          console.error("Failed to fetch DAOs:", error);
+        // Parse JSON data safely
+        const data = await response.json();
+        console.log("Fetched DAOs:", data);
+
+        // Check if daoList exists and is an array
+        if (Array.isArray(data.daoList)) {
+          setDaos(data.daoList);
+        } else {
+          console.error("daoList is missing or not an array");
         }
-      };
-      fetchDaos();
-      }, []);
- 
+      } catch (error) {
+        console.error("Failed to fetch DAOs:", error);
+      }
+    };
+    fetchDaos();
+  }, []);
+
+  // Toggle the form popup visibility
+  const handleAddMemberClick = () => {
+    setShowForm(!showForm);
+  };
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -91,6 +106,7 @@ const MemberProfile: React.FC = () => {
       const result = await response.json();
 
       if (response.ok) {
+        setShowForm(!showForm);
         console.log(`Success: ${result.message}`);
       } else {
         console.error(`Error: ${result.error}`);
@@ -116,7 +132,7 @@ const MemberProfile: React.FC = () => {
             <div className="secondy">
               <div className="header">
                 <div className="left">
-                  <img src="/images/speed-up-line.png"alt="logo" />
+                  <img src="/images/speed-up-line.png" alt="logo" />
                   <h1>Credit Score</h1>
                 </div>
                 <div className="right">
@@ -158,64 +174,50 @@ const MemberProfile: React.FC = () => {
           </div>
           <ProposalGroups />
         </section>
-        <div className="popupp">
-              <form onSubmit={handleSubmit}>
-                <DaoForm
-                  className="form"
-                  title="Apply to be a Member"
-                  description=""
-                  fields={[
-                    {
-                      label: "First Name",
-                      type: "text",
-                      value: firstName,
-                    },
-                    {
-                      label: "Last Name",
-                      type: "text",
-                      value: lastName,
-                    },
-                    {
-                      label: "Email",
-                      type: "email",
-                      value: email,
-                    },
-                    {
-                      label: "Phone Number",
-                      type: "number",
-                      value: phoneNumber,
-                    },
-                    {
-                      label: "National ID",
-                      type: "number",
-                      value: "",
-                    },
-                    {
-                      label: "Guaranter",
-                      type: "select",
-                      options: [
-                        {
-                          label: "Select Guaranter",
-                          value: "",
-                          disabled: true,
-                          selected: true,
-                        },
-                        { label: "Chairperson", value: "Chairperson" },
-                        { label: "Member", value: "Member" },
-                        { label: "Funder", value: "Funder" },
-                      ],
-                      value: "",
-                    },
-                  ]}
-                />
-                <div className="center">
-                  <button type="submit">Submit</button>
-                  <button type="button">
-                    Close
-                  </button>
-                </div>
-              </form>
-            </div>
+        <button onClick={handleAddMemberClick}>Join another Dao</button>
+        {showForm && (
+          <div className=" popupp">
+            <form onSubmit={handleSubmit}>
+              <DaoForm
+                className="form"
+                title="Apply to be a Member"
+                description=""
+                fields={[                 
+                  {
+                    label: "Select Dao",
+                    type: "select",
+                    options: [
+                      {
+                        label: "Select Dao",
+                        value: "",
+                        disabled: true,
+                        selected: true,
+                      },
+                      ...daos.map((dao) => ({
+                        label: "",
+                        value: dao.daoName,
+                      })),
+                    ],
+                    value: "",
+                  },
+                  {
+                    label: "Guarantor Number",
+                    type: "number",
+                    value: "",
+                  },
+                ]}
+              />
+              <div className="center">
+                <button className="createAccount" type="submit">
+                  Submit
+                </button>
+                <button className="closebtn" type="button" onClick={handleAddMemberClick}>
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </main>
       <Footer className={"footerDaoMember"} />
     </>
