@@ -3,8 +3,9 @@ import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catch
 import { Dao } from "../entity/Dao";
 import { MemberDetails } from "../entity/MemberDetails";
 import { AppDataSource } from "../data-source";
-import { IDao } from "../Interfaces/EntityTypes";
-import { ObjectLiteral } from "typeorm";
+import { IDao, IMemberDetails } from "../Interfaces/EntityTypes";
+import { In, ObjectLiteral } from "typeorm";
+import jwt from 'jsonwebtoken';
 
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
@@ -85,7 +86,7 @@ export async function CreateInitialOwner(req: Request, res: Response) {
 
     const createdOwner = memberDetailsRepository.create(initialOwner);
     await memberDetailsRepository.save(createdOwner);
-
+    
     return res.status(201).json({ message: "Dao Owner created successfully" });
   } catch (error) {
     console.error("Error creating Dao owner:", error);
@@ -148,14 +149,23 @@ export async function loginMember(req: Request, res: Response) {
         });
     }
 
+    // Generate a JWT token
+    const token = jwt.sign(
+      { memberAddr: member.memberAddr, memberRole: member.memberRole },
+      process.env.ROUTE_PROTECTOR_API_KEY, // Use an environment variable for the secret key
+      { expiresIn: '1h' } // Token expires in 1 hour
+    );
+
     // If member exists, return a success message and member details (without sensitive data)
     return res.status(200).json({
       message: "Login successful",
+      token,
       member: {
         firstName: member.firstName,
         lastName: member.lastName,
         email: member.email,
         phoneNumber: member.phoneNumber,
+        nationalIdNo: member.nationalIdNo,
         memberRole: member.memberRole,
         memberAddr: member.memberAddr,
         daoMultiSig: member.daoMultiSig,
@@ -263,9 +273,9 @@ export async function RequestToJoinDao(req: Request, res: Response) {
       return res.status(404).json({ error: "DAO not found" });
     }
 
-    // Treat empty memberAddr as null
-    const sanitizedMemberAddr =
-      memberAddr && memberAddr.trim() !== "" ? memberAddr : null;
+    // // Treat empty memberAddr as null
+    // const sanitizedMemberAddr =
+    //   memberAddr && memberAddr.trim() !== "" ? memberAddr : null;
 
     // Create the member request entry
     const memberRequest = {
@@ -275,7 +285,7 @@ export async function RequestToJoinDao(req: Request, res: Response) {
       phoneNumber,
       nationalIdNo,
       memberRole,
-      sanitizedMemberAddr,
+      memberAddr,
       daoMultiSig,
       daos: memberDaos,
     };
@@ -446,7 +456,7 @@ export async function GetAllMembers(
     const memberRepository = AppDataSource.getRepository(MemberDetails);
     const members = await memberRepository.find({
       where: { daoMultiSig: daoMultiSigAddr },
-      relations: ["daos"],
+      // relations: ["daos"],
     });
 
     const memberCount = members.length;

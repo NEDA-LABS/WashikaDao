@@ -85,7 +85,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     dao.daoImageIpfsHash = daoImageIpfsHash;
     dao.daoRegDocs = daoRegDocs;
     dao.daoMultiSigAddr = multiSigAddr;
-   // dao.daoMultiSigs = multiSigAddr; // Assuming it's an array of multisigs
+   dao.daoMultiSigs = multiSigAddr; // Assuming it's an array of multisigs
     dao.multiSigPhoneNo = multiSigPhoneNo;
     dao.kiwango = kiwango;
     dao.accountNo = accountNo;
