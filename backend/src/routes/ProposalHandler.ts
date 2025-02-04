@@ -4,7 +4,7 @@ const router = express.Router()
 import { GetProposalDetails, GetAllProposalsInDao, CreateProposal, UpVoteProposal, DownVoteProposal } from "../controller/ProposalController";
 
 import { Request, Response } from "express";
-import { RouteOAuthManager } from "../utils/Authenticator/Authenticator";
+import { Authenticator } from "../utils/Authenticator/Authenticator";
 
 //TODO: Include better documentation for this feature
 
@@ -12,10 +12,10 @@ import { RouteOAuthManager } from "../utils/Authenticator/Authenticator";
 router.get('/GetAllProposalsInDao', async(req: Request, res: Response) => {await GetAllProposalsInDao(req, res)});
 
 router.get('/GetProposalDetails', async(req: Request, res: Response) => { await GetProposalDetails(req, res)});
-router.post('/CreateProposal',  async (req: Request, res: Response) => {await CreateProposal(req, res)});
+router.post('/CreateProposal', Authenticator,  async (req: Request, res: Response) => {await CreateProposal(req, res)});
 //upvoting a proposal
-router.post('/UpVoteProposal', async (req: Request, res: Response) =>{ await  UpVoteProposal(req, res)});
+router.post('/UpVoteProposal', Authenticator, async (req: Request, res: Response) =>{ await  UpVoteProposal(req, res)});
 //downvoting a proposal
-router.post('/DownVoteProposal', async(req: Request, res: Response) => { await DownVoteProposal(req, res)});
+router.post('/DownVoteProposal', Authenticator, async(req: Request, res: Response) => { await DownVoteProposal(req, res)});
 //Get all proposals from a DAO
 export default router;

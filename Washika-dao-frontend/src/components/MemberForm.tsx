@@ -25,7 +25,7 @@ interface MemberFormProps {
  * @param {(field: keyof Member, value: string) => void} props.onMemberChange - Callback function to handle changes to the member's fields.
  * @param {() => void} props.onAddMember - Callback function to add a new member.
  * @param {() => void} props.onInviteMember - Callback function to send an invite to new member.
- * 
+ *
  *
  * @returns {JSX.Element} A JSX element representing the member form UI.
  */
@@ -114,7 +114,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
             </button>
           </div>
           </div>
-         
+
         </div>
       </div>
     </div>
