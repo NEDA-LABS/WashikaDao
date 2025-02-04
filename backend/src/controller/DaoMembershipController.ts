@@ -3,8 +3,9 @@ import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catch
 import { Dao } from "../entity/Dao";
 import { MemberDetails } from "../entity/MemberDetails";
 import  AppDataSource  from "../data-source";
-import { IDao } from "../Interfaces/EntityTypes";
+import { IDao, IMemberDetails } from "../Interfaces/EntityTypes";
 import { ObjectLiteral } from "typeorm";
+import  jwt  from "jsonwebtoken";
 
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
@@ -68,7 +69,6 @@ export async function CreateInitialOwner(req: Request, res: Response) {
   if (!firstName || !lastName || !memberAddr) {
     return res.status(400).json({ error: "Missing required fields" });
   }
-    const daoRepository = await AppDataSource.getRepository(Dao);
     const foundDao = await daoRepository.findOneBy({ daoMultiSigAddr });
     if (!foundDao) {
         return res
@@ -151,13 +151,22 @@ export async function loginMember(req: Request, res: Response) {
         .status(404)
         .json({
           error:
-            "Member not found. Please check the member address and try again.",
+            "Error, Member not found. Please check the member address and try again.",
         });
     }
+
+        //Generate a JWT(Json Web Token)
+        const token = jwt.sign(
+            { memberAddr: member.memberAddr, memberRole: member.memberRole },
+            process.env.ROUTE_PROTECTOR_API_KEY,//Using environment variable for the secret key
+            { expiresIn: '1h' } //Expires in a hour
+        );
+
 
     // If member exists, return a success message and member details (without sensitive data)
     return res.status(200).json({
       message: "Login successful",
+      token,
       member: {
         firstName: member.firstName,
         lastName: member.lastName,
@@ -173,7 +182,7 @@ export async function loginMember(req: Request, res: Response) {
     res
       .status(500)
       .json({
-        error: "An error occurred while logging in. Please try again later.",
+        error: "An internal server error occurred while  attempting to log you in. Please try again later.",
       });
   }
 }
@@ -214,7 +223,6 @@ export async function RequestToJoinDao(req: Request, res: Response) {
   }
 
   try {
-    const daoRepository = await AppDataSource.getRepository(Dao);
     const foundDaoByMultiSig = await daoRepository.findOneBy({
       daoMultiSigAddr
     });
