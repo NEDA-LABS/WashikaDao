@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './users/userSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-
+import notificationReducer from "./notifications/notificationSlice";
 // Define persist configuration
 const persistConfig = {
   key: 'user',       // Key specific to user reducer
@@ -17,6 +17,7 @@ const persistedUserReducer = persistReducer(persistConfig, userReducer);
 export const store = configureStore({
   reducer: {
     user: persistedUserReducer,
+    notification: notificationReducer,
   },
 });
 

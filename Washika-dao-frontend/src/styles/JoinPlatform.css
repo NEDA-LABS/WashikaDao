@@ -123,11 +123,11 @@
   height: 8px;
   background-color: #c8954b;
   border-radius: 50%;
-} 
+}
 
 .daoRegistration.join .createDao {
   width: 503px;
-} 
+}
 
 .daoRegistration.join .joinDao {
   display: flex;
@@ -180,7 +180,7 @@
   justify-content: center;
 }
 
-.findAndJoin .select-1 {
+.findAndJoin .select-1, .popup form select {
   width: clamp(200px, 20vw, 435px);
   height: clamp(36px, 3vw, 69px);
   border-radius: 16px;

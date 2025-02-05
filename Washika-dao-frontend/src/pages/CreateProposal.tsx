@@ -6,6 +6,14 @@ import React from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 
+// 4 Blockchain
+import { PayEmbed, useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { prepareContractCall } from "thirdweb";
+import { FullDaoContract } from "../utils/handlers/Handlers";
+import { instanceOf } from "prop-types";
+
+// 4 Backend Communication
+import { baseUrl } from "../utils/backendComm";
 /**
  *
  * @Auth policy: Check if user is authenticated before allowing access
@@ -65,6 +73,7 @@ const CreateProposal: React.FC = () => {
   // Extract multiSigAddr from URL params
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
   const { memberAddr } = useSelector((state: RootState) => state.user);
+ const token = localStorage.getItem("token");
   // State to manage form data
   const [proposalData, setProposalData] = useState({
     proposalOwner: memberAddr,
@@ -75,7 +84,7 @@ const CreateProposal: React.FC = () => {
     proposalStatus: "open", // default to 'open'
     amountRequested: "",
     profitSharePercent: "",
-    daoMultiSigAddr: daoMultiSigAddr || "", // Populate daoMultiSigAddr from URL params
+    daoMultiSigAddr: daoMultiSigAddr, // Populate daoMultiSigAddr from URL params
     numUpvotes: 0, // default value
     numDownvotes: 0, // default value
     fileUrl: "",
@@ -126,17 +135,98 @@ const CreateProposal: React.FC = () => {
     proposalData.proposalTitle,
   ]);
 
+    //Lets do some onchain stuff
+ const currActiveAcc = useActiveAccount();
+ const { mutate: sendTx, data: transactionResult } = useSendTransaction();
+
+// Explorer Url Builder
+ const buildCDExplorerUrl = (_createProposalTxHash: string) => {
+    return `https:testnet.routescan.io/transaction/${_createProposalTxHash}`;
+    };
+    // Grooming the Proposal Transaction
+ const prepareCreateProposalTx  = (_daoMultiSigAddr: string) => {
+     if (currActiveAcc  === undefined) {
+         console.error("undefined value for the current active account is not allowed");
+            return;
+        }
+         try {
+                console.log("Preparing Proposal Creation Transaction");
+            const _createProposaltx = prepareContractCall({
+                contract: FullDaoContract,
+                method: "addProposal",
+                params: [
+                    _daoMultiSigAddr,
+                    proposalData.proposalTitle,
+                    proposalData.projectSummary,
+                    proposalData.proposalDescription,
+
+BigInt(proposalData.profitSharePercent),
+    ],
+    });
+     console.log("Proposal Creation transaction prepared", _createProposaltx);
+     console.log(transactionResult);
+        return _createProposaltx;
+        }  catch (error) {
+        console.error("Error Playing Transaction:", error);
+        return; //error caused the transaction to fail
+    }
+    };
+
+    //Function to now send the transaction
+ const  sendCreateProposalTx = async (_createProposaltx: any) => {
+      if (!_createProposaltx) {
+            console.warn("undefined transaction");
+            return;
+        }
+
+        try {
+         sendTx(_createProposaltx, {
+            onSuccess: (receipt) => {
+            console.log("Transaction successful!", receipt);
+            const _explorerUrl = buildCDExplorerUrl(receipt.transactionHash);
+            window.location.href = _explorerUrl;
+            },
+            onError: (error) => {
+             if(error instanceOf Error && error.message.includes("AA21")) {
+                prompt("Gas sponsorship issue, please top up your account or request sponsorship."
+                );
+                } else {
+                console.error("Error Creating Proposal", error);
+}
+},
+});
+        } catch(error) {
+            console.error("Error sending transaction:", error);
+        }
+    };
+
+ const handleCreateProposal = async () => {
+    if (daoMultiSigAddr) {
+        const finalTx = prepareCreateProposalTx(daoMultiSigAddr);
+            if (finalTx) {
+                await sendCreateProposalTx(finalTx);
+                    return true;
+                  } else {
+                    console.log("Transaction preparation failed");
+                     return false;
+            }
+        }
+    };
+
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
+     const isCreateMemberSuccessfully = await handleCreateProposal();
+            if (isCreateMemberSuccessfully === true)  {
       const response = await fetch(
-        `http://localhost:8080/CreateProposal/DaoDetails/${daoMultiSigAddr}/createProposal`,
+        `http://${baseUrl}/CreateProposal/DaoDetails/${daoMultiSigAddr}/createProposal`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,//include token in the Authorization header
           },
           body: JSON.stringify(proposalData),
         }
@@ -146,14 +236,18 @@ const CreateProposal: React.FC = () => {
 
       if (response.ok) {
         console.log(data);
-        
+
         const proposalId = data.createdProposal?.proposalId;
         console.log("Proposal created successfully, ID:", proposalId);
         navigate(`/ViewProposal/${daoMultiSigAddr}/${proposalId}`);
       } else {
-        console.error("Error creating proposal:", data.message);
+        console.error(`Error, ${data.error}`);
       }
-    } catch (error) {
+    } else {
+        console.error("Proposal Creation transaction failed.");
+        alert("Proposal creation failed. Please try again.");
+    }
+        } catch (error) {
       console.error("Error:", error);
     }
   };
@@ -165,7 +259,11 @@ const CreateProposal: React.FC = () => {
         <div className="proposalParag">
           <div className="top">
             <h1>Create a proposal</h1>
-            <img src="/images/arrow-back.png" alt="arrow-back" />
+            <img
+             src="/images/arrow-back.png"
+             alt="arrow-back"
+             onClick={() => navigate(-1)}
+                        />
           </div>
 
           <p>

@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { baseUrl } from "../utils/backendComm";
 
 interface Dao {
   daoName: string;
@@ -13,7 +14,7 @@ interface Dao {
 }
 /**
  * @Auth policy: Should definitely be authenticated to make sense
- * @returns 
+ * @returns
  */
 /**
  * Renders the MemberProfile component, which provides an overview of a DAO member's financial
@@ -27,14 +28,16 @@ interface Dao {
  */
 const MemberProfile: React.FC = () => {
     // const [guaranter, setGuaranter] = useState<string>("");
-    const [, setDaos] = useState<Dao[]>([]); // DAOs for selection
+    const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
     const { firstName, lastName, email, phoneNumber, role, daoMultiSig, nationalIdNo } = useSelector((state: RootState) => state.user);
-    
+    const [showForm, setShowForm] = useState<boolean>(false);
+    console.log(nationalIdNo);
+
     useEffect(() => {
       const fetchDaos = async () => {
         try {
           const response = await fetch(
-            "http://localhost:8080/FunguaDao/GetAllDaos"
+            `http://${baseUrl}/DaoKit/GetAllDaos`
           );
 
           if (!response.ok)
@@ -56,7 +59,11 @@ const MemberProfile: React.FC = () => {
       };
       fetchDaos();
       }, []);
- 
+
+    const handleAddMemberClick = () => {
+        setShowForm(!showForm);
+    }
+
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
@@ -113,7 +120,7 @@ const MemberProfile: React.FC = () => {
             </p>
           </div>
           <div className="center">
-            <div className="secondy">
+            <div className="secondly">
               <div className="header">
                 <div className="left">
                   <img src="/images/speed-up-line.png"alt="logo" />
@@ -158,65 +165,51 @@ const MemberProfile: React.FC = () => {
           </div>
           <ProposalGroups />
         </section>
-        <div className="popupp">
-              <form onSubmit={handleSubmit}>
-                <DaoForm
-                  className="form"
-                  title="Apply to be a Member"
-                  description=""
-                  fields={[
-                    {
-                      label: "First Name",
-                      type: "text",
-                      value: firstName,
-                    },
-                    {
-                      label: "Last Name",
-                      type: "text",
-                      value: lastName,
-                    },
-                    {
-                      label: "Email",
-                      type: "email",
-                      value: email,
-                    },
-                    {
-                      label: "Phone Number",
-                      type: "number",
-                      value: phoneNumber,
-                    },
-                    {
-                      label: "National ID",
-                      type: "number",
-                      value: "",
-                    },
-                    {
-                      label: "Guaranter",
-                      type: "select",
-                      options: [
-                        {
-                          label: "Select Guaranter",
-                          value: "",
-                          disabled: true,
-                          selected: true,
-                        },
-                        { label: "Chairperson", value: "Chairperson" },
-                        { label: "Member", value: "Member" },
-                        { label: "Funder", value: "Funder" },
-                      ],
-                      value: "",
-                    },
-                  ]}
-                />
-                <div className="center">
-                  <button type="submit">Submit</button>
-                  <button type="button">
-                    Close
-                  </button>
-                </div>
-              </form>
-            </div>
-      </main>
+                        <button onClick={handleAddMemberClick}>Join another Dao</button>
+        {showForm && (
+          <div className=" popupp">
+            <form onSubmit={handleSubmit}>
+              <DaoForm
+                className="form"
+                title="Apply to be a Member"
+                description=""
+                fields={[
+                  {
+                    label: "Select Dao",
+                    type: "select",
+                    options: [
+                      {
+                        label: "Select Dao",
+                        value: "",
+                        disabled: true,
+                        selected: true,
+                      },
+                      ...daos.map((dao) => ({
+                        label: "",
+                        value: dao.daoName,
+                      })),
+                    ],
+                    value: "",
+                  },
+                  {
+                    label: "Guarantor Number",
+                    type: "number",
+                    value: "",
+                  },
+                ]}
+              />
+              <div className="center">
+                <button className="createAccount" type="submit">
+                  Submit
+                </button>
+                <button className="closebtn" type="button" onClick={handleAddMemberClick}>
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+     </main>
       <Footer className={"footerDaoMember"} />
     </>
   );

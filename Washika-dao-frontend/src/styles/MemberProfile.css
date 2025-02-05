@@ -312,12 +312,53 @@ body :has(.member) {
   font-size: 31px;
 }
 
+.popupp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .popupp form {
-  border: 1px solid black;
+     display: flex;
+  align-items: center;
+  background-color: #4b4546;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  padding: 20px;
 }
 
 .popupp .form {
   display: initial;
+}
+
+
+.popupp .form .left {
+  width: auto;
+}
+.popupp .form .formDiv {
+  width: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.popupp .center {
+  display: flex;
+  flex-direction: column;
+}
+.popupp .createAccount {
+  margin-bottom: 16px;
+}
+.popupp .closebtn {
+  /* border: 1px solid red */
+  padding: 9px;
+  color: #ffffff;
+  font-size: 20px;
+  cursor: pointer;
 }
 
 .footerDaoMember {
@@ -388,7 +429,7 @@ body :has(.member) {
   .dashboard .one ul select {
     padding: auto 0;
   }
-  
+
   .dashboard .two {
     flex-wrap: wrap;
     justify-content: start;
@@ -398,4 +439,14 @@ body :has(.member) {
   .dashboard .two .lined {
     display: none;
   }
+      .member .create {
+    padding: 6px 12px;
+  }
+  .member .sec img {
+  width: 30px;
+}
+  .member .sec h1,
+.owner .sec h1 {
+  font-size: 24px;
+}
 }

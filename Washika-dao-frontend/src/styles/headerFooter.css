@@ -42,6 +42,11 @@ nav ul {
   font-size: 21px;
 }
 
+/* Mobile Menu Toggle Styles */
+.menu-button {
+  display: none; /* Hidden by default on larger screens */
+}
+
 nav .three {
   font-size: 18px;
 }
@@ -73,7 +78,7 @@ nav button {
 .popup-content {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
   background: white;
   padding: 40px 20px;
@@ -164,19 +169,48 @@ footer img {
     padding: 16px;
     display: flex;
     justify-content: space-between;
+    position: fixed;
+   z-index: 1;
 }
 
-nav .wordLogo{
-    width: 96px;
-}
-nav ul {
-    width: auto;
-    height: auto;
+.nav.DaoProfile, nav.SuperAdmin {
+        position: absolute;
 }
 
-nav li {
+      /* Show the mobile menu button */
+  .menu-button {
+    display: block;
+    right: 0;
+  }
+  .hidden {
     display: none;
 }
+
+       nav ul {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 20px;
+    right: 0;
+    background-color: #4b4546;
+    width: auto;
+    padding: 10px;
+    gap: 6px;
+    z-index: 9999;
+  }
+  nav ul.open {
+    display: flex; /* Show the menu when open */
+    z-index: 9999;
+  }
+  nav ul li {
+    font-size: 16px;
+    padding: 10px 0;
+    width: 100%;
+    text-align: left;
+  }
+nav .wordLogo{
+    width: 96px;
+    }
 
 nav .show {
     display: inline;
@@ -218,7 +252,7 @@ footer li {
 .social-icon {
     font-size: 16px;
   }
-  
+
   footer img {
     display: none;
   }

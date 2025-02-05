@@ -3,19 +3,22 @@ import { useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 
+import { baseUrl } from "../utils/backendComm";
+
 interface ProposalData {
   proposalId: number;
   proposalOwner: string;
   proposalTitle: string;
   projectSummary: string;
   proposalDescription: string;
-  proposalStatus: "open" | "closed"; 
+  proposalStatus: "open" | "closed";
   amountRequested: number;
   profitSharePercent: number;
   daoMultiSigAddr: string;
   numUpVotes: number;
   numDownVotes: number;
 }
+
 
 const ProposalGroups: React.FC = () => {
   const { daoMultiSig } = useSelector(
@@ -24,16 +27,17 @@ const ProposalGroups: React.FC = () => {
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<ProposalData[]>([]);
 
+
   // Fetch proposals from the API
   useEffect(() => {
     const fetchProposals = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/ViewProposal/DaoDetails/${daoMultiSig}/proposals`
+          `http://${baseUrl}/ViewProposal/DaoDetails/${daoMultiSig}/proposals`
         );
         const data = await response.json();
         setProposals(data.proposals);
-        
+
       } catch (error) {
         console.error("Error fetching proposals:", error);
       }
@@ -48,7 +52,7 @@ const ProposalGroups: React.FC = () => {
 
   return (
     <div className="proposal-groups">
-      {proposals?.map((proposal) => (
+      {proposals ? (proposals.map((proposal) => (
         <div className="proposal" key={proposal.proposalId}>
           <div className="one">
             <h1>{proposal.proposalTitle}</h1>
@@ -75,9 +79,15 @@ const ProposalGroups: React.FC = () => {
             </div>
           </div>
         </div>
-      ))}
+      ))
+            ) : (
+            <div className="noProposals">
+             <p> No Proposals found</p>
+             <p>Created Proposals will appear here</p>
     </div>
-  );
+  )}
+  </div>
+    );
 };
 
 export default ProposalGroups;

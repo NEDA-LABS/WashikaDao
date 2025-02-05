@@ -1,6 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearCurrentUser, setCurrentUser } from "../redux/users/userSlice";
+import { toggleNotificationsPopup } from "../redux/notifications/notificationSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
@@ -8,6 +9,9 @@ import { ConnectButton, useActiveAccount, lightTheme } from "thirdweb/react";
 import {  inAppWallet } from "thirdweb/wallets";//Add createWallet to allow funders to use metamask to fund dao operations
 import { arbitrumSepolia } from "thirdweb/chains";
 import { useEffect, useRef, useState } from "react";
+import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -41,11 +45,12 @@ interface NavBarProps {
  */
 const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const activeAccount = useActiveAccount();
   const [address, setAddress] = useState<string | null>(null);
   const hasLoggedIn = useRef(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const { role, daoMultiSig } = useSelector((state: RootState) => state.user);
 
@@ -67,9 +72,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
   const logout = () => {
     hasLoggedIn.current = false;
     localStorage.removeItem("activeAccount");
+    localStorage.removeItem("token");
     dispatch(clearCurrentUser());
     navigate("/", { replace: true });
   };
+
+    const handleNotificationsClick = () => {
+        dispatch(toggleNotificationsPopup());//Dispatch action to toggle popup
+    }
 
   useEffect(() => {
     if (!activeAccount?.address && hasLoggedIn.current == true) {
@@ -96,12 +106,18 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
   //TODO: switch to celoAlfajoresTestnet when in prod and mainnet when deployed
   const currInUseChain = arbitrumSepolia;
 
+ /**
+        * Variable keep track of the base url to call the backend and allow for changes when  necessary
+        * TODO: Plug in Directly from the backend
+        */
+   const backendUrl: string = "localhost:8080";
+
   // Automatically trigger login when the wallet is connected
   useEffect(() => {
     const loginMember = async (address: string) => {
       try {
         const response = await fetch(
-          "http://localhost:8080/JiungeNaDao/DaoDetails/login",
+          `https://${backendUrl}/JiungeNaDao/DaoDetails/login`,
           {
             method: "POST",
             headers: {
@@ -113,8 +129,10 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
 
         const result = await response.json();
         if (response.ok) {
-          console.log("Login successful:", result.message);
-          // console.log(role);
+          console.log("Login successful:", result.member);
+          console.log("This it the token:", result.token);
+          localStorage.setItem("token", result.token);
+                    //console.log(role);
 
           dispatch(
             setCurrentUser({
@@ -143,15 +161,15 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
     }
   }, [activeAccount?.address, dispatch, navigate, role]);
 
-  console.log( "The address is", address);
+  console.log("The address is", address);
 
   function handleRegisterDaoLink(e: React.MouseEvent) {
     e.preventDefault();
     if(address && hasLoggedIn.current == true) {
-      navigate("/DaoRegistration")
+      navigate("/DaoRegistration");
     } else if (hasLoggedIn.current == false) {
       window.alert("Click on Connect to log in or create account first");
-    } 
+    }
     // else {
     //   console.warn("Invalid operation attempted");
     // }
@@ -167,7 +185,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
       setShowPopup(true);
     } else if (activeAccount?.address && role === "Chairperson") {
       e.preventDefault();
-      navigate(`/SuperAdmin/${daoMultiSig}`)
+      navigate(`/SuperAdmin/${daoMultiSig}`);
     }
   };
 
@@ -175,17 +193,19 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
 
   const renderRegisterDao = () => {
     if (className === "navbarFunder") {
-      return
-    } 
-    else if (className === "CreateProposal" || className === "DaoRegister"|| className === "SuperAdmin") {
+     return;
+    }   else if (
+      className === "CreateProposal" ||
+      className === "DaoRegistration" ||
+      className === "SuperAdmin"
+    ){
       return;
-    }
-     else {
-      return (
+   } else {
+            return (
         <li>
           <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>Open Dao</Link>
         </li>
-      )
+      );
     }
   }
 
@@ -222,14 +242,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
       className !== "DaoProfile" &&
       className !== "navbarOwner" &&
       className !== "joinPlatformNav" &&
-      className !== "SuperAdmin" 
+      className !== "SuperAdmin"
     ) {
       // Determine the navigation path based on the role
       const getNavigationPath = () => {
-        if (role === "Funder") {
-          return `/Funder/${address}`;
-        } else if (role === "Chairperson"|| role === "Member") {
-          return `/Owner/${address}`;
+        if (activeAccount.address && role === "Funder") {
+          return `/Funder/${activeAccount?.address}`;
+        } else if (activeAccount.address && role === "Chairperson"|| role === "Member") {
+          return `/Owner/${activeAccount?.address}`;
         } else {
           console.warn(`Unknown role: ${role}`);
           return "/"; // Default or fallback path
@@ -241,7 +261,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
       );
     } else if ( className === "SuperAdmin"){
       return (
-        <button onClick={() => navigate(`/Funder/${address}`)}>Notifications</button>
+        <button onClick={handleDaoToolKitClick}>Notifications</button>
       )
     } else {
       return (
@@ -266,7 +286,22 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
           <img src="/images/words logo.png" className="wordLogo" alt="logo" />
         </Link>
       </div>
-      <ul>
+            {/* Mobile Menu Toggle Button **/
+            {className === "DaoProfile" ? (
+                <button onClick={() => navigate(`/Owner/${address}`)} className="menu-button">UserName</button>
+                ) : className !== "SuperAdmin" ? (
+                    <button className="menu-button" onClick={() => setIsMenuOpen(true)}>
+                    <FontAwesomeIcon icon={faBars} size="sm" />
+                    </button>
+                    ) : (
+    <button className="menu-button"  onClick={handleNotificationsClick}>
+    Notifications
+    </button>
+                )}
+      <ul  className={`nav-links ${isMenuOpen ? "open" : ""}`}>
+        <button className="menu-button" onClick={() => setIsMenuOpen(false)}>
+                <FontAwesomeIcon icon={faTimes} size="sm" />
+            </button>
         {renderRegisterDao()}
         <li>
           <Link to="/Blogs">EducationHUB</Link>

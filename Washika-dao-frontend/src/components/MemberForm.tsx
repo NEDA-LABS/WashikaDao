@@ -50,6 +50,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
         <div className="top">Member Information</div>
         <div className="formDiv">
           <div className="div">
+
              <div className="first">
             <div className="input">
               <label>Add members Name</label>
