@@ -11,8 +11,7 @@ interface Member {
 interface MemberFormProps {
   currentMember: Member;
   onMemberChange: (field: keyof Member, value: string) => void; // Function to handle changes to member fields
-  onAddMember: () => void; // Function to add a new member
-  onInviteMember: () => void; // Function to send  an invite to the new member
+  onAddAndInviteMember: () => void; // Function to add a new member and send  an invite to the member
 }
 /**
  * MemberForm is a React functional component that renders a form for managing
@@ -32,8 +31,7 @@ interface MemberFormProps {
 const MemberForm: React.FC<MemberFormProps> = ({
   currentMember, // Destructure props
   onMemberChange,
-  onAddMember,
-  onInviteMember,
+  onAddAndInviteMember,
 }) => {
   return (
     <div className="wanakikundi">
@@ -96,7 +94,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
             <div className="input">
               <label>Contact</label>
               <input
-                type="number"
+                type="tel"
                 value={currentMember.phoneNumber}
                 onChange={(e) => onMemberChange("phoneNumber", e.target.value)}
               />
@@ -110,13 +108,13 @@ const MemberForm: React.FC<MemberFormProps> = ({
               />
             </div>
             <div className="buttons">
-              <button type="button" className="button-1" onClick={onAddMember}>
+              {/* <button type="button" className="button-1" onClick={onAddMember}>
                 Add another member
-              </button>
+              </button> */}
               <button
                 type="button"
                 className="button-2"
-                onClick={onInviteMember}
+                onClick={onAddAndInviteMember}
               >
                 Send Invite
               </button>

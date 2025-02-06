@@ -216,14 +216,14 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   }
 
     const {
-    _daoName,
-    _daoLocation,
-    _targetAudience,
-    _daoTitle,
-    _daoDescription,
-    _daoOverview,
-    _daoImageIpfsHash,
-    _daoRegDocs,
+    daoName,
+    daoLocation,
+    targetAudience,
+    daoTitle,
+    daoDescription,
+    daoOverview,
+    daoImageIpfsHash,
+    daoRegDocs,
     multiSigPhoneNo,
     kiwango,
     accountNo,
@@ -236,14 +236,14 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   //TODO: Refactor to an extensible function or helper function in utils to check missing required
   if (
     !multiSigAddr ||
-    !_daoName ||
-    !_daoLocation ||
-    !_targetAudience ||
-    !_daoTitle ||
-    !_daoDescription ||
-    !_daoOverview ||
-    !_daoImageIpfsHash ||
-    !_daoRegDocs ||
+    !daoName ||
+    !daoLocation ||
+    !targetAudience ||
+    !daoTitle ||
+    !daoDescription ||
+    !daoOverview ||
+    !daoImageIpfsHash ||
+    !daoRegDocs ||
     !multiSigPhoneNo ||
     !accountNo ||
     !nambaZaHisa ||
@@ -262,13 +262,13 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
       return res.status(404).json({ message: "DAO not found" });
     }
     //daoID won't change when dao details are being updated  also not the way to add a multisig, a different method to add multisig will be implemented.
-    daoDetails.daoName = _daoName;
-    daoDetails.daoLocation = _daoLocation;
-    daoDetails.targetAudience = _targetAudience;
-    daoDetails.daoTitle = _daoTitle;
-    daoDetails.daoDescription = _daoDescription;
-    daoDetails.daoOverview = _daoOverview;
-    daoDetails.daoImageIpfsHash = _daoImageIpfsHash;
+    daoDetails.daoName = daoName;
+    daoDetails.daoLocation = daoLocation;
+    daoDetails.targetAudience = targetAudience;
+    daoDetails.daoTitle = daoTitle;
+    daoDetails.daoDescription = daoDescription;
+    daoDetails.daoOverview = daoOverview;
+    daoDetails.daoImageIpfsHash = daoImageIpfsHash;
     daoDetails.multiSigPhoneNo = multiSigPhoneNo;
     daoDetails.kiwango = kiwango;
     daoDetails.accountNo = accountNo;

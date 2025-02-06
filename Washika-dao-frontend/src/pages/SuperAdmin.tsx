@@ -281,7 +281,7 @@ const SuperAdmin: React.FC = () => {
             <button onClick={() => setActiveSection("mikopo")}>
               Loan Details
             </button>
-            <button>Edit Settings</button>
+            <button onClick={() => navigate(`/UpdateDao/${daoMultiSigAddr}`)}>Edit Settings</button>
           </div>
 
           {activeSection === "daoOverview" && (
@@ -383,7 +383,7 @@ const SuperAdmin: React.FC = () => {
 
           {activeSection === "mikopo" && (
             <>
-              <h2 className="heading">Wanachama wenye mikopo</h2>
+              <h2 className="heading">List of All members with loans</h2>
               <section className="thirdy">
                 <div className="left">
                   <div className="one">

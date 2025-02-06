@@ -425,6 +425,7 @@ section.second::after {
 .proposal .two {
   margin: 16px 30px 0;
   font-size: 22px;
+  color: #000000;
 }
 
 .proposal .three {

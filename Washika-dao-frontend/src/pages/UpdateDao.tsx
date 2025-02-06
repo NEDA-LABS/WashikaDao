@@ -1,7 +1,6 @@
 import Footer from "../components/Footer";
 import DaoForm from "../components/DaoForm";
 import NavBar from "../components/NavBar.tsx";
-import MemberForm from "../components/MemberForm";
 import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { useEffect } from "react";
@@ -31,15 +30,6 @@ interface FormData {
   nambaZaHisa: string;
   kiasiChaHisa: string;
   interestOnLoans: string;
-}
-
-interface Member {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  nationalIdNo: string;
-  memberRole: string;
 }
 
 const uploadFileToCloudinary = async (file: File, resourceType: string) => {
@@ -86,13 +76,13 @@ const uploadFileToCloudinary = async (file: File, resourceType: string) => {
  *
  * @see {@link https://reactjs.org/docs/hooks-intro.html} for more about React hooks.
  */
-const DaoRegistration: React.FC = () => {
+const UpdateDao: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const currUsrAcc = useActiveAccount();
+  // const currUsrAcc = useActiveAccount();
   const token = localStorage.getItem("token");
-  const [daoTxHash, setDaoTxHash] = useState("");
-  const { memberAddr, phoneNumber } = useSelector(
+//   const [daoTxHash, setDaoTxHash] = useState("");
+  const { daoMultiSig, memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
 
@@ -123,18 +113,6 @@ const DaoRegistration: React.FC = () => {
     interestOnLoans: "",
   });
 
-  // State to hold the list of members
-  const [members, setMembers] = useState<Member[]>([]);
-
-  // Temporary state to hold the current member's input values
-  const [currentMember, setCurrentMember] = useState<Member>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    nationalIdNo: "",
-    memberRole: "",
-  });
   const [completedSteps, setCompletedSteps] = useState<number>(0);
 
   useEffect(() => {
@@ -144,10 +122,9 @@ const DaoRegistration: React.FC = () => {
     if (formData.daoName) stepsCompleted++;
     if (formData.daoTitle) stepsCompleted++;
     if (formData.daoImageIpfsHash) stepsCompleted++;
-    if (members.length > 0) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
-  }, [formData, memberAddr, members.length, phoneNumber]);
+  }, [formData, memberAddr, phoneNumber]);
 
   // Handle changes in the main form fields
   const handleChange = (
@@ -160,64 +137,6 @@ const DaoRegistration: React.FC = () => {
       ...prevData,
       [name]: value, // Update the specific field in the form data
     }));
-  };
-
-  // Handle change for members
-  const handleMemberChange = (field: keyof Member, value: string) => {
-    setCurrentMember((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  // Function to add a member to the members list
-  const handleAddAndInviteMember = async () => {
-    if (
-      currentMember.firstName &&
-      currentMember.lastName &&
-      currentMember.phoneNumber &&
-      currentMember.nationalIdNo &&
-      currentMember.memberRole
-    ) {
-      // Push the current member to the members array
-      setMembers([...members, currentMember]);
-
-      try {
-        // Send an email to the new member
-        const response = await fetch(
-          "http://localhost:8080/JiungeNaDao/DaoDetails/inviteMemberEmail",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              email: currentMember.email,
-              firstName: currentMember.firstName,
-            }),
-          }
-        );
-  
-        if (response.ok) {
-          alert("Member added and email sent successfully.");
-        } else {
-          console.error("Failed to send email.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-
-      // Clear the currentMember form for new input
-      setCurrentMember({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        nationalIdNo: "",
-        memberRole: "",
-      });
-    }
   };
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -239,7 +158,7 @@ const DaoRegistration: React.FC = () => {
   };
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx, data: transactionResult } = useSendTransaction();
-  
+
   //Grooming the Dao transaction
   const prepareCreateDaoTx = (_multiSigPhoneNo: bigint) => {
     if (!currActiveAcc) {
@@ -247,7 +166,7 @@ const DaoRegistration: React.FC = () => {
       return; //Failed to prepare transaction since amount isn't plugged in
     }
     try {
-      console.log("Preparing dao Creation transaction");
+      console.log("Preparing dao Update transaction");
       const _createDaotx = prepareContractCall({
         contract: FullDaoContract,
         method: "createDao",
@@ -263,7 +182,7 @@ const DaoRegistration: React.FC = () => {
           BigInt(_multiSigPhoneNo?.toString() ?? "0"), //Convert to BigInt and handle undefined
         ],
       });
-      console.log("Dao Creation transaction prepared", _createDaotx);
+      console.log("Dao Update transaction prepared", _createDaotx);
       return _createDaotx;
     } catch (error) {
       console.error("Error preparing transaction:", error);
@@ -283,8 +202,8 @@ const DaoRegistration: React.FC = () => {
       sendTx(_createDaotx, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
-          setDaoTxHash(receipt.transactionHash);
-          window.location.href = `https://testnet.routescan.io/transaction/${daoTxHash}`;
+        //   setDaoTxHash(receipt.transactionHash);
+          window.location.href = `https://testnet.routescan.io/transaction/${receipt.transactionHash}`;
           console.log(`Current transaction result ${transactionResult}`);
         },
         onError: (error) => {
@@ -297,7 +216,7 @@ const DaoRegistration: React.FC = () => {
           "Gas sponsorship issue, please top up your account or request for gas sponsorship"
         );
       } else {
-        console.error("Error creating dao", error);
+        console.error("Error updating dao", error);
       }
     }
   };
@@ -326,11 +245,38 @@ const DaoRegistration: React.FC = () => {
           "Gas sponsorship issue, please top up your account or request for gas sponsorship"
         );
       } else {
-        console.error("Error creating dao", error);
+        console.error("Error updating dao", error);
       }
       return false;
     }
   };
+
+  // Fetch DAO details on component mount
+  useEffect(() => {
+    const fetchDaoDetails = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/DaoProfile/DaoDetails/${daoMultiSig}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
+        if (!response.ok) {
+          throw new Error("Failed to fetch DAO details");
+        }
+        const data = await response.json();
+        setFormData(data.daoDetails); // Populate form with existing data
+        
+      } catch (error) {
+        console.error("Error fetching DAO details:", error);
+      }
+    };
+
+    if (daoMultiSig) {
+      fetchDaoDetails();
+    }
+  }, [daoMultiSig, token]);
+  console.log(formData);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -350,22 +296,16 @@ const DaoRegistration: React.FC = () => {
       // First, call handleCreateDao
       const isCreateDaoSuccessful = await handleCreateDao();
       if (isCreateDaoSuccessful === true) {
-        // Combine form data and member data
-        const combinedData = {
-          ...formData,
-          members,
-        };
-
         // Send combined data to the backend API
         const response = await fetch(
-          "http://localhost:8080/FunguaDao/createDao",
+          `http://localhost:8080/FunguaDao/DaoDetails/${formData.multiSigAddr}`,
           {
-            method: "POST", // HTTP method
+            method: "PUT",
             headers: {
-              "Content-Type": "application/json", // Specify JSON content type
-              Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
             },
-            body: JSON.stringify(combinedData), // Send combined data
+            body: JSON.stringify(formData),
           }
         );
         const data = await response.json();
@@ -373,21 +313,19 @@ const DaoRegistration: React.FC = () => {
         // Parse the response JSON
         // Check if the response indicates success
         if (response.ok) {
-          alert("Dao created successfully");
-          console.log("DAO created successfully", data);
-          const daoMultiSigAddr = data.daoMultisigAddr; // Extract multi-sig address from response
-          console.log(daoMultiSigAddr);
+          alert("Dao updated successfully");
+          console.log("DAO updated successfully", data);
 
-          navigate(`/SuperAdmin/${daoMultiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
+          navigate(`/SuperAdmin/${formData.multiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
         } else {
-          console.error("Error creating DAO:", data.message);
+          console.error("Error updating DAO:", data.message);
         }
       } else {
-        console.error("DAO creation transaction failed.");
-        alert("DAO creation failed. Please try again.");
+        console.error("DAO update transaction failed.");
+        alert("DAO update failed. Please try again.");
       }
     } catch (error) {
-      console.error("Error creating DAO:", error);
+      console.error("Error updating DAO:", error);
     } finally {
       setIsSubmitting(false); // Reset loading state
     }
@@ -396,12 +334,12 @@ const DaoRegistration: React.FC = () => {
   return (
     <>
       <NavBar className={"DaoRegister"} />
-      {currUsrAcc ? ( // Only show form if user is logged in
+      {memberAddr ? ( // Only show form if user is logged in
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
-              Start here! <br />
-              Open your DAO with a simple Step-by-step form
+              GO ahead! <br />
+              Update your DAO with a simple Step-by-step form
             </h1>
             <p>
               Our platform allows you to manage and govern <br />
@@ -427,8 +365,8 @@ const DaoRegistration: React.FC = () => {
           <form className="combinedForms" onSubmit={handleSubmit}>
             <DaoForm
               className="form one"
-              title="Fill this form to your DAO"
-              description="Tell us about your group"
+              title="Update Dao"
+              description="Update the details of your DAO"
               fields={[
                 {
                   label: "Name of your Group",
@@ -532,6 +470,7 @@ const DaoRegistration: React.FC = () => {
                       label: "Profile Image",
                       type: "file",
                       name: "daoImageIpfsHash",
+                      value: formData.daoImageIpfsHash,
                       onChange: (e) =>
                         handleFileChange(
                           e as React.ChangeEvent<HTMLInputElement>
@@ -541,6 +480,7 @@ const DaoRegistration: React.FC = () => {
                       label: "Upload Registration Documents",
                       type: "file",
                       name: "daoRegDocs",
+                      value: formData.daoRegDocs,
                       onChange: (e) =>
                         handleFileChange(
                           e as React.ChangeEvent<HTMLInputElement>
@@ -551,27 +491,20 @@ const DaoRegistration: React.FC = () => {
               ]}
             />
 
-            {/* Pass members state and handlers to the MemberForm */}
-            <MemberForm
-              currentMember={currentMember}
-              onMemberChange={handleMemberChange}
-              onAddAndInviteMember={handleAddAndInviteMember}
-            />
-
             <center>
               <button
                 disabled={isSubmitting}
                 className={`createDao ${isSubmitting ? "loading" : ""}`}
                 type="submit"
               >
-                Create DAO
+                Update DAO
               </button>
             </center>
           </form>
         </main>
       ) : (
         <p className="daoRegistration">
-          Please log in to create a Dao Contract
+          Please log in to update your Dao Contract
         </p>
       )}
       <Footer className={""} />
@@ -579,4 +512,4 @@ const DaoRegistration: React.FC = () => {
   );
 };
 
-export default DaoRegistration;
+export default UpdateDao;
