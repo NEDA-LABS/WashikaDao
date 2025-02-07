@@ -17,7 +17,7 @@
 }
 
 .viewProposal .one button {
-  width: 478px;
+  width: 378px;
   height: 69px;
   border-radius: 118px;
   background-color: #d23737;
@@ -27,15 +27,45 @@
   font-family: "Syne", sans-serif;
 }
 
+.viewProposal article {
+  width: 62vw;
+}
+
 .viewProposal article h1 {
   color: #000000;
   font-size: 61px;
   line-height: 56px;
+  position: relative;
+  padding-bottom: 30px;
+}
+
+.viewProposal article h1::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 55vw;
+  background-color: #4339396b;
+}
+
+.viewProposal article .buttons {
+  margin: 40px 0 30px;
+}
+
+.viewProposal article .buttons .twoo {
+  background-color: #4e79e8;
+  color: #ffffff;
+  border-radius: 6px;
+}
+
+.viewProposal article .buttons .twooo {
+  background-color: #076d07;
+  color: #ffffff;
+  border-radius: 6px;
 }
 
 .viewProposal article p {
   margin: 24px 0 64px;
-  width: 857px;
   color: #000000;
   font-size: 32px;
 }
@@ -103,35 +133,43 @@
 
 .viewProposal .about p {
   width: 912px;
-  margin-bottom: 48px;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
   font-size: 32px;
   color: #000000;
+  position: relative;
 }
 
-.viewProposal .buttonGroup {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
+.viewProposal .about p::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 2px;
+  width: 55vw;
+  background-color: #4339396b;
 }
 
-.viewProposal .buttonGroup button {
-  width: 327px;
-  height: 49px;
-  border-radius: 24px;
-  background-color: black;
-  font-size: 27px;
+
+.viewProposal .buttonss {
+  margin: 0;
+  gap: 16px;
+}
+
+.viewProposal .buttonss button {
   color: #ffffff;
+  width: 190px;
+  border-radius: 8px;
+}
+
+.viewProposal .buttons .onee {
+  background-color: #60ce60;
   display: flex;
   justify-content: center;
-  align-items: center;
+  gap: 6px;
 }
 
-.viewProposal .buttonGroup .one {
-  background-color: #e28b06;
-}
-
-.viewProposal .buttonGroup .two {
-  background-color: #61ae45;
+.viewProposal .buttons .twoe {
+  background-color: #ec221f;
 }
 
 .viewProposal .buttonGroup .three {
@@ -173,18 +211,18 @@
     font-size: 24px;
   }
 
+  .viewProposal article {
+    width: 100vw;
+  }
+
   .viewProposal article h1 {
     margin: 0 24px;
-    width: auto;
-    height: auto;
-    font-size: 36px;
+    font-size: 28px;
     line-height: initial;
   }
 
   .viewProposal article p {
     margin: 12px 24px;
-    width: auto;
-    height: auto;
     font-size: 24px;
   }
 
@@ -205,6 +243,10 @@
 
   .viewProposal section div {
     margin: 0 24px;
+  }
+
+  .viewProposal section .dooh {
+    align-items: flex-start;
   }
 
   .viewProposal section .first {

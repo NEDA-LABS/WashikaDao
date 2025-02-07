@@ -6,7 +6,7 @@ const router = express.Router();
 const PORT = process.env.PORT || 8080;
 
 import "reflect-metadata"
-import cors = require("cors");
+import cors from "cors";
 
 
 import { AppDataSource } from "./data-source";

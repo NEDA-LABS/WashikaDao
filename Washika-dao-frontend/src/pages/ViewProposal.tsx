@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
 
 interface ProposalData {
   proposalId: number;
@@ -43,6 +45,8 @@ const ViewProposal: React.FC = () => {
   }>(); // Get both proposalId and multiSigAddr from the URL
   const navigate = useNavigate();
   const [proposalData, setProposalData] = useState<ProposalData | null>(null); // State to hold proposal data
+  const token = localStorage.getItem("token");
+  const { memberAddr } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchProposalData = async () => {
@@ -54,6 +58,7 @@ const ViewProposal: React.FC = () => {
           throw new Error("Network response was not ok");
         }
         const data: ProposalData = await response.json();
+        console.log("Fetched Proposal Data:", data);
         setProposalData(data);
       } catch (error) {
         console.error("Error fetching proposal data:", error);
@@ -64,6 +69,41 @@ const ViewProposal: React.FC = () => {
       fetchProposalData();
     }
   }, [multiSigAddr, proposalId]);
+
+  const handleVote = async (voteType: "upvote" | "downvote") => {
+    if (!multiSigAddr || !proposalId) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}/${voteType}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+          },
+          body: JSON.stringify({proposalId, voterAddr: memberAddr }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to cast vote");
+      }
+
+      // Refresh proposal data after voting
+      const updatedData = await response.json();
+      alert(voteType === "upvote" ? "Voted Yes" : "Voted No");
+      console.log("Updated Proposal Data:", updatedData);
+      if (updatedData.amountRequested !== undefined) {
+        setProposalData(updatedData);
+      } else {
+        console.warn("Unexpected API response:", updatedData);
+      }
+    } catch (error) {
+      console.error("Error voting:", error);
+    }
+  };
+
   const handleBackClick = () => {
     if (proposalData) {
       navigate(`/DaoProfile/${multiSigAddr}`);
@@ -92,25 +132,37 @@ const ViewProposal: React.FC = () => {
             height={99}
             onClick={handleBackClick}
           />
-          <button>Rejected</button>
+          <button className={
+                    proposalData.proposalStatus === "open"
+                      ? "inProgress"
+                      : "rejected"
+                  }>Pending</button>
         </div>
 
         <article>
           <h1>{proposalData.proposalTitle}</h1>
+          <div className="buttons">
+            <button className="twoo">Fund Project</button>
+            <button className="twooo">View Statement</button>
+          </div>
           <p>{proposalData.projectSummary}</p>
         </article>
 
         <section>
           <button>View linked resources</button>
-          <div className="dooh">
-            <p className="first">Amount Requested</p>
-            <div className="second">
-              <p>
-                <span> {proposalData.amountRequested.toLocaleString()}</span>
-              </p>
-              <p className="left">Tsh</p>
+          {proposalData?.amountRequested !== undefined ? (
+            <div className="dooh">
+              <p className="first">Amount Requested</p>
+              <div className="second">
+                <p>
+                  <span> {proposalData.amountRequested.toLocaleString()}</span>
+                </p>
+                <p className="left">Tsh</p>
+              </div>
             </div>
-          </div>
+          ) : (
+            <p>Loading amount requested...</p>
+          )}
         </section>
 
         <div className="about">
@@ -118,10 +170,14 @@ const ViewProposal: React.FC = () => {
           <p>{proposalData.proposalDescription}</p>
         </div>
 
-        <div className="buttonGroup">
-          <button className="one">View Votes</button>
-          <button className="two">Re-propose</button>
-          <button className="three">Fund Project</button>
+        <div className="buttons buttonss">
+          <button className="onee" onClick={() => handleVote("upvote")}>
+            <img src="/images/Star.png" alt="star" />
+            Vote Yes
+          </button>
+          <button className="twoe" onClick={() => handleVote("downvote")}>
+            Deny 
+          </button>
         </div>
       </main>
       <Footer className="footerProposal" />

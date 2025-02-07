@@ -418,7 +418,7 @@ section.second::after {
   font-family: "Syne", sans-serif;
 }
 
-.proposal .one .inProgress {
+.proposal .one .inProgress, .viewProposal .one button.inProgress {
   background-color: #61ae45;
 }
 
