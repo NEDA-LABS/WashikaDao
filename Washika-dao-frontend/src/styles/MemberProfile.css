@@ -27,7 +27,7 @@ body :has(.member) {
   font-size: clamp(20px, 2.7vw, 43px);
 }
 
-.member section.one .secondy {
+.member section.one .secondly {
   width: clamp(240px, 25vw, 379px);
   height: clamp(156px, 15vw, 212px);
   border: 1px solid green;
@@ -336,23 +336,26 @@ body :has(.member) {
   display: initial;
 }
 
-
 .popupp .form .left {
   width: auto;
-}
+} 
+
 .popupp .form .formDiv {
   width: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
+
 .popupp .center {
   display: flex;
   flex-direction: column;
 }
+
 .popupp .createAccount {
   margin-bottom: 16px;
 }
+
 .popupp .closebtn {
   /* border: 1px solid red */
   padding: 9px;
@@ -380,7 +383,7 @@ body :has(.member) {
     align-items: center;
   }
 
-  .member section.one .secondy {
+  .member section.one .secondly {
     width: clamp(240px, 76vw, 392px);
     height: clamp(156px, 42vw, 220px);
     padding: 0 clamp(6px, 7.8vw, 24px);
@@ -439,12 +442,15 @@ body :has(.member) {
   .dashboard .two .lined {
     display: none;
   }
-      .member .create {
+
+  .member .create {
     padding: 6px 12px;
   }
+
   .member .sec img {
   width: 30px;
 }
+
   .member .sec h1,
 .owner .sec h1 {
   font-size: 24px;

@@ -301,12 +301,13 @@
     margin-bottom: 24px;
   }
 
-   .createProposal .boxed {
+  .createProposal .boxed {
     display: grid;
     grid-template-columns: 1fr 1fr;
     /* flex-direction: column; */
     /* gap: 12px; */
   }
+
   .createProposal .five input,  .createProposal .five.two input {
     width: 100%;
   }

@@ -187,11 +187,11 @@ form {
 }
 
 .short-textarea {
-    min-height: 2lh;
+  min-height: 2lh;
 }
 
 .long-textarea {
-    min-height: 4lh;
+  min-height: 4lh;
 }
 
 .groupDiv {
@@ -510,7 +510,7 @@ button.createDao {
   }
 
   .circle-container {
-    padding: 6px 24px 0px;
+    padding: 24px 24px 0px;
     justify-content: center;
   }
 
@@ -575,15 +575,7 @@ button.createDao {
   .form textarea {
     border-radius: 6px;
     padding: 6px 12px;
-   font-size: 18px;
-  }
-
-  .short-textarea {
-    height: 120px;
-  }
-
-  .long-textarea {
-    height: 240px;
+    font-size: 18px;
   }
 
   .groupDiv label {
@@ -640,14 +632,16 @@ button.createDao {
     height: clamp(70px, 70vw, 580px);
   }
 
+ 
+
   .wanakikundi .first,
   .findAndJoin .first {
     gap: clamp(18px, 5vw, 45px);
   }
 
- .wanakikundi .input {
+  .wanakikundi .input {
     margin-bottom: 6px;
-    }
+  }
 
   .wanakikundi label {
     font-size: clamp(9px, 3vw, 23px);

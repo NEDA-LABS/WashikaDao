@@ -73,7 +73,7 @@ nav.SuperAdmin {
   background-color: transparent;
   position: absolute;
   right: 24px;
-/*  z-index: 10;  */
+  /* z-index: 10; */
   top: clamp(240px, 20vw, 304px);
 }
 
@@ -498,28 +498,34 @@ nav.SuperAdmin {
   .superAdmin .taarifa {
     font-size: 20px;
   }
-      .popup form {
+
+  .popup form {
     padding: 20px;
     border-radius: 10px;
     width: 84vw;
   }
+
   .popup .form {
     flex-direction: column;
     margin: 0px;
   }
+
   .popup .form .formDiv {
     display: flex;
     flex-direction: column;
     gap: 12px;
   }
+
   .popup input,
   .popup .keyDiv select {
     padding-left: 12px;
   }
+
   .popup .center {
     gap: 16px;
     margin-top: 16px;
   }
+
   .popup button {
     width: 117px;
     height: 41px;

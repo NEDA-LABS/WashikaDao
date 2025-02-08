@@ -1,71 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store";
+import { baseUrl } from "../utils/backendComm";
 
-const wanachamaData = [
-  { id: 1, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firstt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 1, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firstt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 1, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 1, name: "Firstt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 1, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firstt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 1, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firstt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 1, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 1, name: "Firstt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 2, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 3, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 4, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 5, name: "Firsttt Name Last Name", phoneNo: "+255 744277496" },
-  { id: 6, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 7, name: "First Name Last Name", phoneNo: "+255 744277496" },
-  { id: 8, name: "First Name Last Name", phoneNo: "+255 744277496" },
-];
+interface Wanachama {
+  id: number;
+  firstName: string;
+  lastName: string;
+  phoneNumber: string;
+}
 
 // Pagination Component
 interface PaginationProps {
@@ -155,6 +98,39 @@ const Pagination: React.FC<PaginationProps> = ({
 const WanachamaList = () => {
   const itemsPerPage = 4; // Number of items per page
   const [currentPage, setCurrentPage] = useState(1);
+  const [wanachamaData, setWanachamaData] = useState<Wanachama[]>([]);
+  const { daoMultiSig } = useSelector((state: RootState) => state.user);
+  const daoMultiSigAddr = daoMultiSig;
+  const token = localStorage.getItem("token");
+
+  // Fetch user data when the component mounts
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await fetch(
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+          
+        ); 
+        const data = await response.json();
+        if (response.ok) {
+          setWanachamaData(data.members);
+        } else {
+          console.error("Error fetching member count:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, [daoMultiSigAddr, token]);
+  console.log(wanachamaData);
+  
 
   const totalPages = Math.ceil(wanachamaData.length / itemsPerPage);
 
@@ -173,8 +149,8 @@ const WanachamaList = () => {
       <div className="wanachama">
         {paginatedData.map((member) => (
           <div className="mwanachama" key={member.id}>
-            <p className="name">{member.name}</p>
-            <p className="phoneNo">{member.phoneNo}</p>
+            <p className="name">{member.firstName} {member.lastName}</p>
+            <p className="phoneNo">{member.phoneNumber}</p>
             <button>Manage</button>
           </div>
         ))}

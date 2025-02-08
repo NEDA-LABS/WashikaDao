@@ -7,7 +7,6 @@ import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { useParams } from "react-router-dom";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { baseUrl } from "../utils/backendComm";
@@ -39,8 +38,7 @@ interface DaoDetails {
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
-  const { memberAddr } = useSelector((state: RootState) => state.user);
-  const daoMultiSig = memberAddr;
+  // const { memberAddr } = useSelector((state: RootState) => state.user);
   // Form data state
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -65,7 +63,12 @@ const SuperAdmin: React.FC = () => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/DaoDetails/${daoMultiSigAddr}`
+          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig/${daoMultiSigAddr}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         const data = await response.json();
         if (response.ok) {
@@ -81,7 +84,12 @@ const SuperAdmin: React.FC = () => {
     const fetchMemberCount = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/JiungeNaDao/DaoDetails/${daoMultiSigAddr}/members`
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         const data = await response.json();
         if (response.ok) {
@@ -109,7 +117,7 @@ const SuperAdmin: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [daoMultiSigAddr]);
+  }, [daoMultiSigAddr, token]);
   // console.log(daoDetails);
 
   // Handle role change
@@ -131,7 +139,7 @@ const SuperAdmin: React.FC = () => {
     try {
       // Send an email to the new member
       const response = await fetch(
-        "http://${baseUrl}/JiungeNaDao/DaoDetails/inviteMemberEmail",
+        `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail/$${daoMultiSigAddr}`,
         {
           method: "POST",
           headers: {
@@ -167,8 +175,8 @@ const SuperAdmin: React.FC = () => {
       phoneNumber,
       nationalIdNo,
       memberRole: role,
-      daoMultiSig,
-      memberDaos: "",
+      daoMultiSigAddr,
+      daos: "",
       // guaranter,
     };
 
@@ -176,7 +184,7 @@ const SuperAdmin: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://${baseUrl}/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`,
+        `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
         {
           method: "POST",
           headers: {
@@ -288,7 +296,7 @@ const SuperAdmin: React.FC = () => {
             <button onClick={() => setActiveSection("mikopo")}>
               Loan Details
             </button>
-            <button>Edit Settings</button>
+            <button onClick={() => navigate(`/UpdateDao/${daoMultiSigAddr}`)}>Edit Settings</button>
           </div>
 
           {activeSection === "daoOverview" && (
@@ -299,9 +307,7 @@ const SuperAdmin: React.FC = () => {
                 </div>
                 <Dashboard />
               </div>
-              <button className="create"
-                                onClick={() => navigate(`/CreateProposal/${daoMultiSig || ""}`)}
-                            >Create a Proposal</button>
+              <button className="create" onClick={() => navigate(`/CreateProposal/${daoMultiSigAddr || ""}`)}>Create a Proposal</button>
               <section className="second">
                 <div className="sec">
                   <img src="/images/Vector(4).png" alt="logo" />
@@ -392,7 +398,7 @@ const SuperAdmin: React.FC = () => {
 
           {activeSection === "mikopo" && (
             <>
-              <h2 className="heading">Wanachama wenye mikopo</h2>
+              <h2 className="heading">List of All members with loans</h2>
               <section className="thirdy">
                 <div className="left">
                   <div className="one">

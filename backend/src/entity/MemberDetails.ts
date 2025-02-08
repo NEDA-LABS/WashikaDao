@@ -47,6 +47,8 @@ export class MemberDetails {
     }
   }
 
+  @Column()
+  daoMultiSigAddr: string;
 
   //@ManyToMany(() => Dao, dao => dao.members)
   //daos: Dao[];

@@ -18,7 +18,7 @@ import { baseUrl } from "../utils/backendComm";
 interface Dao {
   daoName: string;
   daoMultiSigAddr: string;
- multiSigPhoneNo: bigint;
+  multiSigPhoneNo: bigint;
 }
 /**
  *@Auth policy: checks if isLoggedIn if not requires you to else proceed
@@ -61,7 +61,6 @@ const JoinPlatform: React.FC<{}> = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<number | "">("");
   const [nationalIdNo, setNationalIdNo] = useState<number>();
- // const [selectedDao, setSelectedDao] = useState(""); // Currently selected DAO
   const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
   const [multiSigAddr, setMultiSigAddr] = useState("");
   const [multiSigPhoneNo, setMultiSigPhoneNo] = useState<bigint>();
@@ -71,9 +70,12 @@ const JoinPlatform: React.FC<{}> = () => {
   const [completedSteps, setCompletedSteps] = useState<number>(0);
   const location = useLocation();
   const memberAddr = location.state?.address;
+  const token = localStorage.getItem("token");
   console.log("The memberAddr is", memberAddr);
+
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx, data: transactionResult } = useSendTransaction();
+
   const prepareJoinPlatformTx = (
     _memberName: string,
     _emailAddress: string,
@@ -111,6 +113,7 @@ const JoinPlatform: React.FC<{}> = () => {
       return;
     }
   };
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sendJoinPlatformTx = async (_addMemberTx: any) => {
     if (!_addMemberTx) {
@@ -138,11 +141,11 @@ const JoinPlatform: React.FC<{}> = () => {
     }
   };
 
-
   const handleJoinPlatform = async () => {
     const phoneNumberBigInt = BigInt(phoneNumber || "0");
     const nationalIdBigInt = BigInt(nationalIdNo || "0");
     const multiSigPhoneNoBigInt = BigInt(multiSigPhoneNo || "0");
+
     const finalTx = prepareJoinPlatformTx(
       firstName + " " + lastName,
       email,
@@ -167,7 +170,12 @@ const JoinPlatform: React.FC<{}> = () => {
       const fetchDaos = async () => {
         try {
           const response = await fetch(
-            `http://${baseUrl}/FunguaDao/GetAllDaos`
+            `http://${baseUrl}/DaoGenesis/GetAllDaos`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
           );
 
           if (!response.ok)
@@ -199,7 +207,7 @@ const JoinPlatform: React.FC<{}> = () => {
     if (daos.length > 0) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
-  }, [daos.length, firstName, memberAddr, phoneNumber, role]);
+  }, [daos.length, firstName, memberAddr, phoneNumber, role, token]);
 
   const handleRoleChange = (
     event: React.ChangeEvent<
@@ -234,46 +242,46 @@ const JoinPlatform: React.FC<{}> = () => {
       phoneNumber: phoneNumber || 0,
       nationalIdNo: nationalIdNo || 0,
       memberRole: role,
-      daoMultiSig: role === "Chairperson" ? memberAddr : multiSigAddr,
-      memberDaos: role === "Chairperson" ? [] : memberDaos, // Leave empty if role is Owner
+      daoMultiSigAddr: role === "Chairperson" ? memberAddr : multiSigAddr,
+      daos: role === "Chairperson" ? [] : memberDaos, // Leave empty if role is Owner
     };
 
     console.log("Payload:", payload);
 
     try {
-      const endpoint =
-        role === "Chairperson"
-          ? `http://${baseUrl}/JiungeNaDao/DaoDetails/CreateOwner`
-          : `http://${baseUrl}/JiungeNaDao/DaoDetails/${multiSigAddr.toLowerCase()}/AddMember`;
+      const isCreateMemberSuccessfully = await handleJoinPlatform();
+      if (isCreateMemberSuccessfully === true) {
+        const endpoint =
+          role === "Chairperson"
+            ? `http://${baseUrl}/DaoKit/MemberShip/CreateInitialOwner`
+            : `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`;
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
 
-      const result = await response.json();
-      setTxHash(result.hash);
-      console.log(txHash);
+        const result = await response.json();
 
-      if (response.ok) {
-        alert("Registration successful")
-        console.log(`Success: ${result.message}`);
-        // Dispatch the current user information to the store
-        dispatch(
-          setCurrentUser({
-            memberAddr: payload.memberAddr,
-            daoMultiSig: payload.daoMultiSig,
-            firstName,
-            lastName,
-            email,
-            role,
-            nationalIdNo: payload.nationalIdNo,
-            phoneNumber: payload.phoneNumber,
-          })
-        );
+        if (response.ok) {
+          alert("Registration successful");
+          console.log(`Success: ${result.message}`);
+          // Dispatch the current user information to the store
+          dispatch(
+            setCurrentUser({
+              memberAddr: payload.memberAddr,
+              daoMultiSig: payload.daoMultiSigAddr,
+              firstName,
+              lastName,
+              email,
+              role,
+              nationalIdNo: payload.nationalIdNo,
+              phoneNumber: payload.phoneNumber,
+            })
+          );
 
         // Navigate to profile page based on role
         navigate(

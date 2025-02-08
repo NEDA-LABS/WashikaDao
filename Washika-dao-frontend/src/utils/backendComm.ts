@@ -1,4 +1,4 @@
 
 
-export const baseUrl = "localhost:/8080";
+export const baseUrl = "localhost:3000";
 console.log("Facilitating communication between the frontend and the backend");

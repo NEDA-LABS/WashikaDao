@@ -42,6 +42,7 @@ nav ul {
   font-size: 21px;
 }
 
+
 /* Mobile Menu Toggle Styles */
 .menu-button {
   display: none; /* Hidden by default on larger screens */
@@ -170,24 +171,25 @@ footer img {
     display: flex;
     justify-content: space-between;
     position: fixed;
-   z-index: 1;
+    z-index: 1;
 }
 
-.nav.DaoProfile, nav.SuperAdmin {
-        position: absolute;
+nav.DaoProfile, nav.SuperAdmin {
+  position: absolute;
 }
 
-      /* Show the mobile menu button */
+  /* Show the mobile menu button */
   .menu-button {
     display: block;
     right: 0;
   }
+
   .hidden {
     display: none;
-}
+  }
 
-       nav ul {
-    display: none;
+  nav ul {
+    display: none; 
     flex-direction: column;
     position: absolute;
     top: 20px;
@@ -198,19 +200,22 @@ footer img {
     gap: 6px;
     z-index: 9999;
   }
+
   nav ul.open {
     display: flex; /* Show the menu when open */
     z-index: 9999;
   }
+
   nav ul li {
-    font-size: 16px;
+    font-size: 16px; 
     padding: 10px 0;
     width: 100%;
     text-align: left;
   }
+
 nav .wordLogo{
     width: 96px;
-    }
+}
 
 nav .show {
     display: inline;

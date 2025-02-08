@@ -27,42 +27,49 @@ interface Dao {
  * data within the DAO platform.
  */
 const MemberProfile: React.FC = () => {
-    // const [guaranter, setGuaranter] = useState<string>("");
-    const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
-    const { firstName, lastName, email, phoneNumber, role, daoMultiSig, nationalIdNo } = useSelector((state: RootState) => state.user);
-    const [showForm, setShowForm] = useState<boolean>(false);
-    console.log(nationalIdNo);
+  // const [guaranter, setGuaranter] = useState<string>("");
+  const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
+  const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
+  const {
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    role,
+    daoMultiSig,
+    nationalIdNo,
+  } = useSelector((state: RootState) => state.user);
+  console.log(nationalIdNo);
 
-    useEffect(() => {
-      const fetchDaos = async () => {
-        try {
-          const response = await fetch(
-            `http://${baseUrl}/DaoKit/GetAllDaos`
-          );
+  useEffect(() => {
+    const fetchDaos = async () => {
+      try {
+        const response = await fetch(`http://${baseUrl}/DaoGenesis/GetAllDaos`);
 
-          if (!response.ok)
-            throw new Error(`HTTP error! status: ${response.status}`);
+        if (!response.ok)
+          throw new Error(`HTTP error! status: ${response.status}`);
 
-          // Parse JSON data safely
-          const data = await response.json();
-          console.log("Fetched DAOs:", data);
+        // Parse JSON data safely
+        const data = await response.json();
+        console.log("Fetched DAOs:", data);
 
-          // Check if daoList exists and is an array
-          if (Array.isArray(data.daoList)) {
-            setDaos(data.daoList);
-          } else {
-            console.error("daoList is missing or not an array");
-          }
-        } catch (error) {
-          console.error("Failed to fetch DAOs:", error);
+        // Check if daoList exists and is an array
+        if (Array.isArray(data.daoList)) {
+          setDaos(data.daoList);
+        } else {
+          console.error("daoList is missing or not an array");
         }
-      };
-      fetchDaos();
-      }, []);
+      } catch (error) {
+        console.error("Failed to fetch DAOs:", error);
+      }
+    };
+    fetchDaos();
+  }, []);
 
-    const handleAddMemberClick = () => {
-        setShowForm(!showForm);
-    }
+  // Toggle the form popup visibility
+  const handleAddMemberClick = () => {
+    setShowForm(!showForm);
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -76,8 +83,8 @@ const MemberProfile: React.FC = () => {
       phoneNumber,
       nationalIdNo,
       memberRole: role,
-      daoMultiSig,
-      memberDaos: "",
+      daoMultiSigAddr: daoMultiSig,
+      daos: "",
       // guaranter,
     };
 
@@ -85,7 +92,7 @@ const MemberProfile: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`,
+        `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
         {
           method: "POST",
           headers: {
@@ -98,6 +105,7 @@ const MemberProfile: React.FC = () => {
       const result = await response.json();
 
       if (response.ok) {
+        setShowForm(!showForm);
         console.log(`Success: ${result.message}`);
       } else {
         console.error(`Error: ${result.error}`);
@@ -123,7 +131,7 @@ const MemberProfile: React.FC = () => {
             <div className="secondly">
               <div className="header">
                 <div className="left">
-                  <img src="/images/speed-up-line.png"alt="logo" />
+                  <img src="/images/speed-up-line.png" alt="logo" />
                   <h1>Credit Score</h1>
                 </div>
                 <div className="right">
@@ -165,7 +173,7 @@ const MemberProfile: React.FC = () => {
           </div>
           <ProposalGroups />
         </section>
-                        <button onClick={handleAddMemberClick}>Join another Dao</button>
+        <button onClick={handleAddMemberClick}>Join another Dao</button>
         {showForm && (
           <div className=" popupp">
             <form onSubmit={handleSubmit}>
@@ -202,14 +210,18 @@ const MemberProfile: React.FC = () => {
                 <button className="createAccount" type="submit">
                   Submit
                 </button>
-                <button className="closebtn" type="button" onClick={handleAddMemberClick}>
+                <button
+                  className="closebtn"
+                  type="button"
+                  onClick={handleAddMemberClick}
+                >
                   Close
                 </button>
               </div>
             </form>
           </div>
         )}
-     </main>
+      </main>
       <Footer className={"footerDaoMember"} />
     </>
   );

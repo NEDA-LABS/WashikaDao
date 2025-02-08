@@ -14,6 +14,7 @@ import SuperAdmin from "./pages/SuperAdmin";
 import ViewProposal from "./pages/ViewProposal";
 import MemberProfile from "./pages/MemberProfile";
 import Owner from "./pages/Owner";
+import UpdateDao from "./pages/UpdateDao";
 //Testing functionality components
 import BlogPage from "./pages/BlogPage.tsx";
 import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao.tsx";
@@ -72,7 +73,11 @@ const App: React.FC = () => {
               element={<SuperAdmin />}
             />
             <Route
-              path="/ViewProposal/:multiSigAddr/:proposalId"
+              path="/UpdateDao/:daoMultiSigAddr"
+              element={<UpdateDao />}
+            />
+            <Route
+              path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"
               element={<ViewProposal />}
             />
             <Route path="/MemberProfile" element={<MemberProfile />} />

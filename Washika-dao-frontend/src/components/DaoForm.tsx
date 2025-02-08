@@ -103,7 +103,7 @@ const DaoForm: React.FC<DaoFormProps> = ({
                     value={field.value}
                     onChange={field.onChange}
                     className={
-                      field.label === "Maelezo mafupi/utangulizi"
+                      field.label === "Short description"
                         ? "short-textarea"
                         : "long-textarea"
                     }
