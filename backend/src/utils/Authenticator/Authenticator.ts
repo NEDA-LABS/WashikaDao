@@ -1,22 +1,26 @@
-import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
+import jwt from "jsonwebtoken";
 
-export const authenticator = (req: Request, res: Response, next: NextFunction) => {
+export const Authenticator: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
-    console.log("Authorization header:", authHeader); // Debug log
-    const token = authHeader && authHeader.split(' ')[1];
+    console.log(`Authorization header is ${authHeader}`);
+    const token = authHeader && authHeader.split(' ')[1]; // Bearer Token
 
     if (!token) {
-        return res.status(401).json({ message: 'Unauthorized request: No token provided' });
+          res
+            .status(401)
+            .json({ message: 'Unauthorized request: No token provided!' });
     }
 
     jwt.verify(token, process.env.ROUTE_PROTECTOR_API_KEY as string, (err, user) => {
         if (err) {
-            console.error("Token verification error:", err); // Log error details
-            return res.status(403).json({ message: 'Forbidden: Invalid token' });
+            console.error(`Token Verification Error ${err}`);
+                return res
+                         .status(403)
+                         .json({ message: "Forbidden Request, Invalid Token Provided" });
         }
 
-        console.log("Token verified successfully");
-        next();
+    console.log("Token Verification Successful");
+    next(); // Token is valid, proceed to the route handler
     });
-};
+}

@@ -15,28 +15,28 @@ interface Blog {
   content?: string;
 }
 /**
- * @Auth Policy: Not necessarily authenticated for access but different components require access 
+ * @Auth Policy: Not necessarily authenticated for access but different components require access
  */
 
 /**
  * Represents the home page component of the application.
- * 
- * This component displays various sections including a navigation bar, 
- * informational content about digital financial groups, and a blog section 
- * with pagination and search functionality. It allows users to navigate 
- * to DAO registration and educational pages. Blogs are fetched from a 
+ *
+ * This component displays various sections including a navigation bar,
+ * informational content about digital financial groups, and a blog section
+ * with pagination and search functionality. It allows users to navigate
+ * to DAO registration and educational pages. Blogs are fetched from a
  * JSON file and filtered based on category and search terms.
- * 
+ *
  * @component
  * @returns {JSX.Element} The rendered home page component.
- * 
+ *
  * @remarks
- * - Utilizes `useState` and `useEffect` hooks for state management and 
+ * - Utilizes `useState` and `useEffect` hooks for state management and
  *   data fetching.
  * - Implements pagination for blog posts with a default of 3 posts per page.
  * - Provides search and category filter options for blog posts.
  * - Includes navigation to DAO registration and educational pages.
- * 
+ *
  * @interface Blog
  * @property {string} slug - Unique identifier for the blog.
  * @property {string} title - Title of the blog.
@@ -228,7 +228,7 @@ const HomePage: React.FC = () => {
               >
                 <div>
                   <h2>{blog.title}</h2>
-                  {/* <p>{blog.content}</p> */}
+                 {/* <p>{blog.content}</p> */}
                 </div>
               </article>
             </Link>

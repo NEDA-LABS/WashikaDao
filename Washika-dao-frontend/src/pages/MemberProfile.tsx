@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { baseUrl } from "../utils/backendComm";
 
 interface Dao {
   daoName: string;
@@ -43,9 +44,7 @@ const MemberProfile: React.FC = () => {
   useEffect(() => {
     const fetchDaos = async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8080/FunguaDao/GetAllDaos"
-        );
+        const response = await fetch(`http://${baseUrl}/DaoGenesis/GetAllDaos`);
 
         if (!response.ok)
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -84,8 +83,8 @@ const MemberProfile: React.FC = () => {
       phoneNumber,
       nationalIdNo,
       memberRole: role,
-      daoMultiSig,
-      memberDaos: "",
+      daoMultiSigAddr: daoMultiSig,
+      daos: "",
       // guaranter,
     };
 
@@ -93,7 +92,7 @@ const MemberProfile: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`,
+        `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
         {
           method: "POST",
           headers: {
@@ -129,7 +128,7 @@ const MemberProfile: React.FC = () => {
             </p>
           </div>
           <div className="center">
-            <div className="secondy">
+            <div className="secondly">
               <div className="header">
                 <div className="left">
                   <img src="/images/speed-up-line.png" alt="logo" />
@@ -182,7 +181,7 @@ const MemberProfile: React.FC = () => {
                 className="form"
                 title="Apply to be a Member"
                 description=""
-                fields={[                 
+                fields={[
                   {
                     label: "Select Dao",
                     type: "select",
@@ -211,7 +210,11 @@ const MemberProfile: React.FC = () => {
                 <button className="createAccount" type="submit">
                   Submit
                 </button>
-                <button className="closebtn" type="button" onClick={handleAddMemberClick}>
+                <button
+                  className="closebtn"
+                  type="button"
+                  onClick={handleAddMemberClick}
+                >
                   Close
                 </button>
               </div>

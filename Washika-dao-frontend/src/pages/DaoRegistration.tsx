@@ -11,6 +11,7 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 //import { DaoCreationFormInputs, daoCreationTxResult } from "../utils/Types";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
+import { baseUrl } from "../utils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -31,6 +32,7 @@ interface FormData {
   nambaZaHisa: string;
   kiasiChaHisa: string;
   interestOnLoans: string;
+
 }
 
 interface Member {
@@ -95,6 +97,8 @@ const DaoRegistration: React.FC = () => {
   const { memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
+  console.log(daoTxHash);
+  
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
@@ -183,9 +187,10 @@ const DaoRegistration: React.FC = () => {
       setMembers([...members, currentMember]);
 
       try {
+        const daoMultiSigAddr = formData.multiSigAddr;
         // Send an email to the new member
         const response = await fetch(
-          "http://localhost:8080/JiungeNaDao/DaoDetails/inviteMemberEmail",
+          `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail/$${daoMultiSigAddr}`,
           {
             method: "POST",
             headers: {
@@ -239,13 +244,16 @@ const DaoRegistration: React.FC = () => {
   };
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx, data: transactionResult } = useSendTransaction();
-  
-  //Grooming the Dao transaction
+
+ //Grooming the Dao transaction
   const prepareCreateDaoTx = (_multiSigPhoneNo: bigint) => {
     if (!currActiveAcc) {
-      console.error("Fatal Error, No Active Account found");
-      return; //Failed to prepare transaction since amount isn't plugged in
+      console.error(
+        "Fatal Error Occurred, No Active Account Found"
+      );
+      return false; //Failed to prepare transaction since account isn't plugged in
     }
+
     try {
       console.log("Preparing dao Creation transaction");
       const _createDaotx = prepareContractCall({
@@ -275,22 +283,24 @@ const DaoRegistration: React.FC = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const sendCreateDaoTx = async (_createDaotx: any) => {
     if (!_createDaotx) {
-      console.warn("undefined transaction");
+      console.warn("Error, attempted undefined transaction");
       return;
     }
     try {
-      console.log("Sending transaction...");
-      sendTx(_createDaotx, {
+     console.log("Sending Transaction");
+
+       sendTx(_createDaotx, {
         onSuccess: (receipt) => {
-          console.log("Transaction successful!", receipt);
-          setDaoTxHash(receipt.transactionHash);
-          window.location.href = `https://testnet.routescan.io/transaction/${daoTxHash}`;
-          console.log(`Current transaction result ${transactionResult}`);
-        },
-        onError: (error) => {
-          console.error("Transaction failed:", error);
-        },
-      });
+            console.log("Transaction successful!", receipt
+            );
+     setDaoTxHash(receipt.transactionHash);
+    //  window.location.href = `https://testnet.routescan.io/transaction/${daoTxHash}`;
+    console.log(`Current transaction result ${transactionResult}`);
+     },
+      onError: (error) => {
+        console.error("Unfortunately, it occurs that the Transaction failed!", error);
+    },
+            });
     } catch (error) {
       if (error instanceof Error && error.message.includes("AA21")) {
         prompt(
@@ -311,7 +321,7 @@ const DaoRegistration: React.FC = () => {
         multisigPhoneNoBigInt
       );
       console.log("------------Now Calling prepareCreateDaoTx------------");
-      const finalTx = prepareCreateDaoTx(multisigPhoneNoBigInt);
+      const finalTx =  prepareCreateDaoTx(multisigPhoneNoBigInt);
       if (finalTx) {
         await sendCreateDaoTx(finalTx);
         console.log("Transaction sent successfully");
@@ -358,12 +368,12 @@ const DaoRegistration: React.FC = () => {
 
         // Send combined data to the backend API
         const response = await fetch(
-          "http://localhost:8080/FunguaDao/createDao",
+         `http://${baseUrl}/DaoGenesis/CreateDao`,
           {
             method: "POST", // HTTP method
             headers: {
               "Content-Type": "application/json", // Specify JSON content type
-              Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+              Authorization: `Bearer ${token}`,
             },
             body: JSON.stringify(combinedData), // Send combined data
           }

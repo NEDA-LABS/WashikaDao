@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { baseUrl } from "../utils/backendComm";
 
 interface Wanachama {
   id: number;
@@ -99,13 +100,21 @@ const WanachamaList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [wanachamaData, setWanachamaData] = useState<Wanachama[]>([]);
   const { daoMultiSig } = useSelector((state: RootState) => state.user);
+  const daoMultiSigAddr = daoMultiSig;
+  const token = localStorage.getItem("token");
 
   // Fetch user data when the component mounts
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig}/members`
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`, {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+          
         ); 
         const data = await response.json();
         if (response.ok) {
@@ -119,7 +128,7 @@ const WanachamaList = () => {
     };
 
     fetchUsers();
-  }, [daoMultiSig]);
+  }, [daoMultiSigAddr, token]);
   console.log(wanachamaData);
   
 

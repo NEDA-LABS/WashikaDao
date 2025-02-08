@@ -15,27 +15,27 @@ interface Blog {
 }
 /**
  * @Auth Policy: Does not require authentication for access
- * @returns 
+ * @returns
  */
 
 /**
  * JifunzeElimu is a React functional component that renders an educational blog page.
  * It fetches blog metadata and content from JSON and Markdown files, respectively,
  * and displays them with pagination, search, and category filtering functionalities.
- * 
+ *
  * @component
  * @returns {JSX.Element} The rendered component containing a navigation bar, blog articles,
  * search and filter options, pagination controls, and a footer.
- * 
+ *
  * @remarks
  * - Utilizes React hooks such as `useState` and `useEffect` for state management and side effects.
  * - Fetches blog data asynchronously and handles potential errors during the fetch process.
  * - Supports filtering blogs by category and search term, and paginates the results.
  * - Does not require authentication for access.
- * 
+ *
  * @example
  * <JifunzeElimu />
- * 
+ *
  * @see {@link https://reactjs.org/docs/hooks-intro.html} for more information on React hooks.
  */
 const JifunzeElimu: React.FC = () => {
@@ -58,7 +58,7 @@ const JifunzeElimu: React.FC = () => {
             const content = await contentResponse.text();
             return {
               ...blog,
-              content: content.split(" ").slice(0, 16).join(" ") + "..." 
+              content: content.split(" ").slice(0, 16).join(" ") + "..."
             };
           })
         );
@@ -143,7 +143,7 @@ const JifunzeElimu: React.FC = () => {
               >
                 <div>
                   <h2>{blog.title}</h2>
-                  {/* <p>{blog.content}</p> */}
+                  {/*<p>{blog.content}</p>*/}
                 </div>
               </article>
             </Link>

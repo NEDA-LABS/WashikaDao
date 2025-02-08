@@ -79,7 +79,7 @@ nav button {
 .popup-content {
   display: flex;
   flex-direction: column;
-  align-items: center; 
+  align-items: center;
   justify-content: center;
   background: white;
   padding: 40px 20px;
@@ -257,7 +257,7 @@ footer li {
 .social-icon {
     font-size: 16px;
   }
-  
+
   footer img {
     display: none;
   }

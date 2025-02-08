@@ -77,7 +77,7 @@ const App: React.FC = () => {
               element={<UpdateDao />}
             />
             <Route
-              path="/ViewProposal/:multiSigAddr/:proposalId"
+              path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"
               element={<ViewProposal />}
             />
             <Route path="/MemberProfile" element={<MemberProfile />} />

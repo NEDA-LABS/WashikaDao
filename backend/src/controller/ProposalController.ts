@@ -1,9 +1,9 @@
-//import { daoContract, publicClient } from "./config.ts";
 import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
 import { Proposal } from "../entity/Proposal";
 import { Vote } from "../entity/Vote";
-import { AppDataSource } from "../data-source";
+import { IVote } from "../Interfaces/EntityTypes";
+import AppDataSource from "../data-source";
 import { ObjectLiteral } from "typeorm";
 import { IProposal } from "../Interfaces/EntityTypes";
 import { log } from "console";
@@ -29,35 +29,57 @@ const daoRepository = AppDataSource.getRepository(Dao);
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
 export async function CreateProposal(req: Request, res: Response) {
-  const { multiSigAddr } = req.params;
-  console.log(multiSigAddr);
+  const { daoMultiSigAddr } = req.body;
+  console.log(daoMultiSigAddr);
 
-  if (!multiSigAddr) {
-    return res.status(400).json({ error: "Missing required from url params" });
+  if (!daoMultiSigAddr) {
+    return res.status(404).json({ error: "Missing required multisig" });
   }
-  const proposalData = req.body;
+  const {
+    proposalCustomIdentifier,
+    proposalOwner,
+    proposalTitle,
+    proposalSummary,
+    proposalDescription,
+    proposalStatus,
+    amountRequested,
+    profitSharePercent,
+    numUpVotes,
+    numDownVotes,
+  } = req.body;
+  const proposalData = {
+    proposalCustomIdentifier,
+    proposalOwner,
+    daoMultiSigAddr,
+    proposalTitle,
+    proposalSummary,
+    proposalDescription,
+    proposalStatus,
+    amountRequested,
+    profitSharePercent,
+    numUpVotes,
+    numDownVotes,
+  };
   //check missing details
   if (!proposalData) {
     return res.status(400).json({ error: "Missing required in request body" });
   }
   try {
-    // //check if proposal exists
-    // const proposalId: number = proposalData.proposalId; //find proposal by proposalId
-    // const proposalFound = await proposalRepository.findOneBy({ proposalId });
-    // if (proposalFound) {
-    //   return res.status(400).json({ error: "Proposal already exists" });
-    //   //you can capture more sanitization errors here with the if else but lets go to what we want to do here instead.
-    // } else {
     //if proposal doesn't exist create or build a new proposal using the data from the form submission
+    const foundProposal = await proposalRepository.findOneBy({
+      proposalCustomIdentifier,
+    });
+    if (foundProposal) {
+      return res
+        .status(400)
+        .json({ error: "Bad Request, proposal already exists" });
+    }
     const createdProposal = proposalRepository.create(proposalData);
     await proposalRepository.save(createdProposal);
     res.status(201).json({
       message: "Proposal created successfully",
-      // proposalId: createdProposal.proposalId,  // Ensure proposalId is included
       createdProposal,
     });
-    //TODO: BLOCKCHAIN INTEGRATION
-    // }
   } catch (error) {
     res.status(500).json(error);
     console.log(error);
@@ -78,27 +100,29 @@ export async function CreateProposal(req: Request, res: Response) {
  *
  * @returns - An HTTP response with a status code and a JSON object containing the proposal details or an error message.
  */
-export async function GetProposalDetailsById(req: Request, res: Response) {
+export async function GetProposalDetails(req: Request, res: Response) {
   /**Grabbing the proposal ID from the url params */
   /** Parse proposalId as a number */
-  const proposalId: number = parseInt(req.params.proposalId, 10);
+  const { daoMultiSigAddr, proposalCustomIdentifier } = req.params;
 
-  if (isNaN(proposalId)) {
-    return res.status(400).json({ error: "Invalid proposal ID" });
+  if (!proposalCustomIdentifier || !daoMultiSigAddr) {
+    return res
+      .status(404)
+      .json({
+        message:
+          "Error missing required proposalCustomIdentifier and or multisig",
+      });
   }
 
   try {
     //find proposal by proposalId if doesn't exist will be caught within
     const proposalDetails: Proposal | null = await proposalRepository.findOneBy(
-      { proposalId }
+      { proposalCustomIdentifier }
     );
 
-    if (
-      typeof proposalDetails === undefined ||
-      typeof proposalDetails === null
-    ) {
+    if (!proposalDetails) {
       return res
-        .status(400)
+        .status(404)
         .json({ message: "Proposal not found or does not exist" });
     }
     return res.status(200).json(proposalDetails);
@@ -108,77 +132,95 @@ export async function GetProposalDetailsById(req: Request, res: Response) {
   }
 }
 
-/**
- * Handles a POST request to upvote a proposal by its ID.
- *
- * @param req - The Express request object containing the proposal ID and voter address in the parameters and request body.
- * @param res - The Express response object to send back the HTTP response.
- *
- * @remarks
- * This function extracts the proposal ID and voter address from the request parameters and body.
- * It checks if the required parameters are present and if the voter is authorized.
- * If all checks pass, it creates a new vote with a vote value of true, associates it with the proposal and voter, and saves it to the database.
- * It then updates the proposal's upvote count and saves the updated proposal.
- * Finally, it sends a success response or an error response based on the outcome.
- *
- * @returns - An HTTP response with a status code and a JSON object containing a message.
- */
-export async function UpvoteProposalById(req: Request, res: Response) {
-  const { multiSigAddr, proposalId } = req.params;
+// /**
+//  * Handles a POST request to upvote a proposal by its ID.
+//  *
+//  * @param req - The Express request object containing the proposal ID and voter address in the parameters and request body.
+//  * @param res - The Express response object to send back the HTTP response.
+//  *
+//  * @remarks
+//  * This function extracts the proposal ID and voter address from the request parameters and body.
+//  * It checks if the required parameters are present and if the voter is authorized.
+//  * If all checks pass, it creates a new vote with a vote value of true, associates it with the proposal and voter, and saves it to the database.
+//  * It then updates the proposal's upvote count and saves the updated proposal.
+//  * Finally, it sends a success response or an error response based on the outcome.
+//  *
+//  * @returns - An HTTP response with a status code and a JSON object containing a message.
+//  */
+export async function UpVoteProposal(req: Request, res: Response) {
+  const { daoMultiSigAddr, proposalCustomIdentifier } = req.body;
 
-  if (!multiSigAddr || !proposalId) {
-    return res.status(400).json({ error: "Missing required parameters" });
+  if (!proposalCustomIdentifier || !daoMultiSigAddr) {
+    return res
+      .status(404)
+      .json({
+        message:
+          "Error missing required proposalCustomIdentifier and or multisig",
+      });
   }
 
-  const { voterAddr } = req.body;
+  const voterAddr = req.body.voterAddr;
 
   if (!voterAddr) {
-    return res.status(401).json({ error: "Unauthorized" });
+    return res
+      .status(401)
+      .json({ error: " missing voter address, Unauthorized request" });
   }
 
+  const upVoteDetails: IVote | any = {
+    voteValue: true,
+    voterAddr: voterAddr,
+    proposalCustomIdentifier: proposalCustomIdentifier,
+  };
+
   try {
-    // Find the proposal
-    const foundProposal = await proposalRepository.findOne({
-      where: { proposalId: Number(proposalId) },
-      relations: ["votes"],
+    // Find proposal by proposalId
+    const foundProposal = await proposalRepository.findOneBy({
+      proposalCustomIdentifier,
     });
 
     if (!foundProposal) {
-      return res.status(404).json({ message: "Proposal not found" });
+      return res
+        .status(404)
+        .json({ message: "Proposal trying to vote for not found" });
     }
 
-    // Check if the voter has already voted
-    const existingVote = await voteRepository.findOne({
-      where: { proposalId: foundProposal, voterAddr },
+    // Check if voter has already voted for this proposal
+    const proposalsVoted = await proposalRepository.findOne({
+      where: { proposalCustomIdentifier },
+      relations: ["votes"],
     });
-
-    if (existingVote) {
+    if (proposalCustomIdentifier === proposalsVoted.proposalCustomIdentifier) {
       return res
         .status(400)
-        .json({ error: "Voter has already voted for this proposal" });
+        .json({
+          error:
+            " Bad Request Detected, Voter has already voted for this proposal",
+        });
     }
+    const createdVote = voteRepository.create(upVoteDetails);
+    await voteRepository.save(createdVote);
 
-    // Create and save new vote
-    const newVote = voteRepository.create({
-      voterAddr,
-      voteValue: true, // Upvote
-      proposalId: foundProposal,
-    });
+    res
+      .status(201)
+      .json({
+        message:
+          "Vote successfully recorded & proposal updated with our new vote, an upvote",
+      });
 
-    await voteRepository.save(newVote);
+    // Updating the proposal
+    foundProposal.numUpVotes += 1;
 
-    // Increment the upvote count
-    foundProposal.numUpVotes = (foundProposal.numUpVotes || 0) + 1;
+    // Updating the proposal
     await proposalRepository.save(foundProposal);
 
     return res.status(200).json({
       message: "Vote successfully recorded & proposal updated",
     });
 
-    // TODO: Blockchain integration
+    // TODO: BLOCKCHAIN INTEGRATION
   } catch (error) {
-    console.error("Error processing upvote:", error);
-    return res.status(500).json({ error: "Error processing upvote" });
+    res.status(500).json({ error: "Error processing or casting  upvote" });
   }
 }
 
@@ -198,62 +240,66 @@ export async function UpvoteProposalById(req: Request, res: Response) {
  *
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
-export async function DownVoteProposalById(req: Request, res: Response) {
-  const { multiSigAddr, proposalId } = req.params;
-
-  if (!multiSigAddr || !proposalId) {
-      return res.status(400).json({ error: "Missing required parameters" });
+export const DownVoteProposal = async (req: Request, res: Response) => {
+  const { daoMultiSigAddr, proposalCustomIdentifier } = req.body;
+  if (!daoMultiSigAddr || !proposalCustomIdentifier) {
+    return res
+      .status(404)
+      .json({
+        error:
+          "Missing required from url params, multisig  & proposal identifier",
+      });
   }
-
   const voterAddr = req.body.voterAddr;
-
   if (!voterAddr) {
-      return res.status(401).json({ error: "Unauthorized" });
+    return res
+      .status(401)
+      .json({ error: "Missing voter address, Unauthorized" });
   }
-
+  const voteDetails: IVote | any = {
+    voteValue: false,
+    voterAddr: voterAddr,
+    proposalCustomIdentifier: proposalCustomIdentifier,
+  };
   try {
-      // Find the proposal
-      const foundProposal = await proposalRepository.findOne({
-          where: { proposalId: Number(proposalId) },
-          relations: ["votes"],
+    //find proposal by proposalId
+    const foundProposal = await proposalRepository.findOneBy({
+      proposalCustomIdentifier: proposalCustomIdentifier,
+    });
+    if (!foundProposal) {
+      return res.status(404).json({ message: "Error, Proposal not found!" });
+    }
+    //Check if voter has already voted for this proposal
+    const proposalsVoted = await proposalRepository.findOne({
+      where: { proposalCustomIdentifier },
+      relations: ["votes"],
+    });
+    if (proposalCustomIdentifier === proposalsVoted.proposalCustomIdentifier) {
+      return res
+        .status(403)
+        .json({
+          error:
+            "Error, forbidden request! Voter has already voted for this proposal",
+        });
+    }
+    const createdVote = voteRepository.create(voteDetails);
+    await voteRepository.save(createdVote);
+    res
+      .status(200)
+      .json({
+        message:
+          "Vote successfully recorded & proposal updated with our new vote, an upvote",
       });
-
-      if (!foundProposal) {
-          return res.status(404).json({ message: "Proposal not found" });
-      }
-
-      // Check if the voter has already voted
-      const existingVote = await voteRepository.findOne({
-          where: { proposalId: foundProposal, voterAddr },
-      });
-
-      if (existingVote) {
-          return res.status(400).json({ error: "Voter has already voted for this proposal" });
-      }
-
-      // Create and save new vote
-      const newVote = voteRepository.create({
-          voterAddr,
-          voteValue: true, // Upvote
-          proposalId: foundProposal,
-      });
-
-      await voteRepository.save(newVote);
-
-      // Increment the upvote count
-      foundProposal.numDownVotes = (foundProposal.numDownVotes || 0) + 1;
-      await proposalRepository.save(foundProposal);
-
-      return res.status(200).json({
-          message: "Vote successfully recorded & proposal updated",
-      });
-
-      // TODO: Blockchain integration
+    //updating the proposal
+    foundProposal.numDownVotes += 1;
+    //updating the proposal
+    await proposalRepository.save(foundProposal);
+    res.status(200).json({ message: "updated proposal successfully" });
+    //TODO: BLOCKCHAIN INTEGRATION
   } catch (error) {
-      console.error("Error processing upvote:", error);
-      return res.status(500).json({ error: "Error processing upvote" });
+    res.status(500).json({ error: "Error processing or casting  upvote" });
   }
-}
+};
 
 /**
  * Retrieves all proposals associated with a specific DAO.
@@ -273,27 +319,28 @@ export async function DownVoteProposalById(req: Request, res: Response) {
  * If an error occurs, the response status code will be 400 and the JSON object will contain an error message.
  */
 export async function GetAllProposalsInDao(req: Request, res: Response) {
-  const { multiSigAddr } = req.params;
+  const { daoMultiSigAddr } = req.params;
 
-  if (!multiSigAddr) {
+  if (!daoMultiSigAddr) {
     return res.status(400).json({ error: "Missing required multiSigAddr" });
   }
 
   try {
     // Retrieve proposals directly associated with the provided multiSigAddr
-    const proposals = await proposalRepository.find({
-      where: { daoMultiSigAddr: multiSigAddr },
+    const proposalsFound = await proposalRepository.find({
+      where: { daoMultiSigAddr: daoMultiSigAddr },
     });
 
-    if (!proposals || proposals.length === 0) {
+    if (!proposalsFound) {
       return res
         .status(404)
-        .json({ message: "No proposals found for this DAO" });
+        .json({ message: " Error No proposals found for this DAO" });
     }
-
-    return res.status(200).json({ proposals });
+    return res.status(200).json({ proposalsFound });
   } catch (error) {
     console.error("Error fetching proposals:", error);
-    return res.status(500).json({ message: "Error getting proposals" });
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error getting proposals" });
   }
 }

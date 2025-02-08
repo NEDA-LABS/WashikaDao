@@ -4,9 +4,10 @@ import NavBar from "../components/NavBar";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { baseUrl } from "../utils/backendComm";
 
 interface ProposalData {
-  proposalId: number;
+  proposalCustomIdentifier: string;
   proposalOwner: string;
   proposalTitle: string;
   projectSummary: string;
@@ -39,10 +40,11 @@ interface ProposalData {
  * - Displays a loading message until the proposal data is successfully fetched.
  */
 const ViewProposal: React.FC = () => {
-  const { proposalId, multiSigAddr } = useParams<{
-    proposalId: string;
-    multiSigAddr: string;
-  }>(); // Get both proposalId and multiSigAddr from the URL
+  const { proposalCustomIdentifier, daoMultiSigAddr } = useParams<{
+    proposalCustomIdentifier: string;
+    daoMultiSigAddr: string;
+  }>(); // Get both proposalCustomIdentifier and daoMultiSigAddr from the URL
+  console.log(daoMultiSigAddr, proposalCustomIdentifier);
   const navigate = useNavigate();
   const [proposalData, setProposalData] = useState<ProposalData | null>(null); // State to hold proposal data
   const token = localStorage.getItem("token");
@@ -52,7 +54,7 @@ const ViewProposal: React.FC = () => {
     const fetchProposalData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}`
+          `http://${baseUrl}/DaoKit/Proposals/GetProposalDetails/${daoMultiSigAddr}/${proposalCustomIdentifier}`
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -65,24 +67,24 @@ const ViewProposal: React.FC = () => {
       }
     };
 
-    if (multiSigAddr && proposalId) {
+    if (daoMultiSigAddr && proposalCustomIdentifier) {
       fetchProposalData();
     }
-  }, [multiSigAddr, proposalId]);
+  }, [daoMultiSigAddr, proposalCustomIdentifier]);
 
-  const handleVote = async (voteType: "upvote" | "downvote") => {
-    if (!multiSigAddr || !proposalId) return;
+  const handleVote = async (voteType: "UpVoteProposal" | "DownVoteProposal") => {
+    if (!daoMultiSigAddr || !proposalCustomIdentifier) return;
 
     try {
       const response = await fetch(
-        `http://localhost:8080/ViewProposal/DaoDetails/${multiSigAddr}/proposal/${proposalId}/${voteType}`,
+        `http://${baseUrl}/DaoKit/Proposals/$${voteType}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`, // Include the token in the Authorization header
           },
-          body: JSON.stringify({proposalId, voterAddr: memberAddr }),
+          body: JSON.stringify({proposalCustomIdentifier, voterAddr: memberAddr }),
         }
       );
 
@@ -92,7 +94,7 @@ const ViewProposal: React.FC = () => {
 
       // Refresh proposal data after voting
       const updatedData = await response.json();
-      alert(voteType === "upvote" ? "Voted Yes" : "Voted No");
+      alert(voteType === "UpVoteProposal" ? "Voted Yes" : "Voted No");
       console.log("Updated Proposal Data:", updatedData);
       if (updatedData.amountRequested !== undefined) {
         setProposalData(updatedData);
@@ -106,14 +108,14 @@ const ViewProposal: React.FC = () => {
 
   const handleBackClick = () => {
     if (proposalData) {
-      navigate(`/DaoProfile/${multiSigAddr}`);
+      navigate(`/DaoProfile/${daoMultiSigAddr}`);
     }
   };
 
   console.log("ProposalData is", proposalData);
 
-  console.log("multiSigAddr:", multiSigAddr);
-  console.log("proposalId:", proposalId);
+  console.log("daoMultiSigAddr:", daoMultiSigAddr);
+  console.log("proposalCustomIdentifier:", proposalCustomIdentifier);
 
   // Render loading state if proposal data is not yet available
   if (!proposalData) {
@@ -171,11 +173,11 @@ const ViewProposal: React.FC = () => {
         </div>
 
         <div className="buttons buttonss">
-          <button className="onee" onClick={() => handleVote("upvote")}>
+          <button className="onee" onClick={() => handleVote("UpVoteProposal")}>
             <img src="/images/Star.png" alt="star" />
             Vote Yes
           </button>
-          <button className="twoe" onClick={() => handleVote("downvote")}>
+          <button className="twoe" onClick={() => handleVote("DownVoteProposal")}>
             Deny 
           </button>
         </div>

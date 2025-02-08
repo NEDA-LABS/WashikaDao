@@ -11,6 +11,7 @@ import { arbitrumSepolia } from "thirdweb/chains";
 import { useEffect, useRef, useState } from "react";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { baseUrl } from "../utils/backendComm";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -113,7 +114,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
     const loginMember = async (address: string) => {
       try {
         const response = await fetch(
-          "http://localhost:8080/JiungeNaDao/DaoDetails/login",
+          `http://${baseUrl}/DaoKit/MemberShip/login`,
           {
             method: "POST",
             headers: {

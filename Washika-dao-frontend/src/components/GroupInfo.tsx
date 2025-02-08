@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { baseUrl } from "../utils/backendComm";
 
 // Define the DAO interface including memberCount
 interface Dao {
@@ -45,13 +46,20 @@ interface Dao {
 const GroupInfo: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]); // State to store DAOs with member count
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchDaos = async () => {
       try {
         // Fetch the DAOs from the backend
         const response = await fetch(
-          "http://localhost:8080/FunguaDao/GetAllDaos"
+          `http://${baseUrl}/DaoGenesis/GetAllDaos`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
 
         if (!response.ok)
@@ -83,7 +91,12 @@ const GroupInfo: React.FC = () => {
     const fetchMemberCount = async (multiSigAddr: string): Promise<number> => {
       try {
         const response = await fetch(
-          `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr}/members`
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${multiSigAddr}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         const data = await response.json();
         return response.ok ? data.memberCount : 0; // Return member count or 0 if no data
@@ -106,7 +119,7 @@ const GroupInfo: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, []);
+  }, [token]);
 
   return (
     <div className="groups">

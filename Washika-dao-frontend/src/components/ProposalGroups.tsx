@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 
+import { baseUrl } from "../utils/backendComm";
+
 interface ProposalData {
   proposalId: number;
   proposalOwner: string;
@@ -15,29 +17,34 @@ interface ProposalData {
   daoMultiSigAddr: string;
   numUpVotes: number;
   numDownVotes: number;
+  proposalCustomIdentifier: string;
 }
+
 
 const ProposalGroups: React.FC = () => {
   const { daoMultiSig } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<ProposalData[]>([]);
+  const daoMultiSigAddr = daoMultiSig;
+console.log('The multiaddress is', daoMultiSigAddr);
+
 
   // Fetch proposals from the API
   useEffect(() => {
     const fetchProposals = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/ViewProposal/DaoDetails/${daoMultiSig}/proposals`
+          `http://${baseUrl}/DaoKit/Proposals/GetAllProposalsInDao/${daoMultiSigAddr}`
         );
         const data = await response.json();
-        setProposals(data.proposals);
+        setProposals(data.proposalsFound);
       } catch (error) {
         console.error("Error fetching proposals:", error);
       }
     };
 
     fetchProposals();
-  }, [daoMultiSig]);
+  }, [ daoMultiSigAddr]);
   console.log(proposals);
   const handleProposalClick = () => {
     navigate("/viewProposal");
@@ -47,8 +54,8 @@ const ProposalGroups: React.FC = () => {
     <div className="proposal-groups">
       {proposals ? (
         proposals.map((proposal) => (
-          <Link to={`/ViewProposal/${daoMultiSig}/${proposal.proposalId}`}>
-            <div className="proposal" key={proposal.proposalId}>
+          <Link to={`/ViewProposal/${daoMultiSig}/${proposal.proposalCustomIdentifier}`}>
+            <div className="proposal" key={proposal.proposalCustomIdentifier}>
               <div className="one">
                 <h1>{proposal.proposalTitle}</h1>
                 <div

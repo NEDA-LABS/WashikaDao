@@ -10,6 +10,7 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 //import { DaoCreationFormInputs, daoCreationTxResult } from "../utils/Types";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
+import { baseUrl } from "../utils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -23,7 +24,7 @@ interface FormData {
   daoOverview: string;
   daoImageIpfsHash: string;
   daoRegDocs: string;
-  multiSigAddr: string;
+  daoMultiSigAddr: string;
   multiSigPhoneNo: number;
   kiwango: number;
   accountNo: number;
@@ -86,6 +87,8 @@ const UpdateDao: React.FC = () => {
     (state: RootState) => state.user
   );
 
+  const daoMultiSigAddr = daoMultiSig
+
   useEffect(() => {
     if (typeof memberAddr === "string") {
       setFormData((prevData) => ({
@@ -104,7 +107,7 @@ const UpdateDao: React.FC = () => {
     daoOverview: "",
     daoImageIpfsHash: "",
     daoRegDocs: "",
-    multiSigAddr: typeof memberAddr === "string" ? memberAddr : "",
+    daoMultiSigAddr: typeof memberAddr === "string" ? memberAddr : "",
     multiSigPhoneNo: phoneNumber,
     kiwango: 0,
     accountNo: 0,
@@ -203,7 +206,7 @@ const UpdateDao: React.FC = () => {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
         //   setDaoTxHash(receipt.transactionHash);
-          window.location.href = `https://testnet.routescan.io/transaction/${receipt.transactionHash}`;
+          // window.location.href = `https://testnet.routescan.io/transaction/${receipt.transactionHash}`;
           console.log(`Current transaction result ${transactionResult}`);
         },
         onError: (error) => {
@@ -251,32 +254,32 @@ const UpdateDao: React.FC = () => {
     }
   };
 
-  // Fetch DAO details on component mount
-  useEffect(() => {
-    const fetchDaoDetails = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/DaoProfile/DaoDetails/${daoMultiSig}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
-        if (!response.ok) {
-          throw new Error("Failed to fetch DAO details");
+    // Fetch DAO details on component mount
+    useEffect(() => {
+      const fetchDaoDetails = async () => {
+        try {
+          const response = await fetch(`http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig/${daoMultiSigAddr}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Failed to fetch DAO details");
+          }
+          const data = await response.json();
+          setFormData(data.daoDetails); // Populate form with existing data
+          
+        } catch (error) {
+          console.error("Error fetching DAO details:", error);
         }
-        const data = await response.json();
-        setFormData(data.daoDetails); // Populate form with existing data
-        
-      } catch (error) {
-        console.error("Error fetching DAO details:", error);
+      };
+  
+      if (daoMultiSigAddr) {
+        fetchDaoDetails();
       }
-    };
-
-    if (daoMultiSig) {
-      fetchDaoDetails();
-    }
-  }, [daoMultiSig, token]);
-  console.log(formData);
+    }, [daoMultiSigAddr, token]);
+    console.log(formData);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -298,7 +301,7 @@ const UpdateDao: React.FC = () => {
       if (isCreateDaoSuccessful === true) {
         // Send combined data to the backend API
         const response = await fetch(
-          `http://localhost:8080/FunguaDao/DaoDetails/${formData.multiSigAddr}`,
+          `http://${baseUrl}/Daokit/DaoDetails/UpdateDaoDetails/${daoMultiSigAddr}`,
           {
             method: "PUT",
             headers: {
@@ -316,7 +319,7 @@ const UpdateDao: React.FC = () => {
           alert("Dao updated successfully");
           console.log("DAO updated successfully", data);
 
-          navigate(`/SuperAdmin/${formData.multiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
+          navigate(`/SuperAdmin/${daoMultiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
         } else {
           console.error("Error updating DAO:", data.message);
         }

@@ -4,7 +4,6 @@ import userReducer from './users/userSlice';
 import notificationReducer from './notifications/notificationSlice';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
-
 // Define persist configuration
 const persistConfig = {
   key: 'user',       // Key specific to user reducer

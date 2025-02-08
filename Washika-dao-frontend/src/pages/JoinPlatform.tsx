@@ -7,11 +7,13 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
 import { useLocation } from "react-router-dom";
 
-// import { ethers } from "ethers";
 import React from "react";
+
+// 4 Blockchain
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { prepareContractCall } from "thirdweb";
+import { baseUrl } from "../utils/backendComm";
 
 interface Dao {
   daoName: string;
@@ -68,6 +70,7 @@ const JoinPlatform: React.FC = () => {
   const [completedSteps, setCompletedSteps] = useState<number>(0);
   const location = useLocation();
   const memberAddr = location.state?.address;
+  const token = localStorage.getItem("token");
   console.log("The memberAddr is", memberAddr);
 
   const currActiveAcc = useActiveAccount();
@@ -167,7 +170,12 @@ const JoinPlatform: React.FC = () => {
       const fetchDaos = async () => {
         try {
           const response = await fetch(
-            "http://localhost:8080/FunguaDao/GetAllDaos"
+            `http://${baseUrl}/DaoGenesis/GetAllDaos`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
           );
 
           if (!response.ok)
@@ -199,7 +207,7 @@ const JoinPlatform: React.FC = () => {
     if (daos.length > 0) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
-  }, [daos.length, firstName, memberAddr, phoneNumber, role]);
+  }, [daos.length, firstName, memberAddr, phoneNumber, role, token]);
 
   const handleRoleChange = (
     event: React.ChangeEvent<
@@ -218,7 +226,7 @@ const JoinPlatform: React.FC = () => {
     if (chosenDao && !memberDaos.includes(chosenDao.daoName)) {
       setMemberDaos((prevDaos) => [...prevDaos, chosenDao.daoName]);
       setMultiSigAddr(chosenDao.daoMultiSigAddr); // Save selected DAO’s address
-      setMultiSigPhoneNo(chosenDao.multiSigPhoneNo); // Save selected DAO’s phone number
+      setMultiSigPhoneNo(chosenDao.multiSigPhoneNo);
     }
   };
 
@@ -234,8 +242,8 @@ const JoinPlatform: React.FC = () => {
       phoneNumber: phoneNumber || 0,
       nationalIdNo: nationalIdNo || 0,
       memberRole: role,
-      daoMultiSig: role === "Chairperson" ? memberAddr : multiSigAddr,
-      memberDaos: role === "Chairperson" ? [] : memberDaos, // Leave empty if role is Owner
+      daoMultiSigAddr: role === "Chairperson" ? memberAddr : multiSigAddr,
+      daos: role === "Chairperson" ? [] : memberDaos, // Leave empty if role is Owner
     };
 
     console.log("Payload:", payload);
@@ -245,8 +253,8 @@ const JoinPlatform: React.FC = () => {
       if (isCreateMemberSuccessfully === true) {
         const endpoint =
           role === "Chairperson"
-            ? "http://localhost:8080/JiungeNaDao/DaoDetails/CreateOwner"
-            : `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr.toLowerCase()}/AddMember`;
+            ? `http://${baseUrl}/DaoKit/MemberShip/CreateInitialOwner`
+            : `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`;
 
         const response = await fetch(endpoint, {
           method: "POST",
@@ -265,7 +273,7 @@ const JoinPlatform: React.FC = () => {
           dispatch(
             setCurrentUser({
               memberAddr: payload.memberAddr,
-              daoMultiSig: payload.daoMultiSig,
+              daoMultiSig: payload.daoMultiSigAddr,
               firstName,
               lastName,
               email,
@@ -275,19 +283,19 @@ const JoinPlatform: React.FC = () => {
             })
           );
 
-          // Navigate to profile page based on role
-          navigate(
-            role === "Chairperson" || role === "Member"
-              ? `/Owner/${memberAddr.toLowerCase()}`
-              : `/Funder/${memberAddr.toLowerCase()}`
-          );
-        } else {
-          console.error(`Error: ${result.error}`);
-        }
+        // Navigate to profile page based on role
+        navigate(
+          role === "Chairperson" || role === "Member"
+            ? `/Owner/${memberAddr.toLowerCase()}`
+            : `/Funder/${memberAddr.toLowerCase()}`
+        );
       } else {
-        console.error("Member creation transaction failed.");
-        alert("Member creation failed. Please try again.");
-      }
+        console.error(`Error: ${result.error}`);
+       }
+      } else {
+        console.error("Member creation transaction failed");
+            alert("Member creation failed. Please check your inputs and try again");
+            }
     } catch (error) {
       console.error("Submission failed:", error);
     }

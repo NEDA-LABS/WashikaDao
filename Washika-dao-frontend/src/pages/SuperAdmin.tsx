@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
+import { baseUrl } from "../utils/backendComm";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -37,8 +38,7 @@ interface DaoDetails {
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
-  const { memberAddr } = useSelector((state: RootState) => state.user);
-  const daoMultiSig = memberAddr;
+  // const { memberAddr } = useSelector((state: RootState) => state.user);
   // Form data state
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
@@ -53,17 +53,22 @@ const SuperAdmin: React.FC = () => {
   const [memberCount, setMemberCount] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const isVisible = useSelector(
-    (state: RootState) => state.notification.isVisible
-  );
-  const dispatch = useDispatch();
-  const token = localStorage.getItem("token");
-  const navigate = useNavigate();
+        (state: RootState) => state.notification.isVisible
+    );
+    const dispatch = useDispatch();
+    const token = localStorage.getItem("token");
+    const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/DaoProfile/DaoDetails/${daoMultiSigAddr}`
+          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig/${daoMultiSigAddr}`, {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         const data = await response.json();
         if (response.ok) {
@@ -79,7 +84,12 @@ const SuperAdmin: React.FC = () => {
     const fetchMemberCount = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSigAddr}/members`
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`,{
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
         );
         const data = await response.json();
         if (response.ok) {
@@ -107,7 +117,7 @@ const SuperAdmin: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [daoMultiSigAddr]);
+  }, [daoMultiSigAddr, token]);
   // console.log(daoDetails);
 
   // Handle role change
@@ -129,12 +139,12 @@ const SuperAdmin: React.FC = () => {
     try {
       // Send an email to the new member
       const response = await fetch(
-        "http://localhost:8080/JiungeNaDao/DaoDetails/inviteMemberEmail",
+        `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail/$${daoMultiSigAddr}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify({
             email: email,
@@ -165,8 +175,8 @@ const SuperAdmin: React.FC = () => {
       phoneNumber,
       nationalIdNo,
       memberRole: role,
-      daoMultiSig,
-      memberDaos: "",
+      daoMultiSigAddr,
+      daos: "",
       // guaranter,
     };
 
@@ -174,11 +184,12 @@ const SuperAdmin: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/JiungeNaDao/DaoDetails/${daoMultiSig?.toLowerCase()}/AddMember`,
+        `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
           },
           body: JSON.stringify(payload),
         }
@@ -211,21 +222,25 @@ const SuperAdmin: React.FC = () => {
               />
             </div>
           </div>
-          {isVisible && (
-            <div className="notification">
-              <div>
-                <img src="/images/Info.png" alt="info icon" />
-              </div>
-              <div className="notifications">
-                <h3>Notification</h3>
-                <p>New Member Request</p>
-                <button>View</button>
-              </div>
-              <button onClick={() => dispatch(toggleNotificationPopup())}>
-                <img src="/images/X.png" alt="cancel icon" />
-              </button>
+
+        {isVisible && (
+          <div className="notification">
+            <div>
+              <img src="/images/Info.png" alt="info icon" />
             </div>
-          )}
+            <div className="notifications">
+              <h3>Notification</h3>
+              <p>New Member Request</p>
+              <button>View</button>
+            </div>
+            <div>
+                <button onClick={() =>
+                    dispatch(toggleNotificationPopup())}>
+              <img src="/images/X.png" alt="cancel icon" />
+            </button>
+            </div>
+          </div>
+                    )}
           <div className="top">
             <div className="one onesy">
               <h1>{daoDetails?.daoName}</h1>
@@ -292,7 +307,7 @@ const SuperAdmin: React.FC = () => {
                 </div>
                 <Dashboard />
               </div>
-              <button className="create" onClick={() => navigate(`/CreateProposal/${daoMultiSig || ""}`)}>Create a Proposal</button>
+              <button className="create" onClick={() => navigate(`/CreateProposal/${daoMultiSigAddr || ""}`)}>Create a Proposal</button>
               <section className="second">
                 <div className="sec">
                   <img src="/images/Vector(4).png" alt="logo" />

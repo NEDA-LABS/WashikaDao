@@ -18,6 +18,7 @@ main.daoMain {
   position: absolute;
   top: clamp(64px, 9vw, 164px);
   z-index: 1;
+  z-index: 1;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -133,7 +134,7 @@ main.daoMain {
 
 .DaoOperations .button-2,
 .owner .button-2 {
-  font-size: 14px;  
+  font-size: 14px;
   color: #433939;
 }
 
@@ -254,6 +255,18 @@ main.daoMain {
   gap: 36px;
   overflow-y: scroll;
   scrollbar-width: none;
+}
+
+
+.second .proposal-groups::before {
+  content: "";
+  position: absolute;
+  left: 36px;
+  top: 310px;
+  height: auto;
+  width: 2px;
+  background-color: #d9d9d9;
+  opacity: 23%;
 }
 
 #treasury-history::-webkit-scrollbar {

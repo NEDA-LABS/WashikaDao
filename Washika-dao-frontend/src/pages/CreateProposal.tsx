@@ -8,6 +8,7 @@ import { RootState } from "../redux/store";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
+import { baseUrl } from "../utils/backendComm";
 
 /**
  *
@@ -23,14 +24,14 @@ import { FullDaoContract } from "../utils/handlers/Handlers";
  *
  * @throws Will log an error message to the console if the upload fails.
  */
-const uploadImageToCloudinary = async (file: File) => {
+const uploadDocumentToCloudinary = async (file: File) => {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", "ml_default");
 
   try {
     const response = await fetch(
-      "https://api.cloudinary.com/v1_1/da50g6laa/image/upload",
+      "https://api.cloudinary.com/v1_1/da50g6laa/raw/upload",
       {
         method: "POST",
         body: formData,
@@ -67,14 +68,17 @@ const CreateProposal: React.FC = () => {
   const [completedSteps, setCompletedSteps] = useState<number>(0);
   // Extract multiSigAddr from URL params
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
+  console.log('the daoMultiSigAddr is', daoMultiSigAddr);
+  
   const { memberAddr } = useSelector((state: RootState) => state.user);
   const token = localStorage.getItem("token");
   // State to manage form data
   const [proposalData, setProposalData] = useState({
+    proposalCustomIdentifier: crypto.randomUUID(),
     proposalOwner: memberAddr,
     otherMember: "",
     proposalTitle: "",
-    projectSummary: "",
+    proposalSummary: "",
     proposalDescription: "",
     proposalStatus: "open", // default to 'open'
     amountRequested: "",
@@ -102,11 +106,11 @@ const CreateProposal: React.FC = () => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const imageUrl = await uploadImageToCloudinary(file);
-      if (imageUrl) {
+      const documentUrl = await uploadDocumentToCloudinary(file);
+      if (documentUrl) {
         setProposalData((prevData) => ({
           ...prevData,
-          fileUrl: imageUrl,
+          fileUrl: documentUrl,
         }));
       }
     }
@@ -153,7 +157,7 @@ const CreateProposal: React.FC = () => {
         params: [
           _daoMultiSigAddr,
           proposalData.proposalTitle,
-          proposalData.projectSummary,
+          proposalData.proposalSummary,
           proposalData.proposalDescription,
           BigInt(proposalData.profitSharePercent),
         ],
@@ -180,7 +184,9 @@ const CreateProposal: React.FC = () => {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
           const _explorerUrl = buildCDExplorerUrl(receipt.transactionHash);
-          window.location.href = _explorerUrl;
+          console.log(_explorerUrl);
+          
+          // window.location.href = _explorerUrl;
         },
         onError: (error) => {
           if (error instanceof Error && error.message.includes("AA21")) {
@@ -218,7 +224,7 @@ const CreateProposal: React.FC = () => {
       const isCreateMemberSuccessfully = await handleCreateProposal();
       if (isCreateMemberSuccessfully === true) {
         const response = await fetch(
-          `http://localhost:8080/CreateProposal/DaoDetails/${daoMultiSigAddr}/createProposal`,
+          `http://${baseUrl}/DaoKit/Proposals/CreateProposal`,
           {
             method: "POST",
             headers: {
@@ -234,9 +240,10 @@ const CreateProposal: React.FC = () => {
         if (response.ok) {
           console.log(data);
 
-          const proposalId = data.createdProposal?.proposalId;
-          console.log("Proposal created successfully, ID:", proposalId);
-          navigate(`/ViewProposal/${daoMultiSigAddr}/${proposalId}`);
+          const proposalCustomIdentifier = data.createdProposal?.proposalCustomIdentifier;
+          console.log("Proposal created successfully, ID:", proposalCustomIdentifier);
+          console.log(daoMultiSigAddr, proposalCustomIdentifier);
+          navigate(`/ViewProposal/${daoMultiSigAddr}/${proposalCustomIdentifier}`);
         } else {
           console.error(`Error: ${data.error}`);
         }
@@ -248,6 +255,7 @@ const CreateProposal: React.FC = () => {
       console.error("Error:", error);
     }
   };
+console.log(daoMultiSigAddr, proposalData.proposalCustomIdentifier);
 
   return (
     <>
@@ -297,8 +305,8 @@ const CreateProposal: React.FC = () => {
           <div className="label three">
             <label>Summary of project</label>
             <textarea
-              name="projectSummary"
-              value={proposalData.projectSummary}
+              name="proposalSummary"
+              value={proposalData.proposalSummary}
               onChange={handleChange}
             ></textarea>
           </div>

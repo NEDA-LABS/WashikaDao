@@ -26,6 +26,7 @@ interface MemberFormProps {
  * @param {() => void} props.onInviteMember - Callback function to send an invite to new member.
  *
  *
+ *
  * @returns {JSX.Element} A JSX element representing the member form UI.
  */
 const MemberForm: React.FC<MemberFormProps> = ({
