@@ -52,7 +52,7 @@ interface Dao {
  * @see NavBar
  * @see Footer
  */
-const JoinPlatform: React.FC = () => {
+const JoinPlatform: React.FC<{}> = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [role, setRole] = useState(""); // Default role
@@ -291,7 +291,6 @@ const JoinPlatform: React.FC = () => {
     } catch (error) {
       console.error("Submission failed:", error);
     }
-  };
 
   return (
     <>

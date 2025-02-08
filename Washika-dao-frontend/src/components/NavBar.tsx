@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearCurrentUser, setCurrentUser } from "../redux/users/userSlice";
-import { toggleNotificationsPopup } from "../redux/notifications/notificationSlice";
+import {toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
@@ -11,6 +11,7 @@ import { arbitrumSepolia } from "thirdweb/chains";
 import { useEffect, useRef, useState } from "react";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { baseUrl } from "../utils/backendComm";
 
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -78,11 +79,11 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
   };
 
     const handleNotificationsClick = () => {
-        dispatch(toggleNotificationsPopup());//Dispatch action to toggle popup
+        dispatch(toggleNotificationPopup());//Dispatch action to toggle popup
     }
 
   useEffect(() => {
-    if (!activeAccount?.address && hasLoggedIn.current == true) {
+    if (!activeAccount?.address && hasLoggedIn.current) {
       logout();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -110,14 +111,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
         * Variable keep track of the base url to call the backend and allow for changes when  necessary
         * TODO: Plug in Directly from the backend
         */
-   const backendUrl: string = "localhost:8080";
+
 
   // Automatically trigger login when the wallet is connected
   useEffect(() => {
     const loginMember = async (address: string) => {
       try {
         const response = await fetch(
-          `https://${backendUrl}/JiungeNaDao/DaoDetails/login`,
+          `https://${baseUrl}/JiungeNaDao/DaoDetails/login`,
           {
             method: "POST",
             headers: {
@@ -165,9 +166,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
 
   function handleRegisterDaoLink(e: React.MouseEvent) {
     e.preventDefault();
-    if(address && hasLoggedIn.current == true) {
+    if(address && hasLoggedIn.current) {
       navigate("/DaoRegistration");
-    } else if (hasLoggedIn.current == false) {
+    } else if (!hasLoggedIn.current) {
       window.alert("Click on Connect to log in or create account first");
     }
     // else {
@@ -177,7 +178,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
 
 
   const handleDaoToolKitClick = (e: React.MouseEvent) => {
-    if (activeAccount?.address && hasLoggedIn.current == false) {
+    if (activeAccount?.address && !hasLoggedIn.current) {
       e.preventDefault();
       navigate("/JoinPlatform", { state: { address } });
     } else if (!activeAccount?.address) {
@@ -286,11 +287,11 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
           <img src="/images/words logo.png" className="wordLogo" alt="logo" />
         </Link>
       </div>
-            {/* Mobile Menu Toggle Button **/
+            {/* Mobile Menu Toggle Button */}
             {className === "DaoProfile" ? (
                 <button onClick={() => navigate(`/Owner/${address}`)} className="menu-button">UserName</button>
-                ) : className !== "SuperAdmin" ? (
-                    <button className="menu-button" onClick={() => setIsMenuOpen(true)}>
+            ) : className !== "SuperAdmin" ? (
+                <button className="menu-button" onClick={() => setIsMenuOpen(true)}>
                     <FontAwesomeIcon icon={faBars} size="sm" />
                     </button>
                     ) : (
