@@ -1,11 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { clearCurrentUser, setCurrentUser } from "../redux/users/userSlice";
-<<<<<<< HEAD
-import {toggleNotificationPopup } from "../redux/notifications/notificationSlice";
-=======
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
->>>>>>> 50ff9910c53519a309e7db9c3e0ec21469973b1d
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { createThirdwebClient } from "thirdweb";
@@ -16,10 +12,7 @@ import { useEffect, useRef, useState } from "react";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { baseUrl } from "../utils/backendComm";
-<<<<<<< HEAD
 
-=======
->>>>>>> 50ff9910c53519a309e7db9c3e0ec21469973b1d
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
@@ -88,15 +81,9 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
     navigate("/", { replace: true });
   };
 
-<<<<<<< HEAD
-    const handleNotificationsClick = () => {
-        dispatch(toggleNotificationPopup());//Dispatch action to toggle popup
-    }
-=======
   const handleNotificationClick = () => {
     dispatch(toggleNotificationPopup()); // Dispatch action to toggle popup
   };
->>>>>>> 50ff9910c53519a309e7db9c3e0ec21469973b1d
 
   useEffect(() => {
     if (!activeAccount?.address && hasLoggedIn.current) {
@@ -123,25 +110,18 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
   //TODO: switch to celoAlfajoresTestnet when in prod and mainnet when deployed
   const currInUseChain = arbitrumSepolia;
 
-<<<<<<< HEAD
  /**
         * Variable keep track of the base url to call the backend and allow for changes when  necessary
         * TODO: Plug in Directly from the backend
         */
 
 
-=======
->>>>>>> 50ff9910c53519a309e7db9c3e0ec21469973b1d
   // Automatically trigger login when the wallet is connected
   useEffect(() => {
     const loginMember = async (address: string) => {
       try {
         const response = await fetch(
-<<<<<<< HEAD
-          `https://${baseUrl}/JiungeNaDao/DaoDetails/login`,
-=======
           `http://${baseUrl}/DaoKit/MemberShip/login`,
->>>>>>> 50ff9910c53519a309e7db9c3e0ec21469973b1d
           {
             method: "POST",
             headers: {
@@ -189,11 +169,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
 
   function handleRegisterDaoLink(e: React.MouseEvent) {
     e.preventDefault();
-<<<<<<< HEAD
     if(address && hasLoggedIn.current) {
-=======
-    if (address && hasLoggedIn.current == true) {
->>>>>>> 50ff9910c53519a309e7db9c3e0ec21469973b1d
       navigate("/DaoRegistration");
     } else if (!hasLoggedIn.current) {
       window.alert("Click on Connect to log in or create account first");
@@ -318,7 +294,6 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
           <img src="/images/words logo.png" className="wordLogo" alt="logo" />
         </Link>
       </div>
-<<<<<<< HEAD
             {/* Mobile Menu Toggle Button */}
             {className === "DaoProfile" ? (
                 <button onClick={() => navigate(`/Owner/${address}`)} className="menu-button">UserName</button>
@@ -327,12 +302,10 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
                     <FontAwesomeIcon icon={faBars} size="sm" />
                     </button>
                     ) : (
-    <button className="menu-button"  onClick={handleNotificationsClick}>
+    <button className="menu-button"  onClick={handleNotificationClick}>
     Notifications
     </button>
                 )}
-      <ul  className={`nav-links ${isMenuOpen ? "open" : ""}`}>
-=======
 
       {/* Mobile Menu Toggle Button */}
       {className === "DaoProfile" ? (
@@ -348,7 +321,6 @@ const NavBar: React.FC<NavBarProps> = ({ className }: NavBarProps) => {
       )}
 
       <ul className={`nav-links ${isMenuOpen ? "open" : ""}`}>
->>>>>>> 50ff9910c53519a309e7db9c3e0ec21469973b1d
         <button className="menu-button" onClick={() => setIsMenuOpen(false)}>
           <FontAwesomeIcon icon={faTimes} size="sm" />
         </button>

@@ -52,6 +52,7 @@ interface Dao {
  * @see NavBar
  * @see Footer
  */
+//@ts-ignore
 const JoinPlatform: React.FC<{}> = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -416,5 +417,6 @@ const JoinPlatform: React.FC<{}> = () => {
     </>
   );
 };
+}
 
 export default JoinPlatform;
