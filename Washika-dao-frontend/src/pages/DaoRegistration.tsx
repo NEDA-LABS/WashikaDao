@@ -12,58 +12,11 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { baseUrl } from "../utils/backendComm.ts";
+import { IBackendDaoCreation } from "../utils/Types.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
  */
-interface FormData {
-  daoName: string;
-  daoLocation: string;
-  targetAudience: string;
-  daoTitle: string;
-  daoDescription: string;
-  daoOverview: string;
-  daoImageIpfsHash: string;
-  daoRegDocs: string;
-  multiSigAddr: string;
-  multiSigPhoneNo: number;
-  kiwango: number;
-  accountNo: number;
-  nambaZaHisa: string;
-  kiasiChaHisa: string;
-  interestOnLoans: string;
-
-}
-
-interface Member {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  nationalIdNo: string;
-  memberRole: string;
-}
-
-const uploadFileToCloudinary = async (file: File, resourceType: string) => {
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "ml_default");
-
-  const uploadUrl = `https://api.cloudinary.com/v1_1/da50g6laa/${resourceType}/upload`;
-
-  try {
-    const response = await fetch(uploadUrl, {
-      method: "POST",
-      body: formData,
-    });
-
-    const data = await response.json();
-    return data.secure_url; // Return the uploaded file's URL
-  } catch (error) {
-    console.error("Error uploading file:", error);
-    return null;
-  }
-};
 
 /**
  * DaoRegistration component allows users with the "Chairperson" role to register a new DAO.
@@ -92,13 +45,12 @@ const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const currUsrAcc = useActiveAccount();
-  const token = localStorage.getItem("token");
   const [daoTxHash, setDaoTxHash] = useState("");
   const { memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
   console.log(daoTxHash);
-  
+
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
@@ -109,7 +61,7 @@ const DaoRegistration: React.FC = () => {
     }
   }, [memberAddr]);
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<IBackendDaoCreation>({
     daoName: "",
     daoLocation: "",
     targetAudience: "",
@@ -126,122 +78,6 @@ const DaoRegistration: React.FC = () => {
     kiasiChaHisa: "",
     interestOnLoans: "",
   });
-
-  // State to hold the list of members
-  const [members, setMembers] = useState<Member[]>([]);
-
-  // Temporary state to hold the current member's input values
-  const [currentMember, setCurrentMember] = useState<Member>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    nationalIdNo: "",
-    memberRole: "",
-  });
-  const [completedSteps, setCompletedSteps] = useState<number>(0);
-
-  useEffect(() => {
-    let stepsCompleted = 0;
-
-    if (memberAddr) stepsCompleted++;
-    if (formData.daoName) stepsCompleted++;
-    if (formData.daoTitle) stepsCompleted++;
-    if (formData.daoImageIpfsHash) stepsCompleted++;
-    if (members.length > 0) stepsCompleted++;
-
-    setCompletedSteps(stepsCompleted);
-  }, [formData, memberAddr, members.length, phoneNumber]);
-
-  // Handle changes in the main form fields
-  const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
-  ) => {
-    const { name, value } = e.target; // Destructure the target name and value
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value, // Update the specific field in the form data
-    }));
-  };
-
-  // Handle change for members
-  const handleMemberChange = (field: keyof Member, value: string) => {
-    setCurrentMember((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  // Function to add a member to the members list
-  const handleAddAndInviteMember = async () => {
-    if (
-      currentMember.firstName &&
-      currentMember.lastName &&
-      currentMember.phoneNumber &&
-      currentMember.nationalIdNo &&
-      currentMember.memberRole
-    ) {
-      // Push the current member to the members array
-      setMembers([...members, currentMember]);
-
-      try {
-        const daoMultiSigAddr = formData.multiSigAddr;
-        // Send an email to the new member
-        const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail/$${daoMultiSigAddr}`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-              email: currentMember.email,
-              firstName: currentMember.firstName,
-            }),
-          }
-        );
-  
-        if (response.ok) {
-          alert("Member added and email sent successfully.");
-        } else {
-          console.error("Failed to send email.");
-        }
-      } catch (error) {
-        console.error("Error:", error);
-      }
-
-      // Clear the currentMember form for new input
-      setCurrentMember({
-        firstName: "",
-        lastName: "",
-        email: "",
-        phoneNumber: "",
-        nationalIdNo: "",
-        memberRole: "",
-      });
-    }
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const target = e.target as HTMLInputElement;
-    const file = target.files?.[0]; // Access the file if it exists
-    const fieldName = target.name;
-
-    if (file) {
-      const resourceType = fieldName === "daoImageIpfsHash" ? "image" : "raw"; // Use 'raw' for non-image files
-      const fileUrl = await uploadFileToCloudinary(file, resourceType);
-
-      if (fileUrl) {
-        setFormData((prevData) => ({
-          ...prevData,
-          [fieldName]: fileUrl, // Update the specific field with the file URL
-        }));
-      }
-    }
-  };
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx, data: transactionResult } = useSendTransaction();
 
@@ -363,7 +199,6 @@ const DaoRegistration: React.FC = () => {
         // Combine form data and member data
         const combinedData = {
           ...formData,
-          members,
         };
 
         // Send combined data to the backend API
@@ -373,7 +208,7 @@ const DaoRegistration: React.FC = () => {
             method: "POST", // HTTP method
             headers: {
               "Content-Type": "application/json", // Specify JSON content type
-              Authorization: `Bearer ${token}`,
+              Authorization: `opensesame`,
             },
             body: JSON.stringify(combinedData), // Send combined data
           }
@@ -422,13 +257,6 @@ const DaoRegistration: React.FC = () => {
           <div className="circle-container">
             {Array.from({ length: 5 }, (_, index) => (
               <React.Fragment key={`circle-${index}`}>
-                <div
-                  className={`circle ${
-                    index + 1 <= completedSteps ? "green" : ""
-                  }`}
-                >
-                  {index + 1}
-                </div>
                 {index < 4 && <div className="line" />}
               </React.Fragment>
             ))}

@@ -1,26 +1,28 @@
-import { Request, Response, NextFunction, RequestHandler } from 'express';
-import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from 'express';
 
-export const Authenticator: RequestHandler = (req: Request, res: Response, next: NextFunction) => {
-    const authHeader = req.headers.authorization;
-    console.log(`Authorization header is ${authHeader}`);
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer Token
 
-    if (!token) {
-          res
-            .status(401)
-            .json({ message: 'Unauthorized request: No token provided!' });
-    }
+/*
+ * Requires request to particular routes to contain an authorization header so only our client application can make requests for our server.
+ * This is not to serve as any form of user oauth but to shield the server from unverified requests
+ *
+ */
+export  function Authenticator(req: Request, res: Response, next: NextFunction): void {
 
-    jwt.verify(token, process.env.ROUTE_PROTECTOR_API_KEY as string, (err, user) => {
-        if (err) {
-            console.error(`Token Verification Error ${err}`);
-                return res
-                         .status(403)
-                         .json({ message: "Forbidden Request, Invalid Token Provided" });
-        }
+  const authCode = req.headers['authorization'];
 
-    console.log("Token Verification Successful");
-    next(); // Token is valid, proceed to the route handler
-    });
-}
+     if(!authCode) {
+              res
+                .status(401)
+                .json({error: "No authorization code provided" })
+       return;
+    } 
+
+    if(authCode !== process.env.ROUTE_PROTECTOR) {
+               res
+                 .status(403)
+                 .json({ error: "Invalid secret code provided" });
+      return; 
+    } 
+
+    next();
+     }

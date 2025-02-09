@@ -11,7 +11,7 @@ export type DaoCreationFormInputs = {
     _multiSigPhoneNo: any;
    }
 
-   export interface FormData {
+   export interface IBackendDaoCreation{
     daoName: string;
     daoLocation: string;
     targetAudience: string;
@@ -29,7 +29,7 @@ export type DaoCreationFormInputs = {
     interestOnLoans: string;
   }
 
-export type FormInputsData = {
+export interface IBlockchainDaoCreation{
     daoName: string;
     daoLocation: string;
     targetAudience: string;
@@ -37,17 +37,11 @@ export type FormInputsData = {
     daoDescription: string;
     daoOverview: string;
     daoImageIpfsHash: string;
-    daoRegDocs: string;
-    multiSigAddr: string;
-    multiSigPhoneNo: number;
-    kiwango: number;
-    accountNo: number;
-    nambaZaHisa: string;
-    kiasiChaHisa: string;
-    interestOnLoans: string;
-  }
+    daoMultiSigAddr: Address;
+    multiSigPhoneNo: BigInt;
+}
 
-export interface Member {
+export interface IBackendDaoMember {
     firstName: string;
     lastName: string;
     email: string;
@@ -55,6 +49,16 @@ export interface Member {
     nationalIdNo: string;
     memberRole: string;
   }
+
+export interface IDaoMemberDetails {
+    memberName: string;
+    emailAddress: string;
+    phoneNumber: any;
+    nationalId: number;
+    role: any;
+    userAddress: Address;
+    multiSigPhoneNo: any | bigint;
+}
 
 export type daoCreationTxResult = {
   txHash: string;
@@ -79,3 +83,13 @@ export interface IBackendProposalCreate extends IBlockchainProposal {
     proposalFileUrl: string; //Maybe from ipfs
     otherMember: string;
 }
+
+export interface IVoteDetails {
+    voterAddr: Address;
+    proposalOwner: Address;
+    voteType: string | any
+}
+
+
+
+

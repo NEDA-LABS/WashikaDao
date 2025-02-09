@@ -4,10 +4,6 @@ import { Proposal } from "../entity/Proposal";
 import { Vote } from "../entity/Vote";
 import { IVote } from "../Interfaces/EntityTypes";
 import AppDataSource from "../data-source";
-import { ObjectLiteral } from "typeorm";
-import { IProposal } from "../Interfaces/EntityTypes";
-import { log } from "console";
-
 const proposalRepository = AppDataSource.getRepository(Proposal);
 const voteRepository = AppDataSource.getRepository(Vote);
 const daoRepository = AppDataSource.getRepository(Dao);
@@ -127,7 +123,6 @@ export async function GetProposalDetails(req: Request, res: Response) {
     }
     return res.status(200).json(proposalDetails);
   } catch (error) {
-    //TODO: BLOCKCHAIN INTEGRATION
     res.status(500).json({ error: "Error fetching proposal" });
   }
 }
