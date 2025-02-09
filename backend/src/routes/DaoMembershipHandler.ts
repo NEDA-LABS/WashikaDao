@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 const router = express.Router();
 
-import { CreateInitialOwner, GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
+import { CreateInitialOwner, loginMember, GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
 import { handleSendInvite } from "../controller/EmailController";
 import { handleSendInviteSMS } from "../controller/SMSController";
 import { Authenticator } from "../utils/Authenticator/Authenticator";
@@ -12,7 +12,7 @@ import { Authenticator } from "../utils/Authenticator/Authenticator";
  */
 //Creatint the initial Owner of a Dao
 
-router.post('/CreateInitialOwner', Authenticator, (req: Request, res: Response) =>  { CreateInitialOwner(req, res)})
+router.post('/CreateInitialOwner', (req: Request, res: Response) =>  { CreateInitialOwner(req, res)})
 //Adding a particular user to be an owner of a particular dao too
 //TODO: implement this to be a protected route, ensure user has enough permissions to access this since it is direct no other checks ---now resolved
 /** Dao MemberShip Activities available  **/
@@ -21,14 +21,16 @@ router.post('/CreateInitialOwner', Authenticator, (req: Request, res: Response) 
     * The multisig of the dao is passed as url params
     * @returns a Json Array Object containing an array of all the members of a DAO
     */
-router.get('/AllDaoMembers', Authenticator, (req: Request, res: Response) => {GetAllMembers(req, res)});
+
+router.post('/login', (req: Request, res: Response) =>  { loginMember(req, res)})
+router.get('/AllDaoMembers/:daoMultiSigAddr', Authenticator, (req: Request, res: Response) => {GetAllMembers(req, res)});
 /**
     * INFO: Sends a Request to Join a particular Dao
     * @params The multisig of the Dao to send request to
     * @request Body - The Necessary Details of the member who wants to join
     * @returns a success or failed status code & or message
     */
-router.post('/RequestToJoinDao', Authenticator, (req: Request, res: Response) => {RequestToJoinDao(req, res)});
+router.post('/RequestToJoinDao', (req: Request, res: Response) => {RequestToJoinDao(req, res)});
 /**
     * INFO: Updates the Details of a member of a particular Dao
     * @Params - Multisig of the Dao

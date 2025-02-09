@@ -9,9 +9,9 @@ import { Authenticator } from "../utils/Authenticator/Authenticator";
 //TODO: Include better documentation for this feature
 
 
-router.get('/GetAllProposalsInDao', async(req: Request, res: Response) => {await GetAllProposalsInDao(req, res)});
+router.get('/GetAllProposalsInDao/:daoMultiSigAddr', async(req: Request, res: Response) => {await GetAllProposalsInDao(req, res)});
 
-router.get('/GetProposalDetails', async(req: Request, res: Response) => { await GetProposalDetails(req, res)});
+router.get('/GetProposalDetails/:daoMultiSigAddr/:proposalCustomIdentifier', async(req: Request, res: Response) => { await GetProposalDetails(req, res)});
 router.post('/CreateProposal', Authenticator,  async (req: Request, res: Response) => {await CreateProposal(req, res)});
 //upvoting a proposal
 router.post('/UpVoteProposal', Authenticator, async (req: Request, res: Response) =>{ await  UpVoteProposal(req, res)});

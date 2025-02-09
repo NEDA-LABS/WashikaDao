@@ -7,12 +7,18 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
 import { useLocation } from "react-router-dom";
 
-// import { ethers } from "ethers";
 import React from "react";
+
+// 4 Blockchain
+import { useActiveAccount, useSendTransaction } from "thirdweb/react";
+import { FullDaoContract } from "../utils/handlers/Handlers";
+import { prepareContractCall } from "thirdweb";
+import { baseUrl } from "../utils/backendComm";
 
 interface Dao {
   daoName: string;
   daoMultiSigAddr: string;
+  multiSigPhoneNo: bigint;
 }
 /**
  *@Auth policy: checks if isLoggedIn if not requires you to else proceed
@@ -21,32 +27,33 @@ interface Dao {
 
 /**
  * Component for joining a platform and managing DAO memberships.
- * 
+ *
  * This component allows users to create an account, select a role, and join a DAO.
  * It manages user input for personal details and role selection, fetches available DAOs,
  * and handles form submission to register the user with the selected DAO.
- * 
+ *
  * @component
  * @returns {React.FC} A React functional component.
- * 
+ *
  * @remarks
  * - Utilizes React hooks for state management and side effects.
  * - Fetches DAO details from a specified endpoint and updates the state accordingly.
  * - Handles form submission by sending user data to the server and navigating based on the role.
- * 
+ *
  * @example
  * <JoinPlatform />
- * 
+ *
  * @dependencies
  * - `useNavigate` from `react-router-dom` for navigation.
  * - `useDispatch` from `react-redux` for dispatching actions.
  * - `useLocation` from `react-router-dom` for accessing location state.
- * 
+ *
  * @see DaoForm
  * @see NavBar
  * @see Footer
  */
-const JoinPlatform: React.FC = () => {
+//@ts-ignore
+const JoinPlatform: React.FC<{}> = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [role, setRole] = useState(""); // Default role
@@ -55,23 +62,121 @@ const JoinPlatform: React.FC = () => {
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState<number | "">("");
   const [nationalIdNo, setNationalIdNo] = useState<number>();
-  const [selectedDao, setSelectedDao] = useState(""); // Currently selected DAO
   const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
   const [multiSigAddr, setMultiSigAddr] = useState("");
+  const [multiSigPhoneNo, setMultiSigPhoneNo] = useState<bigint>();
   const [memberDaos, setMemberDaos] = useState<string[]>([]); // Array of all DAOs member belongs to
   const [txHash, setTxHash] = useState("");
   // const [usrBal, setUsrBal] = useState("");
   const [completedSteps, setCompletedSteps] = useState<number>(0);
   const location = useLocation();
   const memberAddr = location.state?.address;
+  const token = localStorage.getItem("token");
   console.log("The memberAddr is", memberAddr);
 
+  const currActiveAcc = useActiveAccount();
+  const { mutate: sendTx, data: transactionResult } = useSendTransaction();
+
+  const prepareJoinPlatformTx = (
+    _memberName: string,
+    _emailAddress: string,
+    _phoneNumber: bigint,
+    _nationalId: bigint,
+    _role: string,
+    _daoMultiSigAddr: string,
+    _userAddress: string,
+    _multiSigPhoneNo: bigint
+  ) => {
+    if (!currActiveAcc) {
+      console.error("Fatal Error, No Active Account found");
+      return;
+    }
+    try {
+      console.log("Preparing JoinPlatform transaction");
+      const _addMemberTx = prepareContractCall({
+        contract: FullDaoContract,
+        method: "addMember",
+        params: [
+          _memberName,
+          _emailAddress,
+          _phoneNumber,
+          _nationalId,
+          _role,
+          _userAddress,
+          _daoMultiSigAddr,
+          _multiSigPhoneNo,
+        ],
+      });
+      console.log("Prepared transaction:", _addMemberTx);
+      return _addMemberTx;
+    } catch (error) {
+      console.error("Error preparing transaction:", error);
+      return;
+    }
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const sendJoinPlatformTx = async (_addMemberTx: any) => {
+    if (!_addMemberTx) {
+      console.warn("undefined transaction");
+      return;
+    }
+    try {
+      console.log("Sending transaction...");
+      sendTx(_addMemberTx, {
+        onSuccess: (receipt) => {
+          console.log("Transaction successful!", receipt);
+          setTxHash(receipt.transactionHash);
+          window.location.href = `https://testnet.routescan.io/transaction/${txHash}`;
+          console.log(`Current transaction result ${transactionResult}`);
+        },
+        onError: (error) => {
+          console.error("Transaction failed:", error);
+        },
+      });
+    } catch (error) {
+      console.error("Error sending transaction:", error);
+      if (error instanceof Error && error.message.includes("AA21")) {
+        alert("Gas sponsorship issue. Please top up or request sponsorship.");
+      }
+    }
+  };
+
+  const handleJoinPlatform = async () => {
+    const phoneNumberBigInt = BigInt(phoneNumber || "0");
+    const nationalIdBigInt = BigInt(nationalIdNo || "0");
+    const multiSigPhoneNoBigInt = BigInt(multiSigPhoneNo || "0");
+
+    const finalTx = prepareJoinPlatformTx(
+      firstName + " " + lastName,
+      email,
+      phoneNumberBigInt,
+      nationalIdBigInt,
+      role,
+      multiSigAddr,
+      memberAddr,
+      multiSigPhoneNoBigInt
+    );
+    if (finalTx) {
+      await sendJoinPlatformTx(finalTx);
+      return true;
+    } else {
+      console.log("Transaction preparation failed");
+      return false;
+    }
+  };
+
   useEffect(() => {
-    if (role !== "Chairperson") {
+    if (role === "Member") {
       const fetchDaos = async () => {
         try {
           const response = await fetch(
-            "http://localhost:8080/FunguaDao/GetAllDaos"
+            `http://${baseUrl}/DaoGenesis/GetAllDaos`, {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Content-Type": "application/json",
+              },
+            }
           );
 
           if (!response.ok)
@@ -103,7 +208,7 @@ const JoinPlatform: React.FC = () => {
     if (daos.length > 0) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
-  }, [daos.length, firstName, memberAddr, phoneNumber, role]);
+  }, [daos.length, firstName, memberAddr, phoneNumber, role, token]);
 
   const handleRoleChange = (
     event: React.ChangeEvent<
@@ -115,7 +220,6 @@ const JoinPlatform: React.FC = () => {
 
   const handleDaoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedDaoName = event.target.value;
-    setSelectedDao(selectedDaoName);
 
     // Find the selected DAO in the list based on its name
     const chosenDao = daos.find((dao) => dao.daoName === selectedDaoName);
@@ -123,6 +227,7 @@ const JoinPlatform: React.FC = () => {
     if (chosenDao && !memberDaos.includes(chosenDao.daoName)) {
       setMemberDaos((prevDaos) => [...prevDaos, chosenDao.daoName]);
       setMultiSigAddr(chosenDao.daoMultiSigAddr); // Save selected DAO’s address
+      setMultiSigPhoneNo(chosenDao.multiSigPhoneNo);
     }
   };
 
@@ -138,46 +243,46 @@ const JoinPlatform: React.FC = () => {
       phoneNumber: phoneNumber || 0,
       nationalIdNo: nationalIdNo || 0,
       memberRole: role,
-      daoMultiSig: role === "Chairperson" ? memberAddr : multiSigAddr,
-      memberDaos: role === "Chairperson" ? [] : memberDaos, // Leave empty if role is Owner
+      daoMultiSigAddr: role === "Chairperson" ? memberAddr : multiSigAddr,
+      daos: role === "Chairperson" ? [] : memberDaos, // Leave empty if role is Owner
     };
 
     console.log("Payload:", payload);
 
     try {
-      const endpoint =
-        role === "Chairperson"
-          ? "http://localhost:8080/JiungeNaDao/DaoDetails/CreateOwner"
-          : `http://localhost:8080/JiungeNaDao/DaoDetails/${multiSigAddr.toLowerCase()}/AddMember`;
+      const isCreateMemberSuccessfully = await handleJoinPlatform();
+      if (isCreateMemberSuccessfully === true) {
+        const endpoint =
+          role === "Chairperson"
+            ? `http://${baseUrl}/DaoKit/MemberShip/CreateInitialOwner`
+            : `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`;
 
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
 
-      const result = await response.json();
-      setTxHash(result.hash);
-      console.log(txHash);
+        const result = await response.json();
 
-      if (response.ok) {
-        alert("Registration successful")
-        console.log(`Success: ${result.message}`);
-        // Dispatch the current user information to the store
-        dispatch(
-          setCurrentUser({
-            memberAddr: payload.memberAddr,
-            daoMultiSig: payload.daoMultiSig,
-            firstName,
-            lastName,
-            email,
-            role,
-            nationalIdNo: payload.nationalIdNo,
-            phoneNumber: payload.phoneNumber,
-          })
-        );
+        if (response.ok) {
+          alert("Registration successful");
+          console.log(`Success: ${result.message}`);
+          // Dispatch the current user information to the store
+          dispatch(
+            setCurrentUser({
+              memberAddr: payload.memberAddr,
+              daoMultiSig: payload.daoMultiSigAddr,
+              firstName,
+              lastName,
+              email,
+              role,
+              nationalIdNo: payload.nationalIdNo,
+              phoneNumber: payload.phoneNumber,
+            })
+          );
 
         // Navigate to profile page based on role
         navigate(
@@ -187,12 +292,14 @@ const JoinPlatform: React.FC = () => {
         );
       } else {
         console.error(`Error: ${result.error}`);
-      }
+       }
+      } else {
+        console.error("Member creation transaction failed");
+            alert("Member creation failed. Please check your inputs and try again");
+            }
     } catch (error) {
       console.error("Submission failed:", error);
     }
-  };
-  console.log(selectedDao);
 
   return (
     <>
@@ -244,7 +351,7 @@ const JoinPlatform: React.FC = () => {
               },
               {
                 label: "Phone Number",
-                type: "number",
+                type: "tel",
                 onChange: (e) => setPhoneNumber(Number(e.target.value)),
               },
               {
@@ -270,7 +377,7 @@ const JoinPlatform: React.FC = () => {
               },
             ]}
           />
-          
+
           {role && role === "Member" && (
             <div className="findAndJoin">
               <div className="one">
@@ -310,5 +417,6 @@ const JoinPlatform: React.FC = () => {
     </>
   );
 };
+}
 
 export default JoinPlatform;
