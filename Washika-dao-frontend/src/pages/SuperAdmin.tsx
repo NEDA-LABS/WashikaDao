@@ -1,4 +1,4 @@
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import WanachamaList from "../components/WanachamaList";
 import Dashboard from "../components/Dashboard";
@@ -63,7 +63,7 @@ const SuperAdmin: React.FC = () => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig/${daoMultiSigAddr}`, {
+          `http://${baseUrl}/Daokit/DaoDetails/?daoMultiSigAddr=${daoMultiSigAddr}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",

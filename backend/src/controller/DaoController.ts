@@ -201,10 +201,10 @@ export async function GetAllDaosInPlatform(req: Request, res: Response) {
  * - HTTP 500: If an error occurs while retrieving the DAO details.
  */
 export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.params;
+  const { daoMultiSigAddr } = req.query;
 
-  if (!daoMultiSigAddr) {
-    return res.status(400).json({ message: "Missing required params!" });
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
+    return res.status(400).json({ message: "Missing or invalid daoMultiSigAddr query parameter!" });
   }
 
   try {

@@ -16,7 +16,7 @@ nav a {
   color: #ffffff;
 }
 
-nav div,
+nav .navbar-logo .logo-link,
 .box-right div {
   display: flex;
   align-items: center;
@@ -203,7 +203,9 @@ nav.DaoProfile, nav.SuperAdmin {
 
   nav ul.open {
     display: flex; /* Show the menu when open */
+    margin-top: 40px;
     z-index: 9999;
+    /* border: 1px solid red; */
   }
 
   nav ul li {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import DaoForm from "../components/DaoForm";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
@@ -52,8 +52,8 @@ interface Dao {
  * @see NavBar
  * @see Footer
  */
-//@ts-ignore
-const JoinPlatform: React.FC<{}> = () => {
+
+const JoinPlatform: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [role, setRole] = useState(""); // Default role
@@ -299,7 +299,7 @@ const JoinPlatform: React.FC<{}> = () => {
             }
     } catch (error) {
       console.error("Submission failed:", error);
-    }
+    }}
 
   return (
     <>
@@ -417,6 +417,5 @@ const JoinPlatform: React.FC<{}> = () => {
     </>
   );
 };
-}
 
 export default JoinPlatform;

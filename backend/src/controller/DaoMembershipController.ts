@@ -164,11 +164,7 @@ export async function loginMember(req: Request, res: Response) {
     }
 
     //Generate a JWT(Json Web Token)
-    const token = jwt.sign(
-      { memberAddr: member.memberAddr, memberRole: member.memberRole },
-      process.env.ROUTE_PROTECTOR_API_KEY, //Using environment variable for the secret key
-      { expiresIn: "1h" } //Expires in a hour
-    );
+    const token = process.env.ROUTE_PROTECTOR;
 
     // If member exists, return a success message and member details (without sensitive data)
     return res.status(200).json({

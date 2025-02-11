@@ -1,6 +1,6 @@
 import Footer from "../components/Footer";
 import GroupInfo from "../components/GroupInfo";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import Strip from "../components/Strip";
 /*
 *@Auth policy -> Should be authenticated to access this page

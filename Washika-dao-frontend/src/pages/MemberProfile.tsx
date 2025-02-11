@@ -1,5 +1,5 @@
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import Dashboard from "../components/Dashboard";
 import { useEffect, useState } from "react";
@@ -158,7 +158,7 @@ const MemberProfile: React.FC = () => {
           <button>Account Information</button>
           <button>Make Payments</button>
           <button>Apply for Loan</button>
-          <button>Edit Settings</button>
+          <button onClick={handleAddMemberClick}>Edit Settings</button>
         </div>
 
         <div className="dashboard-wrapper">
@@ -173,7 +173,6 @@ const MemberProfile: React.FC = () => {
           </div>
           <ProposalGroups />
         </section>
-        <button onClick={handleAddMemberClick}>Join another Dao</button>
         {showForm && (
           <div className=" popupp">
             <form onSubmit={handleSubmit}>
