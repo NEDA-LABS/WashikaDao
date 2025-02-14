@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"; // Import useNavigate for progra
 import { createThirdwebClient } from "thirdweb"; // Import the function to create a Thirdweb client.
 import { useDispatch } from "react-redux"; // Import useDispatch to dispatch actions in Redux.
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice"; // Import the Redux action to toggle the notification popup.
-import { Account, inAppWallet } from "thirdweb/wallets"; // Import Account type and inAppWallet for authentication methods.
+import { inAppWallet } from "thirdweb/wallets"; // Import Account type and inAppWallet for authentication methods.
 
 /**
  * Creates a Thirdweb client instance for handling authentication and blockchain interactions.
@@ -24,11 +24,9 @@ const client = createThirdwebClient({
  * Interface defining the properties for the `AuthButton` component.
  *
  * @property {string} className - A class name used for conditional rendering.
- * @property {Account | undefined} activeAccount - The currently active user account, which may be undefined if not connected.
  */
 interface AuthButtonProps {
   className: string;
-  activeAccount: Account | undefined;
 }
 
 /**
@@ -47,7 +45,6 @@ interface AuthButtonProps {
  */
 const AuthButton: React.FC<AuthButtonProps> = ({
   className,
-  activeAccount,
 }) => {
   const navigate = useNavigate(); // Hook for navigating between pages.
   const dispatch = useDispatch(); // Hook for dispatching Redux actions.
@@ -81,6 +78,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({
     }),
   ];
 
+  const memberAddr = localStorage.getItem("address");
   /**
    * Determines whether to show the "Member Profile" button based on the user's role.
    *
@@ -100,8 +98,12 @@ const AuthButton: React.FC<AuthButtonProps> = ({
    *
    * @returns {JSX.Element} Profile button if conditions are met.
    */
-  if (activeAccount?.address && shouldShowMemberProfile) {
-    return <button onClick={() => navigate("/MemberProfile")}>Profile</button>;
+  if (memberAddr && shouldShowMemberProfile) {
+    return (
+      <button onClick={() => navigate(`/MemberProfile/${memberAddr}`)}>
+        Profile
+      </button>
+    );
   }
 
   /**

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import TreasuryHistory from "../components/TreasuryHistory";
 import { useNavigate, useParams } from "react-router-dom";
@@ -37,15 +37,15 @@ const PublicDaoProfile: React.FC = () => {
   const [memberCount, setMemberCount] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") ?? "";
 
   useEffect(() => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig/${daoMultiSigAddr}`,{
+          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig?daoMultiSigAddr=${daoMultiSigAddr}`,{
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: token,
               "Content-Type": "application/json",
             },
           }
@@ -65,9 +65,9 @@ const PublicDaoProfile: React.FC = () => {
     const fetchMemberCount = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`,{
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoMultiSigAddr=${daoMultiSigAddr}`,{
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: token,
               "Content-Type": "application/json",
             },
           }

@@ -1,7 +1,7 @@
 import express, { Express, Request, Response } from "express";
 const router = express.Router();
 
-import { CreateInitialOwner, loginMember, GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
+import { CreateInitialOwner, GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember, loginMember } from "../controller/DaoMembershipController";
 import { handleSendInvite } from "../controller/EmailController";
 import { handleSendInviteSMS } from "../controller/SMSController";
 import { Authenticator }  from "../utils/Authenticator/Authenticator";
@@ -23,7 +23,7 @@ router.post('/CreateInitialOwner', Authenticator, (req: Request, res: Response) 
     */
 
 
-//router.post('/login', (req: Request, res: Response) =>  { loginMember(req, res)})
+router.post('/login', (req: Request, res: Response) =>  { loginMember(req, res)})
 router.get('/AllDaoMembers', Authenticator, (req: Request, res: Response) => {GetAllMembers(req, res)});
 /**
     * INFO: Sends a Request to Join a particular Dao

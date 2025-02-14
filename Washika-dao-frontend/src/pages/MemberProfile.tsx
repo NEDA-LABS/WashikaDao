@@ -4,14 +4,10 @@ import ProposalGroups from "../components/ProposalGroups";
 import Dashboard from "../components/Dashboard";
 import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import { baseUrl } from "../utils/backendComm";
+import { Dao, fetchDaos } from "../hooks/fetchDaos";
+import { useNavigate } from "react-router-dom";
 
-interface Dao {
-  daoName: string;
-  daoMultiSigAddr: string;
-}
 /**
  * @Auth policy: Should definitely be authenticated to make sense
  * @returns
@@ -29,41 +25,37 @@ interface Dao {
 const MemberProfile: React.FC = () => {
   // const [guaranter, setGuaranter] = useState<string>("");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
+  const navigate = useNavigate();
   const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    role,
-    daoMultiSig,
-    nationalIdNo,
-  } = useSelector((state: RootState) => state.user);
-  console.log(nationalIdNo);
+
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [nationalIdNo, setNationalIdNo] = useState<string>("");
+  const [role, setRole] = useState<string>("");
+  const [daoMultiSigAddr, setDaoMultiSigAddr] = useState<string>("");
+  const [guarantor, setGuarantor] = useState<string>("");
+  const [memberDaos, setMemberDaos] = useState<string[]>([]);
+
+  const handleDaoChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
+    const selectedDaoName = event.target.value;
+
+    // Find the selected DAO in the list based on its name
+    const chosenDao = daos.find((dao) => dao.daoName === selectedDaoName);
+
+    if (chosenDao && !memberDaos.includes(chosenDao.daoName)) {
+      setMemberDaos((prevDaos) => [...prevDaos, chosenDao.daoName]);
+      setDaoMultiSigAddr(chosenDao.daoMultiSigAddr); // Save selected DAO’s address
+    }
+  };
 
   useEffect(() => {
-    const fetchDaos = async () => {
-      try {
-        const response = await fetch(`http://${baseUrl}/DaoGenesis/GetAllDaos`);
-
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-
-        // Parse JSON data safely
-        const data = await response.json();
-        console.log("Fetched DAOs:", data);
-
-        // Check if daoList exists and is an array
-        if (Array.isArray(data.daoList)) {
-          setDaos(data.daoList);
-        } else {
-          console.error("daoList is missing or not an array");
-        }
-      } catch (error) {
-        console.error("Failed to fetch DAOs:", error);
-      }
+    const getDaos = async () => {
+      const daoList = await fetchDaos();
+      setDaos(daoList);
     };
-    fetchDaos();
+    getDaos();
   }, []);
 
   // Toggle the form popup visibility
@@ -73,19 +65,20 @@ const MemberProfile: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    setRole("Member")
     // Build payload data
     const payload = {
-      memberAddr: "",
+      memberAddr: localStorage.getItem("address"),
       firstName,
       lastName,
       email,
       phoneNumber,
       nationalIdNo,
       memberRole: role,
-      daoMultiSigAddr: daoMultiSig,
-      daos: "",
-      // guaranter,
+      daoMultiSigAddr,
+      daos: memberDaos,
+      guarantor,
+      memberCustomIdentifier: crypto.randomUUID(),
     };
 
     console.log("Payload:", payload);
@@ -97,6 +90,7 @@ const MemberProfile: React.FC = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify(payload),
         }
@@ -165,7 +159,9 @@ const MemberProfile: React.FC = () => {
           <h2>This is your account information</h2>
           <Dashboard />
         </div>
-        <button className="create">Create a Proposal</button>
+        <button className="create" onClick={() => navigate("/CreateProposal")}>
+          Create a Proposal
+        </button>
         <section className="second">
           <div className="sec">
             <img src="/images/Vector(4).png" alt="logo" />
@@ -182,6 +178,31 @@ const MemberProfile: React.FC = () => {
                 description=""
                 fields={[
                   {
+                    label: "First Name",
+                    type: "text",
+                    onChange: (e) => setFirstName(e.target.value),
+                  },
+                  {
+                    label: "Last Name",
+                    type: "text",
+                    onChange: (e) => setLastName(e.target.value),
+                  },
+                  {
+                    label: "email",
+                    type: "email",
+                    onChange: (e) => setEmail(e.target.value),
+                  },
+                  {
+                    label: "Phone Number",
+                    type: "tel",
+                    onChange: (e) => setPhoneNumber(e.target.value),
+                  },
+                  {
+                    label: "National Id",
+                    type: "number",
+                    onChange: (e) => setNationalIdNo(e.target.value),
+                  },
+                  {
                     label: "Select Dao",
                     type: "select",
                     options: [
@@ -196,12 +217,12 @@ const MemberProfile: React.FC = () => {
                         value: dao.daoName,
                       })),
                     ],
-                    value: "",
+                    onChange: handleDaoChange,
                   },
                   {
                     label: "Guarantor Number",
                     type: "number",
-                    value: "",
+                    onChange: (e) => setGuarantor(e.target.value),
                   },
                 ]}
               />

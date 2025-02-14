@@ -8,6 +8,7 @@ import NavLogo from "./NavLogo"; // Logo component for the navigation bar.
 import MobileMenuButton from "./MobileMenuButton"; // Component for toggling the mobile menu.
 import NavLinks from "./NavLinks"; // Component containing navigation links.
 import PopupNotification from "./PopupNotification"; // Component for displaying pop-up notifications.
+import { baseUrl } from "../../utils/backendComm";
 
 /**
  * Interface defining the props for the `NavBar` component.
@@ -41,9 +42,6 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   // State to control the visibility of a pop-up notification.
   const [showPopup, setShowPopup] = useState<boolean>(false);
 
-  // State to store the authenticated user's blockchain address.
-  const [address, setAddress] = useState<string | null>(null);
-
   /**
    * Effect: Store the active account address in `localStorage` when it changes.
    *
@@ -52,23 +50,50 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    */
   useEffect(() => {
     if (activeAccount?.address) {
-      localStorage.setItem(
-        "activeAccount",
-        activeAccount.address.toLowerCase()
-      );
+      const address = activeAccount.address.toLowerCase();
+      localStorage.setItem("activeAccount", address);
+      localStorage.setItem("address", address);
+
+      // Authenticate only if the token is not stored
+      if (!localStorage.getItem("token") && address) {
+        authenticateUser(address);
+      }
     }
   }, [activeAccount]);
 
-  /**
-   * Effect: Retrieve the saved blockchain address from `localStorage` when the component mounts.
-   *
-   * @remarks
-   * - If an address is found, it is set to the state variable `address`.
-   */
-  useEffect(() => {
-    const savedAddress = localStorage.getItem("activeAccount");
-    if (savedAddress) setAddress(savedAddress);
-  }, []);
+  const authenticateUser = async (address: string) => {
+    const memberAddr = address
+    const memberCustomIdentifier = crypto.randomUUID()
+    if (!address) {
+      console.error("Address is undefined or empty");
+      return;
+    }
+
+    try {
+      console.log("Authenticating with address:", address);
+      const response = await fetch(
+        `http://${baseUrl}/DaoKit/MemberShip/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ memberAddr, memberCustomIdentifier }),
+        }
+      );
+
+      const result = await response.json();
+      console.log(result.message);
+      
+      if (response.ok) {
+        localStorage.setItem("token", result.authorization);
+      } else {
+        console.error(`Authentication Error: ${result.error}`);
+      }
+    } catch (error) {
+      console.error("Authentication failed:", error);
+    }
+  };
 
   /**
    * Effect: If no active blockchain account is detected, log the user out.
@@ -79,7 +104,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   useEffect(() => {
     if (!activeAccount?.address) {
       localStorage.removeItem("activeAccount");
-      localStorage.removeItem("token");
+      localStorage.removeItem("address");
+      // localStorage.removeItem("token");
       navigate("/", { replace: true }); // Redirect to the homepage.
     }
   }, [activeAccount, navigate]);
@@ -96,6 +122,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    */
   const handleRegisterDaoLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
+    const address = localStorage.getItem("address");
     if (address) {
       navigate("/DaoRegistration");
     } else {
@@ -104,7 +131,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   };
 
   // Assign the active account address to `daoMultiSigAddr`, or set it to `null` if no account is found.
-  const daoMultiSigAddr: string | null = activeAccount?.address || null;
+  const daoMultiSigAddr = localStorage.getItem("address");
 
   /**
    * Handles clicks on the "DAO Toolkit" link.
@@ -143,7 +170,6 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
         daoMultiSigAddr={daoMultiSigAddr} // Passes the DAO multi-signature address.
         handleDaoToolKitClick={handleDaoToolKitClick} // Click handler for the DAO toolkit link.
         handleRegisterDaoLink={handleRegisterDaoLink} // Click handler for the DAO registration link.
-        activeAccount={activeAccount} // Passes the active blockchain account.
       />
 
       {/* Popup Notification for Users Without DAO Multi-Signature Address */}

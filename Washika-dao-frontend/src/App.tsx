@@ -69,7 +69,7 @@ const App: React.FC = () => {
               element={<DaoProfile />}
             />
             <Route
-              path="/SuperAdmin/:daoMultiSigAddr"
+              path="/SuperAdmin/:daoTxHash"
               element={<SuperAdmin />}
             />
             <Route
@@ -80,7 +80,7 @@ const App: React.FC = () => {
               path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"
               element={<ViewProposal />}
             />
-            <Route path="/MemberProfile" element={<MemberProfile />} />
+            <Route path="/MemberProfile/:memberAddr" element={<MemberProfile />} />
             <Route path="/Owner/:address" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />

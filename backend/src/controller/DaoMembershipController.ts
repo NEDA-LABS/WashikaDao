@@ -142,7 +142,7 @@ export async function CreateInitialOwner(req: Request, res: Response) {
  * - If login is successful, it returns a 200 status code with a success message and member details.
  */
 export async function loginMember(req: Request, res: Response) {
-  const { memberAddr } = req.body;
+  const { memberAddr, memberCustomIdentifier } = req.body;
 
   // Validate required fields
   if (!memberAddr) {
@@ -151,35 +151,20 @@ export async function loginMember(req: Request, res: Response) {
 
   try {
     // Check if a member with the given memberAddr exists
-    const member = await memberDetailsRepository.findOne({
+    let member = await memberDetailsRepository.findOne({
       where: { memberAddr },
     });
 
     if (!member) {
-      // If member is not found, return an error message
-      return res.status(404).json({
-        error:
-          "Error, Member not found. Please check the member address and try again.",
-      });
+      // If not found, create a new entry (register user)
+      member = memberDetailsRepository.create({ memberAddr, memberCustomIdentifier });
+      await memberDetailsRepository.save(member);
     }
-
-    //Generate a JWT(Json Web Token)
-    const token = process.env.ROUTE_PROTECTOR;
 
     // If member exists, return a success message and member details (without sensitive data)
     return res.status(200).json({
       message: "Login successful",
-      token,
-      member: {
-        firstName: member.firstName,
-        lastName: member.lastName,
-        email: member.email,
-        phoneNumber: member.phoneNumber,
-        nationalIdNo: member.nationalIdNo,
-        memberRole: member.memberRole,
-        memberAddr: member.memberAddr,
-        daoMultiSig: member.daoMultiSigAddr,
-      },
+      authorization: process.env.ROUTE_PROTECTOR,
     });
   } catch (error) {
     console.error("Error logging in member:", error);
@@ -428,10 +413,10 @@ export async function GetAllMembers(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const { daoMultiSigAddr } = req.params;
+  const { daoMultiSigAddr } = req.query;
   console.log("daoMultiSigAddr:", daoMultiSigAddr);
 
-  if (!daoMultiSigAddr) {
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
     return res
       .status(400)
       .json({ error: "Missing required parameter Dao MultiSig" });
@@ -461,3 +446,6 @@ export async function GetAllMembers(
       .json({ error: "Internal Server Error Occurred When Fetching Members" });
   }
 }
+
+
+

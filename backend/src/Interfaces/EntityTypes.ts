@@ -34,6 +34,7 @@ export interface IDao {
     nambaZaHisa: number;
     kiasiChaHisa: number;
     interestOnLoans: number;
+    daoTxHash: string;
     proposals: IProposal;  //relationship with proposal entity
     members: IMemberDetails;  //relationship with memberDetails entity
 
@@ -41,6 +42,7 @@ export interface IDao {
 
 export interface IMemberDetails {
     memberId?: number;
+    memberCustomIdentifier: string;
     firstName: string;
     lastName: string;
     phoneNumber: number;

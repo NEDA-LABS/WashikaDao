@@ -1,10 +1,9 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
+import { toast } from 'react-toastify';
 
 // 4 Blockchain
 import { prepareContractCall, PreparedTransaction } from "thirdweb";
@@ -67,16 +66,15 @@ const uploadDocumentToCloudinary = async (file: File) => {
  *
  * @throws Will log an error message to the console if the form submission fails.
  */
-//@ts-ignore
+
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
   const [completedSteps, setCompletedSteps] = useState<number>(0);
   // Extract multiSigAddr from URL params
   const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
-  console.log("the daoMultiSigAddr is", daoMultiSigAddr);
 
-  const { memberAddr } = useSelector((state: RootState) => state.user);
-  const token = localStorage.getItem("token");
+  const memberAddr = localStorage.getItem('address');
+  const token = localStorage.getItem("token") ?? "";
   // State to manage form data
   const [proposalData, setProposalData] = useState({
     proposalCustomIdentifier: crypto.randomUUID(),
@@ -141,19 +139,17 @@ const CreateProposal: React.FC = () => {
   ]);
 
   const currActiveAcc = useActiveAccount();
-  const { mutate: sendTx, data: transactionResult } = useSendTransaction();
+  const { mutate: sendTx } = useSendTransaction();
 
-  //url builder
-  const buildCDExplorerUrl = (_createProposalTxHash: string) => {
-    return `https:testnet.routescan.io/transaction/${_createProposalTxHash}`;
-  };
+  // //url builder
+  // const buildCDExplorerUrl = (_createProposalTxHash: string) => {
+  //   return `https:testnet.routescan.io/api/transaction/${_createProposalTxHash}`;
+  // };
   // Grooming the Proposal Transaction
   const prepareCreateProposalTx = (_daoMultiSigAddr: string) => {
-    if (currActiveAcc === undefined) {
-      console.error(
-        "undefined value for the current active account is not allowed"
-      );
-      return;
+    if (!currActiveAcc) {
+      console.error("Fatal Error, No Active Account found");
+      return null;
     }
     try {
       console.log("Preparing Proposal Creation Transaction");
@@ -168,9 +164,7 @@ const CreateProposal: React.FC = () => {
           BigInt(proposalData.proposalDuration),
         ],
       });
-      console.log(
-        `Proposal Creation transaction prepared ${_createProposaltx} with result ${transactionResult}`
-      );
+      console.log("Proposal Creation transaction prepared", _createProposaltx);
       return _createProposaltx;
     } catch (error) {
       console.error("Error Playing Transaction:", error);
@@ -180,17 +174,20 @@ const CreateProposal: React.FC = () => {
 
   const sendCreateProposalTx = async (
     _createProposaltx: PreparedTransaction
-  ) => {
+  ): Promise<string | null> => {
     if (!_createProposaltx) {
       console.warn("undefined transaction");
-      return;
+      return null;
     }
 
-    try {
+    return new Promise<string | null>((resolve) => {
+      console.log('Sending transaction...');
+      toast.info('Transaction is being sent...');
       sendTx(_createProposaltx, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
-          window.location.href = buildCDExplorerUrl(receipt.transactionHash);
+          resolve(receipt.transactionHash);
+          // window.location.href = buildCDExplorerUrl(receipt.transactionHash);
         },
         onError: (error) => {
           if (error.message.includes("AA21")) {
@@ -200,22 +197,23 @@ const CreateProposal: React.FC = () => {
           } else {
             console.error("Error Creating Proposal", error);
           }
+          resolve(null);
         },
       });
-    } catch (error) {
-      console.error("Error sending transaction:", error);
-    }
+    });
   };
 
   const handleCreateProposal = async () => {
     if (daoMultiSigAddr) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const finalTx: any = prepareCreateProposalTx(daoMultiSigAddr);
       if (finalTx) {
-        await sendCreateProposalTx(finalTx);
-        return true;
+        const txHash = await sendCreateProposalTx(finalTx);
+        console.log("Transaction sent successfully");
+        return txHash;
       } else {
         console.log("Transaction preparation failed");
-        return false;
+        return null;
       }
     }
   };
@@ -224,15 +222,20 @@ const CreateProposal: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      const isProposalCreationSuccess = await handleCreateProposal();
-      if (isProposalCreationSuccess) {
+      const ProposaltxHash = await handleCreateProposal();
+      console.log(ProposaltxHash);
+      
+      if (!ProposaltxHash) {
+        alert("Proposal creation on blockchain failed!");
+        return;
+      }
         const response = await fetch(
-          `https://${baseUrl}/CreateProposal/DaoDetails/${daoMultiSigAddr}/createProposal`,
+          `http://${baseUrl}/DaoKit/Proposals/CreateProposal/?daoMultiSigAddr=${daoMultiSigAddr}`,
           {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`, //include token in the Authorization header
+              Authorization: token, //include token in the Authorization header
             },
             body: JSON.stringify(proposalData),
           }
@@ -255,15 +258,10 @@ const CreateProposal: React.FC = () => {
         } else {
           console.error(`Error: ${data.error}`);
         }
-      } else {
-        console.error("Proposal creation transaction failed.");
-        alert("Proposal creation failed. Please try again.");
-      }
     } catch (error) {
       console.error("Error:", error);
     }
   };
-  console.log(daoMultiSigAddr, proposalData.proposalCustomIdentifier);
 
   return (
     <>

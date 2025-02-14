@@ -25,12 +25,14 @@ const daoRepository = AppDataSource.getRepository(Dao);
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
 export async function CreateProposal(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.body;
-  console.log(daoMultiSigAddr);
+  const { daoMultiSigAddr } = req.query;
 
-  if (!daoMultiSigAddr) {
-    return res.status(404).json({ error: "Missing required multisig" });
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Invalid or missing daoMultiSigAddr" });
   }
+
   const {
     proposalCustomIdentifier,
     proposalOwner,
@@ -99,15 +101,17 @@ export async function CreateProposal(req: Request, res: Response) {
 export async function GetProposalDetails(req: Request, res: Response) {
   /**Grabbing the proposal ID from the url params */
   /** Parse proposalId as a number */
-  const { daoMultiSigAddr, proposalCustomIdentifier } = req.params;
+  const { daoMultiSigAddr, proposalCustomIdentifier } = req.query;
 
-  if (!proposalCustomIdentifier || !daoMultiSigAddr) {
-    return res
-      .status(404)
-      .json({
-        message:
-          "Error missing required proposalCustomIdentifier and or multisig",
-      });
+  if (
+    !proposalCustomIdentifier ||
+    !daoMultiSigAddr ||
+    typeof proposalCustomIdentifier !== "string"
+  ) {
+    return res.status(404).json({
+      message:
+        "Error missing required proposalCustomIdentifier and or multisig",
+    });
   }
 
   try {
@@ -143,18 +147,14 @@ export async function GetProposalDetails(req: Request, res: Response) {
 //  * @returns - An HTTP response with a status code and a JSON object containing a message.
 //  */
 export async function UpVoteProposal(req: Request, res: Response) {
-  const { daoMultiSigAddr, proposalCustomIdentifier } = req.body;
+  const { daoMultiSigAddr, proposalCustomIdentifier, voterAddr } = req.body;
 
   if (!proposalCustomIdentifier || !daoMultiSigAddr) {
-    return res
-      .status(404)
-      .json({
-        message:
-          "Error missing required proposalCustomIdentifier and or multisig",
-      });
+    return res.status(404).json({
+      message:
+        "Error missing required proposalCustomIdentifier and or multisig",
+    });
   }
-
-  const voterAddr = req.body.voterAddr;
 
   if (!voterAddr) {
     return res
@@ -186,22 +186,18 @@ export async function UpVoteProposal(req: Request, res: Response) {
       relations: ["votes"],
     });
     if (proposalCustomIdentifier === proposalsVoted.proposalCustomIdentifier) {
-      return res
-        .status(400)
-        .json({
-          error:
-            " Bad Request Detected, Voter has already voted for this proposal",
-        });
+      return res.status(400).json({
+        error:
+          " Bad Request Detected, Voter has already voted for this proposal",
+      });
     }
     const createdVote = voteRepository.create(upVoteDetails);
     await voteRepository.save(createdVote);
 
-    res
-      .status(201)
-      .json({
-        message:
-          "Vote successfully recorded & proposal updated with our new vote, an upvote",
-      });
+    res.status(201).json({
+      message:
+        "Vote successfully recorded & proposal updated with our new vote, an upvote",
+    });
 
     // Updating the proposal
     foundProposal.numUpVotes += 1;
@@ -238,12 +234,10 @@ export async function UpVoteProposal(req: Request, res: Response) {
 export const DownVoteProposal = async (req: Request, res: Response) => {
   const { daoMultiSigAddr, proposalCustomIdentifier } = req.body;
   if (!daoMultiSigAddr || !proposalCustomIdentifier) {
-    return res
-      .status(404)
-      .json({
-        error:
-          "Missing required from url params, multisig  & proposal identifier",
-      });
+    return res.status(404).json({
+      error:
+        "Missing required from url params, multisig  & proposal identifier",
+    });
   }
   const voterAddr = req.body.voterAddr;
   if (!voterAddr) {
@@ -270,21 +264,17 @@ export const DownVoteProposal = async (req: Request, res: Response) => {
       relations: ["votes"],
     });
     if (proposalCustomIdentifier === proposalsVoted.proposalCustomIdentifier) {
-      return res
-        .status(403)
-        .json({
-          error:
-            "Error, forbidden request! Voter has already voted for this proposal",
-        });
+      return res.status(403).json({
+        error:
+          "Error, forbidden request! Voter has already voted for this proposal",
+      });
     }
     const createdVote = voteRepository.create(voteDetails);
     await voteRepository.save(createdVote);
-    res
-      .status(200)
-      .json({
-        message:
-          "Vote successfully recorded & proposal updated with our new vote, an upvote",
-      });
+    res.status(200).json({
+      message:
+        "Vote successfully recorded & proposal updated with our new vote, an upvote",
+    });
     //updating the proposal
     foundProposal.numDownVotes += 1;
     //updating the proposal
@@ -314,9 +304,9 @@ export const DownVoteProposal = async (req: Request, res: Response) => {
  * If an error occurs, the response status code will be 400 and the JSON object will contain an error message.
  */
 export async function GetAllProposalsInDao(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.params;
+  const { daoMultiSigAddr } = req.query;
 
-  if (!daoMultiSigAddr) {
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
     return res.status(400).json({ error: "Missing required multiSigAddr" });
   }
 

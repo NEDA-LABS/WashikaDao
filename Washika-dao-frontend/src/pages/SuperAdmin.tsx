@@ -7,9 +7,10 @@ import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { baseUrl } from "../utils/backendComm";
+import { IBackendDaoCreation } from "../utils/Types";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -23,18 +24,6 @@ import { baseUrl } from "../utils/backendComm";
  * @returns {JSX.Element} The rendered SuperAdmin component.
  */
 
-interface DaoDetails {
-  daoName: string;
-  daoLocation: string;
-  targetAudience: string;
-  daoTitle: string;
-  daoDescription: string;
-  daoOverview: string;
-  daoImageIpfsHash: string;
-  multiSigAddr: string;
-  kiwango: number;
-}
-
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
@@ -47,25 +36,27 @@ const SuperAdmin: React.FC = () => {
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
   const [role, setRole] = useState<string>("");
   // const [guaranter, setGuaranter] = useState<string>("");
-  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
 
-  const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
+  const [daoDetails, setDaoDetails] = useState<IBackendDaoCreation | null>(
+    null
+  ); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const isVisible = useSelector(
-        (state: RootState) => state.notification.isVisible
-    );
-    const dispatch = useDispatch();
-    const token = localStorage.getItem("token");
-    const navigate = useNavigate();
-
+    (state: RootState) => state.notification.isVisible
+  );
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token") ?? ""; 
+  const navigate = useNavigate();
+  const daoMultiSigAddr = localStorage.getItem("address"); //TODO - Change to the generated multiSig
   useEffect(() => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/?daoMultiSigAddr=${daoMultiSigAddr}`, {
+          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig?daoMultiSigAddr=${daoMultiSigAddr}`,
+          {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: token,
               "Content-Type": "application/json",
             },
           }
@@ -84,9 +75,10 @@ const SuperAdmin: React.FC = () => {
     const fetchMemberCount = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`,{
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoMultiSigAddr=${daoMultiSigAddr}`,
+          {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: token,
               "Content-Type": "application/json",
             },
           }
@@ -139,12 +131,12 @@ const SuperAdmin: React.FC = () => {
     try {
       // Send an email to the new member
       const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail/$${daoMultiSigAddr}`,
+        `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
           },
           body: JSON.stringify({
             email: email,
@@ -216,31 +208,27 @@ const SuperAdmin: React.FC = () => {
         <>
           <div className="centered">
             <div className="daoImage one">
-              <img
-                src={daoDetails?.daoImageIpfsHash}
-                alt="DaoImage"
-              />
+              <img src={daoDetails?.daoImageIpfsHash} alt="DaoImage" />
             </div>
           </div>
 
-        {isVisible && (
-          <div className="notification">
-            <div>
-              <img src="/images/Info.png" alt="info icon" />
+          {isVisible && (
+            <div className="notification">
+              <div>
+                <img src="/images/Info.png" alt="info icon" />
+              </div>
+              <div className="notifications">
+                <h3>Notification</h3>
+                <p>New Member Request</p>
+                <button>View</button>
+              </div>
+              <div>
+                <button onClick={() => dispatch(toggleNotificationPopup())}>
+                  <img src="/images/X.png" alt="cancel icon" />
+                </button>
+              </div>
             </div>
-            <div className="notifications">
-              <h3>Notification</h3>
-              <p>New Member Request</p>
-              <button>View</button>
-            </div>
-            <div>
-                <button onClick={() =>
-                    dispatch(toggleNotificationPopup())}>
-              <img src="/images/X.png" alt="cancel icon" />
-            </button>
-            </div>
-          </div>
-                    )}
+          )}
           <div className="top">
             <div className="one onesy">
               <h1>{daoDetails?.daoName}</h1>
@@ -296,7 +284,9 @@ const SuperAdmin: React.FC = () => {
             <button onClick={() => setActiveSection("mikopo")}>
               Loan Details
             </button>
-            <button onClick={() => navigate(`/UpdateDao/${daoMultiSigAddr}`)}>Edit Settings</button>
+            <button onClick={() => navigate(`/UpdateDao/${daoMultiSigAddr}`)}>
+              Edit Settings
+            </button>
           </div>
 
           {activeSection === "daoOverview" && (
@@ -307,7 +297,14 @@ const SuperAdmin: React.FC = () => {
                 </div>
                 <Dashboard />
               </div>
-              <button className="create" onClick={() => navigate(`/CreateProposal/${daoMultiSigAddr || ""}`)}>Create a Proposal</button>
+              <button
+                className="create"
+                onClick={() =>
+                  navigate(`/CreateProposal/${daoMultiSigAddr || ""}`)
+                }
+              >
+                Create a Proposal
+              </button>
               <section className="second">
                 <div className="sec">
                   <img src="/images/Vector(4).png" alt="logo" />

@@ -1,7 +1,6 @@
 // Import necessary dependencies
 import { Link } from "react-router-dom"; // Import Link for client-side navigation.
 import AuthButton from "./AuthButton"; // Import the authentication button component.
-import { Account } from "thirdweb/wallets"; // Import the Account type from thirdweb.
 
 /**
  * Interface defining the props for the `NavLinks` component.
@@ -17,7 +16,6 @@ interface NavLinksProps {
   className: string;
   daoMultiSigAddr: string | null;
   isOpen: boolean;
-  activeAccount: Account | undefined;
   handleDaoToolKitClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   handleRegisterDaoLink: (e: React.MouseEvent<HTMLAnchorElement>) => void;
 }
@@ -38,7 +36,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
   className,
   daoMultiSigAddr,
   isOpen,
-  activeAccount,
   handleDaoToolKitClick,
   handleRegisterDaoLink,
 }) => {
@@ -111,7 +108,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
       )}
 
       {/* Authentication button, which handles login and profile navigation */}
-      <AuthButton className={className} activeAccount={activeAccount} />
+      <AuthButton className={className} />
     </ul>
   );
 };

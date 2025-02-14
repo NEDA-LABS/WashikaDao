@@ -31,7 +31,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     daoOverview,
     daoImageIpfsHash,
     daoRegDocs,
-    multiSigAddr,
+    daoMultiSigAddr,
     multiSigPhoneNo,
     kiwango, //Amount
     accountNo,
@@ -39,6 +39,7 @@ export async function CreateNewDao(req: Request, res: Response) {
     kiasiChaHisa,
     interestOnLoans,
     members,
+    daoTxHash,
   } = req.body;
 
   // Validate required DAO fields
@@ -51,13 +52,14 @@ export async function CreateNewDao(req: Request, res: Response) {
     !daoOverview ||
     !daoImageIpfsHash ||
     !daoRegDocs ||
-    !multiSigAddr ||
+    !daoMultiSigAddr ||
     !multiSigPhoneNo ||
     !kiwango ||
     !accountNo ||
     !nambaZaHisa ||
     !kiasiChaHisa ||
-    !interestOnLoans
+    !interestOnLoans ||
+    !daoTxHash
   ) {
     return res.status(400).json({ error: "Missing required DAO details" });
   }
@@ -68,18 +70,18 @@ export async function CreateNewDao(req: Request, res: Response) {
     _daoMultiSigAddr: any
   ): Promise<boolean> {
     const _doesMsigExist = await daoRepository.findOne({
-      where: { daoMultiSigAddr: multiSigAddr },
+      where: { daoMultiSigAddr: daoMultiSigAddr },
     });
     if (_doesMsigExist) {
       return true;
     }
     return false;
   }
-  const doesMsigExist: boolean = await doesDaoWithThisMsigExist(multiSigAddr);
+  const doesMsigExist: boolean = await doesDaoWithThisMsigExist(daoMultiSigAddr);
   if (doesMsigExist === true) {
     return res
       .status(400)
-      .json({ error: "DAO with this multiSigAddr already exists." });
+      .json({ error: "DAO with this daoMultiSigAddr already exists." });
   }
 
   try {
@@ -93,14 +95,15 @@ export async function CreateNewDao(req: Request, res: Response) {
     dao.daoOverview = daoOverview;
     dao.daoImageIpfsHash = daoImageIpfsHash;
     dao.daoRegDocs = daoRegDocs;
-    dao.daoMultiSigAddr = multiSigAddr;
-    dao.daoMultiSigs = multiSigAddr; // Assuming it's an array of multisigs
+    dao.daoMultiSigAddr = daoMultiSigAddr;
+    dao.daoMultiSigs = daoMultiSigAddr; // Assuming it's an array of multisigs
     dao.multiSigPhoneNo = multiSigPhoneNo;
     dao.kiwango = kiwango;
     dao.accountNo = accountNo;
     dao.nambaZaHisa = nambaZaHisa;
     dao.kiasiChaHisa = kiasiChaHisa;
     dao.interestOnLoans = interestOnLoans;
+    dao.daoTxHash = daoTxHash;
 
     const createdDao = daoRepository.create(dao);
     // Initialize the DAO repository
@@ -119,6 +122,7 @@ export async function CreateNewDao(req: Request, res: Response) {
           phoneNumber,
           nationalIdNo,
           memberRole,
+          memberCustomIdentifier,
         } = member;
 
         // Validate each member's required fields
@@ -128,7 +132,8 @@ export async function CreateNewDao(req: Request, res: Response) {
           !email ||
           !phoneNumber ||
           !nationalIdNo ||
-          !memberRole
+          !memberRole ||
+          !memberCustomIdentifier
         ) {
           return res
             .status(400)
@@ -143,7 +148,8 @@ export async function CreateNewDao(req: Request, res: Response) {
         memberDetails.phoneNumber = phoneNumber;
         memberDetails.nationalIdNo = nationalIdNo;
         memberDetails.memberRole = memberRole;
-        memberDetails.daoMultiSigAddr = multiSigAddr;
+        memberDetails.daoMultiSigAddr = daoMultiSigAddr;
+        memberDetails.memberCustomIdentifier = memberCustomIdentifier;
         memberDetails.daos = [dao]; // Link member to the created DAO
 
         await memberDetailsRepository.save(memberDetails);
@@ -152,7 +158,7 @@ export async function CreateNewDao(req: Request, res: Response) {
 
     res.status(201).json({
       message: "DAO created and members added successfully",
-      daoMultisigAddr: dao.daoMultiSigAddr,
+      daoMultiSigAddr: dao.daoMultiSigAddr,
     });
   } catch (error) {
     console.error("Error creating DAO and members:", error);
@@ -232,6 +238,7 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           nambaZaHisa: daoDetails.nambaZaHisa,
           kiasiChaHisa: daoDetails.kiasiChaHisa,
           interestOnLoans: daoDetails.interestOnLoans,
+          daoTxHash: daoDetails.daoTxHash,
         },
       });
     } else {

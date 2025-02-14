@@ -46,7 +46,7 @@ interface Dao {
 const GroupInfo: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]); // State to store DAOs with member count
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("token") ?? "";
 
   useEffect(() => {
     const fetchDaos = async () => {
@@ -56,7 +56,7 @@ const GroupInfo: React.FC = () => {
           `http://${baseUrl}/DaoGenesis/GetAllDaos`,
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: token,
               "Content-Type": "application/json",
             },
           }
@@ -88,12 +88,12 @@ const GroupInfo: React.FC = () => {
     };
 
     // Fetch the member count for a given multiSigAddr
-    const fetchMemberCount = async (multiSigAddr: string): Promise<number> => {
+    const fetchMemberCount = async (daoMultiSigAddr: string): Promise<number> => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${multiSigAddr}`, {
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoMultiSigAddr=${daoMultiSigAddr}`, {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: token,
               "Content-Type": "application/json",
             },
           }
