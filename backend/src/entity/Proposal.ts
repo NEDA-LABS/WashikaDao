@@ -8,7 +8,7 @@ export class Proposal {
     @PrimaryGeneratedColumn()
     proposalId: number;
 
-    @Column()
+    @Column({ unique: true })
     proposalCustomIdentifier: string;
 
     @Column()
@@ -35,15 +35,9 @@ export class Proposal {
     @Column()
     daoMultiSigAddr: string;
 
-    @Column({ default: 0 })
-    numUpVotes: number;
-
-    @Column({ default: 0 })
-    numDownVotes: number;
-
-    @OneToMany(() => Vote, (vote) => vote.proposal)
+    @OneToMany(() => Vote, (vote) => vote.proposal, { cascade: ["remove"] })
     votes: Vote[];
-
+    
     //relation where one proposal can only belong to one dao but one dao can have multiple proposals
     @ManyToOne(() => Dao, dao => dao.proposals)
     @JoinColumn({ name: "daoId" })

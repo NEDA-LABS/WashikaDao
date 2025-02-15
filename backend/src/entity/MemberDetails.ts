@@ -1,61 +1,60 @@
 import {
-  PrimaryColumn,
   Column,
   Entity,
-  PrimaryGeneratedColumn,
-  ManyToMany,
-  OneToOne,
-  JoinTable,
-  BeforeInsert,
-  BeforeUpdate,
-  CreateDateColumn,
   Index,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
 } from "typeorm";
 import { Dao } from "./Dao";
+import { DaoJoinDate, DaoRole, DaoStatus } from "./DaoMembershipRelations";
 //import { PhoneAndAddressMapping } from "./PhoneToAddress";
 
 @Entity()
+@Unique(["dao", "member"])
 export class MemberDetails {
   @PrimaryGeneratedColumn()
   memberId: number;
 
   @Column()
-  memberCustomIdentifier: string;
-
-  @Column({ nullable: true })
   firstName?: string;
 
-  @Column({ nullable: true })
+  @Column()
   lastName?: string;
 
-  @Index("IDX_PHONE_NUMBER_UNIQUE", { unique: true, where: "phoneNumber IS NOT NULL" }) // Unique only if not null
-  @Column({ nullable: true })
-  phoneNumber?: number;
+  @Column({ unique: true })
+  phoneNumber?: string;
 
-  @Index("IDX_EMAIL_UNIQUE", { unique: true, where: "email IS NOT NULL" }) // Unique only if not null
-  @Column({ nullable: true })
+  @Column({ unique: true })
   email?: string;
 
-  @Index("IDX_NATIONAL_ID_UNIQUE", { unique: true, where: "nationalIdNo IS NOT NULL" }) // Unique only if not null
-  @Column({ nullable: true })
-  nationalIdNo?: number;
+  @Column({ unique: true })
+  nationalIdNo?: string;
 
-  @Column({ nullable: true })
-  memberRole?: string;
-
-  @Index("IDX_MEMBER_ADDR_UNIQUE", { unique: true, where: "memberAddr IS NOT NULL" }) // Unique only if not null
+  @Index("IDX_MEMBER_ADDRESS_UNIQUE", {
+    unique: true,
+    where: "memberAddress IS NOT NULL",
+  }) // Unique only if not null
   @Column({ nullable: true })
   memberAddr?: string;
 
-  @Column({ nullable: true })
-  daoMultiSigAddr?: string;
-
-  //@ManyToMany(() => Dao, dao => dao.members)
-  //daos: Dao[];
   //many to many relation where one member can have multiple daos and one dao can have multiple members
   @ManyToMany(() => Dao, (dao) => dao.members)
   daos: Dao[]; //array of daos that a member is in
-  static firstName: any;
+
+  @OneToMany(() => DaoStatus, (daoStatus) => daoStatus.member, {
+    cascade: true,
+  }) // Track DAO memberships
+  daoStatus: DaoStatus[];
+
+  @OneToMany(() => DaoJoinDate, (daoJoinDate) => daoJoinDate.member, {
+    cascade: true,
+  })
+  daoJoinDates: DaoJoinDate[];
+
+  @OneToMany(() => DaoRole, (daoRole) => daoRole.member, { cascade: true })
+  daoRoles: DaoRole[];
 
   //relation where a phone number can be mapped to an address in the phone number address map class  or not
   // @OneToOne(() => PhoneAndAddressMapping, phoneAndAddressMapping => phoneAndAddressMapping.phoneNumberToMap, {nullable: true})

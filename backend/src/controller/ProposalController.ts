@@ -48,7 +48,6 @@ export async function CreateProposal(req: Request, res: Response) {
   const proposalData = {
     proposalCustomIdentifier,
     proposalOwner,
-    daoMultiSigAddr,
     proposalTitle,
     proposalSummary,
     proposalDescription,
@@ -85,40 +84,52 @@ export async function CreateProposal(req: Request, res: Response) {
 }
 
 /**
- * Retrieves the details of a proposal by its ID.
+ * Retrieves the details of a proposal using its `proposalCustomIdentifier`.
  *
- * @param req - The Express request object containing the proposal ID in the parameters.
+ * @param req - The Express request object containing the proposal identifier in the query parameters.
  * @param res - The Express response object to send back the HTTP response.
  *
  * @remarks
- * This function extracts the proposal ID from the request parameters and attempts to find the corresponding proposal in the database.
- * If the proposal is found, it sends a success response with the proposal details.
- * If the proposal is not found, it sends a 400 error response with a message indicating that the proposal was not found.
- * If an error occurs during the database query, it sends a 500 error response with a message indicating the error.
+ * This function follows these steps:
+ * 1. Extracts `proposalCustomIdentifier` from the request query.
+ * 2. Validates that `proposalCustomIdentifier` is present and is a string.
+ *    - Returns a 404 response if it's missing or invalid.
+ * 3. Queries the database to find the proposal, joining with votes:
+ *    - Maps the number of upvotes (`voteValue = true`).
+ *    - Maps the number of downvotes (`voteValue = false`).
+ * 4. If no proposal is found, returns a 404 response.
+ * 5. Sends a success response with the proposal details if found.
+ * 6. Catches and logs any errors, returning a 500 response if an error occurs.
  *
- * @returns - An HTTP response with a status code and a JSON object containing the proposal details or an error message.
+ * @returns - An HTTP response with a status code and a JSON object containing:
+ *            - The proposal details if successful.
+ *            - An error message if the proposal is not found or if an error occurs.
  */
+
 export async function GetProposalDetails(req: Request, res: Response) {
   /**Grabbing the proposal ID from the url params */
   /** Parse proposalId as a number */
-  const { daoMultiSigAddr, proposalCustomIdentifier } = req.query;
+  const { proposalCustomIdentifier } = req.query;
 
   if (
     !proposalCustomIdentifier ||
-    !daoMultiSigAddr ||
     typeof proposalCustomIdentifier !== "string"
   ) {
     return res.status(404).json({
       message:
-        "Error missing required proposalCustomIdentifier and or multisig",
+        "Error missing required proposalCustomIdentifier",
     });
   }
 
   try {
     //find proposal by proposalId if doesn't exist will be caught within
-    const proposalDetails: Proposal | null = await proposalRepository.findOneBy(
-      { proposalCustomIdentifier }
-    );
+    const proposalDetails = await proposalRepository
+    .createQueryBuilder("proposal")
+    .leftJoinAndSelect("proposal.votes", "vote")
+    .where("proposal.proposalCustomIdentifier = :proposalCustomIdentifier", { proposalCustomIdentifier })
+    .loadRelationCountAndMap("proposal.numUpVotes", "proposal.votes", "upvotes", qb => qb.where("vote.voteValue = true"))
+    .loadRelationCountAndMap("proposal.numDownVotes", "proposal.votes", "downvotes", qb => qb.where("vote.voteValue = false"))
+    .getOne();
 
     if (!proposalDetails) {
       return res
@@ -131,160 +142,65 @@ export async function GetProposalDetails(req: Request, res: Response) {
   }
 }
 
-// /**
-//  * Handles a POST request to upvote a proposal by its ID.
-//  *
-//  * @param req - The Express request object containing the proposal ID and voter address in the parameters and request body.
-//  * @param res - The Express response object to send back the HTTP response.
-//  *
-//  * @remarks
-//  * This function extracts the proposal ID and voter address from the request parameters and body.
-//  * It checks if the required parameters are present and if the voter is authorized.
-//  * If all checks pass, it creates a new vote with a vote value of true, associates it with the proposal and voter, and saves it to the database.
-//  * It then updates the proposal's upvote count and saves the updated proposal.
-//  * Finally, it sends a success response or an error response based on the outcome.
-//  *
-//  * @returns - An HTTP response with a status code and a JSON object containing a message.
-//  */
-export async function UpVoteProposal(req: Request, res: Response) {
-  const { daoMultiSigAddr, proposalCustomIdentifier, voterAddr } = req.body;
-
-  if (!proposalCustomIdentifier || !daoMultiSigAddr) {
-    return res.status(404).json({
-      message:
-        "Error missing required proposalCustomIdentifier and or multisig",
-    });
-  }
-
-  if (!voterAddr) {
-    return res
-      .status(401)
-      .json({ error: " missing voter address, Unauthorized request" });
-  }
-
-  const upVoteDetails: IVote | any = {
-    voteValue: true,
-    voterAddr: voterAddr,
-    proposalCustomIdentifier: proposalCustomIdentifier,
-  };
-
-  try {
-    // Find proposal by proposalId
-    const foundProposal = await proposalRepository.findOneBy({
-      proposalCustomIdentifier,
-    });
-
-    if (!foundProposal) {
-      return res
-        .status(404)
-        .json({ message: "Proposal trying to vote for not found" });
-    }
-
-    // Check if voter has already voted for this proposal
-    const proposalsVoted = await proposalRepository.findOne({
-      where: { proposalCustomIdentifier },
-      relations: ["votes"],
-    });
-    if (proposalCustomIdentifier === proposalsVoted.proposalCustomIdentifier) {
-      return res.status(400).json({
-        error:
-          " Bad Request Detected, Voter has already voted for this proposal",
-      });
-    }
-    const createdVote = voteRepository.create(upVoteDetails);
-    await voteRepository.save(createdVote);
-
-    res.status(201).json({
-      message:
-        "Vote successfully recorded & proposal updated with our new vote, an upvote",
-    });
-
-    // Updating the proposal
-    foundProposal.numUpVotes += 1;
-
-    // Updating the proposal
-    await proposalRepository.save(foundProposal);
-
-    return res.status(200).json({
-      message: "Vote successfully recorded & proposal updated",
-    });
-
-    // TODO: BLOCKCHAIN INTEGRATION
-  } catch (error) {
-    res.status(500).json({ error: "Error processing or casting  upvote" });
-  }
-}
-
-//write for downvote then refactor the different sections to make it easier to debug
 /**
- * Handles a POST request to downvote a proposal by its ID.
+ * Handles a POST request to vote (upvote or downvote) on a proposal by its ID.
  *
- * @param req - The Express request object containing the proposal ID and voter address in the parameters and request body.
+ * @param req - The Express request object containing the proposal identifier, voter address, and vote value in the request body.
  * @param res - The Express response object to send back the HTTP response.
  *
  * @remarks
- * This function extracts the proposal ID and voter address from the request parameters and body.
- * It checks if the required parameters are present and if the voter is authorized.
- * If all checks pass, it creates a new vote with a vote value of false, associates it with the proposal and voter, and saves it to the database.
- * It then updates the proposal's downvote count and saves the updated proposal.
- * Finally, it sends a success response or an error response based on the outcome.
+ * This function performs the following steps:
+ * 1. Extracts the `proposalCustomIdentifier`, `voterAddr`, and `voteValue` from the request body.
+ * 2. Validates that all required fields are present.
+ * 3. Retrieves the proposal from the database using its identifier.
+ *    - Returns a 404 response if the proposal does not exist.
+ * 4. Checks if the voter has already voted on this proposal.
+ *    - Returns a 400 response if a vote already exists.
+ * 5. Creates a new vote with the provided `voteValue` (true for upvote, false for downvote).
+ * 6. Saves the vote to the database.
+ * 7. Sends a success response if the vote is successfully recorded.
+ * 8. Catches and logs any errors, returning a 500 response if an error occurs.
  *
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
-export const DownVoteProposal = async (req: Request, res: Response) => {
-  const { daoMultiSigAddr, proposalCustomIdentifier } = req.body;
-  if (!daoMultiSigAddr || !proposalCustomIdentifier) {
-    return res.status(404).json({
-      error:
-        "Missing required from url params, multisig  & proposal identifier",
-    });
+
+export async function VoteProposal(req: Request, res: Response) {
+  const { proposalCustomIdentifier, voterAddr, voteValue } = req.body;
+
+  if (!proposalCustomIdentifier || !voterAddr || voteValue === undefined) {
+    return res.status(400).json({ error: "Missing required fields" });
   }
-  const voterAddr = req.body.voterAddr;
-  if (!voterAddr) {
-    return res
-      .status(401)
-      .json({ error: "Missing voter address, Unauthorized" });
-  }
-  const voteDetails: IVote | any = {
-    voteValue: false,
-    voterAddr: voterAddr,
-    proposalCustomIdentifier: proposalCustomIdentifier,
-  };
+
   try {
-    //find proposal by proposalId
-    const foundProposal = await proposalRepository.findOneBy({
-      proposalCustomIdentifier: proposalCustomIdentifier,
-    });
+    const foundProposal = await proposalRepository.findOneBy({ proposalCustomIdentifier });
+
     if (!foundProposal) {
-      return res.status(404).json({ message: "Error, Proposal not found!" });
+      return res.status(404).json({ message: "Proposal not found" });
     }
-    //Check if voter has already voted for this proposal
-    const proposalsVoted = await proposalRepository.findOne({
-      where: { proposalCustomIdentifier },
-      relations: ["votes"],
+
+    const existingVote = await voteRepository.findOne({
+      where: { proposal: { proposalCustomIdentifier }, voterAddr },
     });
-    if (proposalCustomIdentifier === proposalsVoted.proposalCustomIdentifier) {
-      return res.status(403).json({
-        error:
-          "Error, forbidden request! Voter has already voted for this proposal",
-      });
+
+    if (existingVote) {
+      return res.status(400).json({ error: "Voter has already voted" });
     }
-    const createdVote = voteRepository.create(voteDetails);
-    await voteRepository.save(createdVote);
-    res.status(200).json({
-      message:
-        "Vote successfully recorded & proposal updated with our new vote, an upvote",
+
+    const newVote = voteRepository.create({
+      proposal: foundProposal,
+      voterAddr,
+      voteValue,
     });
-    //updating the proposal
-    foundProposal.numDownVotes += 1;
-    //updating the proposal
-    await proposalRepository.save(foundProposal);
-    res.status(200).json({ message: "updated proposal successfully" });
-    //TODO: BLOCKCHAIN INTEGRATION
+
+    await voteRepository.save(newVote);
+
+    return res.status(201).json({ message: "Vote successfully recorded" });
   } catch (error) {
-    res.status(500).json({ error: "Error processing or casting  upvote" });
+    console.error("Error casting vote:", error);
+    res.status(500).json({ error: "Error processing vote" });
   }
-};
+}
+
 
 /**
  * Retrieves all proposals associated with a specific DAO.
@@ -313,7 +229,7 @@ export async function GetAllProposalsInDao(req: Request, res: Response) {
   try {
     // Retrieve proposals directly associated with the provided multiSigAddr
     const proposalsFound = await proposalRepository.find({
-      where: { daoMultiSigAddr: daoMultiSigAddr },
+      where: { daoMultiSigAddr },
     });
 
     if (!proposalsFound) {

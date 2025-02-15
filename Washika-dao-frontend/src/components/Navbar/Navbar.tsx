@@ -1,5 +1,5 @@
 // Import necessary dependencies from React, React Router, and Thirdweb
-import { useState, useEffect } from "react"; // React hooks for state and side effects.
+import { useState, useEffect, useRef } from "react"; // React hooks for state and side effects.
 import { useNavigate } from "react-router-dom"; // Hook for programmatic navigation.
 import { useActiveAccount } from "thirdweb/react"; // Hook for fetching the currently active blockchain account.
 
@@ -36,11 +36,14 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   const navigate = useNavigate(); // Hook for navigation.
   const activeAccount = useActiveAccount(); // Retrieves the currently active blockchain account.
 
+  const [address, setAddress] = useState<string>("");
+
   // State to manage the mobile menu's open/close status.
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   // State to control the visibility of a pop-up notification.
   const [showPopup, setShowPopup] = useState<boolean>(false);
+  const hasLoggedIn = useRef(false);
 
   /**
    * Effect: Store the active account address in `localStorage` when it changes.
@@ -50,20 +53,35 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    */
   useEffect(() => {
     if (activeAccount?.address) {
-      const address = activeAccount.address.toLowerCase();
-      localStorage.setItem("activeAccount", address);
-      localStorage.setItem("address", address);
-
-      // Authenticate only if the token is not stored
-      if (!localStorage.getItem("token") && address) {
-        authenticateUser(address);
-      }
+      localStorage.setItem(
+        "activeAccount",
+        activeAccount.address.toLowerCase()
+      );
     }
-  }, [activeAccount]);
+    const savedAddress = localStorage.getItem("activeAccount");
+    if (savedAddress) {
+      setAddress(savedAddress);
+    }
+    if (!localStorage.getItem("token") && address) {
+      authenticateUser(address);
+    }
+    if (!activeAccount?.address && hasLoggedIn.current) {
+      logout();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeAccount, address]);
+
+  const logout = () => {
+    hasLoggedIn.current = false;
+    localStorage.removeItem("activeAccount");
+    localStorage.removeItem("address");
+    localStorage.removeItem("token");
+    navigate("/", { replace: true });
+  };
 
   const authenticateUser = async (address: string) => {
-    const memberAddr = address
-    const memberCustomIdentifier = crypto.randomUUID()
+    const memberAddr = address;
+    const memberCustomIdentifier = crypto.randomUUID();
     if (!address) {
       console.error("Address is undefined or empty");
       return;
@@ -84,7 +102,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
 
       const result = await response.json();
       console.log(result.message);
-      
+
       if (response.ok) {
         localStorage.setItem("token", result.authorization);
       } else {

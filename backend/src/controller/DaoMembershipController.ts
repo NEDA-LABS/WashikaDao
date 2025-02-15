@@ -1,47 +1,20 @@
 import { Request, Response } from "express";
 import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
-import { Dao } from "../entity/Dao";
-import { MemberDetails } from "../entity/MemberDetails";
 import AppDataSource from "../data-source";
-import { IDao, IMemberDetails } from "../Interfaces/EntityTypes";
-import { In, ObjectLiteral } from "typeorm";
-import jwt from "jsonwebtoken";
+import { Dao } from "../entity/Dao";
+import {
+  DaoJoinDate,
+  DaoMembershipStatus,
+  DaoRole,
+  DaoStatus,
+} from "../entity/DaoMembershipRelations";
+import { MemberDetails } from "../entity/MemberDetails";
 
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
-
-export async function AddMemberToNewDao(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.params;
-  if (!daoMultiSigAddr) {
-    res.status(400).json({ error: "Missing required field" });
-  }
-  const { firstName, lastName, email, phoneNumber, nationalIdNo, memberRole } =
-    req.body;
-  // Validate each member's required fields
-  if (
-    !firstName ||
-    !lastName ||
-    !email ||
-    !phoneNumber ||
-    !nationalIdNo ||
-    !memberRole
-  ) {
-    return res.status(400).json({ error: "Missing required member details" });
-  }
-
-  // Create and save the member
-  const memberDetails = new MemberDetails();
-  memberDetails.firstName = firstName;
-  memberDetails.lastName = lastName;
-  memberDetails.email = email;
-  memberDetails.phoneNumber = phoneNumber;
-  memberDetails.nationalIdNo = nationalIdNo;
-  memberDetails.memberRole = memberRole;
-  memberDetails.daos;
-  //memberDetails.daos = [dao]; // Link member to the created DAO
-
-  await memberDetailsRepository.save(memberDetails);
-}
+const daoStatusRepository = AppDataSource.getRepository(DaoStatus);
+const joinDateRepository = AppDataSource.getRepository(DaoJoinDate);
+const roleRepository = AppDataSource.getRepository(DaoRole);
 
 /**
  * Creates the initial owner of a DAO, setting them as a InitialDaoOwner.
@@ -59,50 +32,81 @@ export async function AddMemberToNewDao(req: Request, res: Response) {
  * - If any error occurs, it returns a 500 status code with the error message.
  */
 export async function CreateInitialOwner(req: Request, res: Response) {
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    memberRole,
-    nationalIdNo,
-    memberAddr,
-    daoMultiSigAddr,
-    daos,
-  } = req.body;
-  console.log("Request Body:", req.body);
+  const { daoMultiSigAddr } = req.query;
+  const { firstName, lastName, email, phoneNumber, nationalIdNo, memberAddr } =
+    req.body;
+
+  if (typeof daoMultiSigAddr !== "string") {
+    return res
+      .status(400)
+      .json({ error: "Invalid or missing daoMultiSigAddr" });
+  }
   // Validate required fields
   if (!firstName || !lastName || !memberAddr) {
     return res.status(400).json({ error: "Missing required fields" });
   }
-  // const foundDao = await daoRepository.findOneBy({ daoMultiSigAddr });
-  // if (!foundDao) {
-  //   return res
-  //     .status(401)
-  //     .json({ Error: "Dao to Create initial Owner not found" });
-  // }
+
+  let dao = await daoRepository.findOne({
+    where: { daoMultiSigAddr },
+    relations: ["members"],
+  });
 
   try {
-    // Create initial owner with InitialDaoOwner role
-    const initialOwner = {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      nationalIdNo,
-      memberRole, // Setting role as InitialDaoOwner
-      memberAddr,
-      daos, // This will be filled after DAO creation
-      daoMultiSigAddr,
-    };
+    let initialOwner = await memberDetailsRepository.findOne({
+      where: { memberAddr },
+      relations: ["daos"],
+    });
 
-    const createdOwner = memberDetailsRepository.create(initialOwner);
-    await memberDetailsRepository.save(createdOwner);
+    if (initialOwner) {
+      // If the user exists, update their DAO relationships
+      if (
+        !initialOwner.daos.some((d) => d.daoMultiSigAddr === daoMultiSigAddr)
+      ) {
+        initialOwner.daos.push(dao);
+        await memberDetailsRepository.save(initialOwner);
+      }
+    } else {
+      // If the user does not exist, create a new entry
+      initialOwner = memberDetailsRepository.create({
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        nationalIdNo,
+        memberAddr,
+        daos: dao ? [dao] : [],
+      });
+      await memberDetailsRepository.save(initialOwner);
+    }
+
+    const daoStatus = daoStatusRepository.create({
+      dao,
+      member: initialOwner,
+      status: DaoMembershipStatus.APPROVED,
+    });
+
+    await daoStatusRepository.save(daoStatus);
+
+    // Add join date
+    const daoJoinDate = joinDateRepository.create({
+      dao,
+      member: initialOwner,
+      joinDate: new Date(),
+    });
+
+    await joinDateRepository.save(daoJoinDate);
+
+    // Assign role
+    const daoRole = roleRepository.create({
+      dao,
+      member: initialOwner,
+      role: "Chairperson",
+    });
+
+    await roleRepository.save(daoRole);
 
     return res.status(201).json({
-      message: ` Initial owner set to ${[
-        initialOwner,
-      ]} Dao Owner created successfully`,
+      message: "Initial owner created successfully",
     });
   } catch (error) {
     console.error("Error creating Dao owner:", error);
@@ -141,39 +145,6 @@ export async function CreateInitialOwner(req: Request, res: Response) {
  * - If memberAddr is not found in the database, it returns a 404 status code with an error message.
  * - If login is successful, it returns a 200 status code with a success message and member details.
  */
-export async function loginMember(req: Request, res: Response) {
-  const { memberAddr, memberCustomIdentifier } = req.body;
-
-  // Validate required fields
-  if (!memberAddr) {
-    return res.status(400).json({ error: "Member address is required" });
-  }
-
-  try {
-    // Check if a member with the given memberAddr exists
-    let member = await memberDetailsRepository.findOne({
-      where: { memberAddr },
-    });
-
-    if (!member) {
-      // If not found, create a new entry (register user)
-      member = memberDetailsRepository.create({ memberAddr, memberCustomIdentifier });
-      await memberDetailsRepository.save(member);
-    }
-
-    // If member exists, return a success message and member details (without sensitive data)
-    return res.status(200).json({
-      message: "Login successful",
-      authorization: process.env.ROUTE_PROTECTOR,
-    });
-  } catch (error) {
-    console.error("Error logging in member:", error);
-    res.status(500).json({
-      error:
-        "An internal server error occurred while  attempting to log you in. Please try again later.",
-    });
-  }
-}
 
 /**
  * Handles the request to join a DAO.
@@ -193,52 +164,80 @@ export async function loginMember(req: Request, res: Response) {
  * - If any other error occurs, it returns a 500 status code with the error message.
  */
 export async function RequestToJoinDao(req: Request, res: Response) {
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    nationalIdNo,
-    memberRole,
-    memberAddr,
-    daoMultiSigAddr,
-    daos,
-  } = req.body;
+  const { daoMultiSigAddr } = req.query;
+  const { firstName, lastName, email, phoneNumber, nationalIdNo, memberAddr } =
+    req.body;
 
-  console.log(req.body);
-
-  if (!daoMultiSigAddr) {
-    return res
-      .status(400)
-      .json({ error: " Missing MultiSig address is required." }); // Return error for missing address
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
+    return res.status(400).json({ error: " Missing MultiSig address." }); // Return error for missing address
   }
 
   try {
-    const foundDaoByMultiSig = await daoRepository.findOneBy({
-      daoMultiSigAddr,
+    const foundDaoByMultiSig = await daoRepository.findOne({
+      where: { daoMultiSigAddr },
+      relations: ["members"],
     });
 
     if (!foundDaoByMultiSig) {
       return res.status(404).json({ error: "DAO not found" });
     }
 
-    // Create the member request entry
-    const memberRequest = {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      nationalIdNo,
-      memberRole,
-      memberAddr,
-      daoMultiSigAddr,
-      daos,
-    };
+    let memberRequest = await memberDetailsRepository.findOne({
+      where: { memberAddr },
+      relations: ["daos"],
+    });
 
-    console.log({ memberRequest });
+    if (!memberRequest) {
+      memberRequest = memberDetailsRepository.create({
+        firstName,
+        lastName,
+        email,
+        phoneNumber,
+        nationalIdNo,
+        memberAddr,
+        daos: [foundDaoByMultiSig],
+      });
+      await memberDetailsRepository.save(memberRequest);
+    } else {
+      // If the member exists but is not part of this DAO, add them
+      if (
+        !memberRequest.daos.some(
+          (dao) => dao.daoId === foundDaoByMultiSig.daoId
+        )
+      ) {
+        memberRequest.daos.push(foundDaoByMultiSig);
+        await memberDetailsRepository.save(memberRequest);
+      }
+    }
 
-    // Save the member request
-    await memberDetailsRepository.save(memberRequest);
+    // Check if member already has a pending request
+    const existingStatus = await daoStatusRepository.findOne({
+      where: { dao: foundDaoByMultiSig, member: memberRequest },
+    });
+
+    if (existingStatus) {
+      return res
+        .status(400)
+        .json({ error: "You have already requested to join this DAO." });
+    }
+
+    // Create a pending request in DaoStatus
+    const daoStatus = daoStatusRepository.create({
+      dao: foundDaoByMultiSig,
+      member: memberRequest,
+      status: DaoMembershipStatus.PENDING,
+    });
+
+    await daoStatusRepository.save(daoStatus);
+
+    // Assign role
+    const daoRole = roleRepository.create({
+      dao: foundDaoByMultiSig,
+      member: memberRequest,
+      role: "Member",
+    });
+
+    await roleRepository.save(daoRole);
 
     // Send request for the address to be added to the whitelist
     res.status(201).json({ message: "Request sent to join DAO successfully." });
@@ -275,52 +274,59 @@ export async function WhiteListUser(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const { daoMultiSigAddr } = req.body;
-  const {
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    nationalIdNo,
-    memberRole,
-    memberAddr,
-  } = req.body;
+  const { daoMultiSigAddr } = req.query;
+  const { memberAddr } = req.body;
 
   // Validate required fields
-  if (!firstName) {
-    return res.status(400).json({ error: "Missing required field: firstName" });
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string" || !memberAddr) {
+    return res.status(400).json({ error: "Missing required fields." });
   }
 
   try {
-    const daoToBeAddedTo = await daoRepository.findOneBy({
-      daoMultiSigAddr: daoMultiSigAddr,
+    const daoToBeAddedTo = await daoRepository.findOne({
+      where: { daoMultiSigAddr },
+      relations: ["members"],
     });
 
     if (!daoToBeAddedTo) {
-      return res.status(404).json({ error: "DAO to be added to  not found" });
+      return res.status(404).json({ error: "DAO not found" });
     }
 
-    const memberDetails = {
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      nationalIdNo,
-      memberRole,
-      memberAddr,
-      daoToBeAddedTo,
-    };
-    // Create and save the new member
-    const createdMember = memberDetailsRepository.create(memberDetails);
-    await memberDetailsRepository.save(createdMember);
+    const member = await memberDetailsRepository.findOne({
+      where: { memberAddr },
+      relations: ["daos"],
+    });
 
-    // Update DAO with the new member
-    //daoToBeAddedTo.members.push(createdMember); // Assuming members is an array in DAO entity
-    await daoRepository.save(daoToBeAddedTo); // Save the updated DAO
+    if (!member) {
+      return res.status(404).json({ error: "Member request not found." });
+    }
+
+    const daoStatus = await daoStatusRepository.findOne({
+      where: { dao: daoToBeAddedTo, member },
+    });
+
+    if (!daoStatus || daoStatus.status !== DaoMembershipStatus.PENDING) {
+      return res.status(400).json({ error: "No pending request found." });
+    }
+
+    daoStatus.status = DaoMembershipStatus.APPROVED;
+    await daoStatusRepository.save(daoStatus);
+
+    // Add join date
+    const daoJoinDate = joinDateRepository.create({
+      dao: daoToBeAddedTo,
+      member,
+      joinDate: new Date(),
+    });
+
+    await joinDateRepository.save(daoJoinDate);
+
+    member.daos.push(daoToBeAddedTo);
+    await memberDetailsRepository.save(member);
 
     return res
       .status(200)
-      .json({ message: "Member added successfully/whitelist success" });
+      .json({ message: "Member added successfully to DAO" });
   } catch (error) {
     console.error("Error adding member:", error);
     res.status(500).json({ error: "Error adding member" });
@@ -350,38 +356,61 @@ export async function BlackListMember(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const { daoMultiSigAddr, memberAddr } = req.body; //dao to delete user from
-  if (!daoMultiSigAddr) {
-    return res.status(404).json({ error: "Missing required multisig" });
+  const { daoMultiSigAddr } = req.query;
+  const { memberAddr } = req.body; //dao to delete user from
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string" || !memberAddr) {
+    return res.status(400).json({ error: "Missing required fields." });
   }
   try {
     // Retrieve the DAO first
-    const daoDetails = await daoRepository.findOneBy({
-      daoMultiSigAddr: daoMultiSigAddr,
+    const daoDetails = await daoRepository.findOne({
+      where: { daoMultiSigAddr },
+      relations: ["members"],
     });
-    if (!daoDetails || !daoDetails.daoMultiSigAddr === undefined) {
+
+    if (!daoDetails) {
       return res.status(404).json({ error: "DAO not found" });
     }
 
     // Find the member by the address
     const memberToDelete = await memberDetailsRepository.findOne({
       where: { memberAddr },
+      relations: ["daos"],
     });
-    if (
-      !memberToDelete ||
-      daoDetails.members.some((m) => m.memberId === memberToDelete.memberId)
-    ) {
-      return res
-        .status(404)
-        .json({ message: `Member with address ${memberAddr}` });
+    if (!memberToDelete) {
+      return res.status(404).json({ message: "Member not found." });
     }
-    // Remove the member from the DAO's list of members
-    daoDetails.members = daoDetails.members.filter(
-      (m) => m.memberId !== memberToDelete.memberId
+    // Check if the member is actually in the DAO
+    const isMember = daoDetails.members.some(
+      (m) => m.memberId === memberToDelete.memberId
     );
-    // Update the DAO
-    await daoRepository.save(daoDetails);
-    return res.status(200).json({ message: "Member deleted successfully" });
+
+    if (!isMember) {
+      return res.status(404).json({ message: "Member is not in this DAO." });
+    }
+
+    const dao = daoDetails;
+    const member = memberToDelete;
+
+    const daoStatus = await daoStatusRepository.findOne({
+      where: { dao, member },
+    });
+
+    if (!daoStatus) {
+      return res.status(400).json({ error: "No pending request found." });
+    }
+
+    await daoStatusRepository.remove(daoStatus);
+
+    // Remove the relationship in the join table
+    memberToDelete.daos = memberToDelete.daos.filter(
+      (existingDao) => existingDao.daoId !== daoDetails.daoId
+    );
+    await memberDetailsRepository.save(memberToDelete);
+
+    return res
+      .status(200)
+      .json({ message: "Member removed from DAO successfully" });
   } catch (error) {
     console.error(error);
     return res
@@ -414,21 +443,22 @@ export async function GetAllMembers(
   res: Response
 ): Promise<Response> {
   const { daoMultiSigAddr } = req.query;
-  console.log("daoMultiSigAddr:", daoMultiSigAddr);
 
   if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
-    return res
-      .status(400)
-      .json({ error: "Missing required parameter Dao MultiSig" });
+    return res.status(400).json({ error: "Missing DAO MultiSig address." });
   }
 
   try {
-    // Fetch members with the matching daoMultiSig using AppDataSource
-    const memberRepository = AppDataSource.getRepository(MemberDetails);
-    const members = await memberRepository.find({
-      where: { daoMultiSigAddr: daoMultiSigAddr },
-      // relations: ["daos"],
+    const dao = await daoRepository.findOne({
+      where: { daoMultiSigAddr },
+      relations: ["members"],
     });
+
+    if (!dao) {
+      return res.status(404).json({ error: "DAO not found" });
+    }
+
+    const members = dao.members;
 
     const memberCount = members.length;
 
@@ -446,6 +476,3 @@ export async function GetAllMembers(
       .json({ error: "Internal Server Error Occurred When Fetching Members" });
   }
 }
-
-
-

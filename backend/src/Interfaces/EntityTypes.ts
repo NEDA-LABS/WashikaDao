@@ -1,26 +1,30 @@
+import { DaoMembershipStatus } from "../entity/DaoMembershipRelations";
+
 export interface IVote {
-    proposalCustomIdentifier?: number;
+    voteId?: number;
+    proposalCustomIdentifier?: string;
     voterAddr: string;
-    voteValue: boolean;  //true for upvote, false for downvote
+    voteValue: boolean;  // true for upvote, false for downvote
 }
-export interface IProposal{
+
+export interface IProposal {
     proposalId?: number;
+    proposalCustomIdentifier: string;
     proposalOwner: string;
     proposalTitle: string;
-    projectSummary: string;
+    proposalSummary: string;
     proposalDescription: string;
     proposalStatus: string;
     amountRequested: number;
     profitSharePercent: number;
     daoMultiSigAddr: string;
-    numUpvotes: number;
-    numDownvotes: number;
-    votes?: IVote[];
+    votes?: IVote[];  // Relationship with Vote entity
+    dao?: IDao;  // Relationship with Dao entity
 }
 
 export interface IDao {
-    daoId?: string;
-    daoName: string
+    daoId?: number;
+    daoName: string;
     daoLocation: string;
     targetAudience: string;
     daoTitle: string;
@@ -35,21 +39,46 @@ export interface IDao {
     kiasiChaHisa: number;
     interestOnLoans: number;
     daoTxHash: string;
-    proposals: IProposal;  //relationship with proposal entity
-    members: IMemberDetails;  //relationship with memberDetails entity
-
+    daoRegDocs: string;
+    proposals?: IProposal[];  // Relationship with Proposal entity
+    members?: IMemberDetails[];  // Relationship with MemberDetails entity
+    daoStatus?: IDaoStatus[];  // Relationship with DaoStatus entity
+    daoJoinDates?: IDaoJoinDate[];  // Relationship with DaoJoinDate entity
+    daoRoles?: IDaoRole[];  // Relationship with DaoRole entity
+    daoMultiSigs: string[];
 }
 
 export interface IMemberDetails {
     memberId?: number;
-    memberCustomIdentifier: string;
-    firstName: string;
-    lastName: string;
-    phoneNumber: number;
-    email: string;
-    nationalIdNo: number;
-    memberRole: string;  //funder, owner, member
-    memberAddr: string;
-    daos?: IDao[];
+    firstName?: string;
+    lastName?: string;
+    phoneNumber?: string;
+    email?: string;
+    nationalIdNo?: string;
+    memberAddr?: string;
+    daos?: IDao[];  // Relationship with Dao entity
+    daoStatus?: IDaoStatus[];  // Relationship with DaoStatus entity
+    daoJoinDates?: IDaoJoinDate[];  // Relationship with DaoJoinDate entity
+    daoRoles?: IDaoRole[];  // Relationship with DaoRole entity
 }
 
+export interface IDaoStatus {
+    id?: number;
+    dao: IDao;
+    member: IMemberDetails;
+    status: DaoMembershipStatus;
+}
+
+export interface IDaoJoinDate {
+    id?: number;
+    dao: IDao;
+    member: IMemberDetails;
+    joinDate: Date;
+}
+
+export interface IDaoRole {
+    id?: number;
+    dao: IDao;
+    member: IMemberDetails;
+    role: string;
+}

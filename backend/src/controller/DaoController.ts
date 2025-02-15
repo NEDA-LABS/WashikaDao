@@ -4,6 +4,16 @@ import AppDataSource from "../data-source";
 import { GlobalErrorHandler } from "../ErrorHandling/GlobalExceptionHandler";
 import { CreateCustomErrMsg } from "../ErrorHandling/CustomErrorHandler";
 import { MemberDetails } from "../entity/MemberDetails";
+import {
+  DaoStatus,
+  DaoJoinDate,
+  DaoRole,
+  DaoMembershipStatus,
+} from "../entity/DaoMembershipRelations";
+
+const daoStatusRepository = AppDataSource.getRepository(DaoStatus);
+const joinDateRepository = AppDataSource.getRepository(DaoJoinDate);
+const roleRepository = AppDataSource.getRepository(DaoRole);
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
@@ -77,7 +87,9 @@ export async function CreateNewDao(req: Request, res: Response) {
     }
     return false;
   }
-  const doesMsigExist: boolean = await doesDaoWithThisMsigExist(daoMultiSigAddr);
+  const doesMsigExist: boolean = await doesDaoWithThisMsigExist(
+    daoMultiSigAddr
+  );
   if (doesMsigExist === true) {
     return res
       .status(400)
@@ -147,10 +159,30 @@ export async function CreateNewDao(req: Request, res: Response) {
         memberDetails.email = email;
         memberDetails.phoneNumber = phoneNumber;
         memberDetails.nationalIdNo = nationalIdNo;
-        memberDetails.memberRole = memberRole;
-        memberDetails.daoMultiSigAddr = daoMultiSigAddr;
-        memberDetails.memberCustomIdentifier = memberCustomIdentifier;
         memberDetails.daos = [dao]; // Link member to the created DAO
+
+        const daoRole = roleRepository.create({
+          dao,
+          member,
+          role: memberRole,
+        });
+        await roleRepository.save(daoRole);
+
+        const daoStatus = daoStatusRepository.create({
+          dao,
+          member,
+          status: DaoMembershipStatus.APPROVED,
+        });
+
+        await daoStatusRepository.save(daoStatus);
+
+        const daoJoinDate = joinDateRepository.create({
+          dao,
+          member,
+          joinDate: new Date(),
+        });
+
+        await joinDateRepository.save(daoJoinDate);
 
         await memberDetailsRepository.save(memberDetails);
       }
@@ -210,7 +242,9 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
   const { daoMultiSigAddr } = req.query;
 
   if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
-    return res.status(400).json({ message: "Missing or invalid daoMultiSigAddr query parameter!" });
+    return res
+      .status(400)
+      .json({ message: "Missing or invalid daoMultiSigAddr query parameter!" });
   }
 
   try {

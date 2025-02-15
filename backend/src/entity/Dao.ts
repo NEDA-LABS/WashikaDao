@@ -1,59 +1,67 @@
-import {  PrimaryGeneratedColumn, Column, Entity, OneToMany, ManyToMany, JoinTable } from "typeorm";
-import { Proposal } from "./Proposal";
+import {
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from "typeorm";
+import { DaoJoinDate, DaoRole, DaoStatus } from "./DaoMembershipRelations";
 import { MemberDetails } from "./MemberDetails";
+import { Proposal } from "./Proposal";
 
 @Entity()
 export class Dao {
   @PrimaryGeneratedColumn()
-  daoId: number
+  daoId: number;
 
   @Column({ unique: true })
-  daoName: string
+  daoName: string;
 
   @Column()
-  daoLocation: string
+  daoLocation: string;
 
   @Column()
-  targetAudience: string
+  targetAudience: string;
 
   @Column()
-  daoTitle: string
+  daoTitle: string;
 
   @Column()
-  daoDescription: string
+  daoDescription: string;
 
   @Column()
-  daoOverview: string
+  daoOverview: string;
 
   @Column({ unique: true })
-  multiSigPhoneNo: number
+  multiSigPhoneNo: number;
+
+  @Column()
+  kiwango: number;
+
+  @Column()
+  accountNo: number;
+
+  @Column()
+  nambaZaHisa: number;
+
+  @Column()
+  kiasiChaHisa: number;
+
+  @Column()
+  interestOnLoans: number;
+
+  @Column()
+  daoImageIpfsHash: string;
+
+  @Column()
+  daoRegDocs: string;
+
+  @Column()
+  daoTxHash: string;
 
   @Column({ unique: true })
-  kiwango: number
-
-  @Column()
-  accountNo: number
-
-  @Column()
-  nambaZaHisa: number
-
-  @Column()
-  kiasiChaHisa: number
-
-  @Column()
-  interestOnLoans: number
-
-  @Column()
-  daoImageIpfsHash: string
-
-  @Column()
-  daoRegDocs: string
-
-  @Column()
-  daoTxHash: string
-
-  @Column({ unique: true })
-  daoMultiSigAddr: string
+  daoMultiSigAddr: string;
 
   //one to many relation where one dao can have multiple proposals but one proposal cannot have multiple daos
   @OneToMany(() => Proposal, (proposal) => proposal.dao)
@@ -63,13 +71,23 @@ export class Dao {
   // dao can have multiple members & can be owned by multiple members
   // member can have multiple daos & can be an owner of multiple daos
   // many to many relation where one member can have multiple daos and one dao can have multiple members
-  @ManyToMany(() => MemberDetails,( memberDetails) => memberDetails.daos, {
+  @ManyToMany(() => MemberDetails, (memberDetails) => memberDetails.daos, {
     cascade: true,
   })
-  @JoinTable() // This specifies that the Dao entity owns the relationship and a join table is needed
+  @JoinTable({ name: "dao_members" }) // This specifies that the Dao entity owns the relationship and a join table is needed
   members: MemberDetails[];
 
-  @Column("simple-array")
-  daoMultiSigs: string[]; //array of multisigs
+  @OneToMany(() => DaoStatus, (daoStatus) => daoStatus.dao, { cascade: true }) // Track member statuses
+  daoStatus: DaoStatus[];
 
+  @OneToMany(() => DaoJoinDate, (daoJoinDate) => daoJoinDate.dao, {
+    cascade: true,
+  })
+  daoJoinDates: DaoJoinDate[];
+
+  @OneToMany(() => DaoRole, (daoRole) => daoRole.dao, { cascade: true })
+  daoRoles: DaoRole[];
+
+  @Column("json")
+  daoMultiSigs: string[]; //array of multisigs
 }
