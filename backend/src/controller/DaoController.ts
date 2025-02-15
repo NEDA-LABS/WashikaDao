@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
 import AppDataSource from "../data-source";
-import { CreateInitialOwner, CreateTreasurerAndSecretary } from "./DaoMembershipController";
+import { CreateDaoAdmins } from "./DaoMembershipController";
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
@@ -18,7 +18,7 @@ import { CreateInitialOwner, CreateTreasurerAndSecretary } from "./DaoMembership
  * - HTTP 400: If any required fields are missing in the request body.
  * - HTTP 500: If an error occurs while creating or saving the DAO and member details.
  */
-async function CreateNewDao(req: Request, res: Response) {
+export async function CreateNewDao(req: Request, res: Response) {
   // Extract DAO details from request body
   const {
     daoName,
@@ -37,6 +37,7 @@ async function CreateNewDao(req: Request, res: Response) {
     kiasiChaHisa,
     interestOnLoans,
     daoTxHash,
+    members, // Chairperson, Treasurer, Secretary
   } = req.body;
 
   // Validate required DAO fields
@@ -55,9 +56,11 @@ async function CreateNewDao(req: Request, res: Response) {
     !nambaZaHisa ||
     !kiasiChaHisa ||
     !interestOnLoans ||
-    !daoTxHash
+    !daoTxHash ||
+    !Array.isArray(members) ||
+    members.length !== 3
   ) {
-    throw new Error("Missing required DAO details");
+    throw new Error("Missing required DAO details or invalid members list");
   }
 
   const daoRepository = AppDataSource.getRepository(Dao);
@@ -92,26 +95,10 @@ async function CreateNewDao(req: Request, res: Response) {
     });
 
     await daoRepository.save(dao);
-    return dao; // Return DAO object for further processing
-  } catch (error) {
-    console.error("Error creating DAO and members:", error);
-    throw new Error("Error creating DAO");
-  }
-}
-
-export async function CreateDaoWithMembers(req: Request, res: Response) {
-  try {
-    // Step 1: Create DAO
-    const dao = await CreateNewDao(req, res);
-    
-    // Step 2: Create Initial Owner
-    await CreateInitialOwner(dao, req.body.owner);
-
-    // Step 3: Create Treasurer & Secretary
-    await CreateTreasurerAndSecretary(dao, req.body.members);
-
+    // Assign admins (Chairperson, Treasurer, Secretary)
+    await CreateDaoAdmins(dao, members);
     res.status(201).json({
-      message: "DAO, Initial Owner, Treasurer, and Secretary created successfully",
+      message: "DAO and admins (Chairperson, Treasurer, Secretary) created successfully",
       daoMultiSigAddr: dao.daoMultiSigAddr,
     });
   } catch (error) {
@@ -119,7 +106,6 @@ export async function CreateDaoWithMembers(req: Request, res: Response) {
     res.status(500).json({ error: error.message });
   }
 }
-
 
 /**
  * Retrieves a list of all DAOs (Decentralized Autonomous Organizations) from the database.

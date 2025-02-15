@@ -86,18 +86,38 @@ async function assignMembershipDetails(
  * - If the owner is successfully created, it returns a 201 status code with a success message.
  * - If any error occurs, it returns a 500 status code with the error message.
  */
-export async function CreateInitialOwner(dao: Dao, ownerData: any) {
-  if (!ownerData.firstName || !ownerData.lastName || !ownerData.memberAddr) {
-    throw new Error("Missing required fields for Initial Owner");
+export async function CreateDaoAdmins(dao: Dao, members: any[]) {
+  if (!Array.isArray(members) || members.length < 3) {
+    throw new Error(
+      "A DAO must have exactly three admins: Chairperson, Treasurer, and Secretary."
+    );
+  }
+
+  const requiredRoles = [
+    DaoRoleEnum.CHAIRPERSON,
+    DaoRoleEnum.TREASURER,
+    DaoRoleEnum.SECRETARY,
+  ];
+  const hasRoles = requiredRoles.every((role) =>
+    members.some((m) => m.memberRole === role)
+  );
+
+  if (!hasRoles) {
+    throw new Error("A DAO must have a Chairperson, Treasurer, and a Secretary.");
   }
 
   try {
-    let initialOwner = await findOrCreateMember(ownerData, dao);
-    await assignMembershipDetails(dao, initialOwner, DaoRoleEnum.CHAIRPERSON);
-    return initialOwner;
+    await Promise.all(
+      members.map(async (member) => {
+        const user = await findOrCreateMember(member, dao);
+        await assignMembershipDetails(dao, user, member.memberRole);
+      })
+    );
+
+    return members;
   } catch (error) {
-    console.error("Error creating Dao owner:", error);
-    // Check if the error is due to a unique constraint violation
+    console.error("Error creating DAO admins:", error);
+
     if (error instanceof QueryFailedError) {
       if (error.message.includes("phoneNumber"))
         return "The phone number is already in use.";
@@ -109,30 +129,8 @@ export async function CreateInitialOwner(dao: Dao, ownerData: any) {
         return "The member address is already in use.";
     }
 
-    throw new Error("Error creating Initial Owner");
+    throw new Error("Error creating DAO admins");
   }
-}
-
-export async function CreateTreasurerAndSecretary(dao: Dao, members: any[]) {
-  if (!Array.isArray(members) || members.length < 2) {
-    throw new Error("A DAO must have at least a Treasurer and a Secretary.");
-  }
-
-  const requiredRoles = [DaoRoleEnum.TREASURER, DaoRoleEnum.SECRETARY];
-  const hasRoles = requiredRoles.every((role) =>
-    members.some((m) => m.memberRole === role)
-  );
-
-  if (!hasRoles) {
-    throw new Error("A DAO must have both a Treasurer and a Secretary.");
-  }
-
-  await Promise.all(
-    members.map(async (member) => {
-      const user = await findOrCreateMember(member, dao);
-      await assignMembershipDetails(dao, user, member.memberRole);
-    })
-  );
 }
 
 /**

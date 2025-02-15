@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import { Request, Response } from "express";
-import { CreateDaoWithMembers, GetAllDaosInPlatform } from '../controller/DaoController';
+import { CreateNewDao, GetAllDaosInPlatform } from '../controller/DaoController';
 const router = express.Router();
 import { Authenticator } from '../utils/Authenticator/Authenticator';
 
@@ -19,7 +19,7 @@ import { Authenticator } from '../utils/Authenticator/Authenticator';
  * It sends a response back to the client indicating the success or failure of the DAO creation process.
  */
 
-router.post('/CreateDao', Authenticator, async (req: Request, res: Response) =>{await CreateDaoWithMembers(req, res)});//INFO: Unique route that is only used for creating Daos
+router.post('/CreateDao', Authenticator, async (req: Request, res: Response) =>{await CreateNewDao(req, res)});//INFO: Unique route that is only used for creating Daos
 
 router.get('/GetAllDaos', Authenticator,  async (req: Request, res: Response) => {await GetAllDaosInPlatform(req, res)});//INFO: provides all the available Daos within the application, used for rendering say a certain no of daos & extended to more dao viewing functionality within the client
 

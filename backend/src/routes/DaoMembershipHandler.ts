@@ -1,7 +1,7 @@
-import express, { Express, Request, Response } from "express";
+import express, { Request, Response } from "express";
 const router = express.Router();
 
-import { CreateInitialOwner, GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
+import { GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
 import { handleSendInvite } from "../controller/EmailController";
 import { handleSendInviteSMS } from "../controller/SMSController";
 import { Authenticator }  from "../utils/Authenticator/Authenticator";
