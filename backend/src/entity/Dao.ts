@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinTable,
   ManyToMany,
   OneToMany,
@@ -15,57 +16,59 @@ export class Dao {
   @PrimaryGeneratedColumn()
   daoId: number;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 100 })
   daoName: string;
 
-  @Column()
+  @Column({ length: 100 })
   daoLocation: string;
 
-  @Column()
+  @Column({ length: 100 })
   targetAudience: string;
 
-  @Column()
+  @Column({ length: 100 })
   daoTitle: string;
 
-  @Column()
+  @Column("text")
   daoDescription: string;
 
-  @Column()
+  @Column("text")
   daoOverview: string;
 
-  @Column({ unique: true })
-  multiSigPhoneNo: number;
+  @Column({ type: "varchar", unique: true })
+  @Index()
+  multiSigPhoneNo: string;
 
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   kiwango: number;
 
-  @Column()
-  accountNo: number;
+  @Column({ type: "bigint" })
+  accountNo: string;
 
   @Column()
   nambaZaHisa: number;
 
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   kiasiChaHisa: number;
 
-  @Column()
+  @Column({ type: "decimal", precision: 10, scale: 2 })
   interestOnLoans: number;
 
-  @Column()
+  @Column({ length: 255 })
   daoImageIpfsHash: string;
 
-  @Column()
+  @Column({ length: 255 })
   daoRegDocs: string;
 
-  @Column()
+  @Column({ length: 255 })
   daoTxHash: string;
 
+  @Index()
   @Column({ unique: true })
   daoMultiSigAddr: string;
 
   //one to many relation where one dao can have multiple proposals but one proposal cannot have multiple daos
-  @OneToMany(() => Proposal, (proposal) => proposal.dao)
-  proposals: Proposal[];
+  @OneToMany(() => Proposal, (proposal) => proposal.dao, { lazy: true })
+  proposals: Promise<Proposal[]>;
 
   // relation where one member can belong to multiple daos and one member can own multiple daos
   // dao can have multiple members & can be owned by multiple members

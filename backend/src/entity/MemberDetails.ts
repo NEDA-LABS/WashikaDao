@@ -12,31 +12,29 @@ import { DaoJoinDate, DaoRole, DaoStatus } from "./DaoMembershipRelations";
 //import { PhoneAndAddressMapping } from "./PhoneToAddress";
 
 @Entity()
-@Unique(["dao", "member"])
 export class MemberDetails {
   @PrimaryGeneratedColumn()
   memberId: number;
 
-  @Column()
+  @Column({ length: 50 })
   firstName?: string;
 
-  @Column()
+  @Column({ length: 50 })
   lastName?: string;
 
-  @Column({ unique: true })
+  @Column({ type: "varchar", length: 20, unique: true })
+  @Index()
   phoneNumber?: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 100 })
+  @Index()
   email?: string;
 
-  @Column({ unique: true })
+  @Column({ unique: true, length: 20 })
   nationalIdNo?: string;
 
-  @Index("IDX_MEMBER_ADDRESS_UNIQUE", {
-    unique: true,
-    where: "memberAddress IS NOT NULL",
-  }) // Unique only if not null
   @Column({ nullable: true })
+  @Index("IDX_MEMBER_ADDRESS_UNIQUE", { unique: true, where: "memberAddr IS NOT NULL" })
   memberAddr?: string;
 
   //many to many relation where one member can have multiple daos and one dao can have multiple members

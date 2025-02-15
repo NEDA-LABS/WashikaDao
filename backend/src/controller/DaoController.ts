@@ -1,19 +1,7 @@
 import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
 import AppDataSource from "../data-source";
-import { GlobalErrorHandler } from "../ErrorHandling/GlobalExceptionHandler";
-import { CreateCustomErrMsg } from "../ErrorHandling/CustomErrorHandler";
-import { MemberDetails } from "../entity/MemberDetails";
-import {
-  DaoStatus,
-  DaoJoinDate,
-  DaoRole,
-  DaoMembershipStatus,
-} from "../entity/DaoMembershipRelations";
-
-const daoStatusRepository = AppDataSource.getRepository(DaoStatus);
-const joinDateRepository = AppDataSource.getRepository(DaoJoinDate);
-const roleRepository = AppDataSource.getRepository(DaoRole);
+import { CreateInitialOwner, CreateTreasurerAndSecretary } from "./DaoMembershipController";
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
@@ -30,7 +18,7 @@ const roleRepository = AppDataSource.getRepository(DaoRole);
  * - HTTP 400: If any required fields are missing in the request body.
  * - HTTP 500: If an error occurs while creating or saving the DAO and member details.
  */
-export async function CreateNewDao(req: Request, res: Response) {
+async function CreateNewDao(req: Request, res: Response) {
   // Extract DAO details from request body
   const {
     daoName,
@@ -48,7 +36,6 @@ export async function CreateNewDao(req: Request, res: Response) {
     nambaZaHisa,
     kiasiChaHisa,
     interestOnLoans,
-    members,
     daoTxHash,
   } = req.body;
 
@@ -60,7 +47,6 @@ export async function CreateNewDao(req: Request, res: Response) {
     !daoTitle ||
     !daoDescription ||
     !daoOverview ||
-    !daoImageIpfsHash ||
     !daoRegDocs ||
     !daoMultiSigAddr ||
     !multiSigPhoneNo ||
@@ -71,132 +57,69 @@ export async function CreateNewDao(req: Request, res: Response) {
     !interestOnLoans ||
     !daoTxHash
   ) {
-    return res.status(400).json({ error: "Missing required DAO details" });
+    throw new Error("Missing required DAO details");
   }
 
   const daoRepository = AppDataSource.getRepository(Dao);
-  //function to check whether dao exists or not and returns a boolean
-  async function doesDaoWithThisMsigExist(
-    _daoMultiSigAddr: any
-  ): Promise<boolean> {
-    const _doesMsigExist = await daoRepository.findOne({
-      where: { daoMultiSigAddr: daoMultiSigAddr },
-    });
-    if (_doesMsigExist) {
-      return true;
-    }
-    return false;
-  }
-  const doesMsigExist: boolean = await doesDaoWithThisMsigExist(
-    daoMultiSigAddr
-  );
-  if (doesMsigExist === true) {
-    return res
-      .status(400)
-      .json({ error: "DAO with this daoMultiSigAddr already exists." });
+  //function to check whether dao exists or not
+  const existingDao = await daoRepository.findOne({
+    where: { daoMultiSigAddr },
+  });
+
+  if (existingDao) {
+    throw new Error("DAO with this daoMultiSigAddr already exists.");
   }
 
   try {
     // Save DAO details to the database
-    const dao = new Dao();
-    dao.daoName = daoName;
-    dao.daoLocation = daoLocation;
-    dao.targetAudience = targetAudience;
-    dao.daoTitle = daoTitle;
-    dao.daoDescription = daoDescription;
-    dao.daoOverview = daoOverview;
-    dao.daoImageIpfsHash = daoImageIpfsHash;
-    dao.daoRegDocs = daoRegDocs;
-    dao.daoMultiSigAddr = daoMultiSigAddr;
-    dao.daoMultiSigs = daoMultiSigAddr; // Assuming it's an array of multisigs
-    dao.multiSigPhoneNo = multiSigPhoneNo;
-    dao.kiwango = kiwango;
-    dao.accountNo = accountNo;
-    dao.nambaZaHisa = nambaZaHisa;
-    dao.kiasiChaHisa = kiasiChaHisa;
-    dao.interestOnLoans = interestOnLoans;
-    dao.daoTxHash = daoTxHash;
+    const dao = daoRepository.create({
+      daoName,
+      daoLocation,
+      targetAudience,
+      daoTitle,
+      daoDescription,
+      daoOverview,
+      daoImageIpfsHash,
+      daoRegDocs,
+      daoMultiSigAddr,
+      multiSigPhoneNo,
+      kiwango,
+      accountNo,
+      nambaZaHisa,
+      kiasiChaHisa,
+      interestOnLoans,
+      daoTxHash,
+    });
 
-    const createdDao = daoRepository.create(dao);
-    // Initialize the DAO repository
-    await daoRepository.save(createdDao);
+    await daoRepository.save(dao);
+    return dao; // Return DAO object for further processing
+  } catch (error) {
+    console.error("Error creating DAO and members:", error);
+    throw new Error("Error creating DAO");
+  }
+}
 
-    // Now handle saving members and linking them to the DAO
-    if (members && Array.isArray(members)) {
-      const memberDetailsRepository =
-        AppDataSource.getRepository(MemberDetails);
+export async function CreateDaoWithMembers(req: Request, res: Response) {
+  try {
+    // Step 1: Create DAO
+    const dao = await CreateNewDao(req, res);
+    
+    // Step 2: Create Initial Owner
+    await CreateInitialOwner(dao, req.body.owner);
 
-      for (const member of members) {
-        const {
-          firstName,
-          lastName,
-          email,
-          phoneNumber,
-          nationalIdNo,
-          memberRole,
-          memberCustomIdentifier,
-        } = member;
-
-        // Validate each member's required fields
-        if (
-          !firstName ||
-          !lastName ||
-          !email ||
-          !phoneNumber ||
-          !nationalIdNo ||
-          !memberRole ||
-          !memberCustomIdentifier
-        ) {
-          return res
-            .status(400)
-            .json({ error: "Missing required member details" });
-        }
-
-        // Create and save the member
-        const memberDetails = new MemberDetails();
-        memberDetails.firstName = firstName;
-        memberDetails.lastName = lastName;
-        memberDetails.email = email;
-        memberDetails.phoneNumber = phoneNumber;
-        memberDetails.nationalIdNo = nationalIdNo;
-        memberDetails.daos = [dao]; // Link member to the created DAO
-
-        const daoRole = roleRepository.create({
-          dao,
-          member,
-          role: memberRole,
-        });
-        await roleRepository.save(daoRole);
-
-        const daoStatus = daoStatusRepository.create({
-          dao,
-          member,
-          status: DaoMembershipStatus.APPROVED,
-        });
-
-        await daoStatusRepository.save(daoStatus);
-
-        const daoJoinDate = joinDateRepository.create({
-          dao,
-          member,
-          joinDate: new Date(),
-        });
-
-        await joinDateRepository.save(daoJoinDate);
-
-        await memberDetailsRepository.save(memberDetails);
-      }
-    }
+    // Step 3: Create Treasurer & Secretary
+    await CreateTreasurerAndSecretary(dao, req.body.members);
 
     res.status(201).json({
-      message: "DAO created and members added successfully",
+      message: "DAO, Initial Owner, Treasurer, and Secretary created successfully",
       daoMultiSigAddr: dao.daoMultiSigAddr,
     });
   } catch (error) {
-    console.error("Error creating DAO and members:", error);
-    res.status(500).json({ error: "Error creating DAO and members" });
+    console.error("Error creating DAO with members:", error);
+    res.status(500).json({ error: error.message });
   }
 }
+
 
 /**
  * Retrieves a list of all DAOs (Decentralized Autonomous Organizations) from the database.
@@ -264,7 +187,6 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           daoOverview: daoDetails.daoOverview,
           daoImageIpfsHash: daoDetails.daoImageIpfsHash,
           daoRegDocs: daoDetails.daoRegDocs,
-          //daoMultiSigs: daoDetails.daoMultiSigs,
           multiSigAddr: daoDetails.daoMultiSigAddr,
           multiSigPhoneNo: daoDetails.multiSigPhoneNo,
           kiwango: daoDetails.kiwango,
@@ -303,8 +225,8 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
  */
 
 export async function UpdateDaoDetails(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.params;
-  if (!daoMultiSigAddr) {
+  const { daoMultiSigAddr } = req.query;
+  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
     return res.status(400).json({ error: "Missing required url params" }); //return 400 status if required fields are missing
   }
 
@@ -335,7 +257,6 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     !daoTitle ||
     !daoDescription ||
     !daoOverview ||
-    !daoImageIpfsHash ||
     !daoRegDocs ||
     !multiSigPhoneNo ||
     !accountNo ||

@@ -5,14 +5,11 @@ import { CreateInitialOwner, GetAllMembers, RequestToJoinDao, WhiteListUser, Bla
 import { handleSendInvite } from "../controller/EmailController";
 import { handleSendInviteSMS } from "../controller/SMSController";
 import { Authenticator }  from "../utils/Authenticator/Authenticator";
-/** Dao Ownership Management Activities available **/
-// @ts-ignore
+
 /**
  * @ Remarks: The only ownership activities available are creating a new owner to allow for ownership transfer & adding another multisig to a dao & adding a user to a particular Dao
  */
-//Creatint the initial Owner of a Dao
 
-router.post('/CreateInitialOwner', Authenticator, (req: Request, res: Response) =>  { CreateInitialOwner(req, res)})
 //Adding a particular user to be an owner of a particular dao too
 //TODO: implement this to be a protected route, ensure user has enough permissions to access this since it is direct no other checks ---now resolved
 /** Dao MemberShip Activities available  **/

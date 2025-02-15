@@ -4,6 +4,7 @@
 // import { MemberDetails } from "./entity/MemberDetails";
 // import { Proposal } from "./entity/Proposal";
 // import { Vote } from "./entity/Vote";
+// import { DaoJoinDate, DaoRole, DaoStatus } from "./entity/DaoMembershipRelations";
 // import path from "path";
 //  /**
 //  const  AppDataSource = new DataSource({
@@ -23,7 +24,7 @@
 //   url:  process.env.DATABASE_URL, // Use DATABASE_URL in production
 //   synchronize: true, // Disable synchronize in production (use migrations instead)
 //   logging: true, // Enable logging only in development
-//   entities: [Dao, MemberDetails, Proposal, Vote], // Your entities
+//   entities: [Dao, MemberDetails, Proposal, Vote, DaoJoinDate, DaoRole, DaoStatus], // Your entities
 //   migrations: [path.join(__dirname, './migrations/*{.ts,.js}')], // Migration files
 //   migrationsRun: true, // Automatically run migrations in production
 // });
@@ -37,6 +38,7 @@ import { MemberDetails } from "./entity/MemberDetails";
 import { Proposal } from "./entity/Proposal";
 import { Vote } from "./entity/Vote";
 import path from "path";
+import { DaoJoinDate, DaoRole, DaoStatus } from "./entity/DaoMembershipRelations";
 
 const AppDataSource = new DataSource({
   type:
@@ -69,7 +71,7 @@ const AppDataSource = new DataSource({
       : undefined,
   synchronize: true, //synchronize only in development
   logging: process.env.NODE_ENV === "development" ? true : false, //Log only in development
-  entities: [Dao, MemberDetails, Proposal, Vote],
+  entities: [Dao, MemberDetails, Proposal, Vote, DaoJoinDate, DaoRole, DaoStatus],
   migrations: [path.join(__dirname, "./migrations/*{.ts,.js}")], //Configure migrations as needed
   subscribers: [],
 });

@@ -2,7 +2,7 @@ import {  PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne, Unique 
 import { Proposal } from "./Proposal";
 
 @Entity()
-@Unique(["proposalCustomIdentifier", "voterAddr"])
+@Unique(["proposal", "voterAddr"])
 export class Vote{
     @PrimaryGeneratedColumn()
     voteId: number;

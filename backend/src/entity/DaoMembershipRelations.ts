@@ -8,6 +8,14 @@ export enum DaoMembershipStatus {
   REJECTED = "rejected",
 }
 
+export enum DaoRoleEnum {
+  CHAIRPERSON = "Chairperson",
+  SECRETARY = "Secretary",
+  TREASURER = "Treasurer",
+  MEMBER = "Member",
+  FUNDER = "Funder",
+}
+
 @Entity()
 @Unique(["dao", "member"]) // Ensure a member cannot have duplicate entries in the same DAO
 export class DaoStatus {
@@ -20,7 +28,7 @@ export class DaoStatus {
   @ManyToOne(() => MemberDetails, (member) => member.daoStatus, { onDelete: "CASCADE" }) // Track the member
   member: MemberDetails;
 
-  @Column({ type: "enum", enum: DaoMembershipStatus, default: DaoMembershipStatus.PENDING }) // Use an enum for better control
+  @Column({ type: "text", enum: DaoMembershipStatus, default: DaoMembershipStatus.PENDING }) // Use an enum for better control
   status: DaoMembershipStatus;
 }
 
@@ -38,7 +46,7 @@ export class DaoJoinDate {
   @ManyToOne(() => MemberDetails, (member) => member.daoJoinDates, { onDelete: "CASCADE" }) // Track the member
   member: MemberDetails;
 
-  @Column({ type: "timestamp", default: () => "CURRENT_TIMESTAMP" }) // Store join date
+  @Column({ type: "text", default: () => "CURRENT_TIMESTAMP" }) // Store join date
   joinDate: Date;
 }
 
@@ -55,7 +63,7 @@ export class DaoRole {
   @ManyToOne(() => MemberDetails, (member) => member.daoRoles, { onDelete: "CASCADE" }) // Track the member
   member: MemberDetails;
 
-  @Column()
-  role: string; // Store the member's role in this DAO
+  @Column({ type: "text", enum: DaoRoleEnum }) // Use the enum for better validation
+  role: DaoRoleEnum;
 }
 

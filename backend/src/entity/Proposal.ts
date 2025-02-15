@@ -1,7 +1,6 @@
 import { PrimaryColumn, Column,  Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import {Vote} from "./Vote";
 import { Dao } from "./Dao";
-import {SrvRecord} from "dns";
 
 @Entity()
 export class Proposal {
@@ -14,25 +13,25 @@ export class Proposal {
     @Column()
     proposalOwner: string;
 
-    @Column()
+    @Column({ length: 255 })
     proposalTitle: string;
 
-    @Column()
+    @Column("text")
     proposalSummary: string;
 
-    @Column()
+    @Column("text")
     proposalDescription: string;
 
-    @Column()
+    @Column({ length: 50 })
     proposalStatus: string;
 
-    @Column()
+    @Column({ type: "decimal", precision: 10, scale: 2 })
     amountRequested: number;
 
-    @Column()
+    @Column({ type: "decimal", precision: 5, scale: 2 })
     profitSharePercent: number;
 
-    @Column()
+    @Column({ length: 255 })
     daoMultiSigAddr: string;
 
     @OneToMany(() => Vote, (vote) => vote.proposal, { cascade: ["remove"] })
