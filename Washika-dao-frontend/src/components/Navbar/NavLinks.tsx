@@ -46,7 +46,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
    * - If `className` is in the list of restricted views, the link is hidden.
    */
   const shouldShowRegisterDao = ![
-    "navbarFunder",
     "CreateProposal",
     "DaoRegister",
     "SuperAdmin",
@@ -81,7 +80,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
          * show the "FUNDER" link that redirects to the Funder page.
          */
         <li className="three">
-          <Link to={'/Funder'}>FUNDER</Link>
+          <Link to={'/Browse'}>Browse</Link>
         </li>
       ) : className === "SuperAdmin" ? (
         /**

@@ -8,7 +8,7 @@ import JifunzeElimu from "./pages/JifunzeElimu";
 import DaoRegistration from "./pages/DaoRegistration";
 import CreateProposal from "./pages/CreateProposal";
 import JoinPlatform from "./pages/JoinPlatform";
-import Funder from "./pages/Funder";
+import Browse from "./pages/Browse";
 import DaoProfile from "./pages/DaoProfile";
 import SuperAdmin from "./pages/SuperAdmin";
 import ViewProposal from "./pages/ViewProposal";
@@ -63,7 +63,7 @@ const App: React.FC = () => {
             />
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
             <Route path="/TestConnection" element={<TestConnection />} />
-            <Route path="/Funder" element={<Funder />} />
+            <Route path="/Browse" element={<Browse />} />
             <Route
               path="/DaoProfile/:daoMultiSigAddr"
               element={<DaoProfile />}

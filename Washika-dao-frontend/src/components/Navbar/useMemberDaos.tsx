@@ -39,7 +39,6 @@ const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
           `http://${baseUrl}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
         );
         const data = await response.json();
-        console.log("Fetched DAOs:", data);
         if (data.daos) {
           setDaos(data.daos);
           dispatch(setUserDaos(data.daos));
