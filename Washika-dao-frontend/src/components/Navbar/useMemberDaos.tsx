@@ -7,6 +7,7 @@ import { Dao } from "../../utils/Types";
 
 interface UseMemberDaosResult {
   daos: Dao[];
+  memberExists: boolean;
 }
 
 /**
@@ -22,12 +23,14 @@ const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
     (state: RootState) => state.userDaos.daos
   ) as Dao[];
   const [daos, setDaos] = useState<Dao[]>(storedDaos || []);
+  const [memberExists, setMemberExists] = useState<boolean>(false);
 
   useEffect(() => {
     if (!memberAddr) return;
     // If DAOs are already in Redux, use them.
     if (storedDaos && storedDaos.length > 0) {
       setDaos(storedDaos);
+      setMemberExists(true);
       return;
     }
     const fetchDaos = async () => {
@@ -42,6 +45,7 @@ const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
           dispatch(setUserDaos(data.daos));
         } else {
           setDaos([]);
+          setMemberExists(false);
         }
       } catch (error) {
         console.error("Failed to fetch DAOs:", error);
@@ -51,7 +55,7 @@ const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
     fetchDaos();
   }, [dispatch, memberAddr, storedDaos]);
 
-  return { daos };
+  return { daos, memberExists };
 };
 
 export default useMemberDaos;

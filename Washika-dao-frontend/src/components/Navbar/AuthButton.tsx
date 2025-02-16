@@ -9,6 +9,7 @@ import { inAppWallet } from "thirdweb/wallets"; // Import Account type and inApp
 import { useEffect } from "react";
 import { RootState } from "../../redux/store";
 import { login } from "../../redux/auth/authSlice";
+import useMemberDaos from "./useMemberDaos";
 
 /**
  * Creates a Thirdweb client instance for handling authentication and blockchain interactions.
@@ -60,6 +61,54 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
     }
   }, [dispatch, address]);
 
+  const { memberExists } = useMemberDaos(address || "");
+
+  /**
+   * Determines whether to show the "Member Profile" button based on the user's role.
+   *
+   * @remarks
+   * - If `className` belongs to certain predefined roles, the profile button is hidden.
+   */
+  const shouldShowMemberProfile = ![
+    "DaoProfile",
+    "navbarOwner",
+    "joinPlatformNav",
+    "SuperAdmin",
+    "navbarDaoMember",
+  ].includes(className);
+
+  /**
+   * Renders the "Profile" button if the user is authenticated and eligible to see it.
+   *
+   * @returns {JSX.Element} Profile button if conditions are met.
+   */
+  // decide which button to display based on whether the member exists in the backend.
+  if (address && shouldShowMemberProfile) {
+    return memberExists ? (
+      <button onClick={() => navigate(`/MemberProfile/${address}`)}>
+        Profile
+      </button>
+    ) : (
+      <button onClick={() => navigate("/Funder")}>
+        Browse
+      </button>
+    );
+  }
+
+  /**
+   * Renders a "Notifications" button for `SuperAdmin` users.
+   *
+   * @returns {JSX.Element} Notifications button if the user is a SuperAdmin.
+   */
+  if (className === "SuperAdmin") {
+    return (
+      <button onClick={() => dispatch(toggleNotificationPopup())}>
+        Notifications
+      </button>
+    );
+  }
+
+
   /**
    * Custom theme configuration for the `ConnectButton`.
    *
@@ -89,48 +138,6 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
     }),
   ];
 
-  /**
-   * Determines whether to show the "Member Profile" button based on the user's role.
-   *
-   * @remarks
-   * - If `className` belongs to certain predefined roles, the profile button is hidden.
-   */
-  const shouldShowMemberProfile = ![
-    "DaoProfile",
-    "navbarOwner",
-    "joinPlatformNav",
-    "SuperAdmin",
-    "navbarDaoMember",
-  ].includes(className);
-
-  /**
-   * Renders the "Profile" button if the user is authenticated and eligible to see it.
-   *
-   * @returns {JSX.Element} Profile button if conditions are met.
-   */
-
-
-  // Render Profile button if user is logged in and shouldShowMemberProfile is true
-  if (address && shouldShowMemberProfile) {
-    return (
-      <button onClick={() => navigate(`/MemberProfile/${address}`)}>
-        Profile
-      </button>
-    );
-  }
-
-  /**
-   * Renders a "Notifications" button for `SuperAdmin` users.
-   *
-   * @returns {JSX.Element} Notifications button if the user is a SuperAdmin.
-   */
-  if (className === "SuperAdmin") {
-    return (
-      <button onClick={() => dispatch(toggleNotificationPopup())}>
-        Notifications
-      </button>
-    );
-  }
 
   /**
    * Renders the `ConnectButton` for users who are not yet authenticated.

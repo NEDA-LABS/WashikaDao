@@ -63,7 +63,7 @@ const App: React.FC = () => {
             />
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
             <Route path="/TestConnection" element={<TestConnection />} />
-            <Route path="/Funder/:memberAddr" element={<Funder />} />
+            <Route path="/Funder" element={<Funder />} />
             <Route
               path="/DaoProfile/:daoMultiSigAddr"
               element={<DaoProfile />}
