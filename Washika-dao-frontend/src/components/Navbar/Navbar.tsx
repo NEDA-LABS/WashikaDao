@@ -1,5 +1,5 @@
 // Import necessary dependencies from React, React Router, and Thirdweb
-import { useState, useEffect, useRef } from "react"; // React hooks for state and side effects.
+import { useState, useEffect } from "react"; // React hooks for state and side effects.
 import { useNavigate } from "react-router-dom"; // Hook for programmatic navigation.
 import { useActiveAccount } from "thirdweb/react"; // Hook for fetching the currently active blockchain account.
 
@@ -8,6 +8,13 @@ import NavLogo from "./NavLogo"; // Logo component for the navigation bar.
 import MobileMenuButton from "./MobileMenuButton"; // Component for toggling the mobile menu.
 import NavLinks from "./NavLinks"; // Component containing navigation links.
 import PopupNotification from "./PopupNotification"; // Component for displaying pop-up notifications.
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import { login, logout } from "../../redux/auth/authSlice";
+import useDaoNavigation, { NavigationMode } from "./useDaoNavigation";
+import useMemberDaos from "./useMemberDaos";
+import DaoSelectionPopup from "./DaoSelectionPopup";
+import { Dao, DaoRoleEnum } from "../../utils/Types";
 
 /**
  * Interface defining the props for the `NavBar` component.
@@ -31,20 +38,24 @@ interface NavBarProps {
  * - Redirects the user to the homepage if no account is found.
  * - Manages user authentication state in `localStorage`.
  */
-const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
+const NavBar: React.FC<NavBarProps> = ({
+  className,
+}): JSX.Element => {
   const navigate = useNavigate(); // Hook for navigation.
+  const dispatch = useDispatch();
   const activeAccount = useActiveAccount(); // Retrieves the currently active blockchain account.
-
-  const [address, setAddress] = useState<string>(() => {
-    return localStorage.getItem("address") || "";
-  });
-
+  const address = useSelector((state: RootState) => state.auth.address);
   // State to manage the mobile menu's open/close status.
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   // State to control the visibility of a pop-up notification.
-  const [showPopup, setShowPopup] = useState<boolean>(false);
-  const hasLoggedIn = useRef(!!address);
+  const [showPopupNotification, setShowPopupNotification] =
+    useState<boolean>(false);
+
+  // We'll store the currently selected DAO's multiSigAddr.
+  const [currentDaoMultiSigAddr, setCurrentDaoMultiSigAddr] = useState<
+    string | null
+  >(null);
 
   /**
    * Effect: Store the active account address in `localStorage` when it changes.
@@ -52,55 +63,58 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    * @remarks
    * - Converts the address to lowercase before storing for consistency.
    */
-  // useEffect(() => {
-  //   if (activeAccount?.address) {
-  //     const lowerCaseAddress = activeAccount.address.toLowerCase();
-  //     if (lowerCaseAddress !== address) {
-  //       localStorage.setItem("address", lowerCaseAddress);
-  //       setAddress(lowerCaseAddress);
-  //       hasLoggedIn.current = true;
-  //     }
-  //   } else if (hasLoggedIn.current) {
-  //     logout();
-  //   }
-  // // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [activeAccount]);
-
   useEffect(() => {
     if (activeAccount?.address) {
       const lowerCaseAddress = activeAccount.address.toLowerCase();
-      setAddress(lowerCaseAddress);
-      localStorage.setItem("address", lowerCaseAddress);
-      hasLoggedIn.current = true;
-    } else if (hasLoggedIn.current) {
-      logout();
+      if (lowerCaseAddress !== address) {
+        dispatch(login(lowerCaseAddress));
+      }
+    } else if (address) {
+      dispatch(logout());
+      navigate("/", { replace: true });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeAccount]); // Depend only on `activeAccount`
-  
-  useEffect(() => {
-    if (activeAccount?.address) {
-      setAddress(activeAccount.address.toLowerCase());
-      localStorage.setItem("address", activeAccount.address.toLowerCase());
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Runs only once on mount
-  
+  }, [activeAccount, address, dispatch, navigate]);
 
-  const logout = () => {
-    hasLoggedIn.current = false;
-    localStorage.removeItem("address");
-    localStorage.removeItem("token");
-    navigate("/", { replace: true });
+  // Fetch DAOs for the current member using the custom hook.
+  const { daos } = useMemberDaos(address || "");
+
+  // If no DAOs were found, we'll hide the DAO Tool Kit link.
+  const showDaoToolKit = daos && daos.length > 0;
+
+  // Helper: Compute the navigation mode based on fetched DAOs.
+  const computeNavigationMode = (daos: Dao[]): NavigationMode => {
+    // Check if any DAO has an admin role.
+    const adminExists = daos.some(
+      (dao) =>
+        dao.role &&
+        (dao.role === DaoRoleEnum.CHAIRPERSON ||
+          dao.role === DaoRoleEnum.TREASURER ||
+          dao.role === DaoRoleEnum.SECRETARY)
+    );
+    return adminExists ? "admin" : "member";
   };
 
-  /**
-   * Effect: If no active blockchain account is detected, log the user out.
-   *
-   * @remarks
-   * - Removes authentication data from `localStorage` and redirects the user to the homepage.
-   */
+  // Compute mode from the fetched DAOs.
+  const computedMode = computeNavigationMode(daos);
 
+  // Use the navigation hook to filter DAOs based on the provided mode.
+  const { showPopup, filteredDaos, navigateToDao } = useDaoNavigation(
+    daos,
+    computedMode
+  );
+
+  // When filteredDaos changes, if there's exactly one DAO and no current selection, set it.
+  useEffect(() => {
+    if (filteredDaos.length === 1 && !currentDaoMultiSigAddr) {
+      setCurrentDaoMultiSigAddr(filteredDaos[0].daoMultiSigAddr);
+    }
+  }, [filteredDaos, currentDaoMultiSigAddr]);
+
+  // Handler for DAO selection from the popup.
+  const handleDaoSelection = (dao: Dao) => {
+    setCurrentDaoMultiSigAddr(dao.daoMultiSigAddr);
+    navigateToDao(dao);
+  };
 
   /**
    * Handles clicks on the "Register DAO" link.
@@ -114,16 +128,13 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    */
   const handleRegisterDaoLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const address = localStorage.getItem("address");
-    if (address) {
+    const storedAddress = localStorage.getItem("address");
+    if (storedAddress) {
       navigate("/DaoRegistration");
     } else {
       alert("Click on Connect to log in or create an account first");
     }
   };
-
-  // Assign the active account address to `daoMultiSigAddr`, or set it to `null` if no account is found.
-  const daoMultiSigAddr = localStorage.getItem("address");
 
   /**
    * Handles clicks on the "DAO Toolkit" link.
@@ -135,14 +146,21 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    * - Shows a pop-up notification instead.
    * - Navigates to the SuperAdmin dashboard if an address is available.
    */
-  const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (!daoMultiSigAddr) {
+    // Handler for the "DAO Tool Kit" link.
+    const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
       e.preventDefault();
-      setShowPopup(true);
-    } else {
-      navigate(`/SuperAdmin/${daoMultiSigAddr}`);
-    }
-  };
+      if (filteredDaos.length === 1) {
+        // If exactly one DAO qualifies, navigate immediately.
+        navigateToDao(filteredDaos[0]);
+      } else if (filteredDaos.length > 1) {
+        // If multiple DAOs qualify, the popup will be shown via the hook.
+        // (You can optionally add additional logic here if needed.)
+      } else {
+        // If no matching DAO is found, show a notification.
+        setShowPopupNotification(true);
+      }
+    };
+  
 
   return (
     <nav className={className}>
@@ -159,16 +177,24 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
       <NavLinks
         className={className}
         isOpen={isMenuOpen}
-        daoMultiSigAddr={daoMultiSigAddr} // Passes the DAO multi-signature address.
-        handleDaoToolKitClick={handleDaoToolKitClick} // Click handler for the DAO toolkit link.
         handleRegisterDaoLink={handleRegisterDaoLink} // Click handler for the DAO registration link.
+        handleDaoToolKitClick={handleDaoToolKitClick}
+        showDaoToolKit={showDaoToolKit}
       />
 
       {/* Popup Notification for Users Without DAO Multi-Signature Address */}
       <PopupNotification
-        showPopup={showPopup}
-        closePopup={() => setShowPopup(false)}
+        showPopup={showPopupNotification}
+        closePopup={() => setShowPopupNotification(false)}
       />
+
+      {showPopup && (
+        <DaoSelectionPopup
+          daos={filteredDaos}
+          onSelect={handleDaoSelection}
+          onClose={() => {}}
+        />
+      )}
     </nav>
   );
 };

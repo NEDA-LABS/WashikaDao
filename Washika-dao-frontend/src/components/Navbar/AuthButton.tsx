@@ -3,10 +3,12 @@ import { ConnectButton, lightTheme } from "thirdweb/react"; // Import the Connec
 import { arbitrumSepolia } from "thirdweb/chains"; // Import the Arbitrum Sepolia testnet configuration.
 import { useNavigate } from "react-router-dom"; // Import useNavigate for programmatic navigation.
 import { createThirdwebClient } from "thirdweb"; // Import the function to create a Thirdweb client.
-import { useDispatch } from "react-redux"; // Import useDispatch to dispatch actions in Redux.
+import { useDispatch, useSelector } from "react-redux"; // Import useDispatch to dispatch actions in Redux.
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice"; // Import the Redux action to toggle the notification popup.
 import { inAppWallet } from "thirdweb/wallets"; // Import Account type and inAppWallet for authentication methods.
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { RootState } from "../../redux/store";
+import { login } from "../../redux/auth/authSlice";
 
 /**
  * Creates a Thirdweb client instance for handling authentication and blockchain interactions.
@@ -47,25 +49,16 @@ interface AuthButtonProps {
 const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
   const navigate = useNavigate(); // Hook for navigating between pages.
   const dispatch = useDispatch(); // Hook for dispatching Redux actions.
-  // State to track the member address
-  const [memberAddr, setMemberAddr] = useState<string | null>(
-    localStorage.getItem("address")
-  );
+  const address = useSelector((state: RootState) => state.auth.address); // Get the logged-in address from Redux.
 
-  // Ensure memberAddr stays updated on storage changes
+
+  // Sync Redux state with localStorage on load.
   useEffect(() => {
-    const updateAddress = () => {
-      const storedAddress = localStorage.getItem("address");
-      if (storedAddress) {
-        setMemberAddr(storedAddress);
-      }
-    };
-
-    window.addEventListener("storage", updateAddress);
-    return () => {
-      window.removeEventListener("storage", updateAddress);
-    };
-  }, []);
+    const storedAddress = localStorage.getItem("address");
+    if (storedAddress && storedAddress !== address) {
+      dispatch(login(storedAddress));
+    }
+  }, [dispatch, address]);
 
   /**
    * Custom theme configuration for the `ConnectButton`.
@@ -115,13 +108,12 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
    *
    * @returns {JSX.Element} Profile button if conditions are met.
    */
-  // Check if user is logged in
-  const isLoggedIn = !!memberAddr;
+
 
   // Render Profile button if user is logged in and shouldShowMemberProfile is true
-  if (isLoggedIn && shouldShowMemberProfile) {
+  if (address && shouldShowMemberProfile) {
     return (
-      <button onClick={() => navigate(`/MemberProfile/${memberAddr}`)}>
+      <button onClick={() => navigate(`/MemberProfile/${address}`)}>
         Profile
       </button>
     );

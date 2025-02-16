@@ -14,10 +14,10 @@ import AuthButton from "./AuthButton"; // Import the authentication button compo
  */
 interface NavLinksProps {
   className: string;
-  daoMultiSigAddr: string | null;
   isOpen: boolean;
-  handleDaoToolKitClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
   handleRegisterDaoLink: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  handleDaoToolKitClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  showDaoToolKit: boolean;
 }
 
 /**
@@ -34,10 +34,10 @@ interface NavLinksProps {
  */
 const NavLinks: React.FC<NavLinksProps> = ({
   className,
-  daoMultiSigAddr,
   isOpen,
-  handleDaoToolKitClick,
   handleRegisterDaoLink,
+  handleDaoToolKitClick,
+  showDaoToolKit,
 }) => {
   /**
    * Determines whether the "Open Dao" link should be shown.
@@ -74,21 +74,21 @@ const NavLinks: React.FC<NavLinksProps> = ({
         <Link to="/Blogs">EducationHUB</Link>
       </li>
 
-      {/* Conditional rendering of different navigation links based on navbar classnames */}
+      {/* Conditional rendering of different navigation links based on dao multiSigAddr */}
       {className === "DaoProfile" || className === "navbarProposal" ? (
         /**
          * If the user is viewing a DAO profile or proposal-related page,
          * show the "FUNDER" link that redirects to the Funder page.
          */
         <li className="three">
-          <Link to={`/Funder/${daoMultiSigAddr}`}>FUNDER</Link>
+          <Link to={'/Funder'}>FUNDER</Link>
         </li>
       ) : className === "SuperAdmin" ? (
         /**
          * If the user is a SuperAdmin, show a "Create Proposal" link.
          */
         <li className="three">
-          <Link to={`/CreateProposal/${daoMultiSigAddr || ""}`}>
+          <Link to={'/CreateProposal'}>
             Create Proposal
           </Link>
         </li>
@@ -97,14 +97,13 @@ const NavLinks: React.FC<NavLinksProps> = ({
          * For all other users, show the "DAO Tool Kit" link.
          * - Calls `handleDaoToolKitClick` when clicked.
          */
-        <li className="three">
-          <Link
-            to={`/DaoProfile/${daoMultiSigAddr || ""}`}
-            onClick={handleDaoToolKitClick}
-          >
-            DAO Tool Kit
-          </Link>
-        </li>
+        showDaoToolKit && (
+          <li className="three">
+            <Link to="" onClick={handleDaoToolKitClick}>
+              DAO Tool Kit
+            </Link>
+          </li>
+        )
       )}
 
       {/* Authentication button, which handles login and profile navigation */}

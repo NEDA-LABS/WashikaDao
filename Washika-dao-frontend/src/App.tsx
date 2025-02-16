@@ -80,7 +80,7 @@ const App: React.FC = () => {
               path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"
               element={<ViewProposal />}
             />
-            <Route path="/MemberProfile/:memberAddr" element={<MemberProfile />} />
+            <Route path="/MemberProfile/:address" element={<MemberProfile />} />
             <Route path="/Owner/:address" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
             <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />

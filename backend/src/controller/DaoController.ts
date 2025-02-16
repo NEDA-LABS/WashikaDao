@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Dao } from "../entity/Dao";
+import { MemberDetails } from "../entity/MemberDetails";
 import AppDataSource from "../data-source";
 import { CreateDaoAdmins } from "./DaoMembershipController";
 
@@ -128,6 +129,44 @@ export async function GetAllDaosInPlatform(req: Request, res: Response) {
     return res.status(500).json({ error: "Error retrieving DAO list" });
   }
 }
+
+
+
+
+export async function GetMemberDaos(req: Request, res: Response) {
+  const { memberAddr } = req.query;
+  if (!memberAddr || typeof memberAddr !== "string") {
+    return res.status(400).json({ error: "Missing or invalid memberAddr query parameter." });
+  }
+  try {
+    const memberRepository = AppDataSource.getRepository(MemberDetails);
+    const member = await memberRepository.findOne({
+      where: { memberAddr },
+      relations: ["daos", "daoRoles", "daoRoles.dao"],
+    });
+    if (!member) {
+      return res.status(404).json({ error: "Member not found." });
+    }
+    // For each DAO, find the member’s role using the daoRoles relation.
+    const daos = member.daos.map((dao) => {
+      const roleEntry = member.daoRoles.find(
+        (dr) => dr.dao.daoId === dao.daoId
+      );
+      return {
+        daoMultiSigAddr: dao.daoMultiSigAddr,
+        daoName: dao.daoName,
+        role: roleEntry ? roleEntry.role : null,
+      };
+    });
+    return res.status(200).json({ daos });
+  } catch (error) {
+    console.error("Error retrieving member DAOs:", error);
+    return res.status(500).json({ error: "Error retrieving member DAOs." });
+  }
+}
+
+
+
 
 /**
  * Retrieves the details of a DAO (Decentralized Autonomous Organization) based on the provided multi-signature address.

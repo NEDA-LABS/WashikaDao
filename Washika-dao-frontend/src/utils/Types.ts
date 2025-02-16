@@ -91,3 +91,19 @@ export interface IVoteDetails {
   proposalOwner: Address;
   voteType: string;
 }
+
+// src/types/daoTypes.ts
+export enum DaoRoleEnum {
+  CHAIRPERSON = "Chairperson",
+  SECRETARY = "Secretary",
+  TREASURER = "Treasurer",
+  MEMBER = "Member",
+  FUNDER = "Funder",
+}
+
+export interface Dao {
+  daoMultiSigAddr: string;
+  daoName: string;
+  role: DaoRoleEnum | null;
+}
+

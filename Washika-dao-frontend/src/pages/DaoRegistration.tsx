@@ -9,6 +9,8 @@ import { useDaoForm } from "../hooks/useDaoForm";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { useCompletedSteps } from "../hooks/useCompletedSteps";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -40,8 +42,7 @@ import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const token = localStorage.getItem("token") ?? "";
-  const currUsrAcc = localStorage.getItem("address");
+  const address = useSelector((state: RootState) => state.auth.address);
   const { formData, setFormData, handleChange, handleFileChange } = useDaoForm();
   const { members, currentMember, handleMemberChange, handleAddAndInviteMember } = useMemberManagement();
   const completedSteps = useCompletedSteps();
@@ -55,7 +56,7 @@ const DaoRegistration: React.FC = () => {
     //  alert("MultiSig Address is required");
     //   return;
     // }
-    if (!currUsrAcc) {
+    if (address) {
       alert("Member Address is required");
       return;
     }
@@ -83,7 +84,6 @@ const DaoRegistration: React.FC = () => {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
-            Authorization: token,
           },
           body: JSON.stringify(combinedData), // Send combined data
         });
@@ -111,7 +111,7 @@ const DaoRegistration: React.FC = () => {
   return (
     <>
       <NavBar className={"DaoRegister"} />
-      {currUsrAcc ? ( // Only show form if user is logged in
+      {address ? ( // Only show form if user is logged in
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
