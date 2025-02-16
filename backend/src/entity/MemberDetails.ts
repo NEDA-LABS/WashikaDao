@@ -16,6 +16,9 @@ export class MemberDetails {
   @PrimaryGeneratedColumn()
   memberId: number;
 
+  @Column({ unique: true })
+  memberCustomIdentifier: string;
+
   @Column({ length: 50 })
   firstName?: string;
 
@@ -34,7 +37,10 @@ export class MemberDetails {
   nationalIdNo?: string;
 
   @Column({ nullable: true })
-  @Index("IDX_MEMBER_ADDRESS_UNIQUE", { unique: true, where: "memberAddr IS NOT NULL" })
+  @Index("IDX_MEMBER_ADDRESS_UNIQUE", {
+    unique: true,
+    where: "memberAddr IS NOT NULL",
+  })
   memberAddr?: string;
 
   //many to many relation where one member can have multiple daos and one dao can have multiple members

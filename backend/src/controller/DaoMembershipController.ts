@@ -1,3 +1,4 @@
+import  nodemailer from 'nodemailer';
 import { Request, Response } from "express";
 import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
 import AppDataSource from "../data-source";
@@ -21,7 +22,7 @@ const roleRepository = AppDataSource.getRepository(DaoRole);
  * Finds or creates a member based on unique identifiers.
  */
 async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
-  const { memberAddr, email, phoneNumber, nationalIdNo, firstName, lastName } =
+  const { memberAddr, email, phoneNumber, nationalIdNo, firstName, lastName, memberCustomIdentifier } =
     data;
 
   let member = await memberDetailsRepository.findOne({
@@ -31,6 +32,7 @@ async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
 
   if (!member) {
     member = memberDetailsRepository.create({
+      memberCustomIdentifier,
       firstName,
       lastName,
       email,
@@ -71,6 +73,45 @@ async function assignMembershipDetails(
   ]);
 }
 
+
+/**
+ * Helper function to send an invitation email.
+ */
+async function sendInviteEmail(email: string, firstName: string, memberIdentifier: string) {
+  // Configure the transporter (using Gmail in this example)
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  });
+
+  const platformUrl = "https://washikadao.xyz/";
+  const inviteLink = `${platformUrl}?member=${memberIdentifier}`;
+
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to: email,
+    subject: "Welcome to Wanakikundi",
+    text: `
+      Hi ${firstName},
+
+      You have been added to Wanakikundi. Welcome aboard!
+
+      Click the link below to complete your registration:
+      ${inviteLink}
+
+      If you didn’t request this, please ignore this email.
+
+      Best,
+      WashikaDao Team
+    `,
+  };
+
+  await transporter.sendMail(mailOptions);
+}
+
 /**
  * Creates the initial owner of a DAO, setting them as a InitialDaoOwner.
  *
@@ -86,7 +127,7 @@ async function assignMembershipDetails(
  * - If the owner is successfully created, it returns a 201 status code with a success message.
  * - If any error occurs, it returns a 500 status code with the error message.
  */
-export async function CreateDaoAdmins(dao: Dao, members: any[]) {
+export async function CreateDaoAdmins(dao: Dao, members: any[], creatorAddress: string) {
   if (!Array.isArray(members) || members.length < 3) {
     throw new Error(
       "A DAO must have exactly three admins: Chairperson, Treasurer, and Secretary."
@@ -109,8 +150,36 @@ export async function CreateDaoAdmins(dao: Dao, members: any[]) {
   try {
     await Promise.all(
       members.map(async (member) => {
+        if (member.memberRole === DaoRoleEnum.CHAIRPERSON) {
+          member.memberAddr = creatorAddress;
+        }
         const user = await findOrCreateMember(member, dao);
         await assignMembershipDetails(dao, user, member.memberRole);
+
+
+        // For Treasurer and Secretary, if no address is provided, send an invite email.
+        if (
+          (member.memberRole === DaoRoleEnum.TREASURER || member.memberRole === DaoRoleEnum.SECRETARY) &&
+          (!user.memberAddr || user.memberAddr === "")
+        ) {
+          try {
+            await sendInviteEmail(
+              member.email,
+              member.firstName,
+              member.memberCustomIdentifier
+            );
+          } catch (emailError) {
+            console.error(
+              `Failed to send invite email to ${member.email}: `,
+              emailError
+            );
+            // Optionally, you could:
+            // - Record this failure in a log or a DB table for later retries
+            // - Notify the DAO creator that one or more invites failed
+            // - Return an error response to abort the admin creation
+            // In this example, we simply log the error and continue.
+          }
+        }
       })
     );
 

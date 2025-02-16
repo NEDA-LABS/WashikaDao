@@ -132,7 +132,7 @@ const NavBar: React.FC<NavBarProps> = ({
     if (storedAddress) {
       navigate("/DaoRegistration");
     } else {
-      alert("Click on Connect to log in or create an account first");
+      alert("Click on Connect to log in");
     }
   };
 

@@ -17,12 +17,12 @@ export const useDaoForm = () => {
     daoImageIpfsHash: "",
     daoRegDocs: "",
     daoMultiSigAddr: memberAddr || "",
-    multiSigPhoneNo: 4645656567,
+    multiSigPhoneNo: "",
     kiwango: 0,
-    accountNo: 0,
-    nambaZaHisa: "",
-    kiasiChaHisa: "",
-    interestOnLoans: "",
+    accountNo: "",
+    nambaZaHisa: 0,
+    kiasiChaHisa: 0,
+    interestOnLoans: 0,
     daoTxHash: daoTxHash || "",
   });
 

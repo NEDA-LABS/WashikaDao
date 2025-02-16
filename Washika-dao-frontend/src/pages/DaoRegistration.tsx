@@ -44,7 +44,7 @@ const DaoRegistration: React.FC = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const address = useSelector((state: RootState) => state.auth.address);
   const { formData, setFormData, handleChange, handleFileChange } = useDaoForm();
-  const { members, currentMember, handleMemberChange, handleAddAndInviteMember } = useMemberManagement();
+  const { members, currentMember, handleMemberChange, handleAddMember } = useMemberManagement();
   const completedSteps = useCompletedSteps();
   const { handleCreateDao } = useDaoTransaction();
 
@@ -56,7 +56,9 @@ const DaoRegistration: React.FC = () => {
     //  alert("MultiSig Address is required");
     //   return;
     // }
-    if (address) {
+    console.log('This is the address',address);
+    
+    if (!address) {
       alert("Member Address is required");
       return;
     }
@@ -80,7 +82,7 @@ const DaoRegistration: React.FC = () => {
         };
 
         // Send combined data to the backend API
-        const response = await fetch(`http://${baseUrl}/DaoGenesis/CreateDao`, {
+        const response = await fetch(`http://${baseUrl}/DaoGenesis/CreateDao?currentAddr=${address}`, {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
@@ -170,12 +172,12 @@ const DaoRegistration: React.FC = () => {
                   label: "Initial Amount",
                   type: "number",
                   name: "kiwango",
-                  value: formData.kiwango,
+                  value: formData.kiwango === 0 ? "" : formData.kiwango,
                   onChange: handleChange,
                 },
                 {
                   label: "Bank account number",
-                  type: "number",
+                  type: "text",
                   name: "accountNo",
                   value: formData.accountNo,
                   onChange: handleChange,
@@ -214,23 +216,23 @@ const DaoRegistration: React.FC = () => {
                   fields: [
                     {
                       label: "Number of SHARES",
-                      type: "text",
+                      type: "number",
                       name: "nambaZaHisa",
-                      value: formData.nambaZaHisa,
+                      value: formData.nambaZaHisa === 0 ? "" : formData.nambaZaHisa,
                       onChange: handleChange,
                     },
                     {
                       label: "Amount per SHARE",
-                      type: "text",
+                      type: "number",
                       name: "kiasiChaHisa",
-                      value: formData.kiasiChaHisa,
+                      value: formData.kiasiChaHisa === 0 ? "" : formData.kiasiChaHisa ,
                       onChange: handleChange,
                     },
-                    {
+                    {   
                       label: "Loan Interest",
-                      type: "text",
+                      type: "number",
                       name: "interestOnLoans",
-                      value: formData.interestOnLoans,
+                      value: formData.interestOnLoans === 0 ? "" : formData.interestOnLoans,
                       placeholder: "%",
                       onChange: handleChange,
                     },
@@ -270,7 +272,7 @@ const DaoRegistration: React.FC = () => {
             <MemberForm
               currentMember={currentMember}
               onMemberChange={handleMemberChange}
-              onAddAndInviteMember={handleAddAndInviteMember}
+              onAddMember={handleAddMember}
             />
 
             <center>

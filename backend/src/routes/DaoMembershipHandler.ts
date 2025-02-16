@@ -2,7 +2,6 @@ import express, { Request, Response } from "express";
 const router = express.Router();
 
 import { GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
-import { handleSendInvite } from "../controller/EmailController";
 import { handleSendInviteSMS } from "../controller/SMSController";
 import { Authenticator }  from "../utils/Authenticator/Authenticator";
 
@@ -42,12 +41,6 @@ router.patch('/AddMember', Authenticator, (req: Request, res: Response) =>  { Wh
     */
 router.patch('/BlackListMember', Authenticator, (req: Request, res: Response) => { BlackListMember(req, res)});
 /**
-    * INFO: Sends an invite email to a member to Join Dao
-    * @Params - Multisig of the Dao
-    * @request Body - Details of the Member to issue invite to must include the email
-    * @returns - success code & or email not in body or Dao not found or internal server Error
-    */
-router.post('/InviteMemberEmail', Authenticator,  (req: Request, res: Response) => handleSendInvite(req, res));
 /**
     * INFO: Sends an invite to Join Dao via SMS
     * @Params - Multisig of the Dao

@@ -51,7 +51,6 @@ export async function CreateDao(req: Request, res: Response) {
     !daoOverview ||
     !daoRegDocs ||
     !daoMultiSigAddr ||
-    !multiSigPhoneNo ||
     !kiwango ||
     !accountNo ||
     !nambaZaHisa ||
@@ -96,8 +95,14 @@ export async function CreateDao(req: Request, res: Response) {
     });
 
     await daoRepository.save(dao);
-    // Assign admins (Chairperson, Treasurer, Secretary)
-    await CreateDaoAdmins(dao, members);
+    // Retrieve the creator's address from the query parameters
+    const currentAddress = req.query.currentAddr;
+    if (!currentAddress || typeof currentAddress !== "string") {
+      return res.status(400).json({ error: "Missing or invalid currentAddr query parameter." });
+    }
+
+    // Pass the creator's address to the CreateDaoAdmins function
+    await CreateDaoAdmins(dao, members, currentAddress);
     res.status(201).json({
       message: "DAO and admins (Chairperson, Treasurer, Secretary) created successfully",
       daoMultiSigAddr: dao.daoMultiSigAddr,

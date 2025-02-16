@@ -11,7 +11,7 @@ interface Member {
 interface MemberFormProps {
   currentMember: Member;
   onMemberChange: (field: keyof Member, value: string) => void; // Function to handle changes to member fields
-  onAddAndInviteMember: () => void; // Function to add a new member and send  an invite to the member
+  onAddMember: () => void; // Function to add a new member and send  an invite to the member
 }
 /**
  * MemberForm is a React functional component that renders a form for managing
@@ -32,7 +32,7 @@ interface MemberFormProps {
 const MemberForm: React.FC<MemberFormProps> = ({
   currentMember, // Destructure props
   onMemberChange,
-  onAddAndInviteMember,
+  onAddMember,
 }) => {
   return (
     <div className="wanakikundi">
@@ -79,6 +79,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
                   <option value="" disabled>
                     Role
                   </option>
+                  <option value="Chairperson">Chairperson</option>
                   <option value="Treasurer">Treasurer</option>
                   <option value="Secretary">Secretary</option>
                 </select>
@@ -103,21 +104,14 @@ const MemberForm: React.FC<MemberFormProps> = ({
             <div className="input">
               <label>Identification Number</label>
               <input
-                type="number"
+                type="text"
                 value={currentMember.nationalIdNo}
                 onChange={(e) => onMemberChange("nationalIdNo", e.target.value)}
               />
             </div>
             <div className="buttons">
-              {/* <button type="button" className="button-1" onClick={onAddMember}>
+              <button type="button" className="button-1" onClick={onAddMember}>
                 Add another member
-              </button> */}
-              <button
-                type="button"
-                className="button-2"
-                onClick={onAddAndInviteMember}
-              >
-                Send Invite
               </button>
             </div>
           </div>

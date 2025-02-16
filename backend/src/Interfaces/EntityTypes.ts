@@ -50,6 +50,7 @@ export interface IDao {
 
 export interface IMemberDetails {
     memberId?: number;
+    memberCustomIdentifier: string;
     firstName?: string;
     lastName?: string;
     phoneNumber?: string;

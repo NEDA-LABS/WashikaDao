@@ -1,16 +1,5 @@
 import { Address } from "thirdweb";
 
-export type DaoCreationFormInputs = {
-  _daoName: string;
-  _location: string;
-  _targetAudience: string;
-  _daoTitle: string;
-  _daoDescription: string;
-  _daoOverview: string;
-  _daoImageUrlHash: string;
-  _multiSigPhoneNo: number;
-};
-
 export interface IBackendDaoCreation {
   daoName: string;
   daoLocation: string;
@@ -21,12 +10,12 @@ export interface IBackendDaoCreation {
   daoImageIpfsHash: string;
   daoRegDocs: string;
   daoMultiSigAddr: string;
-  multiSigPhoneNo: number;
+  multiSigPhoneNo: string;
   kiwango: number;
-  accountNo: number;
-  nambaZaHisa: string;
-  kiasiChaHisa: string;
-  interestOnLoans: string;
+  accountNo: string;
+  nambaZaHisa: number;       
+  kiasiChaHisa: number;        
+  interestOnLoans: number; 
   daoTxHash: string;
 }
 
@@ -50,16 +39,18 @@ export interface IBackendDaoMember {
   nationalIdNo: string;
   memberRole: string;
   memberCustomIdentifier: string;
+  memberAddr?: string;
 }
 
 export interface IDaoMemberDetails {
   memberName: string;
   emailAddress: string;
-  phoneNumber: number;
-  nationalId: number;
+  phoneNumber: string;
+  nationalId: string;
   role: string;
   userAddress: Address;
   multiSigPhoneNo: number | bigint;
+  memberCustomIdentifier: string;
 }
 
 export type daoCreationTxResult = {

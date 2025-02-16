@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { IBackendDaoMember } from "../utils/Types.ts";
-import { baseUrl } from "../utils/backendComm.ts";
 
 export const useMemberManagement = () => {
   const [members, setMembers] = useState<IBackendDaoMember[]>([]);
@@ -25,40 +24,10 @@ export const useMemberManagement = () => {
     return Object.values(member).every((value) => value);
   };
 
-  const handleAddAndInviteMember = async () => {
+  const handleAddMember = async () => {
     if (!isValidMember(currentMember)) return;
 
     setMembers([...members, currentMember]);
-
-    try {
-      const token = localStorage.getItem("token") ?? "";
-      console.log('this is the token', token);
-      
-      const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify({
-            email: currentMember.email,
-            firstName: currentMember.firstName,
-            member: currentMember.memberCustomIdentifier,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        alert("Member added and email sent successfully.");
-      } else {
-        console.error("Failed to send email.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-
     setCurrentMember({
       firstName: "",
       lastName: "",
@@ -74,6 +43,6 @@ export const useMemberManagement = () => {
     members,
     currentMember,
     handleMemberChange,
-    handleAddAndInviteMember,
+    handleAddMember,
   };
 };
