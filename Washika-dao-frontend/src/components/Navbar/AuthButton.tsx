@@ -6,6 +6,7 @@ import { createThirdwebClient } from "thirdweb"; // Import the function to creat
 import { useDispatch } from "react-redux"; // Import useDispatch to dispatch actions in Redux.
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice"; // Import the Redux action to toggle the notification popup.
 import { inAppWallet } from "thirdweb/wallets"; // Import Account type and inAppWallet for authentication methods.
+import { useEffect, useState } from "react";
 
 /**
  * Creates a Thirdweb client instance for handling authentication and blockchain interactions.
@@ -43,11 +44,28 @@ interface AuthButtonProps {
  * - Displays a "Connect" button when the user is not authenticated.
  * - Utilizes Redux to toggle the notification popup for `SuperAdmin`.
  */
-const AuthButton: React.FC<AuthButtonProps> = ({
-  className,
-}) => {
+const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
   const navigate = useNavigate(); // Hook for navigating between pages.
   const dispatch = useDispatch(); // Hook for dispatching Redux actions.
+  // State to track the member address
+  const [memberAddr, setMemberAddr] = useState<string | null>(
+    localStorage.getItem("address")
+  );
+
+  // Ensure memberAddr stays updated on storage changes
+  useEffect(() => {
+    const updateAddress = () => {
+      const storedAddress = localStorage.getItem("address");
+      if (storedAddress) {
+        setMemberAddr(storedAddress);
+      }
+    };
+
+    window.addEventListener("storage", updateAddress);
+    return () => {
+      window.removeEventListener("storage", updateAddress);
+    };
+  }, []);
 
   /**
    * Custom theme configuration for the `ConnectButton`.
@@ -78,7 +96,6 @@ const AuthButton: React.FC<AuthButtonProps> = ({
     }),
   ];
 
-  const memberAddr = localStorage.getItem("address");
   /**
    * Determines whether to show the "Member Profile" button based on the user's role.
    *
@@ -98,7 +115,11 @@ const AuthButton: React.FC<AuthButtonProps> = ({
    *
    * @returns {JSX.Element} Profile button if conditions are met.
    */
-  if (memberAddr && shouldShowMemberProfile) {
+  // Check if user is logged in
+  const isLoggedIn = !!memberAddr;
+
+  // Render Profile button if user is logged in and shouldShowMemberProfile is true
+  if (isLoggedIn && shouldShowMemberProfile) {
     return (
       <button onClick={() => navigate(`/MemberProfile/${memberAddr}`)}>
         Profile

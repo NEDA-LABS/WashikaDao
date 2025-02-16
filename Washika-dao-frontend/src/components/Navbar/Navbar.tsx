@@ -52,19 +52,40 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    * @remarks
    * - Converts the address to lowercase before storing for consistency.
    */
+  // useEffect(() => {
+  //   if (activeAccount?.address) {
+  //     const lowerCaseAddress = activeAccount.address.toLowerCase();
+  //     if (lowerCaseAddress !== address) {
+  //       localStorage.setItem("address", lowerCaseAddress);
+  //       setAddress(lowerCaseAddress);
+  //       hasLoggedIn.current = true;
+  //     }
+  //   } else if (hasLoggedIn.current) {
+  //     logout();
+  //   }
+  // // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [activeAccount]);
+
   useEffect(() => {
     if (activeAccount?.address) {
       const lowerCaseAddress = activeAccount.address.toLowerCase();
-      if (lowerCaseAddress !== address) {
-        localStorage.setItem("address", lowerCaseAddress);
-        setAddress(lowerCaseAddress);
-        hasLoggedIn.current = true;
-      }
+      setAddress(lowerCaseAddress);
+      localStorage.setItem("address", lowerCaseAddress);
+      hasLoggedIn.current = true;
     } else if (hasLoggedIn.current) {
       logout();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeAccount]);
+  }, [activeAccount]); // Depend only on `activeAccount`
+  
+  useEffect(() => {
+    if (activeAccount?.address) {
+      setAddress(activeAccount.address.toLowerCase());
+      localStorage.setItem("address", activeAccount.address.toLowerCase());
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Runs only once on mount
+  
 
   const logout = () => {
     hasLoggedIn.current = false;

@@ -18,7 +18,7 @@ import { CreateDaoAdmins } from "./DaoMembershipController";
  * - HTTP 400: If any required fields are missing in the request body.
  * - HTTP 500: If an error occurs while creating or saving the DAO and member details.
  */
-export async function CreateNewDao(req: Request, res: Response) {
+export async function CreateDao(req: Request, res: Response) {
   // Extract DAO details from request body
   const {
     daoName,
