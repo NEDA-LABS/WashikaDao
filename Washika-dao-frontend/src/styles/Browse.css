@@ -14,16 +14,20 @@
   margin-bottom: 96px;
 }
 
+.funder .first .one {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
 .funder .first .one h1 {
-  width: 1211px;
-  height: 222px;
+  max-width: 1211px;
   font-size: 76px;
   color: #ffffff;
 }
 
 .funder .first .one p {
-  width: 963px;
-  height: 139px;
+  max-width: 963px;
   font-size: 48px;
   color: #ffffff;
 }

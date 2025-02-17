@@ -17,7 +17,7 @@ import "./styles/ViewProposal.css";
 import "./styles/JoinPlatform.css";
 import "./styles/JifunzeElimu.css";
 import "./styles/Owner.css";
-import "./styles/Funder.css";
+import "./styles/Browse.css";
 import "./styles/BlogPage.css";
 import "./styles/MemberProfile.css";
 import "./styles/SuperAdmin.css";

@@ -39,7 +39,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
       <div className="left">
         <div>
           <h2>Member Information</h2>
-          <p>Add founding members information here</p>
+          <p>As the Chairperson, Add your information along with the details of the Secretary and Treasurer</p>
         </div>
         <div className="two">
           <img src="images/Group.png" alt="profile logo" />
@@ -111,7 +111,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
             </div>
             <div className="buttons">
               <button type="button" className="button-1" onClick={onAddMember}>
-                Add another member
+                Save member
               </button>
             </div>
           </div>

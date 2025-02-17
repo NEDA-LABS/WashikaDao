@@ -46,7 +46,7 @@ export class DaoJoinDate {
   @ManyToOne(() => MemberDetails, (member) => member.daoJoinDates, { onDelete: "CASCADE" }) // Track the member
   member: MemberDetails;
 
-  @Column({ type: "text", default: () => "CURRENT_TIMESTAMP" }) // Store join date
+  @Column({ type: "enum", default: () => "CURRENT_TIMESTAMP" }) // Store join date
   joinDate: Date;
 }
 
@@ -63,7 +63,7 @@ export class DaoRole {
   @ManyToOne(() => MemberDetails, (member) => member.daoRoles, { onDelete: "CASCADE" }) // Track the member
   member: MemberDetails;
 
-  @Column({ type: "text", enum: DaoRoleEnum }) // Use the enum for better validation
+  @Column({ type: "enum", enum: DaoRoleEnum }) // Use the enum for better validation
   role: DaoRoleEnum;
 }
 
