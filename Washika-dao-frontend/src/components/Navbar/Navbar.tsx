@@ -7,14 +7,10 @@ import { useActiveAccount } from "thirdweb/react"; // Hook for fetching the curr
 import NavLogo from "./NavLogo"; // Logo component for the navigation bar.
 import MobileMenuButton from "./MobileMenuButton"; // Component for toggling the mobile menu.
 import NavLinks from "./NavLinks"; // Component containing navigation links.
-import PopupNotification from "./PopupNotification"; // Component for displaying pop-up notifications.
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { login, logout } from "../../redux/auth/authSlice";
-import useDaoNavigation, { NavigationMode } from "./useDaoNavigation";
-import useMemberDaos from "./useMemberDaos";
-import DaoSelectionPopup from "./DaoSelectionPopup";
-import { Dao, DaoRoleEnum } from "../../utils/Types";
 
 /**
  * Interface defining the props for the `NavBar` component.
@@ -38,24 +34,13 @@ interface NavBarProps {
  * - Redirects the user to the homepage if no account is found.
  * - Manages user authentication state in `localStorage`.
  */
-const NavBar: React.FC<NavBarProps> = ({
-  className,
-}): JSX.Element => {
+const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   const navigate = useNavigate(); // Hook for navigation.
   const dispatch = useDispatch();
   const activeAccount = useActiveAccount(); // Retrieves the currently active blockchain account.
   const address = useSelector((state: RootState) => state.auth.address);
   // State to manage the mobile menu's open/close status.
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
-
-  // State to control the visibility of a pop-up notification.
-  const [showPopupNotification, setShowPopupNotification] =
-    useState<boolean>(false);
-
-  // We'll store the currently selected DAO's multiSigAddr.
-  const [currentDaoMultiSigAddr, setCurrentDaoMultiSigAddr] = useState<
-    string | null
-  >(null);
 
   /**
    * Effect: Store the active account address in `localStorage` when it changes.
@@ -75,47 +60,7 @@ const NavBar: React.FC<NavBarProps> = ({
     }
   }, [activeAccount, address, dispatch, navigate]);
 
-  // Fetch DAOs for the current member using the custom hook.
-  const { daos } = useMemberDaos(address || "");
-
-  // If no DAOs were found, we'll hide the DAO Tool Kit link.
-  const showDaoToolKit = daos && daos.length > 0;
-
-  // Helper: Compute the navigation mode based on fetched DAOs.
-  const computeNavigationMode = (daos: Dao[]): NavigationMode => {
-    // Check if any DAO has an admin role.
-    const adminExists = daos.some(
-      (dao) =>
-        dao.role &&
-        (dao.role === DaoRoleEnum.CHAIRPERSON ||
-          dao.role === DaoRoleEnum.TREASURER ||
-          dao.role === DaoRoleEnum.SECRETARY)
-    );
-    return adminExists ? "admin" : "member";
-  };
-
-  // Compute mode from the fetched DAOs.
-  const computedMode = computeNavigationMode(daos);
-
-  // Use the navigation hook to filter DAOs based on the provided mode.
-  const { showPopup, filteredDaos, navigateToDao } = useDaoNavigation(
-    daos,
-    computedMode
-  );
-
-  // When filteredDaos changes, if there's exactly one DAO and no current selection, set it.
-  useEffect(() => {
-    if (filteredDaos.length === 1 && !currentDaoMultiSigAddr) {
-      setCurrentDaoMultiSigAddr(filteredDaos[0].daoMultiSigAddr);
-    }
-  }, [filteredDaos, currentDaoMultiSigAddr]);
-
-  // Handler for DAO selection from the popup.
-  const handleDaoSelection = (dao: Dao) => {
-    setCurrentDaoMultiSigAddr(dao.daoMultiSigAddr);
-    navigateToDao(dao);
-  };
-
+ 
   /**
    * Handles clicks on the "Register DAO" link.
    *
@@ -146,21 +91,6 @@ const NavBar: React.FC<NavBarProps> = ({
    * - Shows a pop-up notification instead.
    * - Navigates to the SuperAdmin dashboard if an address is available.
    */
-    // Handler for the "DAO Tool Kit" link.
-    const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-      e.preventDefault();
-      if (filteredDaos.length === 1) {
-        // If exactly one DAO qualifies, navigate immediately.
-        navigateToDao(filteredDaos[0]);
-      } else if (filteredDaos.length > 1) {
-        // If multiple DAOs qualify, the popup will be shown via the hook.
-        // (You can optionally add additional logic here if needed.)
-      } else {
-        // If no matching DAO is found, show a notification.
-        setShowPopupNotification(true);
-      }
-    };
-  
 
   return (
     <nav className={className}>
@@ -178,23 +108,7 @@ const NavBar: React.FC<NavBarProps> = ({
         className={className}
         isOpen={isMenuOpen}
         handleRegisterDaoLink={handleRegisterDaoLink} // Click handler for the DAO registration link.
-        handleDaoToolKitClick={handleDaoToolKitClick}
-        showDaoToolKit={showDaoToolKit}
       />
-
-      {/* Popup Notification for Users Without DAO Multi-Signature Address */}
-      <PopupNotification
-        showPopup={showPopupNotification}
-        closePopup={() => setShowPopupNotification(false)}
-      />
-
-      {showPopup && (
-        <DaoSelectionPopup
-          daos={filteredDaos}
-          onSelect={handleDaoSelection}
-          onClose={() => {}}
-        />
-      )}
     </nav>
   );
 };

@@ -43,8 +43,13 @@ const DaoRegistration: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const address = useSelector((state: RootState) => state.auth.address);
-  const { formData, setFormData, handleChange, handleFileChange } = useDaoForm();
   const { members, currentMember, handleMemberChange, handleAddMember } = useMemberManagement();
+  // Find the chairperson member (if any)
+  const chairperson = members.find((member) => member.memberRole === "Chairperson");
+  const chairpersonPhone = chairperson ? chairperson.phoneNumber : "";
+  
+  // Pass the chairpersonPhone into the hook
+  const { formData, setFormData, handleChange, handleFileChange } = useDaoForm(chairpersonPhone);
   const completedSteps = useCompletedSteps();
   const { handleCreateDao } = useDaoTransaction();
 
@@ -98,7 +103,7 @@ const DaoRegistration: React.FC = () => {
           console.log("DAO created successfully", data);
           const daoMultiSigAddr = data.daoMultiSigAddr; // Extract multi-sig address from response
           console.log(daoMultiSigAddr);
-          navigate(`/SuperAdmin/${daoMultiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
+          navigate(`/SuperAdmin/${daoTxHash}`); // Navigate to the DAO profile pagehandleSubmit(event);
         } else {
           console.error("Error creating DAO:", data.message);
         }

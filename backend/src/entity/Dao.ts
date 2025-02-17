@@ -90,7 +90,4 @@ export class Dao {
 
   @OneToMany(() => DaoRole, (daoRole) => daoRole.dao, { cascade: true })
   daoRoles: DaoRole[];
-
-  @Column("json")
-  daoMultiSigs: string[]; //array of multisigs
 }

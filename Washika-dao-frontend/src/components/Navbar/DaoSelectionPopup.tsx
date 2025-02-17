@@ -15,9 +15,9 @@ const DaoSelectionPopup: React.FC<DaoSelectionPopupProps> = ({ daos, onSelect, o
         <h3>Select a DAO</h3>
         <ul>
           {daos.map((dao) => (
-            <li key={dao.daoMultiSigAddr}>
+            <li key={dao.daoTxHash}>
               <button onClick={() => onSelect(dao)}>
-                {dao.daoName} ({dao.daoMultiSigAddr})
+                {dao.daoName} ({dao.daoTxHash})
               </button>
             </li>
           ))}

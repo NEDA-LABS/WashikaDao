@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { uploadFileToCloudinary } from "../DaoRegistration/Cloudinary.tsx";
 import { IBackendDaoCreation } from "../utils/Types.ts";
-import { useDaoTransaction } from "./useDaoTransaction.ts";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/store.ts";
 
-export const useDaoForm = () => {
-  const memberAddr = localStorage.getItem("address");
-  const { daoTxHash } = useDaoTransaction();
-
+export const useDaoForm = (chairpersonPhone: string = "") => {
+  const memberAddr = useSelector((state: RootState) => state.auth.address);
   const [formData, setFormData] = useState<IBackendDaoCreation>({
     daoName: "",
     daoLocation: "",
@@ -17,22 +16,22 @@ export const useDaoForm = () => {
     daoImageIpfsHash: "",
     daoRegDocs: "",
     daoMultiSigAddr: memberAddr || "",
-    multiSigPhoneNo: "",
+    multiSigPhoneNo: chairpersonPhone, // Set initial value from parameter
     kiwango: 0,
     accountNo: "",
     nambaZaHisa: 0,
     kiasiChaHisa: 0,
     interestOnLoans: 0,
-    daoTxHash: daoTxHash || "",
+    daoTxHash: "",
   });
 
+  // Update multiSigPhoneNo if chairpersonPhone changes.
   useEffect(() => {
     setFormData((prev) => ({
       ...prev,
-      daoTxHash: daoTxHash || "",
+      multiSigPhoneNo: chairpersonPhone,
     }));
-  }, [daoTxHash]);
-  
+  }, [chairpersonPhone]);
 
   const handleChange = (
     e: React.ChangeEvent<

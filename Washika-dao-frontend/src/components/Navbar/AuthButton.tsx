@@ -9,7 +9,7 @@ import { inAppWallet } from "thirdweb/wallets"; // Import Account type and inApp
 import { useEffect } from "react";
 import { RootState } from "../../redux/store";
 import { login } from "../../redux/auth/authSlice";
-import useMemberDaos from "./useMemberDaos";
+import {useMemberDaos} from "./useMemberDaos";
 
 /**
  * Creates a Thirdweb client instance for handling authentication and blockchain interactions.

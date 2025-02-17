@@ -65,7 +65,7 @@ const App: React.FC = () => {
             <Route path="/TestConnection" element={<TestConnection />} />
             <Route path="/Browse" element={<Browse />} />
             <Route
-              path="/DaoProfile/:daoMultiSigAddr"
+              path="/DaoProfile/:daoTxHash"
               element={<DaoProfile />}
             />
             <Route

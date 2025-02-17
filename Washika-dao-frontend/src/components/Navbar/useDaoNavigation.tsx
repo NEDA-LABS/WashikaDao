@@ -17,9 +17,8 @@ const ADMIN_ROLES = [
 // For member navigation, we may want only the "Member" role.
 const MEMBER_ROLES = [DaoRoleEnum.MEMBER, DaoRoleEnum.FUNDER];
 
-const useDaoNavigation = (daos: Dao[], mode: NavigationMode) => {
+export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
   const navigate = useNavigate();
-  const [showPopup, setShowPopup] = useState(false);
   const [filteredDaos, setFilteredDaos] = useState<Dao[]>([]);
 
   useEffect(() => {
@@ -34,29 +33,16 @@ const useDaoNavigation = (daos: Dao[], mode: NavigationMode) => {
     );
     setFilteredDaos(matchingDaos);
 
-    if (matchingDaos.length === 1) {
-      // Auto-navigate if exactly one DAO qualifies.
-      navigate(
-        mode === "admin"
-          ? `/SuperAdmin/${matchingDaos[0].daoMultiSigAddr}`
-          : `/DaoProfile/${matchingDaos[0].daoMultiSigAddr}`
-      );
-    } else if (matchingDaos.length > 1) {
-      // Show the popup if more than one DAO qualifies.
-      setShowPopup(true);
-    }
-  }, [daos, mode, navigate]);
+  }, [daos, mode]);
 
   const navigateToDao = (dao: Dao) => {
-    setShowPopup(false);
+    console.log("Navigating to DAO:", dao.daoTxHash);
     if (mode === "admin") {
-      navigate(`/SuperAdmin/${dao.daoMultiSigAddr}`);
+      navigate(`/SuperAdmin/${dao.daoTxHash}`);
     } else {
-      navigate(`/DaoProfile/${dao.daoMultiSigAddr}`);
+      navigate(`/DaoProfile/${dao.daoTxHash}`);
     }
   };
 
-  return { showPopup, filteredDaos, navigateToDao };
+  return { filteredDaos, navigateToDao };
 };
-
-export default useDaoNavigation;

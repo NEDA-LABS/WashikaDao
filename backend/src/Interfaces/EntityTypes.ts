@@ -45,7 +45,6 @@ export interface IDao {
     daoStatus?: IDaoStatus[];  // Relationship with DaoStatus entity
     daoJoinDates?: IDaoJoinDate[];  // Relationship with DaoJoinDate entity
     daoRoles?: IDaoRole[];  // Relationship with DaoRole entity
-    daoMultiSigs: string[];
 }
 
 export interface IMemberDetails {

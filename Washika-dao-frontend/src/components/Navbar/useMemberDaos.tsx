@@ -17,7 +17,7 @@ interface UseMemberDaosResult {
  * @param memberAddr - The blockchain address of the member.
  * @returns An object with the DAOs.
  */
-const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
+export function useMemberDaos(memberAddr: string): UseMemberDaosResult {
   const dispatch = useDispatch();
   const storedDaos = useSelector(
     (state: RootState) => state.userDaos.daos
@@ -56,5 +56,3 @@ const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
 
   return { daos, memberExists };
 };
-
-export default useMemberDaos;

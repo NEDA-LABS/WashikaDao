@@ -51,9 +51,9 @@ export const useDaoTransaction = () => {
     }
 
     return new Promise<string | null>((resolve) => {
-      console.log('Sending transaction...');
-      alert('Sending transaction...');
-      
+      console.log("Sending transaction...");
+      alert("Sending transaction...");
+
       sendTx(_createDaotx, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
@@ -77,6 +77,26 @@ export const useDaoTransaction = () => {
   const handleCreateDao = async (
     formData: IBackendDaoCreation
   ): Promise<string | null> => {
+    // If we're testing and want to skip the onchain transaction,
+    // simply return a dummy transaction hash.
+    function generateDummyTxHash(): string {
+      // Generate a 64-character hexadecimal string (like a real Ethereum tx hash)
+      const randomHex = Array.from({ length: 64 }, () =>
+        Math.floor(Math.random() * 16).toString(16)
+      ).join("");
+      return `0x${randomHex}`;
+    }
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    if (import.meta.env.VITE_SKIP_ONCHAIN === "true") {
+      const dummyTxHash = generateDummyTxHash();
+      console.log(
+        "Skipping onchain transaction; using dummy tx hash:",
+        dummyTxHash
+      );
+      return dummyTxHash;
+    }
+
     try {
       //Converting multisigPhoneNo to BigInt with default value
       const multisigPhoneNoBigInt = BigInt(formData.multiSigPhoneNo || "0");
@@ -90,7 +110,6 @@ export const useDaoTransaction = () => {
         const txHash = await sendCreateDaoTx(finalTx);
         console.log("Transaction sent successfully");
         return txHash;
-        
       } else {
         console.log("Looks like transaction failed");
         return null;

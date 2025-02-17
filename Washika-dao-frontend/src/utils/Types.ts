@@ -93,7 +93,7 @@ export enum DaoRoleEnum {
 }
 
 export interface Dao {
-  daoMultiSigAddr: string;
+  daoTxHash: string;
   daoName: string;
   role: DaoRoleEnum | null;
 }

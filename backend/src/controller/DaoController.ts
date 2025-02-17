@@ -158,7 +158,7 @@ export async function GetMemberDaos(req: Request, res: Response) {
         (dr) => dr.dao.daoId === dao.daoId
       );
       return {
-        daoMultiSigAddr: dao.daoMultiSigAddr,
+        daoTxHash: dao.daoTxHash,
         daoName: dao.daoName,
         role: roleEntry ? roleEntry.role : null,
       };

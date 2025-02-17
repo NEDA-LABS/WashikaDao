@@ -1,6 +1,14 @@
 // Import necessary dependencies
 import { Link } from "react-router-dom"; // Import Link for client-side navigation.
 import AuthButton from "./AuthButton"; // Import the authentication button component.
+import { Dao, DaoRoleEnum } from "../../utils/Types";
+import { NavigationMode, useDaoNavigation } from "./useDaoNavigation";
+import { useMemberDaos } from "./useMemberDaos";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store";
+import PopupNotification from "./PopupNotification"; // Component for displaying pop-up notifications.
+import { useState } from "react";
+import DaoSelectionPopup from "./DaoSelectionPopup";
 
 /**
  * Interface defining the props for the `NavLinks` component.
@@ -16,8 +24,6 @@ interface NavLinksProps {
   className: string;
   isOpen: boolean;
   handleRegisterDaoLink: (e: React.MouseEvent<HTMLAnchorElement>) => void;
-  handleDaoToolKitClick: (e: React.MouseEvent<HTMLAnchorElement>) => void;
-  showDaoToolKit: boolean;
 }
 
 /**
@@ -36,8 +42,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
   className,
   isOpen,
   handleRegisterDaoLink,
-  handleDaoToolKitClick,
-  showDaoToolKit,
 }) => {
   /**
    * Determines whether the "Open Dao" link should be shown.
@@ -45,6 +49,54 @@ const NavLinks: React.FC<NavLinksProps> = ({
    * @remarks
    * - If `className` is in the list of restricted views, the link is hidden.
    */
+  const address = useSelector((state: RootState) => state.auth.address);
+  // Fetch DAOs for the current member using the custom hook.
+  const { daos } = useMemberDaos(address || "");
+  // If no DAOs were found, we'll hide the DAO Tool Kit link.
+  const showDaoToolKit = daos && daos.length > 0;
+
+  // State to control the visibility of a pop-up notification.
+  const [showPopupNotification, setShowPopupNotification] =
+    useState<boolean>(false);
+    const [showDaoPopup, setShowDaoPopup] = useState(false);
+
+  // Helper: Compute the navigation mode based on fetched DAOs.
+  const computeNavigationMode = (daos: Dao[]): NavigationMode => {
+    // Check if any DAO has an admin role.
+    const adminExists = daos.some(
+      (dao) =>
+        dao.role &&
+        (dao.role === DaoRoleEnum.CHAIRPERSON ||
+          dao.role === DaoRoleEnum.TREASURER ||
+          dao.role === DaoRoleEnum.SECRETARY)
+    );
+    return adminExists ? "admin" : "member";
+  };
+
+  // Compute mode from the fetched DAOs.
+  const computedMode = computeNavigationMode(daos);
+
+  // Use the navigation hook to filter DAOs based on the provided mode.
+  const { filteredDaos, navigateToDao } = useDaoNavigation(
+    daos,
+    computedMode
+  );
+
+  // Handler for the "DAO Tool Kit" link.
+  const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    if (filteredDaos.length === 1) {
+      // If exactly one DAO qualifies, navigate immediately.
+
+      navigateToDao(filteredDaos[0]);
+    } else if (filteredDaos.length > 1) {
+      setShowDaoPopup(true);
+    } else {
+      // If no matching DAO is found, show a notification.
+      setShowPopupNotification(true);
+    }
+  };
+
   const shouldShowRegisterDao = ![
     "CreateProposal",
     "DaoRegister",
@@ -80,16 +132,14 @@ const NavLinks: React.FC<NavLinksProps> = ({
          * show the "FUNDER" link that redirects to the Funder page.
          */
         <li className="three">
-          <Link to={'/Browse'}>Browse</Link>
+          <Link to={"/Browse"}>Browse</Link>
         </li>
       ) : className === "SuperAdmin" ? (
         /**
          * If the user is a SuperAdmin, show a "Create Proposal" link.
          */
         <li className="three">
-          <Link to={'/CreateProposal'}>
-            Create Proposal
-          </Link>
+          <Link to={"/CreateProposal"}>Create Proposal</Link>
         </li>
       ) : (
         /**
@@ -107,6 +157,23 @@ const NavLinks: React.FC<NavLinksProps> = ({
 
       {/* Authentication button, which handles login and profile navigation */}
       <AuthButton className={className} />
+
+      {showDaoPopup && (
+        <DaoSelectionPopup
+          daos={filteredDaos}
+          onSelect={(dao: Dao) => {
+            navigateToDao(dao);
+            setShowDaoPopup(false);
+          }}
+          onClose={() => setShowDaoPopup(false)}
+        />
+      )}
+
+      {/* Popup Notification for Users Without DAO Multi-Signature Address */}
+      <PopupNotification
+        showPopup={showPopupNotification}
+        closePopup={() => setShowPopupNotification(false)}
+      />
     </ul>
   );
 };
