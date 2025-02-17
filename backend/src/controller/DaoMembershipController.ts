@@ -12,6 +12,7 @@ import {
 } from "../entity/DaoMembershipRelations";
 import { MemberDetails } from "../entity/MemberDetails";
 
+// Repositories for accessing various entities in the database
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);
 const daoRepository = AppDataSource.getRepository(Dao);
 const daoStatusRepository = AppDataSource.getRepository(DaoStatus);
@@ -19,7 +20,11 @@ const joinDateRepository = AppDataSource.getRepository(DaoJoinDate);
 const roleRepository = AppDataSource.getRepository(DaoRole);
 
 /**
- * Finds or creates a member based on unique identifiers.
+ * Finds an existing member or creates a new member based on unique identifiers.
+ * 
+ * @param data - The data containing member details to find or create.
+ * @param dao - The DAO to associate the member with.
+ * @returns - The saved member details.
  */
 async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
   const {
@@ -32,12 +37,14 @@ async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
     memberCustomIdentifier,
   } = data;
 
+  // Try to find an existing member with the given identifiers
   let member = await memberDetailsRepository.findOne({
     where: [{ memberAddr }, { email }, { phoneNumber }, { nationalIdNo }],
     relations: ["daos"],
   });
 
   if (!member) {
+    // Create a new member if none found
     member = memberDetailsRepository.create({
       memberCustomIdentifier,
       firstName,
@@ -51,6 +58,7 @@ async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
   } else if (
     !member.daos.some((d) => d.daoMultiSigAddr === dao.daoMultiSigAddr)
   ) {
+    // If the member doesn't belong to the DAO, add the DAO to their list
     member.daos.push(dao);
   }
 
@@ -58,13 +66,18 @@ async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
 }
 
 /**
- * Assigns a role, status, and join date to a DAO member.
+ * Assigns a role, membership status, and join date to a member of a DAO.
+ * 
+ * @param dao - The DAO the member is being added to.
+ * @param member - The member being added to the DAO.
+ * @param role - The role the member will assume in the DAO.
  */
 async function assignMembershipDetails(
   dao: Dao,
   member: MemberDetails,
   role: DaoRoleEnum
 ) {
+  // Save the role, status, and join date information for the member
   await Promise.all([
     roleRepository.save(roleRepository.create({ dao, member, role })),
     daoStatusRepository.save(
@@ -81,7 +94,12 @@ async function assignMembershipDetails(
 }
 
 /**
- * Helper function to send an invitation email.
+ * Sends an invitation email to a member to join the DAO platform.
+ * 
+ * @param email - The email address of the member to invite.
+ * @param firstName - The first name of the member.
+ * @param memberIdentifier - The unique identifier for the member.
+ * @param daoName - The name of the DAO the member is being invited to.
  */
 async function sendInviteEmail(
   email: string,
@@ -128,19 +146,15 @@ async function sendInviteEmail(
 }
 
 /**
- * Creates the initial owner of a DAO, setting them as a InitialDaoOwner.
- *
- * @param req - The Express request object containing the body with owner details.
- * @param res - The Express response object to send the HTTP response.
- *
+ * Creates the initial admins of a DAO, assigning them specific roles such as Chairperson, Treasurer, and Secretary.
+ * 
+ * @param dao - The DAO being created.
+ * @param members - The list of members to be assigned to the DAO.
+ * @param creatorAddress - The address of the DAO creator.
+ * @returns - The list of successfully created members.
+ * 
  * @remarks
- * This function is responsible for creating the initial owner of a DAO with InitialDaoOwner privileges.
- * It retrieves necessary information from the request body, validates required fields, and creates the owner.
- *
- * @returns
- * - If required fields are missing, it returns a 400 status code with an error message.
- * - If the owner is successfully created, it returns a 201 status code with a success message.
- * - If any error occurs, it returns a 500 status code with the error message.
+ * This function ensures that a DAO has exactly three members with specific roles.
  */
 export async function CreateDaoAdmins(
   dao: Dao,
@@ -195,11 +209,6 @@ export async function CreateDaoAdmins(
               `Failed to send invite email to ${member.email}: `,
               emailError
             );
-            // Optionally, you could:
-            // - Record this failure in a log or a DB table for later retries
-            // - Notify the DAO creator that one or more invites failed
-            // - Return an error response to abort the admin creation
-            // In this example, we simply log the error and continue.
           }
         }
       })
@@ -209,6 +218,7 @@ export async function CreateDaoAdmins(
   } catch (error) {
     console.error("Error creating DAO admins:", error);
 
+    // Handle database constraint errors for fields such as email, phone number, etc.
     if (error instanceof QueryFailedError) {
       if (error.message.includes("phoneNumber"))
         return "The phone number is already in use.";
@@ -459,14 +469,14 @@ export async function BlackListMember(
  * Retrieves all members associated with a specific DAO.
  *
  * @remarks
- * This function retrieves the multiSigAddr from the request parameters and fetches all members associated with the DAO.
- * It checks if the required parameter is provided and fetches the DAO details using the multiSigAddr.
+ * This function retrieves the daoTxHash from the request parameters and fetches all members associated with the DAO.
+ * It checks if the required parameter is provided and fetches the DAO details using the daoTxHash.
  * If the DAO is found, it returns a list of members associated with the DAO.
  * If any error occurs during the process, it returns an appropriate error message.
  *
  * @param {Request} req - The Express request object.
  * @param {Response} res - The Express response object.
- * @param {string} req.params.multiSigAddr - The multiSigAddr of the DAO for which to retrieve members.
+ * @param {string} req.params.daoTxHash - The daoTxHash of the DAO for which to retrieve members.
  *
  * @returns {Response}
  * - If the required parameter is missing, it returns a 400 status code with an error message.

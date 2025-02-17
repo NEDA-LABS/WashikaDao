@@ -6,7 +6,7 @@ import { CreateDaoAdmins } from "./DaoMembershipController";
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
- * It also creates a new member detail for the creator of the DAO.
+ * It also creates new member details for the admins of the DAO.
  * @param req - The Express request object containing the DAO and member details in the request body.
  * @param res - The Express response object to send back the HTTP response.
  *
@@ -140,6 +140,19 @@ export async function GetAllDaosInPlatform(req: Request, res: Response) {
   }
 }
 
+/**
+ * Retrieves the list of DAOs associated with a specific member and their roles within those DAOs.
+ * 
+ * @param req - The Express request object containing the member address query parameter.
+ * @param res - The Express response object used to send the response.
+ * @returns - A JSON response containing the DAOs and roles associated with the member.
+ * 
+ * @remarks
+ * This function retrieves the DAOs that a member is associated with and the specific roles they hold
+ * within those DAOs. It expects a query parameter `memberAddr` to identify the member and fetch the data
+ * from the database. If the member is found, it returns the associated DAOs along with the roles.
+ * If the member is not found or any errors occur, appropriate error responses are sent.
+ */
 export async function GetMemberDaos(req: Request, res: Response) {
   const { memberAddr } = req.query;
   if (!memberAddr || typeof memberAddr !== "string") {
