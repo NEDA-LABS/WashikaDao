@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { baseUrl } from "../utils/backendComm";
 import { IBackendDaoCreation } from "../utils/Types";
@@ -48,12 +48,13 @@ const SuperAdmin: React.FC = () => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token") ?? ""; 
   const navigate = useNavigate();
-  const daoMultiSigAddr = localStorage.getItem("address"); //TODO - Change to the generated multiSig
+  const { daoTxHash } = useParams<{ daoTxHash: string }>();
+  
   useEffect(() => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig?daoMultiSigAddr=${daoMultiSigAddr}`,
+          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
           {
             headers: {
               Authorization: token,
@@ -62,8 +63,12 @@ const SuperAdmin: React.FC = () => {
           }
         );
         const data = await response.json();
+        console.log(data);
+        
         if (response.ok) {
           setDaoDetails(data.daoDetails);
+          setMemberCount(data.daoDetails.members.length);
+          
         } else {
           console.error("Error fetching daoDetails:", data.message);
         }
@@ -72,31 +77,8 @@ const SuperAdmin: React.FC = () => {
       }
     };
 
-    const fetchMemberCount = async () => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoMultiSigAddr=${daoMultiSigAddr}`,
-          {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setMemberCount(data.memberCount);
-        } else {
-          console.error("Error fetching member count:", data.message);
-        }
-      } catch (error) {
-        console.error("Failed to fetch member count:", error);
-      }
-    };
-
-    if (daoMultiSigAddr) {
+    if (daoTxHash) {
       fetchDaoDetails();
-      fetchMemberCount();
     }
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
@@ -109,7 +91,7 @@ const SuperAdmin: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [daoMultiSigAddr, token]);
+  }, [daoTxHash, token]);
   // console.log(daoDetails);
 
   // Handle role change
@@ -167,7 +149,6 @@ const SuperAdmin: React.FC = () => {
       phoneNumber,
       nationalIdNo,
       memberRole: role,
-      daoMultiSigAddr,
       daos: "",
       // guaranter,
     };
@@ -237,13 +218,13 @@ const SuperAdmin: React.FC = () => {
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
               <p className="email">
-                {daoMultiSigAddr
+                {daoDetails?.daoMultiSigAddr
                   ? isSmallScreen
-                    ? `${daoMultiSigAddr.slice(
+                    ? `${daoDetails?.daoMultiSigAddr.slice(
                         0,
                         14
-                      )}...${daoMultiSigAddr.slice(-9)}`
-                    : `${daoMultiSigAddr}`
+                      )}...${daoDetails?.daoMultiSigAddr.slice(-9)}`
+                    : `${daoDetails?.daoMultiSigAddr}`
                   : "N/A"}
               </p>
             </div>
@@ -284,7 +265,7 @@ const SuperAdmin: React.FC = () => {
             <button onClick={() => setActiveSection("mikopo")}>
               Loan Details
             </button>
-            <button onClick={() => navigate(`/UpdateDao/${daoMultiSigAddr}`)}>
+            <button onClick={() => navigate(`/UpdateDao/${daoTxHash}`)}>
               Edit Settings
             </button>
           </div>
@@ -300,7 +281,7 @@ const SuperAdmin: React.FC = () => {
               <button
                 className="create"
                 onClick={() =>
-                  navigate(`/CreateProposal/${daoMultiSigAddr || ""}`)
+                  navigate(`/CreateProposal/${daoDetails?.daoMultiSigAddr || ""}`)
                 }
               >
                 Create a Proposal

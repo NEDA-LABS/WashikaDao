@@ -11,9 +11,11 @@ interface Dao {
   daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
+  daoTxHash: string;
   daoMultiSigAddr: string; // Use multiSigAddr for fetching member count
   kiwango: number;
   memberCount: number; // Add memberCount field
+  members: []
 }
 /**
  * A React functional component that displays a list of DAOs (Decentralized Autonomous Organizations)
@@ -56,7 +58,6 @@ const GroupInfo: React.FC = () => {
           `http://${baseUrl}/DaoGenesis/GetAllDaos`,
           {
             headers: {
-              Authorization: token,
               "Content-Type": "application/json",
             },
           }
@@ -70,13 +71,11 @@ const GroupInfo: React.FC = () => {
         console.log("Fetched DAOs:", data);
 
         if (Array.isArray(data.daoList)) {
-          // For each DAO, fetch the member count using multiSigAddr
-          const daoWithMemberCounts = await Promise.all(
-            data.daoList.map(async (dao: Dao) => {
-              const memberCount = await fetchMemberCount(dao.daoMultiSigAddr); // Use multiSigAddr to fetch member count
-              return { ...dao, memberCount }; // Add memberCount to the DAO object
-            })
-          );
+          // Calculate member count directly from the fetched data
+          const daoWithMemberCounts = data.daoList.map((dao: Dao) => ({
+            ...dao,
+            memberCount: dao.members ? dao.members.length : 0, // Count members if they exist
+          }));
 
           setDaos(daoWithMemberCounts); // Update state with DAOs and their member counts
         } else {
@@ -84,25 +83,6 @@ const GroupInfo: React.FC = () => {
         }
       } catch (error) {
         console.error("Failed to fetch DAOs:", error);
-      }
-    };
-
-    // Fetch the member count for a given multiSigAddr
-    const fetchMemberCount = async (daoMultiSigAddr: string): Promise<number> => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoMultiSigAddr=${daoMultiSigAddr}`, {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        return response.ok ? data.memberCount : 0; // Return member count or 0 if no data
-      } catch (error) {
-        console.error("Failed to fetch member count:", error);
-        return 0; // Return 0 in case of an error
       }
     };
 
@@ -131,7 +111,7 @@ const GroupInfo: React.FC = () => {
           <div className="group" key={index}>
             {" "}
             {/* Each group's container */}
-            <Link to={`/DaoProfile/${group.daoMultiSigAddr}`}>
+            <Link to={`/DaoProfile/${group.daoTxHash}`}>
               <div className="image">
                 <img src={group.daoImageIpfsHash} alt={group.daoTitle} />
                 <div className="taarifaTop">Taarifa</div>

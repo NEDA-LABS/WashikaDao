@@ -127,7 +127,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
   // decide which button to display based on whether the member exists in the backend.
   if (address && shouldShowMemberProfile) {
     return memberExists ? (
-      <button onClick={() => navigate(`/MemberProfile/${address}`)}>
+      <button onClick={() => navigate(`/Owner/${address}`)}>
         Profile
       </button>
     ) : (

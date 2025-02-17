@@ -13,7 +13,7 @@ interface DaoDetails {
   daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
-  multiSigAddr: string;
+  daoMultiSigAddr: string;
   kiwango: number;
 }
 /**
@@ -29,9 +29,9 @@ interface DaoDetails {
  *
  * @returns A React functional component that renders the DAO's public profile page.
  */
-const PublicDaoProfile: React.FC = () => {
+const DaoProfile: React.FC = () => {
   const navigate = useNavigate();
-  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
+  const { daoTxHash } = useParams<{ daoTxHash: string }>();
 
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
@@ -43,7 +43,7 @@ const PublicDaoProfile: React.FC = () => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig?daoMultiSigAddr=${daoMultiSigAddr}`,{
+          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,{
             headers: {
               Authorization: token,
               "Content-Type": "application/json",
@@ -54,6 +54,7 @@ const PublicDaoProfile: React.FC = () => {
         if (response.ok) {
           setLoading(false);
           setDaoDetails(data.daoDetails);
+          setMemberCount(data.daoDetails.members.length);
         } else {
           console.error("Error fetching daoDetails:", data.message);
         }
@@ -62,30 +63,8 @@ const PublicDaoProfile: React.FC = () => {
       }
     };
 
-    const fetchMemberCount = async () => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoMultiSigAddr=${daoMultiSigAddr}`,{
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setMemberCount(data.memberCount);
-        } else {
-          console.error("Error fetching member count:", data.message);
-        }
-      } catch (error) {
-        console.error("Failed to fetch member count:", error);
-      }
-    };
-
-    if (daoMultiSigAddr) {
+    if (daoTxHash) {
       fetchDaoDetails();
-      fetchMemberCount();
     }
 
     const handleResize = () => {
@@ -99,11 +78,11 @@ const PublicDaoProfile: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [daoMultiSigAddr, token]);
+  }, [daoDetails?.daoMultiSigAddr, daoTxHash, token]);
   console.log(daoDetails);
 
   const handleClick = () => {
-    navigate(`/CreateProposal/${daoMultiSigAddr}`);
+    navigate(`/CreateProposal/${daoTxHash}`);
   };
 
   if (loading) {
@@ -133,13 +112,13 @@ const PublicDaoProfile: React.FC = () => {
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
               <p className="email">
-                {daoMultiSigAddr
+                {daoDetails.daoMultiSigAddr
                   ? isSmallScreen
-                    ? `${daoMultiSigAddr.slice(
+                    ? `${daoDetails.daoMultiSigAddr.slice(
                         0,
                         14
-                      )}...${daoMultiSigAddr.slice(-9)}`
-                    : `${daoMultiSigAddr}`
+                      )}...${daoDetails.daoMultiSigAddr.slice(-9)}`
+                    : `${daoDetails.daoMultiSigAddr}`
                   : "N/A"}
               </p>
             </div>
@@ -198,4 +177,4 @@ const PublicDaoProfile: React.FC = () => {
   );
 };
 
-export default PublicDaoProfile;
+export default DaoProfile;

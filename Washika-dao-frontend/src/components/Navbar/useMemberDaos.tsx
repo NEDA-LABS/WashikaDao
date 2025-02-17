@@ -3,6 +3,7 @@ import { baseUrl } from "../../utils/backendComm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setUserDaos } from "../../redux/users/userDaosSlice";
+import { setCurrentUser } from "../../redux/users/userSlice";
 import { Dao } from "../../utils/Types";
 
 interface UseMemberDaosResult {
@@ -39,9 +40,26 @@ export function useMemberDaos(memberAddr: string): UseMemberDaosResult {
           `http://${baseUrl}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
         );
         const data = await response.json();
+        console.log("Initial communication with backend", data)
+        
         if (data.daos) {
           setDaos(data.daos);
           dispatch(setUserDaos(data.daos));
+          localStorage.setItem("token", data.authCode);
+
+           // Set member details in Redux using the setCurrentUser action
+           const member = data.member;
+           if (member) {
+             dispatch(setCurrentUser({
+               memberAddr: member.memberAddr,
+               firstName: member.firstName,
+               lastName: member.lastName,
+               email: member.email,
+               phoneNumber: member.phoneNumber,
+               nationalIdNo: member.nationalIdNo,
+             }));
+             setMemberExists(true);
+           }
         } else {
           setDaos([]);
           setMemberExists(false);

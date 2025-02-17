@@ -56,11 +56,13 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
       }
     } else if (address) {
       dispatch(logout());
+
       navigate("/", { replace: true });
+    } else {
+      localStorage.removeItem("token");
     }
   }, [activeAccount, address, dispatch, navigate]);
 
- 
   /**
    * Handles clicks on the "Register DAO" link.
    *

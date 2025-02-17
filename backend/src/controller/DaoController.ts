@@ -98,13 +98,16 @@ export async function CreateDao(req: Request, res: Response) {
     // Retrieve the creator's address from the query parameters
     const currentAddress = req.query.currentAddr;
     if (!currentAddress || typeof currentAddress !== "string") {
-      return res.status(400).json({ error: "Missing or invalid currentAddr query parameter." });
+      return res
+        .status(400)
+        .json({ error: "Missing or invalid currentAddr query parameter." });
     }
 
     // Pass the creator's address to the CreateDaoAdmins function
     await CreateDaoAdmins(dao, members, currentAddress);
     res.status(201).json({
-      message: "DAO and admins (Chairperson, Treasurer, Secretary) created successfully",
+      message:
+        "DAO and admins (Chairperson, Treasurer, Secretary) created successfully",
       daoMultiSigAddr: dao.daoMultiSigAddr,
     });
   } catch (error) {
@@ -128,20 +131,21 @@ export async function GetAllDaosInPlatform(req: Request, res: Response) {
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
     // Fetch all DAOs
-    const daoList = await daoRepository.find();
+    const daoList = await daoRepository.find({
+      relations: ["members"],
+    });
     return res.status(200).json({ daoList });
   } catch (error) {
     return res.status(500).json({ error: "Error retrieving DAO list" });
   }
 }
 
-
-
-
 export async function GetMemberDaos(req: Request, res: Response) {
   const { memberAddr } = req.query;
   if (!memberAddr || typeof memberAddr !== "string") {
-    return res.status(400).json({ error: "Missing or invalid memberAddr query parameter." });
+    return res
+      .status(400)
+      .json({ error: "Missing or invalid memberAddr query parameter." });
   }
   try {
     const memberRepository = AppDataSource.getRepository(MemberDetails);
@@ -163,15 +167,14 @@ export async function GetMemberDaos(req: Request, res: Response) {
         role: roleEntry ? roleEntry.role : null,
       };
     });
-    return res.status(200).json({ daos });
+
+    const authCode = process.env.ROUTE_PROTECTOR;
+    return res.status(200).json({ daos, member, authCode });
   } catch (error) {
     console.error("Error retrieving member DAOs:", error);
     return res.status(500).json({ error: "Error retrieving member DAOs." });
   }
 }
-
-
-
 
 /**
  * Retrieves the details of a DAO (Decentralized Autonomous Organization) based on the provided multi-signature address.
@@ -191,10 +194,10 @@ export async function GetMemberDaos(req: Request, res: Response) {
  * - HTTP 404: If the DAO with the given multi-signature address is not found.
  * - HTTP 500: If an error occurs while retrieving the DAO details.
  */
-export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.query;
+export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
+  const { daoTxHash } = req.query;
 
-  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
+  if (!daoTxHash || typeof daoTxHash !== "string") {
     return res
       .status(400)
       .json({ message: "Missing or invalid daoMultiSigAddr query parameter!" });
@@ -202,7 +205,10 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
 
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
-    const daoDetails = await daoRepository.findOneBy({ daoMultiSigAddr });
+    const daoDetails = await daoRepository.findOne({
+      where: { daoTxHash },
+      relations: ["members"],
+    });
 
     if (daoDetails) {
       return res.status(200).json({
@@ -217,7 +223,7 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           daoOverview: daoDetails.daoOverview,
           daoImageIpfsHash: daoDetails.daoImageIpfsHash,
           daoRegDocs: daoDetails.daoRegDocs,
-          multiSigAddr: daoDetails.daoMultiSigAddr,
+          daoMultiSigAddr: daoDetails.daoMultiSigAddr,
           multiSigPhoneNo: daoDetails.multiSigPhoneNo,
           kiwango: daoDetails.kiwango,
           accountNo: daoDetails.accountNo,
@@ -225,6 +231,7 @@ export async function GetDaoDetailsByMultisig(req: Request, res: Response) {
           kiasiChaHisa: daoDetails.kiasiChaHisa,
           interestOnLoans: daoDetails.interestOnLoans,
           daoTxHash: daoDetails.daoTxHash,
+          members: daoDetails.members,
         },
       });
     } else {
