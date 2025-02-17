@@ -139,7 +139,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
          * If the user is a SuperAdmin, show a "Create Proposal" link.
          */
         <li className="three">
-          <Link to={"/CreateProposal"}>Create Proposal</Link>
+          <Link to={"/CreateProposal/:daoMultiSigAddr"}>Create Proposal</Link>
         </li>
       ) : (
         /**

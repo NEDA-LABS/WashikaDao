@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import { baseUrl } from "../utils/backendComm";
+import { useParams } from "react-router-dom";
 
 interface Wanachama {
   id: number;
@@ -99,19 +98,18 @@ const WanachamaList = () => {
   const itemsPerPage = 4; // Number of items per page
   const [currentPage, setCurrentPage] = useState(1);
   const [wanachamaData, setWanachamaData] = useState<Wanachama[]>([]);
-  const { daoMultiSig } = useSelector((state: RootState) => state.user);
-  const daoMultiSigAddr = daoMultiSig;
-  const token = localStorage.getItem("token");
+  const { daoTxHash } = useParams<{ daoTxHash: string }>();
+  const token = localStorage.getItem("token") ?? "";
 
   // Fetch user data when the component mounts
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`, {
+          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoTxHash=${daoTxHash}`, {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: token,
             },
           }
           
@@ -128,7 +126,7 @@ const WanachamaList = () => {
     };
 
     fetchUsers();
-  }, [daoMultiSigAddr, token]);
+  }, [daoTxHash, token]);
   console.log(wanachamaData);
   
 
@@ -147,8 +145,8 @@ const WanachamaList = () => {
   return (
     <div>
       <div className="wanachama">
-        {paginatedData.map((member) => (
-          <div className="mwanachama" key={member.id}>
+        {paginatedData.map((member, index) => (
+          <div className="mwanachama" key={index}>
             <p className="name">{member.firstName} {member.lastName}</p>
             <p className="phoneNo">{member.phoneNumber}</p>
             <button>Manage</button>

@@ -456,15 +456,15 @@ export async function GetAllMembers(
   req: Request,
   res: Response
 ): Promise<Response> {
-  const { daoMultiSigAddr } = req.query;
+  const { daoTxHash } = req.query;
 
-  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
+  if (!daoTxHash || typeof daoTxHash !== "string") {
     return res.status(400).json({ error: "Missing DAO MultiSig address." });
   }
 
   try {
     const dao = await daoRepository.findOne({
-      where: { daoMultiSigAddr },
+      where: { daoTxHash },
       relations: ["members"],
     });
 

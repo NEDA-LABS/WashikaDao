@@ -11,6 +11,7 @@ import NavLinks from "./NavLinks"; // Component containing navigation links.
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { login, logout } from "../../redux/auth/authSlice";
+import { clearCurrentUser } from "../../redux/users/userSlice";
 
 /**
  * Interface defining the props for the `NavBar` component.
@@ -60,6 +61,8 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
       navigate("/", { replace: true });
     } else {
       localStorage.removeItem("token");
+      dispatch(clearCurrentUser());
+
     }
   }, [activeAccount, address, dispatch, navigate]);
 
