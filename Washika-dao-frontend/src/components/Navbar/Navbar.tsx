@@ -113,6 +113,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
         className={className}
         isOpen={isMenuOpen}
         handleRegisterDaoLink={handleRegisterDaoLink} // Click handler for the DAO registration link.
+        toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
       />
     </nav>
   );

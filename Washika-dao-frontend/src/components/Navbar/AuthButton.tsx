@@ -31,6 +31,7 @@ const client = createThirdwebClient({
  */
 interface AuthButtonProps {
   className: string;
+  toggleMenu?: () => void;
 }
 
 /**
@@ -47,7 +48,7 @@ interface AuthButtonProps {
  * - Displays a "Connect" button when the user is not authenticated.
  * - Utilizes Redux to toggle the notification popup for `SuperAdmin`.
  */
-const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
+const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const navigate = useNavigate(); // Hook for navigating between pages.
   const dispatch = useDispatch(); // Hook for dispatching Redux actions.
   const address = useSelector((state: RootState) => state.auth.address); // Get the logged-in address from Redux.
@@ -127,11 +128,11 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
   // decide which button to display based on whether the member exists in the backend.
   if (address && shouldShowMemberProfile) {
     return memberExists ? (
-      <button onClick={() => navigate(`/MemberProfile/${address}`)}>
+      <button className="portalButton" onClick={() => navigate(`/MemberProfile/${address}`)}>
         Profile
       </button>
     ) : (
-      <button onClick={() => navigate("/Browse")}>
+      <button className="portalButton" onClick={() => navigate("/Browse")}>
         Browse
       </button>
     );
@@ -144,7 +145,11 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
    */
   if (className === "SuperAdmin") {
     return (
-      <button onClick={() => dispatch(toggleNotificationPopup())}>
+      <button className="portalButton" onClick={() => {
+        dispatch(toggleNotificationPopup());
+        // Toggle the mobile menu when notifications is clicked
+        if (toggleMenu) toggleMenu();
+      }}>
         Notifications
       </button>
     );

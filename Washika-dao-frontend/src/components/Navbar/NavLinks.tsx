@@ -9,6 +9,7 @@ import { RootState } from "../../redux/store";
 import PopupNotification from "./PopupNotification"; // Component for displaying pop-up notifications.
 import { useState } from "react";
 import DaoSelectionPopup from "./DaoSelectionPopup";
+import ReactDOM from "react-dom";
 
 /**
  * Interface defining the props for the `NavLinks` component.
@@ -24,6 +25,7 @@ interface NavLinksProps {
   className: string;
   isOpen: boolean;
   handleRegisterDaoLink: (e: React.MouseEvent<HTMLAnchorElement>) => void;
+  toggleMenu: () => void;
 }
 
 /**
@@ -42,6 +44,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
   className,
   isOpen,
   handleRegisterDaoLink,
+  toggleMenu,
 }) => {
   /**
    * Determines whether the "Open Dao" link should be shown.
@@ -103,6 +106,55 @@ const NavLinks: React.FC<NavLinksProps> = ({
     "SuperAdmin",
   ].includes(className);
 
+
+  // Define the mobile menu content that we want to render in the portal.
+  const mobileMenuContent = (
+    <ul className="nav-links open">
+      {shouldShowRegisterDao && (
+        <li>
+          <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>
+            Open Dao
+          </Link>
+        </li>
+      )}
+      <li>
+        <Link to="/Blogs">EducationHUB</Link>
+      </li>
+      {className === "DaoProfile" || className === "navbarProposal" ? (
+        <li className="three">
+          <Link to="/MarketPlace">MarketPlace</Link>
+        </li>
+      ) : className === "SuperAdmin" ? (
+        <li className="three">
+          <Link to="/CreateProposal/:daoMultiSigAddr">Create Proposal</Link>
+        </li>
+      ) : (
+        showDaoToolKit && (
+          <li className="three">
+            <Link to="" onClick={handleDaoToolKitClick}>
+              DAO Tool Kit
+            </Link>
+          </li>
+        )
+      )}
+      <AuthButton className={className} toggleMenu={toggleMenu}/>
+      {showDaoPopup && (
+        <DaoSelectionPopup
+          daos={filteredDaos}
+          onSelect={(dao: Dao) => {
+            navigateToDao(dao);
+            setShowDaoPopup(false);
+          }}
+          onClose={() => setShowDaoPopup(false)}
+        />
+      )}
+      <PopupNotification
+        showPopup={showPopupNotification}
+        closePopup={() => setShowPopupNotification(false)}
+      />
+    </ul>
+  );
+
   return (
     /**
      * Navigation menu container.
@@ -110,7 +162,8 @@ const NavLinks: React.FC<NavLinksProps> = ({
      * @remarks
      * - Uses the `isOpen` prop to toggle the "open" class, controlling visibility.
      */
-    <ul className={`nav-links ${isOpen ? "open" : ""}`}>
+    <>
+    <ul className={`nav-links ${isOpen ? "hidden" : ""}`}>
       {/* Conditionally render "Open Dao" link if the navbar classnames allows it */}
       {shouldShowRegisterDao && (
         <li>
@@ -156,7 +209,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
       )}
 
       {/* Authentication button, which handles login and profile navigation */}
-      <AuthButton className={className} />
+      <AuthButton className={className} toggleMenu={toggleMenu} />
 
       {showDaoPopup && (
         <DaoSelectionPopup
@@ -175,6 +228,14 @@ const NavLinks: React.FC<NavLinksProps> = ({
         closePopup={() => setShowPopupNotification(false)}
       />
     </ul>
+    {/* When the mobile menu is open, render it into the portal.
+          This moves it outside of the navbar’s DOM so that it can appear above the daoImage. */}
+      {isOpen &&
+        ReactDOM.createPortal(
+          mobileMenuContent,
+          document.getElementById("mobile-menu-portal") as HTMLElement
+        )}
+    </>
   );
 };
 

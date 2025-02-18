@@ -51,6 +51,7 @@ export async function CreateDao(req: Request, res: Response) {
     !daoOverview ||
     !daoRegDocs ||
     !daoMultiSigAddr ||
+    !multiSigPhoneNo ||
     !kiwango ||
     !accountNo ||
     !nambaZaHisa ||

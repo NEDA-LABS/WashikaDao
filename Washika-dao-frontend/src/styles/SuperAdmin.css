@@ -28,7 +28,7 @@ nav.SuperAdmin {
   position: absolute;
   right: 48px;
   top: clamp(48px, 8vw, 120px);
-  z-index: 2;
+  z-index: 20;
   border-radius: 10px;
   display: grid;
   grid-template-columns: 1fr 6fr 1fr;
