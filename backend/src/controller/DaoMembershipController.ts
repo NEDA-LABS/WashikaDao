@@ -163,7 +163,7 @@ export async function CreateDaoAdmins(
 ) {
   if (!Array.isArray(members) || members.length < 3) {
     throw new Error(
-      "A DAO must have exactly three admins: Chairperson, Treasurer, and Secretary."
+      "A DAO must have a Chairperson, Treasurer, and a Secretary."
     );
   }
 

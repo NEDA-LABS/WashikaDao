@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import React from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
-import { toast } from 'react-toastify';
 
 // 4 Blockchain
 import { prepareContractCall, PreparedTransaction } from "thirdweb";
@@ -182,7 +181,7 @@ const CreateProposal: React.FC = () => {
 
     return new Promise<string | null>((resolve) => {
       console.log('Sending transaction...');
-      toast.info('Transaction is being sent...');
+      alert('Transaction is being sent...');
       sendTx(_createProposaltx, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);

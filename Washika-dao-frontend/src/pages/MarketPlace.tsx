@@ -3,8 +3,8 @@ import GroupInfo from "../components/GroupInfo";
 import NavBar from "../components/Navbar/Navbar";
 import Strip from "../components/Strip";
 /*
-*@Auth policy -> Should be authenticated to access this page
-*/
+ *@Auth policy -> Should be authenticated to access this page
+ */
 /**
  * Browse component is a React functional component that renders the main interface
  * for managing DAO operations. It includes a navigation bar, a main section with
@@ -13,7 +13,7 @@ import Strip from "../components/Strip";
  *
  * @component
  * @returns {JSX.Element} The rendered component.
- * 
+ *
  * @remarks
  * - The user must be authenticated to access this page.
  * - Utilizes components: NavBar, GroupInfo, Strip, and Footer.
@@ -21,8 +21,8 @@ import Strip from "../components/Strip";
 const Browse: React.FC = () => {
   return (
     <>
-      <NavBar className={"navbarFunder"} />
-      <main className="funder">
+      <NavBar className={"navbarMarketPlace"} />
+      <main className="marketPlace">
         <section className="first">
           <div className="one">
             <h1>Seamless fund and manage your DAO operations in one place</h1>
@@ -31,15 +31,23 @@ const Browse: React.FC = () => {
 
           <div className="two">
             <div>
-              <img src="/images/searchnormal1.png" alt="search icon" width={27} height={27}/>
-              <p>Search for Projects</p>
+              <img
+                src="/images/searchnormal1.png"
+                alt="search icon"
+                width={27}
+                height={27}
+              />
+              <input
+                type="search"
+                name=""
+                id=""
+                placeholder="Search for Projects"
+              />
             </div>
             <img
+              className="arrow"
               src="/images/Vector2.png"
               alt="arrow button"
-              width={114}
-              height={48}
-              className="image"
             />
           </div>
         </section>
@@ -47,7 +55,7 @@ const Browse: React.FC = () => {
         <GroupInfo />
       </main>
       <Strip />
-      <Footer className={"funderFooter"} />
+      <Footer className={"marketPlaceFooter"} />
     </>
   );
 };

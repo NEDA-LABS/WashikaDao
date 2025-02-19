@@ -18,7 +18,7 @@ interface UseMemberDaosResult {
  * @param memberAddr - The blockchain address of the member.
  * @returns An object with the DAOs.
  */
-export function useMemberDaos(memberAddr: string): UseMemberDaosResult {
+export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
   const dispatch = useDispatch();
   const storedDaos = useSelector(
     (state: RootState) => state.userDaos.daos
@@ -40,7 +40,6 @@ export function useMemberDaos(memberAddr: string): UseMemberDaosResult {
           `http://${baseUrl}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
         );
         const data = await response.json();
-        console.log("Initial communication with backend", data)
         
         if (data.daos) {
           setDaos(data.daos);

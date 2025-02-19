@@ -1,0 +1,131 @@
+.navbarMarketPlace {
+  background-color: #4b4546;
+}
+
+.marketPlace {
+  background: linear-gradient(to bottom, #636844 13%, #282424 84%);
+  padding: clamp(120px, 16vw, 240px) 96px 0px 78px;
+}
+
+.marketPlace .first {
+  margin-bottom: 96px;
+}
+
+.marketPlace .first .one {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 64px;
+}
+
+.marketPlace .first .one h1 {
+  max-width: 1211px;
+  font-size: clamp(36px, 6vw, 76px);
+  color: #ffffff;
+}
+
+.marketPlace .first .one p {
+  max-width: 963px;
+  font-size: clamp(16px, 4vw, 48px);
+  color: #ffffff;
+}
+
+.marketPlace .first .two {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-left: -6px;
+  margin-right: 48px;
+}
+
+.marketPlace .first .two div {
+  height: 60px;
+  border-radius: 12px;
+  background-color: #d9d9d9;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+}
+
+.marketPlace .first .two input {
+  font-size: 21px;
+  font-family: "Syne", sans-serif;
+  width: 100%;
+}
+
+.marketPlace .groups {
+  position: initial;
+  flex-direction: row;
+  height: auto;
+  overflow-x: scroll;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  margin-bottom: 96px;
+}
+
+.marketPlace .group{
+  height: auto;
+} 
+
+.marketPlaceFooter {
+  background: transparent;
+}
+
+@media only screen and (max-width: 1024px) {
+  .marketPlace {
+    padding: 120px 0 0;
+  }
+
+  .marketPlace .first {
+    gap: 48px;
+    margin: 0 24px 48px;
+  }
+
+  .marketPlace .first .one p {
+    width: auto;
+    height: auto;
+    font-size: 24px;
+  }
+
+  .marketPlace .first .two {
+    margin: 0;
+  }
+
+  .marketPlace .first .two div img {
+    width: 20px;
+    height: auto;
+  }
+
+  .marketPlace .groups {
+    margin: 0 24px 64px;
+    max-height: 707px;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .marketPlace .first .two div {
+    width: 70%;
+    height: 48px;
+  }
+
+  .marketPlace .first .two input {
+    font-size: 16px;
+  }
+
+  .marketPlace .first .two img {
+    width: 57px;
+    height: auto;
+  }
+
+  .marketPlace .first .two div img {
+    width: 20px;
+    height: auto;
+  }
+
+
+  .marketPlace .group {
+    width: 100%;
+    flex-shrink: 0;
+  }
+}

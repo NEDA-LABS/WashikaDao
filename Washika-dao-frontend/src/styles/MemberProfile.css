@@ -357,7 +357,6 @@ body :has(.member) {
 }
 
 .popupp .closebtn {
-  /* border: 1px solid red */
   padding: 9px;
   color: #ffffff;
   font-size: 20px;
@@ -368,7 +367,7 @@ body :has(.member) {
   background-color: #282424;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1024px) {
   .member section.one {
     display: initial;
   }

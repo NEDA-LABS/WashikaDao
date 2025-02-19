@@ -52,4 +52,6 @@ body {
 main {
   position: relative;
   overflow-x: hidden;
+  max-width: 1920px;
+  margin: 0 auto;
 }

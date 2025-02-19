@@ -513,7 +513,7 @@ section.second::after {
   text-align: center;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1024px) {
   main.daoMain {
     padding-top: clamp(200px, 74vw, 680px);
   }

@@ -118,7 +118,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
         </li>
       )}
       <li>
-        <Link to="/Blogs">EducationHUB</Link>
+        <Link to="/Blogs">Education</Link>
       </li>
       {className === "DaoProfile" || className === "navbarProposal" ? (
         <li className="three">
@@ -175,7 +175,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
 
       {/* Static link to the Education Hub */}
       <li>
-        <Link to="/Blogs">EducationHUB</Link>
+        <Link to="/Blogs">Education</Link>
       </li>
 
       {/* Conditional rendering of different navigation links based on dao multiSigAddr */}
@@ -185,7 +185,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
          * show the "FUNDER" link that redirects to the Funder page.
          */
         <li className="three">
-          <Link to={"/Browse"}>Browse</Link>
+          <Link to={"/MarketPlace"}>MarketPlace</Link>
         </li>
       ) : className === "SuperAdmin" ? (
         /**
@@ -209,7 +209,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
       )}
 
       {/* Authentication button, which handles login and profile navigation */}
-      <AuthButton className={className} toggleMenu={toggleMenu} />
+      <AuthButton className={className}  />
 
       {showDaoPopup && (
         <DaoSelectionPopup

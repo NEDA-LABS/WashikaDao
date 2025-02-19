@@ -19,7 +19,7 @@ const NavLogo = () => {
       <Link to="/" className="logo-link">
         {/* Symbolic logo image */}
         <img 
-          src="/images/LOGO SYMBLO(1).png" // Path to the logo symbol image.
+          src="/images/LOGO SYMBLO.png" // Path to the logo symbol image.
           alt="logo" // Alternative text for accessibility.
           width="24" // Sets the width of the logo.
         />

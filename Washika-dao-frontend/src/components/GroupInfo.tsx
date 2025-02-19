@@ -68,7 +68,6 @@ const GroupInfo: React.FC = () => {
 
         // Parse JSON data safely
         const data = await response.json();
-        console.log("Fetched DAOs:", data);
 
         if (Array.isArray(data.daoList)) {
           // Calculate member count directly from the fetched data

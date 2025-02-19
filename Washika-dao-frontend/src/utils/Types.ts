@@ -92,6 +92,7 @@ export enum DaoRoleEnum {
   FUNDER = "Funder",
 }
 
+
 export interface Dao {
   daoTxHash: string;
   daoName: string;

@@ -39,7 +39,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
       <div className="left">
         <div>
           <h2>Member Information</h2>
-          <p>As the Chairperson, Add your information along with the details of the Secretary and Treasurer</p>
+          <p> Add your information as the Chairperson along with the details of the group's Secretary and Treasurer</p>
         </div>
         <div className="two">
           <img src="images/Group.png" alt="profile logo" />

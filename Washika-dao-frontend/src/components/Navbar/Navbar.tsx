@@ -9,9 +9,9 @@ import MobileMenuButton from "./MobileMenuButton"; // Component for toggling the
 import NavLinks from "./NavLinks"; // Component containing navigation links.
 
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { login, logout } from "../../redux/auth/authSlice";
-import { clearCurrentUser } from "../../redux/users/userSlice";
+import { RootState, AppDispatch } from "../../redux/store";
+import { login } from "../../redux/auth/authSlice";
+import { logoutUser } from "../../utils/auth/authThunks";
 
 /**
  * Interface defining the props for the `NavBar` component.
@@ -37,7 +37,7 @@ interface NavBarProps {
  */
 const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   const navigate = useNavigate(); // Hook for navigation.
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const activeAccount = useActiveAccount(); // Retrieves the currently active blockchain account.
   const address = useSelector((state: RootState) => state.auth.address);
   // State to manage the mobile menu's open/close status.
@@ -50,19 +50,19 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    * - Converts the address to lowercase before storing for consistency.
    */
   useEffect(() => {
+    // If activeAccount is undefined, we're still loading the connection—don’t do anything yet.
+    if (activeAccount === undefined) return;
     if (activeAccount?.address) {
       const lowerCaseAddress = activeAccount.address.toLowerCase();
       if (lowerCaseAddress !== address) {
         dispatch(login(lowerCaseAddress));
       }
     } else if (address) {
-      dispatch(logout());
+      // If activeAccount is explicitly null (after loading) and we had a stored address,
+      // then the wallet is truly disconnected and we can log out.
+      dispatch(logoutUser());
 
       navigate("/", { replace: true });
-    } else {
-      localStorage.removeItem("token");
-      dispatch(clearCurrentUser());
-
     }
   }, [activeAccount, address, dispatch, navigate]);
 

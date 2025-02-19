@@ -3,18 +3,19 @@ import { ThirdwebProvider } from "thirdweb/react";
 import { HelmetProvider } from "react-helmet-async";
 
 // Importing page components
+import Owner from "./pages/Owner";
 import HomePage from "./pages/HomePage";
 import JifunzeElimu from "./pages/JifunzeElimu";
 import DaoRegistration from "./pages/DaoRegistration";
 import CreateProposal from "./pages/CreateProposal";
 import JoinPlatform from "./pages/JoinPlatform";
-import Browse from "./pages/Browse";
+import MarketPlace from "./pages/MarketPlace.tsx";
 import DaoProfile from "./pages/DaoProfile";
+import UpdateDao from "./pages/UpdateDao";
 import SuperAdmin from "./pages/SuperAdmin";
 import ViewProposal from "./pages/ViewProposal";
 import MemberProfile from "./pages/MemberProfile";
-import Owner from "./pages/Owner";
-import UpdateDao from "./pages/UpdateDao";
+
 //Testing functionality components
 import BlogPage from "./pages/BlogPage.tsx";
 import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao.tsx";
@@ -45,7 +46,6 @@ import TestH3WebCreateDao from "./pages/TestH3WebCreateDao.tsx";
  * - The component is designed to support dynamic routing with parameters for certain paths.
  */
 const App: React.FC = () => {
-  // const chain = celoAlfajoresTestnet; // Set up testnet chain
 
   return (
     // Wrap the entire app in ThirdwebProvider
@@ -63,19 +63,10 @@ const App: React.FC = () => {
             />
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
             <Route path="/TestConnection" element={<TestConnection />} />
-            <Route path="/Browse" element={<Browse />} />
-            <Route
-              path="/DaoProfile/:daoTxHash"
-              element={<DaoProfile />}
-            />
-            <Route
-              path="/SuperAdmin/:daoTxHash"
-              element={<SuperAdmin />}
-            />
-            <Route
-              path="/UpdateDao/:daoMultiSigAddr"
-              element={<UpdateDao />}
-            />
+            <Route path="/MarketPlace" element={<MarketPlace />} />
+            <Route path="/DaoProfile/:daoTxHash" element={<DaoProfile />} />
+            <Route path="/SuperAdmin/:daoTxHash" element={<SuperAdmin />} />
+            <Route path="/UpdateDao/:daoMultiSigAddr" element={<UpdateDao />} />
             <Route
               path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"
               element={<ViewProposal />}
@@ -83,11 +74,23 @@ const App: React.FC = () => {
             <Route path="/MemberProfile/:address" element={<MemberProfile />} />
             <Route path="/Owner/:address" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route path="/TestHoleskyCreateDao" element={<TestHoleskyCreateDao />} />
-          <Route path="/TestHoleskyAddMember" element={<TestHoleskyAddMember />} />
-          <Route path="/TestHoleskyCreateProposal" element={<TestHoleskyCreateProposal />} />
-          <Route path="/TestH3WebCreateDao" element={<TestH3WebCreateDao />} />
-        </Routes>
+            <Route
+              path="/TestHoleskyCreateDao"
+              element={<TestHoleskyCreateDao />}
+            />
+            <Route
+              path="/TestHoleskyAddMember"
+              element={<TestHoleskyAddMember />}
+            />
+            <Route
+              path="/TestHoleskyCreateProposal"
+              element={<TestHoleskyCreateProposal />}
+            />
+            <Route
+              path="/TestH3WebCreateDao"
+              element={<TestH3WebCreateDao />}
+            />
+          </Routes>
         </Router>
       </HelmetProvider>
     </ThirdwebProvider>

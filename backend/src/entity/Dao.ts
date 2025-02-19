@@ -73,7 +73,6 @@ export class Dao {
   // relation where one member can belong to multiple daos and one member can own multiple daos
   // dao can have multiple members & can be owned by multiple members
   // member can have multiple daos & can be an owner of multiple daos
-  // many to many relation where one member can have multiple daos and one dao can have multiple members
   @ManyToMany(() => MemberDetails, (memberDetails) => memberDetails.daos, {
     cascade: true,
   })

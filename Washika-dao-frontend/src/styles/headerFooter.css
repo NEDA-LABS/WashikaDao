@@ -50,7 +50,7 @@ nav .three {
 }
 
 nav button, .nav-links .portalButton {
-  width: 197px;
+  width: 164px;
   height: 41px;
   color: #ffffff;
   background-color: #c8954b;
@@ -160,7 +160,7 @@ footer img {
   margin-top: -72px;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1024px) {
   nav {
     height: 84px;
     padding: 16px;

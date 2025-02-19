@@ -112,7 +112,7 @@ const JifunzeElimu: React.FC = () => {
             </p>
           </div>
           <div className="image">
-            <img src="images/LOGO SYMBLO(1).png" alt="logo"  />
+            <img src="images/LOGO SYMBLO.png" alt="logo"  />
           </div>
         </div>
         <div className="search-filter">

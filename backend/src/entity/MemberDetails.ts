@@ -5,7 +5,6 @@ import {
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
 } from "typeorm";
 import { Dao } from "./Dao";
 import { DaoJoinDate, DaoRole, DaoStatus } from "./DaoMembershipRelations";

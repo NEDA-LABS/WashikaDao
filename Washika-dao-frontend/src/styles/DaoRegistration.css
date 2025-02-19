@@ -491,7 +491,7 @@ button.createDao {
   margin: clamp(36px,13vw,84px) 0;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1024px) {
   .funguaKikundi {
     padding-bottom: 24px;
     margin: 0 24px 24px;

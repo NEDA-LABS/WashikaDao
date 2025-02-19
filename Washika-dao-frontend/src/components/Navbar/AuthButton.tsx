@@ -132,8 +132,8 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
         Profile
       </button>
     ) : (
-      <button className="portalButton" onClick={() => navigate("/Browse")}>
-        Browse
+      <button className="portalButton" onClick={() => navigate("/MarketPlace")}>
+        MarketPlace
       </button>
     );
   }

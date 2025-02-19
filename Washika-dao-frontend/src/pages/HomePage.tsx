@@ -158,7 +158,7 @@ const HomePage: React.FC = () => {
               </div>
               <div className="box-right">
                 <div>
-                  <img src="images/LOGO SYMBLO(1).png" alt="logo" width="63" />
+                  <img src="images/LOGO SYMBLO.png" alt="logo" width="63" />
                   <a href="Homepage.html">
                     <img src="images/wordlogo.png" alt="logo" width="253" />
                   </a>

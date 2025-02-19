@@ -25,8 +25,11 @@ const userDaosSlice = createSlice({
     setUserDaos(state, action: PayloadAction<Dao[]>) {
       state.daos = action.payload;
     },
+    clearUserDaos(state) {
+      state.daos = [];
+    },
   },
 });
 
-export const { setUserDaos } = userDaosSlice.actions;
+export const { setUserDaos, clearUserDaos } = userDaosSlice.actions;
 export default userDaosSlice.reducer;
