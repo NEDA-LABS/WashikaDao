@@ -61,7 +61,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
   // State to control the visibility of a pop-up notification.
   const [showPopupNotification, setShowPopupNotification] =
     useState<boolean>(false);
-    const [showDaoPopup, setShowDaoPopup] = useState(false);
+  const [showDaoPopup, setShowDaoPopup] = useState(false);
 
   // Helper: Compute the navigation mode based on fetched DAOs.
   const computeNavigationMode = (daos: Dao[]): NavigationMode => {
@@ -80,10 +80,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
   const computedMode = computeNavigationMode(daos);
 
   // Use the navigation hook to filter DAOs based on the provided mode.
-  const { filteredDaos, navigateToDao } = useDaoNavigation(
-    daos,
-    computedMode
-  );
+  const { filteredDaos, navigateToDao } = useDaoNavigation(daos, computedMode);
 
   // Handler for the "DAO Tool Kit" link.
   const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -93,7 +90,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
 
       navigateToDao(filteredDaos[0]);
     } else if (filteredDaos.length > 1) {
-      setShowDaoPopup(true);
+      setShowDaoPopup((prev) => !prev);
     } else {
       // If no matching DAO is found, show a notification.
       setShowPopupNotification(true);
@@ -105,7 +102,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
     "DaoRegister",
     "SuperAdmin",
   ].includes(className);
-
 
   // Define the mobile menu content that we want to render in the portal.
   const mobileMenuContent = (
@@ -134,20 +130,19 @@ const NavLinks: React.FC<NavLinksProps> = ({
             <Link to="" onClick={handleDaoToolKitClick}>
               DAO Tool Kit
             </Link>
+            {showDaoPopup && (
+              <DaoSelectionPopup
+                daos={filteredDaos}
+                onSelect={(dao: Dao) => {
+                  navigateToDao(dao);
+                  setShowDaoPopup(false);
+                }}
+              />
+            )}
           </li>
         )
       )}
-      <AuthButton className={className} toggleMenu={toggleMenu}/>
-      {showDaoPopup && (
-        <DaoSelectionPopup
-          daos={filteredDaos}
-          onSelect={(dao: Dao) => {
-            navigateToDao(dao);
-            setShowDaoPopup(false);
-          }}
-          onClose={() => setShowDaoPopup(false)}
-        />
-      )}
+      <AuthButton className={className} toggleMenu={toggleMenu} />
       <PopupNotification
         showPopup={showPopupNotification}
         closePopup={() => setShowPopupNotification(false)}
@@ -163,72 +158,70 @@ const NavLinks: React.FC<NavLinksProps> = ({
      * - Uses the `isOpen` prop to toggle the "open" class, controlling visibility.
      */
     <>
-    <ul className={`nav-links ${isOpen ? "hidden" : ""}`}>
-      {/* Conditionally render "Open Dao" link if the navbar classnames allows it */}
-      {shouldShowRegisterDao && (
-        <li>
-          <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>
-            Open Dao
-          </Link>
-        </li>
-      )}
-
-      {/* Static link to the Education Hub */}
-      <li>
-        <Link to="/Blogs">Education</Link>
-      </li>
-
-      {/* Conditional rendering of different navigation links based on dao multiSigAddr */}
-      {className === "DaoProfile" || className === "navbarProposal" ? (
-        /**
-         * If the user is viewing a DAO profile or proposal-related page,
-         * show the "FUNDER" link that redirects to the Funder page.
-         */
-        <li className="three">
-          <Link to={"/MarketPlace"}>MarketPlace</Link>
-        </li>
-      ) : className === "SuperAdmin" ? (
-        /**
-         * If the user is a SuperAdmin, show a "Create Proposal" link.
-         */
-        <li className="three">
-          <Link to={"/CreateProposal/:daoMultiSigAddr"}>Create Proposal</Link>
-        </li>
-      ) : (
-        /**
-         * For all other users, show the "DAO Tool Kit" link.
-         * - Calls `handleDaoToolKitClick` when clicked.
-         */
-        showDaoToolKit && (
-          <li className="three">
-            <Link to="" onClick={handleDaoToolKitClick}>
-              DAO Tool Kit
+      <ul className={`nav-links ${isOpen ? "hidden" : ""}`}>
+        {/* Conditionally render "Open Dao" link if the navbar classnames allows it */}
+        {shouldShowRegisterDao && (
+          <li>
+            <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>
+              Open Dao
             </Link>
           </li>
-        )
-      )}
+        )}
 
-      {/* Authentication button, which handles login and profile navigation */}
-      <AuthButton className={className}  />
+        {/* Static link to the Education Hub */}
+        <li>
+          <Link to="/Blogs">Education</Link>
+        </li>
 
-      {showDaoPopup && (
-        <DaoSelectionPopup
-          daos={filteredDaos}
-          onSelect={(dao: Dao) => {
-            navigateToDao(dao);
-            setShowDaoPopup(false);
-          }}
-          onClose={() => setShowDaoPopup(false)}
+        {/* Conditional rendering of different navigation links based on dao multiSigAddr */}
+        {className === "DaoProfile" || className === "navbarProposal" ? (
+          /**
+           * If the user is viewing a DAO profile or proposal-related page,
+           * show the "FUNDER" link that redirects to the Funder page.
+           */
+          <li className="three">
+            <Link to={"/MarketPlace"}>MarketPlace</Link>
+          </li>
+        ) : className === "SuperAdmin" ? (
+          /**
+           * If the user is a SuperAdmin, show a "Create Proposal" link.
+           */
+          <li className="three">
+            <Link to={"/CreateProposal/:daoMultiSigAddr"}>Create Proposal</Link>
+          </li>
+        ) : (
+          /**
+           * For all other users, show the "DAO Tool Kit" link.
+           * - Calls `handleDaoToolKitClick` when clicked.
+           */
+          showDaoToolKit && (
+            <li className="three">
+              <Link to="" onClick={handleDaoToolKitClick}>
+                DAO Tool Kit
+              </Link>
+              {showDaoPopup && (
+                <DaoSelectionPopup
+                  daos={filteredDaos}
+                  onSelect={(dao: Dao) => {
+                    navigateToDao(dao);
+                    setShowDaoPopup(false);
+                  }}
+                />
+              )}
+            </li>
+          )
+        )}
+
+        {/* Authentication button, which handles login and profile navigation */}
+        <AuthButton className={className} />
+
+        {/* Popup Notification for Users Without DAO Multi-Signature Address */}
+        <PopupNotification
+          showPopup={showPopupNotification}
+          closePopup={() => setShowPopupNotification(false)}
         />
-      )}
-
-      {/* Popup Notification for Users Without DAO Multi-Signature Address */}
-      <PopupNotification
-        showPopup={showPopupNotification}
-        closePopup={() => setShowPopupNotification(false)}
-      />
-    </ul>
-    {/* When the mobile menu is open, render it into the portal.
+      </ul>
+      {/* When the mobile menu is open, render it into the portal.
           This moves it outside of the navbar’s DOM so that it can appear above the daoImage. */}
       {isOpen &&
         ReactDOM.createPortal(

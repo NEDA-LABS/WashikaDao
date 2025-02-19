@@ -50,9 +50,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    * - Converts the address to lowercase before storing for consistency.
    */
   useEffect(() => {
-    // If activeAccount is undefined, we're still loading the connection—don’t do anything yet.
-    if (activeAccount === undefined) return;
-    if (activeAccount?.address) {
+      if (activeAccount?.address) {
       const lowerCaseAddress = activeAccount.address.toLowerCase();
       if (lowerCaseAddress !== address) {
         dispatch(login(lowerCaseAddress));

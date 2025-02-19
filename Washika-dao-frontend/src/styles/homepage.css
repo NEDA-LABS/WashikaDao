@@ -424,7 +424,7 @@
   font-family: "Dosis", sans-serif;
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 900px) {
   .image-container {
     padding: 0 24px;
     margin-bottom: 20px;

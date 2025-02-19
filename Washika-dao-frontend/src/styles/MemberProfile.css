@@ -367,7 +367,7 @@ body :has(.member) {
   background-color: #282424;
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 900px) {
   .member section.one {
     display: initial;
   }

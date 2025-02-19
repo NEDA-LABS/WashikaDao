@@ -21,7 +21,7 @@ const roleRepository = AppDataSource.getRepository(DaoRole);
 
 /**
  * Finds an existing member or creates a new member based on unique identifiers.
- * 
+ *
  * @param data - The data containing member details to find or create.
  * @param dao - The DAO to associate the member with.
  * @returns - The saved member details.
@@ -67,7 +67,7 @@ async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
 
 /**
  * Assigns a role, membership status, and join date to a member of a DAO.
- * 
+ *
  * @param dao - The DAO the member is being added to.
  * @param member - The member being added to the DAO.
  * @param role - The role the member will assume in the DAO.
@@ -95,7 +95,7 @@ async function assignMembershipDetails(
 
 /**
  * Sends an invitation email to a member to join the DAO platform.
- * 
+ *
  * @param email - The email address of the member to invite.
  * @param firstName - The first name of the member.
  * @param memberIdentifier - The unique identifier for the member.
@@ -147,12 +147,12 @@ async function sendInviteEmail(
 
 /**
  * Creates the initial admins of a DAO, assigning them specific roles such as Chairperson, Treasurer, and Secretary.
- * 
+ *
  * @param dao - The DAO being created.
  * @param members - The list of members to be assigned to the DAO.
  * @param creatorAddress - The address of the DAO creator.
  * @returns - The list of successfully created members.
- * 
+ *
  * @remarks
  * This function ensures that a DAO has exactly three members with specific roles.
  */
@@ -297,6 +297,144 @@ export async function RequestToJoinDao(req: Request, res: Response) {
     res.status(201).json({ message: "Request sent to join DAO successfully." });
   } catch (error) {
     res.status(500).json({ error: "Error sending request to join DAO" });
+  }
+}
+
+/**
+ * Add a new member to the DAO.
+ *
+ * This endpoint is intended for use by an admin (Chairperson, Treasurer, or Secretary)
+ * to directly add a new member. The DAO is identified by its multiSig address (daoMultiSigAddr),
+ * and the caller’s member address (adminMemberAddr) is used to verify authorization.
+ *
+ * Expected query parameters:
+ * - daoMultiSigAddr: string
+ * - adminMemberAddr: string
+ *
+ * Expected body (JSON) includes the new member’s details:
+ * - memberCustomIdentifier, firstName, lastName, email, phoneNumber, nationalIdNo, memberAddr (optional)
+ *
+ * @param req Express Request
+ * @param res Express Response
+ */
+export async function AddMember(
+  req: Request,
+  res: Response
+): Promise<Response> {
+  // Get the DAO multiSig address and admin's member address from the query string
+  const { daoMultiSigAddr, adminMemberAddr } = req.query;
+  const newMemberData = req.body;
+
+  // Validate required query parameters
+  if (
+    !daoMultiSigAddr ||
+    typeof daoMultiSigAddr !== "string" ||
+    !adminMemberAddr ||
+    typeof adminMemberAddr !== "string"
+  ) {
+    return res
+      .status(400)
+      .json({ error: "Missing required DAO or admin info." });
+  }
+
+  try {
+    // Fetch the DAO along with its roles and members
+    const dao = await daoRepository.findOne({
+      where: { daoMultiSigAddr },
+      relations: ["daoRoles", "daoRoles.member", "members"],
+    });
+
+    if (!dao) {
+      return res.status(404).json({ error: "DAO not found." });
+    }
+
+    // Verify that the admin making the request has one of the allowed roles
+    const isAdmin = dao.daoRoles.some(
+      (role) =>
+        (role.role === DaoRoleEnum.CHAIRPERSON ||
+          role.role === DaoRoleEnum.TREASURER ||
+          role.role === DaoRoleEnum.SECRETARY) &&
+        role.member.memberAddr === adminMemberAddr
+    );
+
+    if (!isAdmin) {
+      return res
+        .status(403)
+        .json({ error: "Unauthorized: Only DAO admins can add members." });
+    }
+
+    // Check if the member already exists in the DAO (approved membership)
+    const existingMember = await memberDetailsRepository.findOne({
+      where: { memberAddr: newMemberData.memberAddr },
+      relations: ["daos"],
+    });
+
+    if (existingMember) {
+      // See if this member already has an approved status in this DAO
+      const existingStatus = await daoStatusRepository.findOne({
+        where: { dao, member: existingMember },
+      });
+      if (
+        existingStatus &&
+        existingStatus.status === DaoMembershipStatus.APPROVED
+      ) {
+        return res.status(400).json({ error: "Member is already in the DAO." });
+      }
+    }
+
+    // Find or create the member record
+    const member = await findOrCreateMember(newMemberData, dao);
+
+    // Assign membership details with the default role "Member"
+    await assignMembershipDetails(dao, member, DaoRoleEnum.MEMBER);
+
+    // Ensure the member's DAO list is updated
+    if (!member.daos.some((d) => d.daoMultiSigAddr === dao.daoMultiSigAddr)) {
+      member.daos.push(dao);
+      await memberDetailsRepository.save(member);
+    }
+
+    // Optionally, if no on-chain address is provided, send an invite email
+    if (!member.memberAddr || member.memberAddr.trim() === "") {
+      try {
+        await sendInviteEmail(
+          member.email,
+          member.firstName,
+          member.memberCustomIdentifier,
+          dao.daoName
+        );
+      } catch (emailError) {
+        console.error(
+          `Failed to send invite email to ${member.email}: `,
+          emailError
+        );
+      }
+    }
+
+    return res
+      .status(201)
+      .json({ message: "Member added successfully", member });
+  } catch (error) {
+    console.error("Error adding member:", error);
+
+    if (error instanceof QueryFailedError) {
+      if (error.message.includes("phoneNumber"))
+        return res
+          .status(400)
+          .json({ error: "The phone number is already in use." });
+      if (error.message.includes("nationalIdNo"))
+        return res
+          .status(400)
+          .json({ error: "The national ID number is already in use." });
+      if (error.message.includes("email"))
+        return res.status(400).json({ error: "The email is already in use." });
+      if (error.message.includes("memberAddr"))
+        return res
+          .status(400)
+          .json({ error: "The member address is already in use." });
+    }
+
+    return res.status(500).json({ error: "Error adding member." });
   }
 }
 

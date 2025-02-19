@@ -92,6 +92,10 @@
     margin: 0;
   }
 
+  .marketPlace .image {
+    height: auto;
+  }
+
   .marketPlace .first .two div img {
     width: 20px;
     height: auto;
@@ -100,6 +104,19 @@
   .marketPlace .groups {
     margin: 0 24px 64px;
     max-height: 707px;
+  }
+
+  .marketPlace  .group {
+    width: auto;
+    padding: 16px;
+    display: initial;
+
+    
+  }
+
+  .marketPlace .group .image img {
+    width: 100%;
+    height: 160px;
   }
 }
 

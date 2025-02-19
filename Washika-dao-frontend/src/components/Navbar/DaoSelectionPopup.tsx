@@ -5,24 +5,22 @@ import { Dao } from "../../utils/Types";
 interface DaoSelectionPopupProps {
   daos: Dao[];
   onSelect: (dao: Dao) => void;
-  onClose: () => void;
 }
 
-const DaoSelectionPopup: React.FC<DaoSelectionPopupProps> = ({ daos, onSelect, onClose }) => {
+const DaoSelectionPopup: React.FC<DaoSelectionPopupProps> = ({
+  daos,
+  onSelect,
+}) => {
   return (
     <div className="popup-overlay">
-      <div className="popup-content">
-        <h3>Select a DAO</h3>
+      <div className="popup-content2">
         <ul>
           {daos.map((dao) => (
-            <li key={dao.daoTxHash}>
-              <button onClick={() => onSelect(dao)}>
-                {dao.daoName} ({dao.daoTxHash})
-              </button>
+            <li key={dao.daoTxHash} onClick={() => onSelect(dao)}>
+              {dao.daoName}
             </li>
           ))}
         </ul>
-        <button onClick={onClose}>Cancel</button>
       </div>
     </div>
   );
