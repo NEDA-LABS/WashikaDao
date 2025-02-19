@@ -10,7 +10,7 @@ import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { baseUrl } from "../utils/backendComm";
-import { IBackendDaoCreation } from "../utils/Types";
+import { IFetchedBackendDao } from "../utils/Types";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -37,7 +37,7 @@ const SuperAdmin: React.FC = () => {
   const [role, setRole] = useState<string>("");
   // const [guaranter, setGuaranter] = useState<string>("");
 
-  const [daoDetails, setDaoDetails] = useState<IBackendDaoCreation | null>(
+  const [daoDetails, setDaoDetails] = useState<IFetchedBackendDao | null>(
     null
   ); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
@@ -46,10 +46,10 @@ const SuperAdmin: React.FC = () => {
     (state: RootState) => state.notification.isVisible
   );
   const dispatch = useDispatch();
-  const token = localStorage.getItem("token") ?? ""; 
+  const token = localStorage.getItem("token") ?? "";
   const navigate = useNavigate();
   const { daoTxHash } = useParams<{ daoTxHash: string }>();
-  
+
   useEffect(() => {
     const fetchDaoDetails = async () => {
       try {
@@ -64,11 +64,10 @@ const SuperAdmin: React.FC = () => {
         );
         const data = await response.json();
         console.log(data);
-        
+
         if (response.ok) {
           setDaoDetails(data.daoDetails);
           setMemberCount(data.daoDetails.members.length);
-          
         } else {
           console.error("Error fetching daoDetails:", data.message);
         }
@@ -217,16 +216,22 @@ const SuperAdmin: React.FC = () => {
                 <p>{daoDetails?.daoLocation}</p>
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
-              <p className="email">
-                {daoDetails?.daoMultiSigAddr
-                  ? isSmallScreen
-                    ? `${daoDetails?.daoMultiSigAddr.slice(
-                        0,
-                        14
-                      )}...${daoDetails?.daoMultiSigAddr.slice(-9)}`
-                    : `${daoDetails?.daoMultiSigAddr}`
-                  : "N/A"}
-              </p>
+              <div>
+                {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
+                  <button>Generate MultiSigAddress</button>
+                ) : (
+                  <p className="email">
+                    {daoDetails?.daoMultiSigAddr
+                      ? isSmallScreen
+                        ? `${daoDetails?.daoMultiSigAddr.slice(
+                            0,
+                            14
+                          )}...${daoDetails?.daoMultiSigAddr.slice(-9)}`
+                        : daoDetails?.daoMultiSigAddr
+                      : "N/A"}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="two">
               <div className="first">
@@ -281,7 +286,9 @@ const SuperAdmin: React.FC = () => {
               <button
                 className="create"
                 onClick={() =>
-                  navigate(`/CreateProposal/${daoDetails?.daoMultiSigAddr || ""}`)
+                  navigate(
+                    `/CreateProposal/${daoDetails?.daoMultiSigAddr || ""}`
+                  )
                 }
               >
                 Create a Proposal

@@ -3,6 +3,7 @@ import { Dao } from "../entity/Dao";
 import { MemberDetails } from "../entity/MemberDetails";
 import AppDataSource from "../data-source";
 import { CreateDaoAdmins } from "./DaoMembershipController";
+import { DaoRole, DaoRoleEnum } from "../entity/DaoMembershipRelations";
 
 /**
  * Creates a new DAO (Decentralized Autonomous Organization) and saves its details to the database.
@@ -219,12 +220,19 @@ export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
 
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
+    const daoRoleRepository = AppDataSource.getRepository(DaoRole);
     const daoDetails = await daoRepository.findOne({
       where: { daoTxHash },
-      relations: ["members"],
+      relations: ["members", "daoRoles", "daoRoles.member"],
     });
 
     if (daoDetails) {
+      // Get the Chairperson's memberAddr
+    const chairpersonRole = daoDetails.daoRoles.find(
+      (role) => role.role === DaoRoleEnum.CHAIRPERSON
+    );
+
+    const chairpersonAddr = chairpersonRole?.member?.memberAddr || null;
       return res.status(200).json({
         message: "DAO found with the details below",
         daoDetails: {
@@ -246,6 +254,7 @@ export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
           interestOnLoans: daoDetails.interestOnLoans,
           daoTxHash: daoDetails.daoTxHash,
           members: daoDetails.members,
+          chairpersonAddr,
         },
       });
     } else {
