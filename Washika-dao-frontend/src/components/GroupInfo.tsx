@@ -55,7 +55,7 @@ const GroupInfo: React.FC = () => {
       try {
         // Fetch the DAOs from the backend
         const response = await fetch(
-          `http://${baseUrl}/DaoGenesis/GetAllDaos`,
+          `${baseUrl}/DaoGenesis/GetAllDaos`,
           {
             headers: {
               "Content-Type": "application/json",

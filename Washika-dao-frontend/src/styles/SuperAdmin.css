@@ -374,6 +374,10 @@ nav.SuperAdmin {
   font-weight: bold;
 }
 
+.superAdmin section.second {
+  margin-top: 64px;
+}
+
 .fourth {
   margin: 36px clamp(24px, 5vw, 96px);
   width: 70%;
@@ -540,5 +544,9 @@ nav.SuperAdmin {
     width: 117px;
     height: 41px;
     font-size: 16px;
+  }
+
+  .superAdmin section.second {
+    margin-top: 44px;
   }
 }

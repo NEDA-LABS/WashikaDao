@@ -52,7 +52,7 @@ const ViewProposal: React.FC = () => {
     const fetchProposalData = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}/&proposalCustomIdentifier=${proposalCustomIdentifier}`,{
+          `${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}/&proposalCustomIdentifier=${proposalCustomIdentifier}`,{
             headers: {
               Authorization: token,
               "Content-Type": "application/json",

@@ -87,7 +87,7 @@ const DaoRegistration: React.FC = () => {
         };
 
         // Send combined data to the backend API
-        const response = await fetch(`http://${baseUrl}/DaoGenesis/CreateDao?currentAddr=${address}`, {
+        const response = await fetch(`${baseUrl}/DaoGenesis/CreateDao?currentAddr=${address}`, {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type

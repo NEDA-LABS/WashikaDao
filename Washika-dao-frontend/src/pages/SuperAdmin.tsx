@@ -26,14 +26,12 @@ import { baseUrl } from "../utils/backendComm";
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
-  // const { memberAddr } = useSelector((state: RootState) => state.user);
   // Form data state
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<number | string>("");
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
-  // const [role, setRole] = useState<string>("");
 
   const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
@@ -50,7 +48,7 @@ const SuperAdmin: React.FC = () => {
   const fetchDaoDetails = async () => {
     try {
       const response = await fetch(
-        `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+        `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
         {
           headers: {
             Authorization: token,
@@ -87,17 +85,6 @@ const SuperAdmin: React.FC = () => {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [daoTxHash, token]);
-  // console.log(daoDetails);
-
-  // Handle role change
-  // const handleRoleChange = (
-  //   e: React.ChangeEvent<
-  //     HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
-  //   >
-  // ) => {
-  //   setRole(e.target.value);
-  //   // setGuaranter(e.target.value);
-  // };
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
@@ -121,7 +108,7 @@ const SuperAdmin: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/AddMember/?daoTxHash=${daoTxHash}&adminMemberAddr=${address}`,
+        `${baseUrl}/DaoKit/MemberShip/AddMember/?daoTxHash=${daoTxHash}&adminMemberAddr=${address}`,
         {
           method: "POST",
           headers: {
@@ -229,11 +216,11 @@ const SuperAdmin: React.FC = () => {
             <h1>DAO operations</h1>
           </div>
           <div className="button-group buttons">
-            <button onClick={() => setActiveSection("daoOverview")}>
+            <button onClick={() => setActiveSection("daoOverview")} className={activeSection === "daoOverview" ? "active" : ""}>
               Dao Overview
             </button>
             <button onClick={handleAddMemberClick}>Add Members</button>
-            <button onClick={() => setActiveSection("mikopo")}>
+            <button onClick={() => setActiveSection("mikopo")}  className={activeSection === "mikopo" ? "active" : ""}>
               Loan Details
             </button>
             <button onClick={() => navigate(`/UpdateDao/${daoTxHash}`)}>
@@ -249,16 +236,6 @@ const SuperAdmin: React.FC = () => {
                 </div>
                 <Dashboard />
               </div>
-              <button
-                className="create"
-                onClick={() =>
-                  navigate(
-                    `/CreateProposal/${daoDetails?.daoMultiSigAddr || ""}`
-                  )
-                }
-              >
-                Create a Proposal
-              </button>
               <section className="second">
                 <div className="sec">
                   <img src="/images/Vector(4).png" alt="logo" />
@@ -303,37 +280,6 @@ const SuperAdmin: React.FC = () => {
                       type: "number",
                       onChange: (e) => setNationalIdNo(e.target.value),
                     },
-                    // {
-                    //   label: "Role",
-                    //   type: "select",
-                    //   options: [
-                    //     {
-                    //       label: "Select Role",
-                    //       value: "",
-                    //       disabled: true,
-                    //       selected: true,
-                    //     },
-                    //     { label: "Member", value: "Member" },
-                    //     { label: "Funder", value: "Funder" },
-                    //   ],
-                    //   onChange: handleRoleChange,
-                    // },
-                    // {
-                    //   label: "Guaranter",
-                    //   type: "select",
-                    //   options: [
-                    //     {
-                    //       label: "Select Guaranter",
-                    //       value: "",
-                    //       disabled: true,
-                    //       selected: true,
-                    //     },
-                    //     { label: "Chairperson", value: "Chairperson" },
-                    //     { label: "Member", value: "Member" },
-                    //     { label: "Funder", value: "Funder" },
-                    //   ],
-                    //   onChange: handleRoleChange,
-                    // },
                   ]}
                 />
                 <div className="center">

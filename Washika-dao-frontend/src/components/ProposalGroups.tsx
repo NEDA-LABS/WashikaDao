@@ -31,7 +31,7 @@ const ProposalGroups: React.FC = () => {
     const fetchProposals = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/Proposals/GetAllProposalsInDao/?daoMultiSigAddr=${daoMultiSigAddr}`,{
+          `${baseUrl}/DaoKit/Proposals/GetAllProposalsInDao/?daoMultiSigAddr=${daoMultiSigAddr}`,{
             headers: {
               Authorization: token,
               "Content-Type": "application/json",

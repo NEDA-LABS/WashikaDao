@@ -37,7 +37,7 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
     const fetchDaos = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
+          `${baseUrl}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
         );
         const data = await response.json();
         
