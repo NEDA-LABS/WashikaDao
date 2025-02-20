@@ -100,7 +100,7 @@ const Pagination: React.FC<PaginationProps> = ({
 const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
   daoDetails,
 }) => {
-  const itemsPerPage = 4; // Number of items per page
+  const itemsPerPage = 5; // Number of items per page
   const [currentPage, setCurrentPage] = useState(1);
   const [wanachamaData, setWanachamaData] = useState<Wanachama[]>(
     daoDetails?.members ?? []

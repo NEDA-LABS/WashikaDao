@@ -1,4 +1,1 @@
-
-
-export const baseUrl = "localhost:3000";
-console.log("Facilitating communication between the frontend and the backend");
+export const baseUrl = "http://localhost:3000"; 

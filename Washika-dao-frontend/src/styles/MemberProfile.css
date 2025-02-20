@@ -133,7 +133,7 @@ body :has(.member) {
   width: 100%;
 }
 
-.button-group button:nth-of-type(1) {
+.button-group button.active {
   background-color: #2ea62c;
   color: #ffffff;
 }

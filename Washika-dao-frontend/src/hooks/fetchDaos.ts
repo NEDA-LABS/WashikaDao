@@ -9,7 +9,7 @@ export interface Dao {
 
 export const fetchDaos = async (): Promise<Dao[]> => {
   try {
-    const response = await fetch(`http://${baseUrl}/DaoGenesis/GetAllDaos`, {
+    const response = await fetch(`${baseUrl}/DaoGenesis/GetAllDaos`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
         "Content-Type": "application/json",

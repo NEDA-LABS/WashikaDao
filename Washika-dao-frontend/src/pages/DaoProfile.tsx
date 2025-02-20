@@ -43,7 +43,7 @@ const DaoProfile: React.FC = () => {
     const fetchDaoDetails = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,{
+          `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,{
             headers: {
               Authorization: token,
               "Content-Type": "application/json",

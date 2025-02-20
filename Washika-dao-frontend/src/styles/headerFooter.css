@@ -95,7 +95,6 @@ nav button, .nav-links .portalButton {
   color: #433939;
   line-height: 16px;
   padding: 10px 20px;
-  
 }
 
 .popup {
@@ -269,9 +268,9 @@ footer img {
   .nav-links.open {
     display: flex; /* Show the menu when open */
     flex-direction: column;
-    position: absolute;
+    position: fixed;
     top: 64px;
-    right: 0;
+    right: 8px;
     background-color: #4b4546;
     width: auto;
     padding: 10px;
@@ -300,7 +299,7 @@ footer img {
   .nav-links .portalButton {
     width: auto;
     height: 32px;
-    font-size: 16px;
+    font-size: 12px;
   }
 
   footer {

@@ -229,7 +229,7 @@ const CreateProposal: React.FC = () => {
         return;
       }
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/Proposals/CreateProposal/?daoMultiSigAddr=${daoMultiSigAddr}`,
+          `${baseUrl}/DaoKit/Proposals/CreateProposal/?daoMultiSigAddr=${daoMultiSigAddr}`,
           {
             method: "POST",
             headers: {

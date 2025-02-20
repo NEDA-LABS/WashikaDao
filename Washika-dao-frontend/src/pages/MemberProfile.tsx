@@ -85,7 +85,7 @@ const MemberProfile: React.FC = () => {
 
     try {
       const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
+        `${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
         {
           method: "POST",
           headers: {
