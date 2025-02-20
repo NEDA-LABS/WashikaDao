@@ -83,7 +83,8 @@ const UpdateDao: React.FC = () => {
   // const currUsrAcc = useActiveAccount();
   const token = localStorage.getItem("token");
 //   const [daoTxHash, setDaoTxHash] = useState("");
-  const { daoMultiSig, memberAddr, phoneNumber } = useSelector(
+    const daoMultiSig = useActiveAccount();
+  const {  memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
 
@@ -269,12 +270,12 @@ const UpdateDao: React.FC = () => {
           }
           const data = await response.json();
           setFormData(data.daoDetails); // Populate form with existing data
-          
+
         } catch (error) {
           console.error("Error fetching DAO details:", error);
         }
       };
-  
+
       if (daoMultiSigAddr) {
         fetchDaoDetails();
       }
