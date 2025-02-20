@@ -206,8 +206,20 @@ const JoinPlatform: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+  type UserStateT = {
+         memberAddr: string | any,
+         firstName: string,
+         lastName: string,
+         email: string,
+         phoneNumber: number | bigint | any,
+         nationalIdNo: number | string | bigint | any,
+         memberRole: string | any,
+        daoMultiSigAddr: string | any,
+        daos: string[] | string | any,
+        }
+
     // Build payload data
-    const payload = {
+    const payload : UserStateT = {
       memberAddr: memberAddr || "",
       firstName,
       lastName,
@@ -246,11 +258,9 @@ const JoinPlatform: React.FC = () => {
           dispatch(
             setCurrentUser({
               memberAddr: payload.memberAddr,
-              daoMultiSig: payload.daoMultiSigAddr,
               firstName,
               lastName,
               email,
-              role,
               nationalIdNo: payload.nationalIdNo,
               phoneNumber: payload.phoneNumber,
             })
