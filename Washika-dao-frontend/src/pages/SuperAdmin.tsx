@@ -1,6 +1,6 @@
 import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
-import WanachamaList from "../components/WanachamaList";
+import WanachamaList, { DaoDetails } from "../components/WanachamaList";
 import Dashboard from "../components/Dashboard";
 import Cards from "../components/Cards";
 import { useEffect, useState } from "react";
@@ -10,7 +10,6 @@ import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { baseUrl } from "../utils/backendComm";
-import { IFetchedBackendDao } from "../utils/Types";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -34,12 +33,9 @@ const SuperAdmin: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<number | string>("");
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
-  const [role, setRole] = useState<string>("");
-  // const [guaranter, setGuaranter] = useState<string>("");
+  // const [role, setRole] = useState<string>("");
 
-  const [daoDetails, setDaoDetails] = useState<IFetchedBackendDao | null>(
-    null
-  ); //state to hold DAO details
+  const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const isVisible = useSelector(
@@ -49,32 +45,32 @@ const SuperAdmin: React.FC = () => {
   const token = localStorage.getItem("token") ?? "";
   const navigate = useNavigate();
   const { daoTxHash } = useParams<{ daoTxHash: string }>();
+  const address = useSelector((state: RootState) => state.auth.address);
 
-  useEffect(() => {
-    const fetchDaoDetails = async () => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
-          {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-
-        if (response.ok) {
-          setDaoDetails(data.daoDetails);
-          setMemberCount(data.daoDetails.members.length);
-        } else {
-          console.error("Error fetching daoDetails:", data.message);
+  const fetchDaoDetails = async () => {
+    try {
+      const response = await fetch(
+        `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
         }
-      } catch (error) {
-        console.error(error);
-      }
-    };
+      );
+      const data = await response.json();
 
+      if (response.ok) {
+        setDaoDetails(data.daoDetails);
+        setMemberCount(data.daoDetails.members.length);
+      } else {
+        console.error("Error fetching daoDetails:", data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  useEffect(() => {
     if (daoTxHash) {
       fetchDaoDetails();
     }
@@ -89,50 +85,23 @@ const SuperAdmin: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [daoTxHash, token]);
   // console.log(daoDetails);
 
   // Handle role change
-  const handleRoleChange = (
-    e: React.ChangeEvent<
-      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
-    >
-  ) => {
-    setRole(e.target.value);
-    // setGuaranter(e.target.value);
-  };
+  // const handleRoleChange = (
+  //   e: React.ChangeEvent<
+  //     HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
+  //   >
+  // ) => {
+  //   setRole(e.target.value);
+  //   // setGuaranter(e.target.value);
+  // };
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
     setShowForm(!showForm);
-  };
-
-  const handleInviteMember = async () => {
-    try {
-      // Send an email to the new member
-      const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token,
-          },
-          body: JSON.stringify({
-            email: email,
-            firstName: firstName,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        console.log("Member added and email sent successfully.");
-      } else {
-        console.error("Failed to send email.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -140,27 +109,24 @@ const SuperAdmin: React.FC = () => {
 
     // Build payload data
     const payload = {
-      memberAddr: "",
       firstName,
       lastName,
       email,
       phoneNumber,
       nationalIdNo,
-      memberRole: role,
-      daos: "",
-      // guaranter,
+      memberCustomIdentifier: crypto.randomUUID(),
     };
 
     console.log("Payload:", payload);
 
     try {
       const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
+        `http://${baseUrl}/DaoKit/MemberShip/AddMember/?daoTxHash=${daoTxHash}&adminMemberAddr=${address}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
           },
           body: JSON.stringify(payload),
         }
@@ -170,8 +136,9 @@ const SuperAdmin: React.FC = () => {
 
       if (response.ok) {
         console.log(`Success: ${result.message}`);
-        handleInviteMember();
         setShowForm(!showForm);
+        // Re-fetch DAO details to update Memberount and WanachamaList
+        fetchDaoDetails();
       } else {
         console.error(`Error: ${result.error}`);
       }
@@ -336,38 +303,37 @@ const SuperAdmin: React.FC = () => {
                       type: "number",
                       onChange: (e) => setNationalIdNo(e.target.value),
                     },
-                    {
-                      label: "Role",
-                      type: "select",
-                      options: [
-                        {
-                          label: "Select Role",
-                          value: "",
-                          disabled: true,
-                          selected: true,
-                        },
-                        { label: "Chairperson", value: "Chairperson" },
-                        { label: "Member", value: "Member" },
-                        { label: "Funder", value: "Funder" },
-                      ],
-                      onChange: handleRoleChange,
-                    },
-                    {
-                      label: "Guaranter",
-                      type: "select",
-                      options: [
-                        {
-                          label: "Select Guaranter",
-                          value: "",
-                          disabled: true,
-                          selected: true,
-                        },
-                        { label: "Chairperson", value: "Chairperson" },
-                        { label: "Member", value: "Member" },
-                        { label: "Funder", value: "Funder" },
-                      ],
-                      onChange: handleRoleChange,
-                    },
+                    // {
+                    //   label: "Role",
+                    //   type: "select",
+                    //   options: [
+                    //     {
+                    //       label: "Select Role",
+                    //       value: "",
+                    //       disabled: true,
+                    //       selected: true,
+                    //     },
+                    //     { label: "Member", value: "Member" },
+                    //     { label: "Funder", value: "Funder" },
+                    //   ],
+                    //   onChange: handleRoleChange,
+                    // },
+                    // {
+                    //   label: "Guaranter",
+                    //   type: "select",
+                    //   options: [
+                    //     {
+                    //       label: "Select Guaranter",
+                    //       value: "",
+                    //       disabled: true,
+                    //       selected: true,
+                    //     },
+                    //     { label: "Chairperson", value: "Chairperson" },
+                    //     { label: "Member", value: "Member" },
+                    //     { label: "Funder", value: "Funder" },
+                    //   ],
+                    //   onChange: handleRoleChange,
+                    // },
                   ]}
                 />
                 <div className="center">
@@ -489,7 +455,7 @@ const SuperAdmin: React.FC = () => {
                   <input type="search" name="" id="" placeholder="Search" />
                   <img src="/images/Search.png" alt="" />
                 </div>
-                <WanachamaList />
+                <WanachamaList daoDetails={daoDetails} />
               </section>
             </>
           )}

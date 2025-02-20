@@ -39,9 +39,15 @@ async function findOrCreateMember(data: Partial<MemberDetails>, dao: Dao) {
 
   // Try to find an existing member with the given identifiers
   let member = await memberDetailsRepository.findOne({
-    where: [{ memberAddr }, { email }, { phoneNumber }, { nationalIdNo }],
+    where: {
+      memberAddr: memberAddr || undefined,
+      email: email || undefined,
+      phoneNumber: phoneNumber || undefined,
+      nationalIdNo: nationalIdNo || undefined
+    },
     relations: ["daos"],
   });
+  
 
   if (!member) {
     // Create a new member if none found
@@ -322,13 +328,13 @@ export async function AddMember(
   res: Response
 ): Promise<Response> {
   // Get the DAO multiSig address and admin's member address from the query string
-  const { daoMultiSigAddr, adminMemberAddr } = req.query;
+  const { daoTxHash, adminMemberAddr } = req.query;
   const newMemberData = req.body;
 
   // Validate required query parameters
   if (
-    !daoMultiSigAddr ||
-    typeof daoMultiSigAddr !== "string" ||
+    !daoTxHash ||
+    typeof daoTxHash !== "string" ||
     !adminMemberAddr ||
     typeof adminMemberAddr !== "string"
   ) {
@@ -340,9 +346,11 @@ export async function AddMember(
   try {
     // Fetch the DAO along with its roles and members
     const dao = await daoRepository.findOne({
-      where: { daoMultiSigAddr },
+      where: { daoTxHash },
       relations: ["daoRoles", "daoRoles.member", "members"],
     });
+    console.log(dao);
+    
 
     if (!dao) {
       return res.status(404).json({ error: "DAO not found." });
@@ -365,7 +373,7 @@ export async function AddMember(
 
     // Check if the member already exists in the DAO (approved membership)
     const existingMember = await memberDetailsRepository.findOne({
-      where: { memberAddr: newMemberData.memberAddr },
+      where: { phoneNumber: newMemberData.phoneNumber },
       relations: ["daos"],
     });
 

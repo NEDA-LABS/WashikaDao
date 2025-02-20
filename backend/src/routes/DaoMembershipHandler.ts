@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 const router = express.Router();
 
-import { GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember } from "../controller/DaoMembershipController";
+import { GetAllMembers, RequestToJoinDao, WhiteListUser, BlackListMember, AddMember } from "../controller/DaoMembershipController";
 import { handleSendInviteSMS } from "../controller/SMSController";
 import { Authenticator }  from "../utils/Authenticator/Authenticator";
 
@@ -27,12 +27,19 @@ router.get('/AllDaoMembers', Authenticator, (req: Request, res: Response) => {Ge
     */
 router.post('/RequestToJoinDao', Authenticator,  (req: Request, res: Response) => {RequestToJoinDao(req, res)});
 /**
+    * INFO: Add a member to a particular Dao
+    * @Params - Multisig of the Dao
+    * @request Body - Member Details to add
+    * @returns - a success code or error message
+    */
+router.post('/AddMember', Authenticator, (req: Request, res: Response) =>  { AddMember(req, res) });//INFO: add member to a certain dao
+/**
     * INFO: Updates the Details of a member of a particular Dao
     * @Params - Multisig of the Dao
     * @request Body - Member Details to Update
     * @returns - a success code or error message
     */
-router.patch('/AddMember', Authenticator, (req: Request, res: Response) =>  { WhiteListUser(req, res) });//INFO: update member to a certain rank or sth else
+router.patch('/WhiteListMember', Authenticator, (req: Request, res: Response) =>  { WhiteListUser(req, res) });//INFO: update member to a certain rank or sth else
 /**
     * INFO: Adds Member to Dao Black list
     * @Params - Multisig of the Dao

@@ -36,7 +36,6 @@ export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
   }, [daos, mode]);
 
   const navigateToDao = (dao: Dao) => {
-    console.log("Navigating to DAO:", dao.daoTxHash);
     if (mode === "admin") {
       navigate(`/SuperAdmin/${dao.daoTxHash}`);
     } else {

@@ -1,12 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { baseUrl } from "../utils/backendComm";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { IFetchedBackendDao } from "../utils/Types";
 
 interface Wanachama {
   id: number;
   firstName: string;
   lastName: string;
   phoneNumber: string;
+}
+
+export interface DaoDetails extends IFetchedBackendDao {
+  members: Wanachama[];
 }
 
 // Pagination Component
@@ -94,41 +97,20 @@ const Pagination: React.FC<PaginationProps> = ({
 };
 
 // Wanachama List Component
-const WanachamaList = () => {
+const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
+  daoDetails,
+}) => {
   const itemsPerPage = 4; // Number of items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [wanachamaData, setWanachamaData] = useState<Wanachama[]>([]);
-  const { daoTxHash } = useParams<{ daoTxHash: string }>();
-  const token = localStorage.getItem("token") ?? "";
+  const [wanachamaData, setWanachamaData] = useState<Wanachama[]>(
+    daoDetails?.members ?? []
+  );
 
-  // Fetch user data when the component mounts
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/?daoTxHash=${daoTxHash}`, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token,
-            },
-          }
-          
-        ); 
-        const data = await response.json();
-        if (response.ok) {
-          setWanachamaData(data.members);
-        } else {
-          console.error("Error fetching member count:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, [daoTxHash, token]);
-  console.log(wanachamaData);
-  
+    if (daoDetails?.members) {
+      setWanachamaData(daoDetails.members);
+    }
+  }, [daoDetails]);
 
   const totalPages = Math.ceil(wanachamaData.length / itemsPerPage);
 
@@ -147,7 +129,9 @@ const WanachamaList = () => {
       <div className="wanachama">
         {paginatedData.map((member, index) => (
           <div className="mwanachama" key={index}>
-            <p className="name">{member.firstName} {member.lastName}</p>
+            <p className="name">
+              {member.firstName} {member.lastName}
+            </p>
             <p className="phoneNo">{member.phoneNumber}</p>
             <button>Manage</button>
           </div>
