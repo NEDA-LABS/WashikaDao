@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import DaoForm from "../components/DaoForm";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
@@ -14,12 +14,8 @@ import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { prepareContractCall } from "thirdweb";
 import { baseUrl } from "../utils/backendComm";
+import { Dao, fetchDaos } from "../hooks/fetchDaos";
 
-interface Dao {
-  daoName: string;
-  daoMultiSigAddr: string;
-  multiSigPhoneNo: bigint;
-}
 /**
  *@Auth policy: checks if isLoggedIn if not requires you to else proceed
  * @returns
@@ -52,8 +48,8 @@ interface Dao {
  * @see NavBar
  * @see Footer
  */
-//@ts-ignore
-const JoinPlatform: React.FC<{}> = () => {
+
+const JoinPlatform: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [role, setRole] = useState(""); // Default role
@@ -168,35 +164,11 @@ const JoinPlatform: React.FC<{}> = () => {
 
   useEffect(() => {
     if (role === "Member") {
-      const fetchDaos = async () => {
-        try {
-          const response = await fetch(
-            `http://${baseUrl}/DaoGenesis/GetAllDaos`, {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          if (!response.ok)
-            throw new Error(`HTTP error! status: ${response.status}`);
-
-          // Parse JSON data safely
-          const data = await response.json();
-          console.log("Fetched DAOs:", data);
-
-          // Check if daoList exists and is an array
-          if (Array.isArray(data.daoList)) {
-            setDaos(data.daoList);
-          } else {
-            console.error("daoList is missing or not an array");
-          }
-        } catch (error) {
-          console.error("Failed to fetch DAOs:", error);
-        }
+      const getDaos = async () => {
+        const daoList = await fetchDaos();
+        setDaos(daoList);
       };
-      fetchDaos();
+      getDaos();
     }
 
     let stepsCompleted = 0;
@@ -299,7 +271,7 @@ const JoinPlatform: React.FC<{}> = () => {
             }
     } catch (error) {
       console.error("Submission failed:", error);
-    }
+    }}
 
   return (
     <>
@@ -417,6 +389,5 @@ const JoinPlatform: React.FC<{}> = () => {
     </>
   );
 };
-}
 
 export default JoinPlatform;

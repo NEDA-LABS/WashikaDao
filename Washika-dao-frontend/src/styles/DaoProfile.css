@@ -17,8 +17,7 @@ main.daoMain {
   padding: 0 24px;
   position: absolute;
   top: clamp(64px, 9vw, 164px);
-  z-index: 1;
-  z-index: 1;
+  z-index: 5;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -514,7 +513,7 @@ section.second::after {
   text-align: center;
 }
 
-@media only screen and (max-width: 900px) {
+@media only screen and (max-width: 1024px) {
   main.daoMain {
     padding-top: clamp(200px, 74vw, 680px);
   }

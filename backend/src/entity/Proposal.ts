@@ -1,51 +1,44 @@
-import { PrimaryColumn, Column,  Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
+import { Column,  Entity, PrimaryGeneratedColumn, OneToMany, ManyToOne, JoinColumn } from "typeorm";
 import {Vote} from "./Vote";
 import { Dao } from "./Dao";
-import {SrvRecord} from "dns";
 
 @Entity()
 export class Proposal {
     @PrimaryGeneratedColumn()
     proposalId: number;
 
-    @Column()
+    @Column({ unique: true })
     proposalCustomIdentifier: string;
 
     @Column()
     proposalOwner: string;
 
-    @Column()
+    @Column({ length: 255 })
     proposalTitle: string;
 
-    @Column()
+    @Column("text")
     proposalSummary: string;
 
-    @Column()
+    @Column("text")
     proposalDescription: string;
 
-    @Column()
+    @Column({ length: 50 })
     proposalStatus: string;
 
-    @Column()
+    @Column({ type: "decimal", precision: 10, scale: 2 })
     amountRequested: number;
 
-    @Column()
+    @Column({ type: "decimal", precision: 5, scale: 2 })
     profitSharePercent: number;
 
-    @Column()
+    @Column({ length: 255 })
     daoMultiSigAddr: string;
 
-    @Column({ default: 0 })
-    numUpVotes: number;
-
-    @Column({ default: 0 })
-    numDownVotes: number;
-
-    @OneToMany(() => Vote, (vote) => vote.proposalCustomIdentifier)
-    votes: Vote;
-
+    @OneToMany(() => Vote, (vote) => vote.proposal, { cascade: ["remove"] })
+    votes: Vote[];
+    
     //relation where one proposal can only belong to one dao but one dao can have multiple proposals
-    @ManyToOne(() => Dao, dao => dao.proposal)
+    @ManyToOne(() => Dao, dao => dao.proposals)
     @JoinColumn({ name: "daoId" })
     dao: Dao;
 

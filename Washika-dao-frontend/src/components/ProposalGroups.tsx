@@ -1,7 +1,5 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
 
 import { baseUrl } from "../utils/backendComm";
 
@@ -22,19 +20,22 @@ interface ProposalData {
 
 
 const ProposalGroups: React.FC = () => {
-  const { daoMultiSig } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<ProposalData[]>([]);
-  const daoMultiSigAddr = daoMultiSig;
-console.log('The multiaddress is', daoMultiSigAddr);
+  const daoMultiSigAddr = localStorage.getItem("address");
 
 
   // Fetch proposals from the API
   useEffect(() => {
+    const token = localStorage.getItem("token") ?? "";
     const fetchProposals = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/Proposals/GetAllProposalsInDao/${daoMultiSigAddr}`
+          `http://${baseUrl}/DaoKit/Proposals/GetAllProposalsInDao/?daoMultiSigAddr=${daoMultiSigAddr}`,{
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+            },}
         );
         const data = await response.json();
         setProposals(data.proposalsFound);
@@ -54,7 +55,7 @@ console.log('The multiaddress is', daoMultiSigAddr);
     <div className="proposal-groups">
       {proposals ? (
         proposals.map((proposal) => (
-          <Link to={`/ViewProposal/${daoMultiSig}/${proposal.proposalCustomIdentifier}`}>
+          <Link to={`/ViewProposal/${daoMultiSigAddr}/${proposal.proposalCustomIdentifier}`}>
             <div className="proposal" key={proposal.proposalCustomIdentifier}>
               <div className="one">
                 <h1>{proposal.proposalTitle}</h1>

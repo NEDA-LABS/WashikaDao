@@ -2,7 +2,7 @@ import {  PrimaryGeneratedColumn, Column, Entity, JoinColumn, ManyToOne, Unique 
 import { Proposal } from "./Proposal";
 
 @Entity()
-@Unique(["proposalCustomIdentifier", "voterAddr"])
+@Unique(["proposal", "voterAddr"])
 export class Vote{
     @PrimaryGeneratedColumn()
     voteId: number;
@@ -14,6 +14,6 @@ export class Vote{
     voteValue: boolean;  //true for upvote, false for downvote
 
     @ManyToOne(() => Proposal, proposal =>  proposal.votes)
-    @JoinColumn({ name: "proposalCustomIdentifier" })
-    proposalCustomIdentifier?: Proposal;
+    @JoinColumn({  name: "proposalId" })
+    proposal?: Proposal;
 }

@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
 import { baseUrl } from "../utils/backendComm";
 
 interface ProposalData {
@@ -47,14 +45,18 @@ const ViewProposal: React.FC = () => {
   console.log(daoMultiSigAddr, proposalCustomIdentifier);
   const navigate = useNavigate();
   const [proposalData, setProposalData] = useState<ProposalData | null>(null); // State to hold proposal data
-  const token = localStorage.getItem("token");
-  const { memberAddr } = useSelector((state: RootState) => state.user);
+  const token = localStorage.getItem("token") ?? "";
+  const memberAddr = localStorage.getItem("address")
 
   useEffect(() => {
     const fetchProposalData = async () => {
       try {
         const response = await fetch(
-          `http://${baseUrl}/DaoKit/Proposals/GetProposalDetails/${daoMultiSigAddr}/${proposalCustomIdentifier}`
+          `http://${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}/&proposalCustomIdentifier=${proposalCustomIdentifier}`,{
+            headers: {
+              Authorization: token,
+              "Content-Type": "application/json",
+            },}
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -70,21 +72,21 @@ const ViewProposal: React.FC = () => {
     if (daoMultiSigAddr && proposalCustomIdentifier) {
       fetchProposalData();
     }
-  }, [daoMultiSigAddr, proposalCustomIdentifier]);
+  }, [daoMultiSigAddr, proposalCustomIdentifier, token]);
 
   const handleVote = async (voteType: "UpVoteProposal" | "DownVoteProposal") => {
     if (!daoMultiSigAddr || !proposalCustomIdentifier) return;
 
     try {
       const response = await fetch(
-        `http://${baseUrl}/DaoKit/Proposals/$${voteType}`,
+        `http://${baseUrl}/DaoKit/Proposals/${voteType}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the token in the Authorization header
+            Authorization: token, // Include the token in the Authorization header
           },
-          body: JSON.stringify({proposalCustomIdentifier, voterAddr: memberAddr }),
+          body: JSON.stringify({proposalCustomIdentifier, daoMultiSigAddr, voterAddr: memberAddr }),
         }
       );
 

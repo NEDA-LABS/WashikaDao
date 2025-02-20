@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { baseUrl } from "../utils/backendComm";
+import React, { useEffect, useState } from "react";
+import { IFetchedBackendDao } from "../utils/Types";
 
 interface Wanachama {
   id: number;
   firstName: string;
   lastName: string;
   phoneNumber: string;
+}
+
+export interface DaoDetails extends IFetchedBackendDao {
+  members: Wanachama[];
 }
 
 // Pagination Component
@@ -95,42 +97,20 @@ const Pagination: React.FC<PaginationProps> = ({
 };
 
 // Wanachama List Component
-const WanachamaList = () => {
+const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
+  daoDetails,
+}) => {
   const itemsPerPage = 4; // Number of items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [wanachamaData, setWanachamaData] = useState<Wanachama[]>([]);
-  const { daoMultiSig } = useSelector((state: RootState) => state.user);
-  const daoMultiSigAddr = daoMultiSig;
-  const token = localStorage.getItem("token");
+  const [wanachamaData, setWanachamaData] = useState<Wanachama[]>(
+    daoDetails?.members ?? []
+  );
 
-  // Fetch user data when the component mounts
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`, {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-          
-        ); 
-        const data = await response.json();
-        if (response.ok) {
-          setWanachamaData(data.members);
-        } else {
-          console.error("Error fetching member count:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      }
-    };
-
-    fetchUsers();
-  }, [daoMultiSigAddr, token]);
-  console.log(wanachamaData);
-  
+    if (daoDetails?.members) {
+      setWanachamaData(daoDetails.members);
+    }
+  }, [daoDetails]);
 
   const totalPages = Math.ceil(wanachamaData.length / itemsPerPage);
 
@@ -147,9 +127,11 @@ const WanachamaList = () => {
   return (
     <div>
       <div className="wanachama">
-        {paginatedData.map((member) => (
-          <div className="mwanachama" key={member.id}>
-            <p className="name">{member.firstName} {member.lastName}</p>
+        {paginatedData.map((member, index) => (
+          <div className="mwanachama" key={index}>
+            <p className="name">
+              {member.firstName} {member.lastName}
+            </p>
             <p className="phoneNo">{member.phoneNumber}</p>
             <button>Manage</button>
           </div>

@@ -6,7 +6,7 @@ div.onee {
   display: flex;
   justify-content: space-between;
   padding-bottom: 36px;
-  margin: 0 96px 120px 84px;
+  margin: 0 96px 56px 96px;
   position: relative;
 }
 
@@ -15,7 +15,8 @@ div.onee::after {
   position: absolute;
   bottom: 0;
   height: 2px;
-  width: 90vw;
+  left: 16px;
+  width: calc(97.6% - 16px);
   background-color: #c8954b;
 }
 
@@ -23,7 +24,7 @@ div.onee::before {
   content: "";
   position: absolute;
   bottom: -3px;
-  left: 90vw;
+  left: 97.6%;
   width: 8px;
   height: 8px;
   background-color: #c8954b;
@@ -99,7 +100,7 @@ div.onee::before {
 }
 
 /* Responsive design */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   div.onee {
     margin: 0 24px;
   }

@@ -1,6 +1,6 @@
 // import { useNavigate } from "react-router-dom";
 import Footer from "../components/Footer";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import Strip from "../components/Strip";
 import { useSelector } from "react-redux";

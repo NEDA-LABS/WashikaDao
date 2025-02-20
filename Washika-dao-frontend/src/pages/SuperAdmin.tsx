@@ -1,6 +1,6 @@
-import NavBar from "../components/NavBar";
+import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
-import WanachamaList from "../components/WanachamaList";
+import WanachamaList, { DaoDetails } from "../components/WanachamaList";
 import Dashboard from "../components/Dashboard";
 import Cards from "../components/Cards";
 import { useEffect, useState } from "react";
@@ -23,18 +23,6 @@ import { baseUrl } from "../utils/backendComm";
  * @returns {JSX.Element} The rendered SuperAdmin component.
  */
 
-interface DaoDetails {
-  daoName: string;
-  daoLocation: string;
-  targetAudience: string;
-  daoTitle: string;
-  daoDescription: string;
-  daoOverview: string;
-  daoImageIpfsHash: string;
-  multiSigAddr: string;
-  kiwango: number;
-}
-
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
@@ -45,66 +33,46 @@ const SuperAdmin: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState<number | string>("");
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
-  const [role, setRole] = useState<string>("");
-  // const [guaranter, setGuaranter] = useState<string>("");
-  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
+  // const [role, setRole] = useState<string>("");
 
-  const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null); //state to hold DAO details
+  const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(); //state to hold DAO details
   const [memberCount, setMemberCount] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const isVisible = useSelector(
-        (state: RootState) => state.notification.isVisible
-    );
-    const dispatch = useDispatch();
-    const token = localStorage.getItem("token");
-    const navigate = useNavigate();
+    (state: RootState) => state.notification.isVisible
+  );
+  const dispatch = useDispatch();
+  const token = localStorage.getItem("token") ?? "";
+  const navigate = useNavigate();
+  const { daoTxHash } = useParams<{ daoTxHash: string }>();
+  const address = useSelector((state: RootState) => state.auth.address);
 
+  const fetchDaoDetails = async () => {
+    try {
+      const response = await fetch(
+        `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setDaoDetails(data.daoDetails);
+        setMemberCount(data.daoDetails.members.length);
+      } else {
+        console.error("Error fetching daoDetails:", data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
   useEffect(() => {
-    const fetchDaoDetails = async () => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig/${daoMultiSigAddr}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setDaoDetails(data.daoDetails);
-        } else {
-          console.error("Error fetching daoDetails:", data.message);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    const fetchMemberCount = async () => {
-      try {
-        const response = await fetch(
-          `http://${baseUrl}/DaoKit/MemberShip/AllDaoMembers/${daoMultiSigAddr}`,{
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setMemberCount(data.memberCount);
-        } else {
-          console.error("Error fetching member count:", data.message);
-        }
-      } catch (error) {
-        console.error("Failed to fetch member count:", error);
-      }
-    };
-
-    if (daoMultiSigAddr) {
+    if (daoTxHash) {
       fetchDaoDetails();
-      fetchMemberCount();
     }
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
@@ -117,50 +85,23 @@ const SuperAdmin: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [daoMultiSigAddr, token]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [daoTxHash, token]);
   // console.log(daoDetails);
 
   // Handle role change
-  const handleRoleChange = (
-    e: React.ChangeEvent<
-      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
-    >
-  ) => {
-    setRole(e.target.value);
-    // setGuaranter(e.target.value);
-  };
+  // const handleRoleChange = (
+  //   e: React.ChangeEvent<
+  //     HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
+  //   >
+  // ) => {
+  //   setRole(e.target.value);
+  //   // setGuaranter(e.target.value);
+  // };
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
     setShowForm(!showForm);
-  };
-
-  const handleInviteMember = async () => {
-    try {
-      // Send an email to the new member
-      const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/InviteMemberEmail/$${daoMultiSigAddr}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            email: email,
-            firstName: firstName,
-          }),
-        }
-      );
-
-      if (response.ok) {
-        console.log("Member added and email sent successfully.");
-      } else {
-        console.error("Failed to send email.");
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
   };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -168,28 +109,24 @@ const SuperAdmin: React.FC = () => {
 
     // Build payload data
     const payload = {
-      memberAddr: "",
       firstName,
       lastName,
       email,
       phoneNumber,
       nationalIdNo,
-      memberRole: role,
-      daoMultiSigAddr,
-      daos: "",
-      // guaranter,
+      memberCustomIdentifier: crypto.randomUUID(),
     };
 
     console.log("Payload:", payload);
 
     try {
       const response = await fetch(
-        `http://${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
+        `http://${baseUrl}/DaoKit/MemberShip/AddMember/?daoTxHash=${daoTxHash}&adminMemberAddr=${address}`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: token,
           },
           body: JSON.stringify(payload),
         }
@@ -199,8 +136,9 @@ const SuperAdmin: React.FC = () => {
 
       if (response.ok) {
         console.log(`Success: ${result.message}`);
-        handleInviteMember();
         setShowForm(!showForm);
+        // Re-fetch DAO details to update Memberount and WanachamaList
+        fetchDaoDetails();
       } else {
         console.error(`Error: ${result.error}`);
       }
@@ -216,31 +154,27 @@ const SuperAdmin: React.FC = () => {
         <>
           <div className="centered">
             <div className="daoImage one">
-              <img
-                src={daoDetails?.daoImageIpfsHash}
-                alt="DaoImage"
-              />
+              <img src={daoDetails?.daoImageIpfsHash} alt="DaoImage" />
             </div>
           </div>
 
-        {isVisible && (
-          <div className="notification">
-            <div>
-              <img src="/images/Info.png" alt="info icon" />
+          {isVisible && (
+            <div className="notification">
+              <div>
+                <img src="/images/Info.png" alt="info icon" />
+              </div>
+              <div className="notifications">
+                <h3>Notification</h3>
+                <p>New Member Request</p>
+                <button>View</button>
+              </div>
+              <div>
+                <button onClick={() => dispatch(toggleNotificationPopup())}>
+                  <img src="/images/X.png" alt="cancel icon" />
+                </button>
+              </div>
             </div>
-            <div className="notifications">
-              <h3>Notification</h3>
-              <p>New Member Request</p>
-              <button>View</button>
-            </div>
-            <div>
-                <button onClick={() =>
-                    dispatch(toggleNotificationPopup())}>
-              <img src="/images/X.png" alt="cancel icon" />
-            </button>
-            </div>
-          </div>
-                    )}
+          )}
           <div className="top">
             <div className="one onesy">
               <h1>{daoDetails?.daoName}</h1>
@@ -248,16 +182,22 @@ const SuperAdmin: React.FC = () => {
                 <p>{daoDetails?.daoLocation}</p>
                 <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
-              <p className="email">
-                {daoMultiSigAddr
-                  ? isSmallScreen
-                    ? `${daoMultiSigAddr.slice(
-                        0,
-                        14
-                      )}...${daoMultiSigAddr.slice(-9)}`
-                    : `${daoMultiSigAddr}`
-                  : "N/A"}
-              </p>
+              <div>
+                {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
+                  <button>Generate MultiSigAddress</button>
+                ) : (
+                  <p className="email">
+                    {daoDetails?.daoMultiSigAddr
+                      ? isSmallScreen
+                        ? `${daoDetails?.daoMultiSigAddr.slice(
+                            0,
+                            14
+                          )}...${daoDetails?.daoMultiSigAddr.slice(-9)}`
+                        : daoDetails?.daoMultiSigAddr
+                      : "N/A"}
+                  </p>
+                )}
+              </div>
             </div>
             <div className="two">
               <div className="first">
@@ -296,7 +236,9 @@ const SuperAdmin: React.FC = () => {
             <button onClick={() => setActiveSection("mikopo")}>
               Loan Details
             </button>
-            <button onClick={() => navigate(`/UpdateDao/${daoMultiSigAddr}`)}>Edit Settings</button>
+            <button onClick={() => navigate(`/UpdateDao/${daoTxHash}`)}>
+              Edit Settings
+            </button>
           </div>
 
           {activeSection === "daoOverview" && (
@@ -307,7 +249,16 @@ const SuperAdmin: React.FC = () => {
                 </div>
                 <Dashboard />
               </div>
-              <button className="create" onClick={() => navigate(`/CreateProposal/${daoMultiSigAddr || ""}`)}>Create a Proposal</button>
+              <button
+                className="create"
+                onClick={() =>
+                  navigate(
+                    `/CreateProposal/${daoDetails?.daoMultiSigAddr || ""}`
+                  )
+                }
+              >
+                Create a Proposal
+              </button>
               <section className="second">
                 <div className="sec">
                   <img src="/images/Vector(4).png" alt="logo" />
@@ -352,38 +303,37 @@ const SuperAdmin: React.FC = () => {
                       type: "number",
                       onChange: (e) => setNationalIdNo(e.target.value),
                     },
-                    {
-                      label: "Role",
-                      type: "select",
-                      options: [
-                        {
-                          label: "Select Role",
-                          value: "",
-                          disabled: true,
-                          selected: true,
-                        },
-                        { label: "Chairperson", value: "Chairperson" },
-                        { label: "Member", value: "Member" },
-                        { label: "Funder", value: "Funder" },
-                      ],
-                      onChange: handleRoleChange,
-                    },
-                    {
-                      label: "Guaranter",
-                      type: "select",
-                      options: [
-                        {
-                          label: "Select Guaranter",
-                          value: "",
-                          disabled: true,
-                          selected: true,
-                        },
-                        { label: "Chairperson", value: "Chairperson" },
-                        { label: "Member", value: "Member" },
-                        { label: "Funder", value: "Funder" },
-                      ],
-                      onChange: handleRoleChange,
-                    },
+                    // {
+                    //   label: "Role",
+                    //   type: "select",
+                    //   options: [
+                    //     {
+                    //       label: "Select Role",
+                    //       value: "",
+                    //       disabled: true,
+                    //       selected: true,
+                    //     },
+                    //     { label: "Member", value: "Member" },
+                    //     { label: "Funder", value: "Funder" },
+                    //   ],
+                    //   onChange: handleRoleChange,
+                    // },
+                    // {
+                    //   label: "Guaranter",
+                    //   type: "select",
+                    //   options: [
+                    //     {
+                    //       label: "Select Guaranter",
+                    //       value: "",
+                    //       disabled: true,
+                    //       selected: true,
+                    //     },
+                    //     { label: "Chairperson", value: "Chairperson" },
+                    //     { label: "Member", value: "Member" },
+                    //     { label: "Funder", value: "Funder" },
+                    //   ],
+                    //   onChange: handleRoleChange,
+                    // },
                   ]}
                 />
                 <div className="center">
@@ -505,7 +455,7 @@ const SuperAdmin: React.FC = () => {
                   <input type="search" name="" id="" placeholder="Search" />
                   <img src="/images/Search.png" alt="" />
                 </div>
-                <WanachamaList />
+                <WanachamaList daoDetails={daoDetails} />
               </section>
             </>
           )}

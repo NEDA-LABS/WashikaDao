@@ -38,7 +38,7 @@
 }
 
 /* Responsive Styles */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
 .blog-page {
   font-size: 20px;
 }
