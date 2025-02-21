@@ -1,15 +1,11 @@
 import Footer from "../components/Footer";
 import DaoForm from "../components/DaoForm";
 import NavBar from "../components/Navbar/Navbar";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { useActiveAccount, useSendTransaction } from "thirdweb/react";
-//import { DaoCreationFormInputs, daoCreationTxResult } from "../utils/Types";
-import { prepareContractCall } from "thirdweb";
-import { FullDaoContract } from "../utils/handlers/Handlers";
 import { baseUrl } from "../utils/backendComm.ts";
 
 /**
@@ -24,8 +20,6 @@ interface FormData {
   daoOverview: string;
   daoImageIpfsHash: string;
   daoRegDocs: string;
-  daoMultiSigAddr: string;
-  multiSigPhoneNo: number;
   kiwango: number;
   accountNo: number;
   nambaZaHisa: string;
@@ -80,15 +74,11 @@ const uploadFileToCloudinary = async (file: File, resourceType: string) => {
 const UpdateDao: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
-  // const currUsrAcc = useActiveAccount();
-  const token = localStorage.getItem("token");
-//   const [daoTxHash, setDaoTxHash] = useState("");
-    const daoMultiSig = useActiveAccount();
-  const {  memberAddr, phoneNumber } = useSelector(
+  const token = localStorage.getItem("token") ?? "";
+  const { daoTxHash } = useParams<{ daoTxHash: string }>();
+  const { memberAddr, phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
-
-  const daoMultiSigAddr = daoMultiSig
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
@@ -108,8 +98,6 @@ const UpdateDao: React.FC = () => {
     daoOverview: "",
     daoImageIpfsHash: "",
     daoRegDocs: "",
-    daoMultiSigAddr: typeof memberAddr === "string" ? memberAddr : "",
-    multiSigPhoneNo: phoneNumber,
     kiwango: 0,
     accountNo: 0,
     nambaZaHisa: "",
@@ -160,127 +148,41 @@ const UpdateDao: React.FC = () => {
       }
     }
   };
-  const currActiveAcc = useActiveAccount();
-  const { mutate: sendTx, data: transactionResult } = useSendTransaction();
 
-  //Grooming the Dao transaction
-  const prepareCreateDaoTx = (_multiSigPhoneNo: bigint) => {
-    if (!currActiveAcc) {
-      console.error("Fatal Error, No Active Account found");
-      return; //Failed to prepare transaction since amount isn't plugged in
-    }
+  const fetchDaoDetails = async () => {
     try {
-      console.log("Preparing dao Update transaction");
-      const _createDaotx = prepareContractCall({
-        contract: FullDaoContract,
-        method: "createDao",
-        params: [
-          formData.daoName,
-          formData.daoLocation,
-          formData.targetAudience,
-          formData.daoTitle,
-          formData.daoDescription,
-          formData.daoOverview,
-          formData.daoImageIpfsHash,
-          currActiveAcc.address, //multisig address
-          BigInt(_multiSigPhoneNo?.toString() ?? "0"), //Convert to BigInt and handle undefined
-        ],
-      });
-      console.log("Dao Update transaction prepared", _createDaotx);
-      return _createDaotx;
-    } catch (error) {
-      console.error("Error preparing transaction:", error);
-      return; //error caused the transaction to fail
-    }
-  };
-
-  //function to now send the transaction
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sendCreateDaoTx = async (_createDaotx: any) => {
-    if (!_createDaotx) {
-      console.warn("undefined transaction");
-      return;
-    }
-    try {
-      console.log("Sending transaction...");
-      sendTx(_createDaotx, {
-        onSuccess: (receipt) => {
-          console.log("Transaction successful!", receipt);
-        //   setDaoTxHash(receipt.transactionHash);
-          // window.location.href = `https://testnet.routescan.io/transaction/${receipt.transactionHash}`;
-          console.log(`Current transaction result ${transactionResult}`);
-        },
-        onError: (error) => {
-          console.error("Transaction failed:", error);
-        },
-      });
-    } catch (error) {
-      if (error instanceof Error && error.message.includes("AA21")) {
-        prompt(
-          "Gas sponsorship issue, please top up your account or request for gas sponsorship"
-        );
-      } else {
-        console.error("Error updating dao", error);
-      }
-    }
-  };
-
-  const handleCreateDao = async (): Promise<boolean> => {
-    try {
-      //Converting multisigPhoneNo to BigInt with default value
-      const multisigPhoneNoBigInt = BigInt(formData.multiSigPhoneNo || "0");
-      console.log(
-        "Phone number to bind to multisig for dao",
-        multisigPhoneNoBigInt
-      );
-      console.log("------------Now Calling prepareCreateDaoTx------------");
-      const finalTx = prepareCreateDaoTx(multisigPhoneNoBigInt);
-      if (finalTx) {
-        await sendCreateDaoTx(finalTx);
-        console.log("Transaction sent successfully");
-        return true;
-      } else {
-        console.log("Looks like transaction failed");
-        return false;
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error && error.message.includes("AA21")) {
-        prompt(
-          "Gas sponsorship issue, please top up your account or request for gas sponsorship"
-        );
-      } else {
-        console.error("Error updating dao", error);
-      }
-      return false;
-    }
-  };
-
-    // Fetch DAO details on component mount
-    useEffect(() => {
-      const fetchDaoDetails = async () => {
-        try {
-          const response = await fetch(`http://${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByMultisig/${daoMultiSigAddr}`, {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          });
-          if (!response.ok) {
-            throw new Error("Failed to fetch DAO details");
-          }
-          const data = await response.json();
-          setFormData(data.daoDetails); // Populate form with existing data
-
-        } catch (error) {
-          console.error("Error fetching DAO details:", error);
+      const response = await fetch(
+        `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${daoTxHash}`,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
         }
-      };
-
-      if (daoMultiSigAddr) {
-        fetchDaoDetails();
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch DAO details");
       }
-    }, [daoMultiSigAddr, token]);
-    console.log(formData);
+      const data = await response.json();
+      console.log(data);
+      
+      setFormData((prevData) => ({
+        ...prevData,
+        ...data.daoDetails, // Merge existing state with fetched data
+      }));
+    } catch (error) {
+      console.error("Error fetching DAO details:", error);
+    }
+  };
+
+  // Fetch DAO details on component mount
+  useEffect(() => {
+    if (daoTxHash) {
+      fetchDaoDetails();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [daoTxHash, token]);
+  // console.log(formData);
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -290,43 +192,36 @@ const UpdateDao: React.FC = () => {
     //  alert("MultiSig Address is required");
     //   return;
     // }
-    if (!currActiveAcc) {
+    if (!memberAddr) {
       alert("Member Address is required");
       return;
     }
 
     setIsSubmitting(true); // Set loading state to true
     try {
-      // First, call handleCreateDao
-      const isCreateDaoSuccessful = await handleCreateDao();
-      if (isCreateDaoSuccessful === true) {
-        // Send combined data to the backend API
-        const response = await fetch(
-          `http://${baseUrl}/Daokit/DaoDetails/UpdateDaoDetails/${daoMultiSigAddr}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-            body: JSON.stringify(formData),
-          }
-        );
-        const data = await response.json();
-        console.log(data);
-        // Parse the response JSON
-        // Check if the response indicates success
-        if (response.ok) {
-          alert("Dao updated successfully");
-          console.log("DAO updated successfully", data);
-
-          navigate(`/SuperAdmin/${daoMultiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
-        } else {
-          console.error("Error updating DAO:", data.message);
+      // Send combined data to the backend API
+      const response = await fetch(
+        `${baseUrl}/Daokit/DaoDetails/UpdateDaoDetails/?daoTxHash=${daoTxHash}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify(formData),
         }
+      );
+      const data = await response.json();
+      console.log(data);
+      // Parse the response JSON
+      // Check if the response indicates success
+      if (response.ok) {
+        alert("Dao updated successfully");
+        console.log("DAO updated successfully", data);
+
+        navigate(`/SuperAdmin/${daoTxHash}`); // Navigate to the DAO profile pagehandleSubmit(event);
       } else {
-        console.error("DAO update transaction failed.");
-        alert("DAO update failed. Please try again.");
+        console.error("Error updating DAO:", data.message);
       }
     } catch (error) {
       console.error("Error updating DAO:", error);
@@ -391,13 +286,6 @@ const UpdateDao: React.FC = () => {
                   type: "text",
                   name: "targetAudience",
                   value: formData.targetAudience,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Initial Amount",
-                  type: "number",
-                  name: "kiwango",
-                  value: formData.kiwango,
                   onChange: handleChange,
                 },
                 {

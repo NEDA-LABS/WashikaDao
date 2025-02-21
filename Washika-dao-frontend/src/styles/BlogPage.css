@@ -41,6 +41,7 @@
 @media (max-width: 1024px) {
 .blog-page {
   font-size: 20px;
+  padding: 110px 24px 0;
 }
 
   .blog-page p{

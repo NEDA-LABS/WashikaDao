@@ -233,11 +233,11 @@ form {
   border-radius: 14px;
   background-color: #92bb84;
   color: #3c3a3a;
-  font-size: clamp(8px,1.5vw,23px);
+  font-size: clamp(12px,1.5vw,23px);
   font-family: "Syne", sans-serif;
   border: none;
   text-align: center;
-  padding-top: clamp(8px,1.5vw,28px);
+  padding-top: clamp(9px,1.5vw,28px);
   cursor: pointer;
 }
 
@@ -629,10 +629,12 @@ button.createDao {
   .wanakikundi .formDiv,
   .findAndJoin .formDiv {
     width: clamp(90px, 90vw, 820px);
-    height: clamp(70px, 70vw, 580px);
+    height: clamp(70px, 80vw, 580px);
   }
 
- 
+  .wanakikundi .formDiv .div {
+    width: 90%;
+  }
 
   .wanakikundi .first,
   .findAndJoin .first {
@@ -668,7 +670,7 @@ button.createDao {
   }
 
   .wanakikundi .short {
-    width: clamp(60px, 14vw, 115px);
+    width: clamp(60px, 24vw, 115px);
   }
 
   .wanakikundi .buttons {

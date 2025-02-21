@@ -122,7 +122,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
         </li>
       ) : className === "SuperAdmin" ? (
         <li className="three">
-          <Link to="/CreateProposal/:daoMultiSigAddr">Create Proposal</Link>
+          <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
         </li>
       ) : (
         showDaoToolKit && (
@@ -187,7 +187,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
            * If the user is a SuperAdmin, show a "Create Proposal" link.
            */
           <li className="three">
-            <Link to={"/CreateProposal/:daoMultiSigAddr"}>Create Proposal</Link>
+            <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
           </li>
         ) : (
           /**

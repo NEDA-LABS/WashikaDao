@@ -17,9 +17,12 @@ const ADMIN_ROLES = [
 // For member navigation, we may want only the "Member" role.
 const MEMBER_ROLES = [DaoRoleEnum.MEMBER, DaoRoleEnum.FUNDER];
 
-export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
+export const useDaoNavigation = (daos: Dao[], mode: NavigationMode) => {
   const navigate = useNavigate();
   const [filteredDaos, setFilteredDaos] = useState<Dao[]>([]);
+  // const [selectedDaoTxHash, setSelectedDaoTxHash] = useState<string | null>(
+  //   localStorage.getItem("selectedDaoTxHash")
+  // );
 
   useEffect(() => {
     if (!daos || daos.length === 0) {
@@ -33,9 +36,20 @@ export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
     );
     setFilteredDaos(matchingDaos);
 
+    // if (selectedDaoTxHash) {
+    //   const storedDao = matchingDaos.find(
+    //     (dao) => dao.daoTxHash === selectedDaoTxHash
+    //   );
+    //   if (storedDao) {
+    //     navigateToDao(storedDao);
+    //   }
+    // }
+
   }, [daos, mode]);
 
   const navigateToDao = (dao: Dao) => {
+    // localStorage.setItem("selectedDaoTxHash", dao.daoTxHash);
+    // setSelectedDaoTxHash(dao.daoTxHash);
     if (mode === "admin") {
       navigate(`/SuperAdmin/${dao.daoTxHash}`);
     } else {
@@ -44,4 +58,4 @@ export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
   };
 
   return { filteredDaos, navigateToDao };
-};
+}
