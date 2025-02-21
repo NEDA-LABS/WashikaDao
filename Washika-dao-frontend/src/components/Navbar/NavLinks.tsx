@@ -8,7 +8,6 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import PopupNotification from "./PopupNotification"; // Component for displaying pop-up notifications.
 import { useState } from "react";
-import DaoSelectionPopup from "./DaoSelectionPopup";
 import ReactDOM from "react-dom";
 
 /**
@@ -61,7 +60,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
   // State to control the visibility of a pop-up notification.
   const [showPopupNotification, setShowPopupNotification] =
     useState<boolean>(false);
-  const [showDaoPopup, setShowDaoPopup] = useState(false);
 
   // Helper: Compute the navigation mode based on fetched DAOs.
   const computeNavigationMode = (daos: Dao[]): NavigationMode => {
@@ -82,17 +80,23 @@ const NavLinks: React.FC<NavLinksProps> = ({
   // Use the navigation hook to filter DAOs based on the provided mode.
   const { filteredDaos, navigateToDao } = useDaoNavigation(daos, computedMode);
 
-  // Handler for the "DAO Tool Kit" link.
   const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    if (filteredDaos.length === 1) {
-      // If exactly one DAO qualifies, navigate immediately.
+    const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
 
+    if (selectedDaoTxHash) {
+      const selectedDao = filteredDaos.find(
+        (dao) => dao.daoTxHash === selectedDaoTxHash
+      );
+      if (selectedDao) {
+        navigateToDao(selectedDao);
+        return;
+      }
+    }
+
+    if (filteredDaos.length === 1) {
       navigateToDao(filteredDaos[0]);
-    } else if (filteredDaos.length > 1) {
-      setShowDaoPopup((prev) => !prev);
     } else {
-      // If no matching DAO is found, show a notification.
       setShowPopupNotification(true);
     }
   };
@@ -114,31 +118,27 @@ const NavLinks: React.FC<NavLinksProps> = ({
         </li>
       )}
       <li>
-        <Link to="/Blogs">Education</Link>
+        <Link to="/Blogs">EducationHUB</Link>
       </li>
       {className === "DaoProfile" || className === "navbarProposal" ? (
         <li className="three">
           <Link to="/MarketPlace">MarketPlace</Link>
         </li>
       ) : className === "SuperAdmin" ? (
-        <li className="three">
-          <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
-        </li>
+        <>
+          <li className="three">
+            <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
+          </li>
+          <li className="three">
+            <Link to={`/Funder/${address}`}>Funder</Link>
+          </li>
+        </>
       ) : (
         showDaoToolKit && (
           <li className="three">
             <Link to="" onClick={handleDaoToolKitClick}>
               DAO Tool Kit
             </Link>
-            {showDaoPopup && (
-              <DaoSelectionPopup
-                daos={filteredDaos}
-                onSelect={(dao: Dao) => {
-                  navigateToDao(dao);
-                  setShowDaoPopup(false);
-                }}
-              />
-            )}
           </li>
         )
       )}
@@ -170,7 +170,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
 
         {/* Static link to the Education Hub */}
         <li>
-          <Link to="/Blogs">Education</Link>
+          <Link to="/Blogs">EducationHUB</Link>
         </li>
 
         {/* Conditional rendering of different navigation links based on dao multiSigAddr */}
@@ -186,9 +186,14 @@ const NavLinks: React.FC<NavLinksProps> = ({
           /**
            * If the user is a SuperAdmin, show a "Create Proposal" link.
            */
-          <li className="three">
-            <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
-          </li>
+          <>
+            <li className="three">
+              <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
+            </li>
+            <li className="three">
+              <Link to={`/Funder/${address}`}>Funder</Link>
+            </li>
+          </>
         ) : (
           /**
            * For all other users, show the "DAO Tool Kit" link.
@@ -199,15 +204,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
               <Link to="" onClick={handleDaoToolKitClick}>
                 DAO Tool Kit
               </Link>
-              {showDaoPopup && (
-                <DaoSelectionPopup
-                  daos={filteredDaos}
-                  onSelect={(dao: Dao) => {
-                    navigateToDao(dao);
-                    setShowDaoPopup(false);
-                  }}
-                />
-              )}
             </li>
           )
         )}

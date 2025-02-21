@@ -61,8 +61,15 @@ nav.SuperAdmin {
   justify-content: space-between;
 }
 
-.superAdmin .top .one {
+.superAdmin .top .one.onesy{
   padding-bottom: clamp(9px, 1vw, 20px);
+  margin-bottom: clamp(9px, 2vw, 60px);
+  max-width: clamp(400px, 56vw, 800px);
+}
+
+.superAdmin .top .one h1 {
+  font-size: clamp(24px, 3vw, 48px);
+  font-weight: bold;
 }
 
 .superAdmin .top .one button{
@@ -480,6 +487,10 @@ nav.SuperAdmin {
   .superAdmin .top {
     flex-direction: column;
     margin: 0 24px;
+  }
+
+  .superAdmin .top .one.onesy {
+    max-width: 100%;
   }
 
   .superAdmin .top .two {

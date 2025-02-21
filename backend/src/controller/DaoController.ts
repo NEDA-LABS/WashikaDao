@@ -225,29 +225,40 @@ export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
       relations: ["members", "daoRoles", "daoRoles.member"],
     });
 
-    return res.status(200).json({
-      message: "DAO found with the details below",
-      daoDetails: {
-        daoId: daoDetails.daoId,
-        daoName: daoDetails.daoName,
-        daoLocation: daoDetails.daoLocation,
-        targetAudience: daoDetails.targetAudience,
-        daoTitle: daoDetails.daoTitle,
-        daoDescription: daoDetails.daoDescription,
-        daoOverview: daoDetails.daoOverview,
-        daoImageIpfsHash: daoDetails.daoImageIpfsHash,
-        daoRegDocs: daoDetails.daoRegDocs,
-        daoMultiSigAddr: daoDetails.daoMultiSigAddr,
-        multiSigPhoneNo: daoDetails.multiSigPhoneNo,
-        kiwango: daoDetails.kiwango,
-        accountNo: daoDetails.accountNo,
-        nambaZaHisa: daoDetails.nambaZaHisa,
-        kiasiChaHisa: daoDetails.kiasiChaHisa,
-        interestOnLoans: daoDetails.interestOnLoans,
-        daoTxHash: daoDetails.daoTxHash,
-        members: daoDetails.members,
-      },
-    });
+    if (daoDetails) {
+      // Get the Chairperson's memberAddr
+      const chairpersonRole = daoDetails.daoRoles.find(
+        (role) => role.role === DaoRoleEnum.CHAIRPERSON
+      );
+      const chairpersonAddr = chairpersonRole?.member?.memberAddr || null;
+
+      return res.status(200).json({
+        message: "DAO found with the details below",
+        daoDetails: {
+          daoId: daoDetails.daoId,
+          daoName: daoDetails.daoName,
+          daoLocation: daoDetails.daoLocation,
+          targetAudience: daoDetails.targetAudience,
+          daoTitle: daoDetails.daoTitle,
+          daoDescription: daoDetails.daoDescription,
+          daoOverview: daoDetails.daoOverview,
+          daoImageIpfsHash: daoDetails.daoImageIpfsHash,
+          daoRegDocs: daoDetails.daoRegDocs,
+          daoMultiSigAddr: daoDetails.daoMultiSigAddr,
+          multiSigPhoneNo: daoDetails.multiSigPhoneNo,
+          kiwango: daoDetails.kiwango,
+          accountNo: daoDetails.accountNo,
+          nambaZaHisa: daoDetails.nambaZaHisa,
+          kiasiChaHisa: daoDetails.kiasiChaHisa,
+          interestOnLoans: daoDetails.interestOnLoans,
+          daoTxHash: daoDetails.daoTxHash,
+          members: daoDetails.members,
+          chairpersonAddr,
+        },
+      });
+    } else {
+      return res.status(404).json({ message: "DAO not found" });
+    }
   } catch (error) {
     console.error("Error finding DAO:", error);
     return res.status(500).json({ error: "Error finding DAO" });
@@ -316,9 +327,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
     let _daoDetails;
-    async function doesDaoWithThisMsigExist(
-      _daoTxHash: any
-    ): Promise<boolean> {
+    async function doesDaoWithThisMsigExist(_daoTxHash: any): Promise<boolean> {
       const _doesMsigExist = await daoRepository.findOne({
         where: { daoTxHash: _daoTxHash },
       });
@@ -328,9 +337,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
       }
       return false;
     }
-    const doesMsigExist: boolean = await doesDaoWithThisMsigExist(
-      daoTxHash
-    );
+    const doesMsigExist: boolean = await doesDaoWithThisMsigExist(daoTxHash);
     if (doesMsigExist === false) {
       return res
         .status(404)
