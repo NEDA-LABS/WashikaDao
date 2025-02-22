@@ -10,8 +10,7 @@ import { useEffect, useState } from "react";
 import { RootState } from "../../redux/store";
 import { login } from "../../redux/auth/authSlice";
 import { useMemberDaos } from "./useMemberDaos";
-import { NavigationMode, useDaoNavigation } from "./useDaoNavigation";
-import { Dao, DaoRoleEnum } from "../../utils/Types";
+import { useDaoNavigation } from "./useDaoNavigation";
 
 /**
  * Creates a Thirdweb client instance for handling authentication and blockchain interactions.
@@ -55,7 +54,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const dispatch = useDispatch(); // Hook for dispatching Redux actions.
   const address = useSelector((state: RootState) => state.auth.address); // Get the logged-in address from Redux.
   const firstName = useSelector((state: RootState) => state.user.firstName);
-  const { daos} = useMemberDaos(address || "");
+  const { daos } = useMemberDaos(address || "");
 
   // Sync Redux state with localStorage on load.
   useEffect(() => {
@@ -96,21 +95,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     }),
   ];
 
-  // Helper: Compute the navigation mode based on fetched DAOs.
-    const computeNavigationMode = (daos: Dao[]): NavigationMode => {
-      // Check if any DAO has an admin role.
-      const adminExists = daos.some(
-        (dao) =>
-          dao.role &&
-          (dao.role === DaoRoleEnum.CHAIRPERSON ||
-            dao.role === DaoRoleEnum.TREASURER ||
-            dao.role === DaoRoleEnum.SECRETARY)
-      );
-      return adminExists ? "admin" : "member";
-    };
-
-    const computedMode = computeNavigationMode(daos);
-  const { filteredDaos, navigateToDao } = useDaoNavigation(daos, computedMode);
+  const { filteredDaos, navigateToDao } = useDaoNavigation(daos);
 
   const [selectedDaoTxHash, setSelectedDaoTxHash] = useState<string | number>(
     localStorage.getItem("selectedDaoTxHash") || ""
@@ -127,8 +112,10 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     const selectedTxHash = event.target.value;
     setSelectedDaoTxHash(selectedTxHash);
     localStorage.setItem("selectedDaoTxHash", selectedTxHash);
-    
-    const selectedDao = filteredDaos.find(dao => dao.daoTxHash === selectedTxHash);
+
+    const selectedDao = filteredDaos.find(
+      (dao) => dao.daoTxHash === selectedTxHash
+    );
     if (selectedDao) navigateToDao(selectedDao);
   };
 
@@ -201,7 +188,11 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
 
   if (className === "navbarDaoMember") {
     return (
-      <select className="portalButton select" value={selectedDaoTxHash} onChange={handleDaoChange}>
+      <select
+        className="portalButton select"
+        value={selectedDaoTxHash}
+        onChange={handleDaoChange}
+      >
         {filteredDaos.map((dao) => (
           <option key={dao.daoTxHash} value={dao.daoTxHash}>
             {dao.daoName}
