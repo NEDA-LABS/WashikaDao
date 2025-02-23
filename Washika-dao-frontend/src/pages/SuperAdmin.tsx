@@ -44,6 +44,19 @@ const SuperAdmin: React.FC = () => {
   const navigate = useNavigate();
   const { daoTxHash } = useParams<{ daoTxHash: string }>();
   const address = useSelector((state: RootState) => state.auth.address);
+  const [authToken, setAuthToken] = useState<string>("");
+  
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const storedToken = localStorage.getItem("token") || "";
+      if (storedToken) {
+        setAuthToken(storedToken);
+        clearInterval(intervalId);
+      }
+    }, 10); // check every 100ms
+    return () => clearInterval(intervalId);
+  }, []);
+  
 
   const fetchDaoDetails = async () => {
     try {
@@ -69,7 +82,7 @@ const SuperAdmin: React.FC = () => {
     }
   };
   useEffect(() => {
-    if (daoTxHash) {
+    if (daoTxHash && authToken) {
       fetchDaoDetails();
     }
     const handleResize = () => {
@@ -84,7 +97,7 @@ const SuperAdmin: React.FC = () => {
       window.removeEventListener("resize", handleResize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [daoTxHash, token]);
+  }, [daoTxHash, authToken]);
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {

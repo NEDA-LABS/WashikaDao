@@ -55,6 +55,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const address = useSelector((state: RootState) => state.auth.address); // Get the logged-in address from Redux.
   const firstName = useSelector((state: RootState) => state.user.firstName);
   const { daos } = useMemberDaos(address || "");
+  
 
   // Sync Redux state with localStorage on load.
   useEffect(() => {
@@ -96,6 +97,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   ];
 
   const { filteredDaos, navigateToDao } = useDaoNavigation(daos);
+  
 
   const [selectedDaoTxHash, setSelectedDaoTxHash] = useState<string | number>(
     localStorage.getItem("selectedDaoTxHash") || ""

@@ -67,8 +67,8 @@ export class Dao {
   daoMultiSigAddr: string;
 
   //one to many relation where one dao can have multiple proposals but one proposal cannot have multiple daos
-  @OneToMany(() => Proposal, (proposal) => proposal.dao, { lazy: true })
-  proposals: Promise<Proposal[]>;
+  @OneToMany(() => Proposal, (proposal) => proposal.dao)
+  proposals: Proposal[];
 
   // relation where one member can belong to multiple daos and one member can own multiple daos
   // dao can have multiple members & can be owned by multiple members
