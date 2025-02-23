@@ -144,11 +144,11 @@ export async function GetAllDaosInPlatform(req: Request, res: Response) {
 
 /**
  * Retrieves the list of DAOs associated with a specific member and their roles within those DAOs.
- * 
+ *
  * @param req - The Express request object containing the member address query parameter.
  * @param res - The Express response object used to send the response.
  * @returns - A JSON response containing the DAOs and roles associated with the member.
- * 
+ *
  * @remarks
  * This function retrieves the DAOs that a member is associated with and the specific roles they hold
  * within those DAOs. It expects a query parameter `memberAddr` to identify the member and fetch the data
@@ -180,6 +180,7 @@ export async function GetMemberDaos(req: Request, res: Response) {
         daoTxHash: dao.daoTxHash,
         daoName: dao.daoName,
         role: roleEntry ? roleEntry.role : null,
+        daoMultiSigAddr: dao.daoMultiSigAddr,
       };
     });
 
@@ -215,12 +216,11 @@ export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
   if (!daoTxHash || typeof daoTxHash !== "string") {
     return res
       .status(400)
-      .json({ message: "Missing or invalid daoMultiSigAddr query parameter!" });
+      .json({ message: "Missing or invalid daoTxHash query parameter!" });
   }
 
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
-    const daoRoleRepository = AppDataSource.getRepository(DaoRole);
     const daoDetails = await daoRepository.findOne({
       where: { daoTxHash },
       relations: ["members", "daoRoles", "daoRoles.member"],
@@ -228,11 +228,11 @@ export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
 
     if (daoDetails) {
       // Get the Chairperson's memberAddr
-    const chairpersonRole = daoDetails.daoRoles.find(
-      (role) => role.role === DaoRoleEnum.CHAIRPERSON
-    );
+      const chairpersonRole = daoDetails.daoRoles.find(
+        (role) => role.role === DaoRoleEnum.CHAIRPERSON
+      );
+      const chairpersonAddr = chairpersonRole?.member?.memberAddr || null;
 
-    const chairpersonAddr = chairpersonRole?.member?.memberAddr || null;
       return res.status(200).json({
         message: "DAO found with the details below",
         daoDetails: {
@@ -285,8 +285,8 @@ export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
  */
 
 export async function UpdateDaoDetails(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.query;
-  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
+  const { daoTxHash } = req.query;
+  if (!daoTxHash || typeof daoTxHash !== "string") {
     return res.status(400).json({ error: "Missing required url params" }); //return 400 status if required fields are missing
   }
 
@@ -299,7 +299,6 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     daoOverview,
     daoImageIpfsHash,
     daoRegDocs,
-    multiSigPhoneNo,
     kiwango,
     accountNo,
     nambaZaHisa,
@@ -310,7 +309,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   //check missing details
   //TODO: Refactor to an extensible function or helper function in utils to check missing required
   if (
-    !daoMultiSigAddr ||
+    !daoTxHash ||
     !daoName ||
     !daoLocation ||
     !targetAudience ||
@@ -318,7 +317,6 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     !daoDescription ||
     !daoOverview ||
     !daoRegDocs ||
-    !multiSigPhoneNo ||
     !accountNo ||
     !nambaZaHisa ||
     !kiasiChaHisa ||
@@ -330,11 +328,9 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
     let _daoDetails;
-    async function doesDaoWithThisMsigExist(
-      _daoMultiSigAddr: any
-    ): Promise<boolean> {
+    async function doesDaoWithThisMsigExist(_daoTxHash: any): Promise<boolean> {
       const _doesMsigExist = await daoRepository.findOne({
-        where: { daoMultiSigAddr: _daoMultiSigAddr },
+        where: { daoTxHash: _daoTxHash },
       });
       if (_doesMsigExist) {
         _daoDetails = _doesMsigExist;
@@ -342,9 +338,7 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
       }
       return false;
     }
-    const doesMsigExist: boolean = await doesDaoWithThisMsigExist(
-      daoMultiSigAddr
-    );
+    const doesMsigExist: boolean = await doesDaoWithThisMsigExist(daoTxHash);
     if (doesMsigExist === false) {
       return res
         .status(404)
@@ -359,7 +353,6 @@ export async function UpdateDaoDetails(req: Request, res: Response) {
     daoDetails.daoDescription = daoDescription;
     daoDetails.daoOverview = daoOverview;
     daoDetails.daoImageIpfsHash = daoImageIpfsHash;
-    daoDetails.multiSigPhoneNo = multiSigPhoneNo;
     daoDetails.kiwango = kiwango;
     daoDetails.accountNo = accountNo;
     daoDetails.nambaZaHisa = nambaZaHisa;

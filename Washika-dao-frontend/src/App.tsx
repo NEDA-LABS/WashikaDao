@@ -58,7 +58,7 @@ const App: React.FC = () => {
             <Route path="/DaoRegistration" element={<DaoRegistration />} />
             <Route path="/Blogs" element={<JifunzeElimu />} />
             <Route
-              path="/CreateProposal/:daoMultiSigAddr"
+              path="/CreateProposal"
               element={<CreateProposal />}
             />
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
@@ -66,7 +66,7 @@ const App: React.FC = () => {
             <Route path="/MarketPlace" element={<MarketPlace />} />
             <Route path="/DaoProfile/:daoTxHash" element={<DaoProfile />} />
             <Route path="/SuperAdmin/:daoTxHash" element={<SuperAdmin />} />
-            <Route path="/UpdateDao/:daoMultiSigAddr" element={<UpdateDao />} />
+            <Route path="/UpdateDao/:daoTxHash" element={<UpdateDao />} />
             <Route
               path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"
               element={<ViewProposal />}

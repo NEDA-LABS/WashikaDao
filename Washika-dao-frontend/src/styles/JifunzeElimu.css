@@ -1,5 +1,5 @@
 .jifunze {
-  padding-top: clamp(120px,16vw,240px);
+  padding-top: clamp(120px, 16vw, 240px);
 }
 
 div.onee {
@@ -33,12 +33,12 @@ div.onee::before {
 
 .jifunze .onee .left {
   width: 85%;
-  font-size: clamp(18px,4.9vw,56px);
+  font-size: clamp(18px, 4.9vw, 56px);
   color: #fffefe;
 }
 
 .onee .image img {
-  width: clamp(70px,11vw,175px);
+  width: clamp(70px, 11vw, 175px);
 }
 
 .search-filter {
@@ -109,20 +109,20 @@ div.onee::before {
     gap: 0.75rem;
     margin: 12px;
   }
-  
+
+  .search-filter .search {
+    padding: 6px 12px;
+  }
+
   .pagination {
-    flex-direction: column;
     gap: 0.5rem;
     margin-bottom: 48px;
   }
 
   .pagination button {
-    width: 40%;
-    padding: 0.5rem 1.5rem;
+    padding: 7px 0;
+    width: 72px;
+    background-color: #007bff;
+    font-size: 12px;
   }
-}
-
-.jifunze .imagge {
-    padding: 64px 12px;
-    background-color: #4b454662;;
 }

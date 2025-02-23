@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import React from "react";
 import Footer from "../components/Footer";
@@ -11,6 +11,8 @@ import { FullDaoContract } from "../utils/handlers/Handlers";
 // 4 Backend Communication
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { baseUrl } from "../utils/backendComm";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 /**
  *
@@ -69,11 +71,12 @@ const uploadDocumentToCloudinary = async (file: File) => {
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
   const [completedSteps, setCompletedSteps] = useState<number>(0);
-  // Extract multiSigAddr from URL params
-  const { daoMultiSigAddr } = useParams<{ daoMultiSigAddr: string }>();
-
+  const userDaos = useSelector((state: RootState) => state.userDaos.daos);
+  const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
+  const selectedDao = userDaos.find((dao) => dao.daoTxHash === selectedDaoTxHash);
   const memberAddr = localStorage.getItem('address');
   const token = localStorage.getItem("token") ?? "";
+  const daoMultiSigAddr = selectedDao ? selectedDao.daoMultiSigAddr : "";
   // State to manage form data
   const [proposalData, setProposalData] = useState({
     proposalCustomIdentifier: crypto.randomUUID(),
@@ -226,10 +229,10 @@ const CreateProposal: React.FC = () => {
       
       if (!ProposaltxHash) {
         alert("Proposal creation on blockchain failed!");
-        return;
+        // return;
       }
         const response = await fetch(
-          `${baseUrl}/DaoKit/Proposals/CreateProposal/?daoMultiSigAddr=${daoMultiSigAddr}`,
+          `${baseUrl}/DaoKit/Proposals/CreateProposal`,
           {
             method: "POST",
             headers: {

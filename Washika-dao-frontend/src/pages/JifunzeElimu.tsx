@@ -164,9 +164,9 @@ const JifunzeElimu: React.FC = () => {
             Next
           </button>
         </div>
-        <div className="imagge">
+        {/* <div className="imagge">
           <img src="images/Frame 9.png" alt="" />
-        </div>
+        </div> */}
       </main>
 
       <Footer className={""} />

@@ -6,10 +6,11 @@ import { createThirdwebClient } from "thirdweb"; // Import the function to creat
 import { useDispatch, useSelector } from "react-redux"; // Import useDispatch to dispatch actions in Redux.
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice"; // Import the Redux action to toggle the notification popup.
 import { inAppWallet } from "thirdweb/wallets"; // Import Account type and inAppWallet for authentication methods.
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "../../redux/store";
 import { login } from "../../redux/auth/authSlice";
-import {useMemberDaos} from "./useMemberDaos";
+import { useMemberDaos } from "./useMemberDaos";
+import { useDaoNavigation } from "./useDaoNavigation";
 
 /**
  * Creates a Thirdweb client instance for handling authentication and blockchain interactions.
@@ -52,7 +53,8 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const navigate = useNavigate(); // Hook for navigating between pages.
   const dispatch = useDispatch(); // Hook for dispatching Redux actions.
   const address = useSelector((state: RootState) => state.auth.address); // Get the logged-in address from Redux.
-
+  const firstName = useSelector((state: RootState) => state.user.firstName);
+  const { daos } = useMemberDaos(address || "");
 
   // Sync Redux state with localStorage on load.
   useEffect(() => {
@@ -63,7 +65,6 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   }, [dispatch, address]);
 
   const { memberExists } = useMemberDaos(address || "");
-
 
   /**
    * Custom theme configuration for the `ConnectButton`.
@@ -94,17 +95,29 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     }),
   ];
 
-   // If className is "navbarFunder", render ConnectButton instead of Browse.
-   if (className === "navbarFunder") {
-    return (
-      <ConnectButton
-        client={client}
-        theme={customTheme}
-        accountAbstraction={{ chain: arbitrumSepolia, sponsorGas: false }}
-        wallets={wallets}
-      />
+  const { filteredDaos, navigateToDao } = useDaoNavigation(daos);
+
+  const [selectedDaoTxHash, setSelectedDaoTxHash] = useState<string | number>(
+    localStorage.getItem("selectedDaoTxHash") || ""
+  );
+
+  useEffect(() => {
+    if (!selectedDaoTxHash && filteredDaos.length > 0) {
+      setSelectedDaoTxHash(filteredDaos[0].daoTxHash);
+      localStorage.setItem("selectedDaoTxHash", filteredDaos[0].daoTxHash);
+    }
+  }, [filteredDaos, selectedDaoTxHash]);
+
+  const handleDaoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedTxHash = event.target.value;
+    setSelectedDaoTxHash(selectedTxHash);
+    localStorage.setItem("selectedDaoTxHash", selectedTxHash);
+
+    const selectedDao = filteredDaos.find(
+      (dao) => dao.daoTxHash === selectedTxHash
     );
-  }
+    if (selectedDao) navigateToDao(selectedDao);
+  };
 
   /**
    * Determines whether to show the "Member Profile" button based on the user's role.
@@ -115,9 +128,10 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const shouldShowMemberProfile = ![
     "DaoProfile",
     "navbarOwner",
-    "joinPlatformNav",
+    "DaoRegister",
     "SuperAdmin",
     "navbarDaoMember",
+    "navbarMarketPlace",
   ].includes(className);
 
   /**
@@ -128,7 +142,10 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   // decide which button to display based on whether the member exists in the backend.
   if (address && shouldShowMemberProfile) {
     return memberExists ? (
-      <button className="portalButton" onClick={() => navigate(`/MemberProfile/${address}`)}>
+      <button
+        className="portalButton"
+        onClick={() => navigate(`/MemberProfile/${address}`)}
+      >
         Profile
       </button>
     ) : (
@@ -145,13 +162,49 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
    */
   if (className === "SuperAdmin") {
     return (
-      <button className="portalButton" onClick={() => {
-        dispatch(toggleNotificationPopup());
-        // Toggle the mobile menu when notifications is clicked
-        if (toggleMenu) toggleMenu();
-      }}>
+      <button
+        className="portalButton"
+        onClick={() => {
+          dispatch(toggleNotificationPopup());
+          // Toggle the mobile menu when notifications is clicked
+          if (toggleMenu) toggleMenu();
+        }}
+      >
         Notifications
       </button>
+    );
+  }
+
+  if (className === "DaoProfile") {
+    return (
+      <button
+        className="portalButton"
+        onClick={() => navigate(`/MemberProfile/${address}`)}
+      >
+        {firstName}
+      </button>
+    );
+  }
+
+  if (className === "navbarDaoMember") {
+    return (
+      <select
+        className="portalButton select"
+        value={selectedDaoTxHash}
+        onChange={handleDaoChange}
+      >
+        {filteredDaos.map((dao) => (
+          <option key={dao.daoTxHash} value={dao.daoTxHash}>
+            {dao.daoName}
+          </option>
+        ))}
+        <ConnectButton
+          client={client} // Thirdweb client instance.
+          theme={customTheme} // Custom theme configuration.
+          accountAbstraction={{ chain: arbitrumSepolia, sponsorGas: false }} // Configures account abstraction for Arbitrum Sepolia.
+          wallets={wallets} // Provides authentication options.
+        />
+      </select>
     );
   }
 

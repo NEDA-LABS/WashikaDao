@@ -5,8 +5,6 @@ import { Dao, DaoRoleEnum } from "../../utils/Types";
 
 // This enum should match your backend DaoRoleEnum.
 
-export type NavigationMode = "admin" | "member";
-
 // Define which roles qualify for admin navigation.
 const ADMIN_ROLES = [
   DaoRoleEnum.CHAIRPERSON,
@@ -14,10 +12,7 @@ const ADMIN_ROLES = [
   DaoRoleEnum.SECRETARY,
 ];
 
-// For member navigation, we may want only the "Member" role.
-const MEMBER_ROLES = [DaoRoleEnum.MEMBER, DaoRoleEnum.FUNDER];
-
-export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
+export const useDaoNavigation = (daos: Dao[]) => {
   const navigate = useNavigate();
   const [filteredDaos, setFilteredDaos] = useState<Dao[]>([]);
 
@@ -26,17 +21,14 @@ export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
       setFilteredDaos([]);
       return;
     }
-    // Filter based on the mode:
-    const rolesToUse = mode === "admin" ? ADMIN_ROLES : MEMBER_ROLES;
-    const matchingDaos = daos.filter((dao) =>
-      dao.role ? rolesToUse.includes(dao.role) : false
-    );
-    setFilteredDaos(matchingDaos);
+    // Filter based on the role:
+    setFilteredDaos(daos.filter(dao => !!dao.role));
 
-  }, [daos, mode]);
+  }, [daos]);
 
   const navigateToDao = (dao: Dao) => {
-    if (mode === "admin") {
+    // Navigate based on the member's role for this specific DAO.
+    if (dao.role && ADMIN_ROLES.includes(dao.role)) {
       navigate(`/SuperAdmin/${dao.daoTxHash}`);
     } else {
       navigate(`/DaoProfile/${dao.daoTxHash}`);
@@ -44,4 +36,4 @@ export function useDaoNavigation(daos: Dao[], mode: NavigationMode) {
   };
 
   return { filteredDaos, navigateToDao };
-};
+}

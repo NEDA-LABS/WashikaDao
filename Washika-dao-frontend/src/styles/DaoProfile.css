@@ -526,7 +526,7 @@ section.second::after {
   .daoMain .first {
     display: flex;
     flex-direction: column;
-    margin: 0 24px;
+    margin: -50px 24px;
     padding: 0;
   }
 

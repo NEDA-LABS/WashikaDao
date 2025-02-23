@@ -6,8 +6,8 @@ interface UserState {
   firstName: string;
   lastName: string;
   email: string;
-  phoneNumber: number;
-  nationalIdNo: number | string | undefined;
+  phoneNumber: string;
+  nationalIdNo: string;
 }
 
 const initialState: UserState = {
@@ -15,8 +15,8 @@ const initialState: UserState = {
   firstName: '',
   lastName: '',
   email: "",
-  phoneNumber: 0,
-  nationalIdNo: 0,
+  phoneNumber: "",
+  nationalIdNo: "",
 };
 
 const userSlice = createSlice({

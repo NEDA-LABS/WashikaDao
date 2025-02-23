@@ -25,7 +25,7 @@ router.get('/AllDaoMembers', Authenticator, (req: Request, res: Response) => {Ge
     * @request Body - The Necessary Details of the member who wants to join
     * @returns a success or failed status code & or message
     */
-router.post('/RequestToJoinDao', Authenticator,  (req: Request, res: Response) => {RequestToJoinDao(req, res)});
+router.post('/RequestToJoinDao', (req: Request, res: Response) => {RequestToJoinDao(req, res)});
 /**
     * INFO: Add a member to a particular Dao
     * @Params - Multisig of the Dao
