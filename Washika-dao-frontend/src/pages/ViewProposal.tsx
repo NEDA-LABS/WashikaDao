@@ -46,13 +46,14 @@ const ViewProposal: React.FC = () => {
   const navigate = useNavigate();
   const [proposalData, setProposalData] = useState<ProposalData | null>(null); // State to hold proposal data
   const token = localStorage.getItem("token") ?? "";
-  const memberAddr = localStorage.getItem("address")
+  const memberAddr = localStorage.getItem("address");
+  const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
 
   useEffect(() => {
     const fetchProposalData = async () => {
       try {
         const response = await fetch(
-          `${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}/&proposalCustomIdentifier=${proposalCustomIdentifier}`,{
+          `${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}&proposalCustomIdentifier=${proposalCustomIdentifier}`,{
             headers: {
               Authorization: token,
               "Content-Type": "application/json",
@@ -77,16 +78,19 @@ const ViewProposal: React.FC = () => {
   const handleVote = async (voteType: "UpVoteProposal" | "DownVoteProposal") => {
     if (!daoMultiSigAddr || !proposalCustomIdentifier) return;
 
+    // Determine the vote value: true for upvote, false for downvote.
+    const voteValue = voteType === "UpVoteProposal";
+
     try {
       const response = await fetch(
-        `http://${baseUrl}/DaoKit/Proposals/${voteType}`,
+        `${baseUrl}/DaoKit/Proposals/voteProposal`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: token, // Include the token in the Authorization header
           },
-          body: JSON.stringify({proposalCustomIdentifier, daoMultiSigAddr, voterAddr: memberAddr }),
+          body: JSON.stringify({proposalCustomIdentifier, daoMultiSigAddr, voterAddr: memberAddr, voteValue, }),
         }
       );
 
@@ -96,7 +100,7 @@ const ViewProposal: React.FC = () => {
 
       // Refresh proposal data after voting
       const updatedData = await response.json();
-      alert(voteType === "UpVoteProposal" ? "Voted Yes" : "Voted No");
+      alert(voteValue ? "Voted Yes" : "Voted No");
       console.log("Updated Proposal Data:", updatedData);
       if (updatedData.amountRequested !== undefined) {
         setProposalData(updatedData);
@@ -105,19 +109,15 @@ const ViewProposal: React.FC = () => {
       }
     } catch (error) {
       console.error("Error voting:", error);
+      alert("Already voted")
     }
   };
 
   const handleBackClick = () => {
     if (proposalData) {
-      navigate(`/DaoProfile/${daoMultiSigAddr}`);
+      navigate(`/DaoProfile/${selectedDaoTxHash}`);
     }
   };
-
-  console.log("ProposalData is", proposalData);
-
-  console.log("daoMultiSigAddr:", daoMultiSigAddr);
-  console.log("proposalCustomIdentifier:", proposalCustomIdentifier);
 
   // Render loading state if proposal data is not yet available
   if (!proposalData) {

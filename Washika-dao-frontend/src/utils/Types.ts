@@ -117,5 +117,6 @@ export interface Dao {
   daoTxHash: string;
   daoName: string;
   role: DaoRoleEnum | null;
+  daoMultiSigAddr: string;
 }
 

@@ -186,7 +186,7 @@ const GroupInfo: React.FC = () => {
       await response.json();
 
       if (response.ok) {
-        alert("Request sent successfully. You will access the Dao once your request is accepted");
+        alert("Request sent successfully.");
         dispatch(
           setCurrentUser({
             memberAddr: payload.memberAddr,

@@ -6,7 +6,6 @@ import { IVote } from "../Interfaces/EntityTypes";
 import AppDataSource from "../data-source";
 const proposalRepository = AppDataSource.getRepository(Proposal);
 const voteRepository = AppDataSource.getRepository(Vote);
-const daoRepository = AppDataSource.getRepository(Dao);
 
 //Create proposal,read proposal, read all proposals, update proposal if not already voted,  delete proposal if not yet voted on.
 /**Handling a post request sent to {'/proposal'} to create a new proposal*/
@@ -25,14 +24,6 @@ const daoRepository = AppDataSource.getRepository(Dao);
  * @returns - An HTTP response with a status code and a JSON object containing a message.
  */
 export async function CreateProposal(req: Request, res: Response) {
-  const { daoMultiSigAddr } = req.query;
-
-  if (!daoMultiSigAddr || typeof daoMultiSigAddr !== "string") {
-    return res
-      .status(400)
-      .json({ error: "Invalid or missing daoMultiSigAddr" });
-  }
-
   const {
     proposalCustomIdentifier,
     proposalOwner,
@@ -44,9 +35,11 @@ export async function CreateProposal(req: Request, res: Response) {
     profitSharePercent,
     numUpVotes,
     numDownVotes,
+    daoMultiSigAddr,
   } = req.body;
   const proposalData = {
     proposalCustomIdentifier,
+    daoMultiSigAddr,
     proposalOwner,
     proposalTitle,
     proposalSummary,
@@ -59,7 +52,9 @@ export async function CreateProposal(req: Request, res: Response) {
   };
   //check missing details
   if (!proposalData) {
-    return res.status(400).json({ error: "Missing required in request body" });
+    return res
+      .status(400)
+      .json({ error: "Missing required field in request body" });
   }
   try {
     //if proposal doesn't exist create or build a new proposal using the data from the form submission
@@ -116,20 +111,31 @@ export async function GetProposalDetails(req: Request, res: Response) {
     typeof proposalCustomIdentifier !== "string"
   ) {
     return res.status(404).json({
-      message:
-        "Error missing required proposalCustomIdentifier",
+      message: "Error missing required proposalCustomIdentifier",
     });
   }
 
   try {
     //find proposal by proposalId if doesn't exist will be caught within
     const proposalDetails = await proposalRepository
-    .createQueryBuilder("proposal")
-    .leftJoinAndSelect("proposal.votes", "vote")
-    .where("proposal.proposalCustomIdentifier = :proposalCustomIdentifier", { proposalCustomIdentifier })
-    .loadRelationCountAndMap("proposal.numUpVotes", "proposal.votes", "upvotes", qb => qb.where("vote.voteValue = true"))
-    .loadRelationCountAndMap("proposal.numDownVotes", "proposal.votes", "downvotes", qb => qb.where("vote.voteValue = false"))
-    .getOne();
+      .createQueryBuilder("proposal")
+      .leftJoinAndSelect("proposal.votes", "vote")
+      .where("proposal.proposalCustomIdentifier = :proposalCustomIdentifier", {
+        proposalCustomIdentifier,
+      })
+      .loadRelationCountAndMap(
+        "proposal.numUpVotes",
+        "proposal.votes",
+        "upvotes",
+        (qb) => qb.where("upvotes.voteValue = true")
+      )
+      .loadRelationCountAndMap(
+        "proposal.numDownVotes",
+        "proposal.votes",
+        "downvotes",
+        (qb) => qb.where("downvotes.voteValue = false")
+      )
+      .getOne();
 
     if (!proposalDetails) {
       return res
@@ -172,14 +178,16 @@ export async function VoteProposal(req: Request, res: Response) {
   }
 
   try {
-    const foundProposal = await proposalRepository.findOneBy({ proposalCustomIdentifier });
+    const foundProposal = await proposalRepository.findOneBy({
+      proposalCustomIdentifier,
+    });
 
     if (!foundProposal) {
       return res.status(404).json({ message: "Proposal not found" });
     }
 
     const existingVote = await voteRepository.findOne({
-      where: { proposal: { proposalCustomIdentifier }, voterAddr },
+      where: { proposal: foundProposal, voterAddr },
     });
 
     if (existingVote) {
@@ -200,7 +208,6 @@ export async function VoteProposal(req: Request, res: Response) {
     res.status(500).json({ error: "Error processing vote" });
   }
 }
-
 
 /**
  * Retrieves all proposals associated with a specific DAO.

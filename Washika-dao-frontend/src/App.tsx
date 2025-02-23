@@ -58,7 +58,7 @@ const App: React.FC = () => {
             <Route path="/DaoRegistration" element={<DaoRegistration />} />
             <Route path="/Blogs" element={<JifunzeElimu />} />
             <Route
-              path="/CreateProposal/:daoMultiSigAddr"
+              path="/CreateProposal"
               element={<CreateProposal />}
             />
             <Route path="/JoinPlatform" element={<JoinPlatform />} />

@@ -180,6 +180,7 @@ export async function GetMemberDaos(req: Request, res: Response) {
         daoTxHash: dao.daoTxHash,
         daoName: dao.daoName,
         role: roleEntry ? roleEntry.role : null,
+        daoMultiSigAddr: dao.daoMultiSigAddr,
       };
     });
 

@@ -111,7 +111,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
       ) : className === "SuperAdmin" ? (
         <>
           <li className="three">
-            <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
+            <Link to={"/CreateProposal"}>Create Proposal</Link>
           </li>
           <li className="three">
             <Link to={`/Funder/${address}`}>Funder</Link>
@@ -172,7 +172,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
            */
           <>
             <li className="three">
-              <Link to={`/CreateProposal/${address}`}>Create Proposal</Link>
+              <Link to={"/CreateProposal"}>Create Proposal</Link>
             </li>
             <li className="three">
               <Link to={`/Funder/${address}`}>Funder</Link>

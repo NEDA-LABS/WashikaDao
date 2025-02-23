@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import { baseUrl } from "../utils/backendComm";
+import { RootState } from "../redux/store";
+import { useSelector } from "react-redux";
 
 interface ProposalData {
   proposalId: number;
@@ -22,7 +24,10 @@ interface ProposalData {
 const ProposalGroups: React.FC = () => {
   const navigate = useNavigate();
   const [proposals, setProposals] = useState<ProposalData[]>([]);
-  const daoMultiSigAddr = localStorage.getItem("address");
+  const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
+  const userDaos = useSelector((state: RootState) => state.userDaos.daos);
+  const selectedDao = userDaos.find((dao) => dao.daoTxHash === selectedDaoTxHash);
+  const daoMultiSigAddr = selectedDao ? selectedDao.daoMultiSigAddr : "";;
 
 
   // Fetch proposals from the API
@@ -38,6 +43,8 @@ const ProposalGroups: React.FC = () => {
             },}
         );
         const data = await response.json();
+        console.log(data);
+        
         setProposals(data.proposalsFound);
       } catch (error) {
         console.error("Error fetching proposals:", error);
