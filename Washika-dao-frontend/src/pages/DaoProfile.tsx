@@ -38,32 +38,45 @@ const DaoProfile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const token = localStorage.getItem("token") ?? "";
+  const [authToken, setAuthToken] = useState<string>("");
 
   useEffect(() => {
-    const fetchDaoDetails = async () => {
-      try {
-        const response = await fetch(
-          `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,{
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        const data = await response.json();
-        if (response.ok) {
-          setLoading(false);
-          setDaoDetails(data.daoDetails);
-          setMemberCount(data.daoDetails.members.length);
-        } else {
-          console.error("Error fetching daoDetails:", data.message);
-        }
-      } catch (error) {
-        console.error(error);
+    const intervalId = setInterval(() => {
+      const storedToken = localStorage.getItem("token") || "";
+      if (storedToken) {
+        setAuthToken(storedToken);
+        clearInterval(intervalId);
       }
-    };
+    }, 10); // check every 100ms
+    return () => clearInterval(intervalId);
+  }, []);
 
-    if (daoTxHash) {
+  const fetchDaoDetails = async () => {
+    try {
+      const response = await fetch(
+        `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+        {
+          headers: {
+            Authorization: token,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+      if (response.ok) {
+        setLoading(false);
+        setDaoDetails(data.daoDetails);
+        setMemberCount(data.daoDetails.members.length);
+      } else {
+        console.error("Error fetching daoDetails:", data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (daoTxHash && authToken) {
       fetchDaoDetails();
     }
 
@@ -78,7 +91,8 @@ const DaoProfile: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [daoDetails?.daoMultiSigAddr, daoTxHash, token]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [daoDetails?.daoMultiSigAddr, daoTxHash, authToken]);
   console.log(daoDetails);
 
   const handleClick = () => {

@@ -29,8 +29,6 @@ interface Dao {
 const GroupInfo: React.FC = () => {
   const [daos, setDaos] = useState<Dao[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  // showPopup controls whether the popup is shown;
-  // registrationType indicates which form to display: "join" or "funder"
   const [showPopup, setShowPopup] = useState<boolean>(false);
   const [registrationType, setRegistrationType] = useState<
     "join" | "funder" | null
@@ -39,10 +37,8 @@ const GroupInfo: React.FC = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token") ?? "";
   const memberAddr = useSelector((state: RootState) => state.auth.address);
-  
   const dispatch = useDispatch();
-    // Retrieve current user from Redux
-    const currentUser = useSelector((state: RootState) => state.user);
+  const currentUser = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     const fetchDaos = async () => {
@@ -116,6 +112,20 @@ const GroupInfo: React.FC = () => {
     memberCustomIdentifier: crypto.randomUUID(),
   });
 
+  // If a current user exists, prefill the form with his details.
+  useEffect(() => {
+    if (currentUser && (currentUser.firstName || currentUser.lastName)) {
+      setCurrentMember((prev) => ({
+        ...prev,
+        firstName: currentUser.firstName || "",
+        lastName: currentUser.lastName || "",
+        email: currentUser.email || "",
+        phoneNumber: currentUser.phoneNumber || "",
+        nationalIdNo: currentUser.nationalIdNo || "",
+      }));
+    }
+  }, [currentUser]);
+
   // Consolidated onChange handler for all fields.
   const handleFieldChange =
     (field: keyof IBackendDaoMember) =>
@@ -161,8 +171,6 @@ const GroupInfo: React.FC = () => {
       };
     }
 
-    console.log("Payload:", payload);
-
     try {
       const response = await fetch(
         `${baseUrl}/DaoKit/MemberShip/RequestToJoinDao/?daoTxHash=${selectedGroup.daoTxHash}`,
@@ -175,11 +183,10 @@ const GroupInfo: React.FC = () => {
         }
       );
 
-      const result = await response.json();
-      console.log(result);
+      await response.json();
 
       if (response.ok) {
-        alert("Registration successful");
+        alert("Request sent successfully. You will access the Dao once your request is accepted");
         dispatch(
           setCurrentUser({
             memberAddr: payload.memberAddr,
@@ -190,7 +197,12 @@ const GroupInfo: React.FC = () => {
             phoneNumber: payload.phoneNumber || "",
           })
         );
-        navigate(`/DaoProfile/${selectedGroup.daoTxHash}`);
+        // Navigate based on the registration type.
+      if (registrationType === "join") {
+        navigate(`/MemberProfile/${memberAddr}`);
+      } else if (registrationType === "funder") {
+        navigate(`/Funder/${memberAddr}`);
+      }
       } else {
         console.error("Member creation transaction failed");
         alert("Member creation failed. Please check your inputs and try again");
@@ -277,31 +289,31 @@ const GroupInfo: React.FC = () => {
                     {
                       label: "First Name",
                       type: "text",
-                      value: currentUser.firstName,
+                      value: currentMember.firstName,
                       onChange: handleFieldChange("firstName"),
                     },
                     {
                       label: "Last Name",
                       type: "text",
-                      value: currentUser.lastName,
+                      value: currentMember.lastName,
                       onChange: handleFieldChange("lastName"),
                     },
                     {
                       label: "Email",
                       type: "email",
-                      value: currentUser.email,
+                      value: currentMember.email,
                       onChange: handleFieldChange("email"),
                     },
                     {
                       label: "Phone Number",
                       type: "tel",
-                      value: currentUser.phoneNumber,
+                      value: currentMember.phoneNumber,
                       onChange: handleFieldChange("phoneNumber"),
                     },
                     {
                       label: "National Id",
                       type: "text",
-                      value: currentUser.nationalIdNo,
+                      value: currentMember.nationalIdNo,
                       onChange: handleFieldChange("nationalIdNo"),
                     },
                   ]}
@@ -316,13 +328,13 @@ const GroupInfo: React.FC = () => {
                     {
                       label: "First Name",
                       type: "text",
-                      value: currentUser.firstName,
+                      value: currentMember.firstName,
                       onChange: handleFieldChange("firstName"),
                     },
                     {
                       label: "Last Name",
                       type: "text",
-                      value: currentUser.lastName,
+                      value: currentMember.lastName,
                       onChange: handleFieldChange("lastName"),
                     },
                   ]}
