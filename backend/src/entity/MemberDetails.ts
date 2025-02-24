@@ -8,6 +8,7 @@ import {
 } from "typeorm";
 import { Dao } from "./Dao";
 import { DaoJoinDate, DaoRole, DaoStatus } from "./DaoMembershipRelations";
+import { cp } from "fs";
 //import { PhoneAndAddressMapping } from "./PhoneToAddress";
 
 @Entity()
@@ -35,12 +36,16 @@ export class MemberDetails {
   @Column({ unique: true, length: 20 })
   nationalIdNo?: string;
 
+  @Column({ unique: true })
+  memberAddr?: string;
+  
   @Column({ nullable: true })
   @Index("IDX_MEMBER_ADDRESS_UNIQUE", {
     unique: true,
     where: "memberAddr IS NOT NULL",
   })
-  memberAddr?: string;
+
+ 
 
   //many to many relation where one member can have multiple daos and one dao can have multiple members
   @ManyToMany(() => Dao, (dao) => dao.members)
