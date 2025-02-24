@@ -8,7 +8,7 @@ interface ProposalData {
   proposalCustomIdentifier: string;
   proposalOwner: string;
   proposalTitle: string;
-  projectSummary: string;
+  proposalSummary: string;
   proposalDescription: string;
   proposalStatus: string;
   amountRequested: number;
@@ -53,11 +53,13 @@ const ViewProposal: React.FC = () => {
     const fetchProposalData = async () => {
       try {
         const response = await fetch(
-          `${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}&proposalCustomIdentifier=${proposalCustomIdentifier}`,{
+          `${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}&proposalCustomIdentifier=${proposalCustomIdentifier}`,
+          {
             headers: {
               Authorization: token,
               "Content-Type": "application/json",
-            },}
+            },
+          }
         );
         if (!response.ok) {
           throw new Error("Network response was not ok");
@@ -75,24 +77,28 @@ const ViewProposal: React.FC = () => {
     }
   }, [daoMultiSigAddr, proposalCustomIdentifier, token]);
 
-  const handleVote = async (voteType: "UpVoteProposal" | "DownVoteProposal") => {
+  const handleVote = async (
+    voteType: "UpVoteProposal" | "DownVoteProposal"
+  ) => {
     if (!daoMultiSigAddr || !proposalCustomIdentifier) return;
 
     // Determine the vote value: true for upvote, false for downvote.
     const voteValue = voteType === "UpVoteProposal";
 
     try {
-      const response = await fetch(
-        `${baseUrl}/DaoKit/Proposals/voteProposal`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: token, // Include the token in the Authorization header
-          },
-          body: JSON.stringify({proposalCustomIdentifier, daoMultiSigAddr, voterAddr: memberAddr, voteValue, }),
-        }
-      );
+      const response = await fetch(`${baseUrl}/DaoKit/Proposals/voteProposal`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token, // Include the token in the Authorization header
+        },
+        body: JSON.stringify({
+          proposalCustomIdentifier,
+          daoMultiSigAddr,
+          voterAddr: memberAddr,
+          voteValue,
+        }),
+      });
 
       if (!response.ok) {
         throw new Error("Failed to cast vote");
@@ -109,7 +115,7 @@ const ViewProposal: React.FC = () => {
       }
     } catch (error) {
       console.error("Error voting:", error);
-      alert("Already voted")
+      alert("Already voted");
     }
   };
 
@@ -136,11 +142,13 @@ const ViewProposal: React.FC = () => {
             height={99}
             onClick={handleBackClick}
           />
-          <button className={
-                    proposalData.proposalStatus === "open"
-                      ? "inProgress"
-                      : "rejected"
-                  }>Pending</button>
+          <button
+            className={
+              proposalData.proposalStatus === "open" ? "inProgress" : "rejected"
+            }
+          >
+            Pending
+          </button>
         </div>
 
         <article>
@@ -149,7 +157,7 @@ const ViewProposal: React.FC = () => {
             <button className="twoo">Fund Project</button>
             <button className="twooo">View Statement</button>
           </div>
-          <p>{proposalData.projectSummary}</p>
+          <p>{proposalData.proposalSummary}</p>
         </article>
 
         <section>
@@ -179,8 +187,11 @@ const ViewProposal: React.FC = () => {
             <img src="/images/Star.png" alt="star" />
             Vote Yes
           </button>
-          <button className="twoe" onClick={() => handleVote("DownVoteProposal")}>
-            Deny 
+          <button
+            className="twoe"
+            onClick={() => handleVote("DownVoteProposal")}
+          >
+            Deny
           </button>
         </div>
       </main>
