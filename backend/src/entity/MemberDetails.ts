@@ -2,6 +2,7 @@ import {
   Column,
   Entity,
   Index,
+  JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -48,7 +49,8 @@ export class MemberDetails {
  
 
   //many to many relation where one member can have multiple daos and one dao can have multiple members
-  @ManyToMany(() => Dao, (dao) => dao.members)
+  @ManyToMany(() => Dao, (dao) => dao.members, { cascade: true })
+  @JoinTable()
   daos: Dao[]; //array of daos that a member is in
 
   @OneToMany(() => DaoStatus, (daoStatus) => daoStatus.member, {
