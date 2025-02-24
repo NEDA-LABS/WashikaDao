@@ -1,16 +1,16 @@
-import Footer from "../components/Footer";
-import DaoForm from "../components/DaoForm";
-import NavBar from "../components/Navbar/Navbar.tsx";
-import MemberForm from "../components/MemberForm";
-import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
-import { baseUrl } from "../utils/backendComm.ts";
-import { useDaoForm } from "../hooks/useDaoForm";
-import { useMemberManagement } from "../hooks/useMemberManagement";
-import { useCompletedSteps } from "../hooks/useCompletedSteps";
-import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import DaoForm from "../components/DaoForm";
+import Footer from "../components/Footer";
+import MemberForm from "../components/MemberForm";
+import NavBar from "../components/Navbar/Navbar.tsx";
+import { useDaoForm } from "../hooks/useDaoForm";
+import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
+import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
+import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
+import { baseUrl } from "../utils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -56,12 +56,6 @@ const DaoRegistration: React.FC = () => {
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
-    // Ensure multiSigAddr is properly set
-    // if (!formData.multiSigAddr || formData.multiSigAddr.trim() === "") {
-    //  alert("MultiSig Address is required");
-    //   return;
-    // }
-    console.log('This is the address',address);
     
     if (!address) {
       alert("Member Address is required");

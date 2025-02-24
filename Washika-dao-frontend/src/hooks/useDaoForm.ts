@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
-import { uploadFileToCloudinary } from "../DaoRegistration/Cloudinary.tsx";
+import { useCloudinaryUpload } from "./useCloudinaryUpload.ts";
 import { IBackendDaoCreation } from "../utils/Types.ts";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store.ts";
 
 export const useDaoForm = (chairpersonPhone: string = "") => {
   const memberAddr = useSelector((state: RootState) => state.auth.address);
+  const { uploadFileToCloudinary } = useCloudinaryUpload();
   const [formData, setFormData] = useState<IBackendDaoCreation>({
     daoName: "",
     daoLocation: "",
@@ -48,8 +49,8 @@ export const useDaoForm = (chairpersonPhone: string = "") => {
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const fieldName = e.target.name;
-
     if (file) {
+      // Set resource type to "image" if the field name indicates an image; otherwise "raw".
       const resourceType = fieldName === "daoImageIpfsHash" ? "image" : "raw";
       const fileUrl = await uploadFileToCloudinary(file, resourceType);
       if (fileUrl) {

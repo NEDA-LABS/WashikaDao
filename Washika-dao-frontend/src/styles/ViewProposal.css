@@ -208,15 +208,17 @@
     height: 36px;
     padding: 0 12px;
     margin: 0;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .viewProposal article {
-    width: 100vw;
+    margin-top: 16px;
+    width: auto;
+    padding: 0 20px;
   }
 
   .viewProposal article h1 {
-    margin: 0 24px;
+    margin: 0 20px;
     font-size: 28px;
     line-height: initial;
   }
@@ -249,16 +251,12 @@
     align-items: flex-start;
   }
 
-  .viewProposal section .first {
-    width: auto;
-    height: auto;
+  .viewProposal section .dooh .first {
     font-size: 24px;
+    margin: 0 20px;
   }
 
   .viewProposal section .second {
-    width: auto;
-    height: auto;
-    font-size: 24px;
     letter-spacing: initial;
   }
 
@@ -291,5 +289,13 @@
     width: 260px;
     height: 36px;
     font-size: 24px;
+  }
+
+  .viewProposal .buttons {
+    margin: 0 20px;
+  }
+  .viewProposal .buttons .onee img {
+    width: 20%;
+    height: auto;
   }
 }

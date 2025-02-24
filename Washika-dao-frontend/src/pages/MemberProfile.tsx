@@ -5,7 +5,7 @@ import Dashboard from "../components/Dashboard";
 import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { baseUrl } from "../utils/backendComm";
-import { Dao, fetchDaos } from "../hooks/fetchDaos";
+import { Dao, fetchDaos } from "../hooks/useFetchDaos";
 import { useNavigate } from "react-router-dom";
 
 /**
