@@ -1,63 +1,66 @@
-// Import necessary dependencies from React, React Router, and Thirdweb
-import { useState, useEffect } from "react"; // React hooks for state and side effects.
-import { useNavigate } from "react-router-dom"; // Hook for programmatic navigation.
-import { useActiveAccount } from "thirdweb/react"; // Hook for fetching the currently active blockchain account.
+// Import React hooks for managing state and side effects.
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useActiveAccount } from "thirdweb/react";
 
 // Import custom components for the navigation bar.
-import NavLogo from "./NavLogo"; // Logo component for the navigation bar.
-import MobileMenuButton from "./MobileMenuButton"; // Component for toggling the mobile menu.
-import NavLinks from "./NavLinks"; // Component containing navigation links.
+import NavLogo from "./NavLogo";
+import MobileMenuButton from "./MobileMenuButton";
+import NavLinks from "./NavLinks";
 
+// Import Redux hooks and types for state management.
 import { useDispatch, useSelector } from "react-redux";
 import { RootState, AppDispatch } from "../../redux/store";
+
+// Import actions for authentication state.
 import { login } from "../../redux/auth/authSlice";
 import { logoutUser } from "../../utils/auth/authThunks";
 
 /**
- * Interface defining the props for the `NavBar` component.
+ * Props interface for the NavBar component.
  *
- * @property {string} className - The CSS class name applied to the navbar.
+ * @property {string} className - CSS class name(s) to apply to the nav element.
  */
 interface NavBarProps {
   className: string;
 }
 
 /**
- * A React functional component that renders the navigation bar.
+ * NavBar functional component renders the top navigation bar.
  *
- * @component
- * @param {NavBarProps} props - The component props.
- * @returns {JSX.Element} The rendered navigation bar.
+ * Features:
+ * - Displays the site logo, navigation links, and a mobile menu toggle button.
+ * - Integrates with blockchain account authentication via Thirdweb.
+ * - Synchronizes authentication state with Redux and localStorage.
+ * - Redirects to the homepage if the blockchain account is disconnected.
  *
- * @remarks
- * - Displays navigation links, a mobile menu button, and a logo.
- * - Checks for an active blockchain account and handles login persistence.
- * - Redirects the user to the homepage if no account is found.
- * - Manages user authentication state in `localStorage`.
+ * @param {NavBarProps} props - Component properties.
+ * @returns {JSX.Element} Rendered navigation bar.
  */
 const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
-  const navigate = useNavigate(); // Hook for navigation.
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
-  const activeAccount = useActiveAccount(); // Retrieves the currently active blockchain account.
+  const activeAccount = useActiveAccount();
   const address = useSelector((state: RootState) => state.auth.address);
-  // State to manage the mobile menu's open/close status.
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
 
   /**
-   * Effect: Store the active account address in `localStorage` when it changes.
+   * useEffect hook to synchronize the active blockchain account with the app's authentication state.
    *
-   * @remarks
-   * - Converts the address to lowercase before storing for consistency.
+   * Behavior:
+   * - If an active account is detected, convert its address to lowercase.
+   *   If it differs from the current address in the Redux store, dispatch a login action.
+   * - If no active account exists but an address is present in the Redux state,
+   *   it implies a wallet disconnection. Dispatch a logout action and navigate to the homepage.
    */
   useEffect(() => {
-      if (activeAccount?.address) {
+    if (activeAccount?.address) {
       const lowerCaseAddress = activeAccount.address.toLowerCase();
       if (lowerCaseAddress !== address) {
         dispatch(login(lowerCaseAddress));
       }
     } else if (address) {
-      // If activeAccount is explicitly null (after loading) and we had a stored address,
-      // then the wallet is truly disconnected and we can log out.
+      // The wallet has been disconnected; clear the authentication state.
       dispatch(logoutUser());
 
       navigate("/", { replace: true });
@@ -65,14 +68,15 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   }, [activeAccount, address, dispatch, navigate]);
 
   /**
-   * Handles clicks on the "Register DAO" link.
+   * Handles click events on the "Register DAO" link.
    *
-   * @param {React.MouseEvent<HTMLAnchorElement>} e - The event object.
+   * Functionality:
+   * - Prevents the default behavior of the link.
+   * - Checks localStorage for a stored address indicating an authenticated user.
+   * - If authenticated, navigates to the DAO registration page.
+   * - Otherwise, alerts the user to connect their wallet.
    *
-   * @remarks
-   * - Prevents default navigation.
-   * - Redirects the user to the DAO registration page if they are logged in.
-   * - Shows an alert if the user is not logged in.
+   * @param {React.MouseEvent<HTMLAnchorElement>} e - The click event.
    */
   const handleRegisterDaoLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -84,33 +88,22 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
     }
   };
 
-  /**
-   * Handles clicks on the "DAO Toolkit" link.
-   *
-   * @param {React.MouseEvent<HTMLAnchorElement>} e - The event object.
-   *
-   * @remarks
-   * - Prevents default navigation if no `daoMultiSigAddr` exists.
-   * - Shows a pop-up notification instead.
-   * - Navigates to the SuperAdmin dashboard if an address is available.
-   */
-
   return (
     <nav className={className}>
-      {/* Logo Component */}
+      {/* Render the site logo */}
       <NavLogo />
 
-      {/* Mobile Menu Toggle Button */}
+      {/* Render the mobile menu toggle button */}
       <MobileMenuButton
         isOpen={isMenuOpen}
         toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
       />
 
-      {/* Navigation Links */}
+      {/* Render the navigation links and pass down event handlers */}
       <NavLinks
         className={className}
         isOpen={isMenuOpen}
-        handleRegisterDaoLink={handleRegisterDaoLink} // Click handler for the DAO registration link.
+        handleRegisterDaoLink={handleRegisterDaoLink}
         toggleMenu={() => setIsMenuOpen(!isMenuOpen)}
       />
     </nav>

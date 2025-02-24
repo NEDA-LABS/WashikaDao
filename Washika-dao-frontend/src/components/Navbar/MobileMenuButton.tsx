@@ -25,7 +25,10 @@ interface MobileMenuButtonProps {
  * - Displays a close icon (`faTimes`) when the menu is open.
  * - Calls `toggleMenu` function when clicked to update the menu state.
  */
-const MobileMenuButton: React.FC<MobileMenuButtonProps> = ({ isOpen, toggleMenu }) => {
+const MobileMenuButton: React.FC<MobileMenuButtonProps> = ({
+  isOpen,
+  toggleMenu,
+}) => {
   return (
     <button className="menu-button" onClick={toggleMenu}>
       {/* Renders either the hamburger menu or close icon based on `isOpen` state */}

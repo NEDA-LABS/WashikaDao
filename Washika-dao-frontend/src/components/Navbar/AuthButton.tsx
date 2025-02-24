@@ -1,11 +1,11 @@
-// Import necessary dependencies from thirdweb, React, Redux, and React Router
-import { ConnectButton, lightTheme } from "thirdweb/react"; // Import the ConnectButton for authentication and lightTheme for theming.
-import { arbitrumSepolia } from "thirdweb/chains"; // Import the Arbitrum Sepolia testnet configuration.
-import { useNavigate } from "react-router-dom"; // Import useNavigate for programmatic navigation.
-import { createThirdwebClient } from "thirdweb"; // Import the function to create a Thirdweb client.
-import { useDispatch, useSelector } from "react-redux"; // Import useDispatch to dispatch actions in Redux.
-import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice"; // Import the Redux action to toggle the notification popup.
-import { inAppWallet } from "thirdweb/wallets"; // Import Account type and inAppWallet for authentication methods.
+// Import dependencies for blockchain authentication, theming, routing, and state management.
+import { ConnectButton, lightTheme } from "thirdweb/react";
+import { arbitrumSepolia } from "thirdweb/chains";
+import { useNavigate } from "react-router-dom";
+import { createThirdwebClient } from "thirdweb";
+import { useDispatch, useSelector } from "react-redux";
+import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
+import { inAppWallet } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
 import { RootState } from "../../redux/store";
 import { login } from "../../redux/auth/authSlice";
@@ -13,22 +13,23 @@ import { useMemberDaos } from "./useMemberDaos";
 import { useDaoNavigation } from "./useDaoNavigation";
 
 /**
- * Creates a Thirdweb client instance for handling authentication and blockchain interactions.
+ * Creates a Thirdweb client instance used for blockchain interactions and authentication.
  *
  * @remarks
- * - Uses an environment variable for the client ID.
- * - This client is passed to the `ConnectButton` for authentication.
+ * - Reads the client ID from an environment variable.
+ * - This client instance is later passed to the ConnectButton for handling authentication.
  */
 const client = createThirdwebClient({
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
-  clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID, // Fetches the client ID from environment variables
+  clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID, // Retrieve the client ID from environment variables.
 });
 
 /**
- * Interface defining the properties for the `AuthButton` component.
+ * Interface representing the props for the AuthButton component.
  *
- * @property {string} className - A class name used for conditional rendering.
+ * @property {string} className - A CSS class name that determines which UI element to render.
+ * @property {() => void} [toggleMenu] - Optional callback to toggle the mobile menu.
  */
 interface AuthButtonProps {
   className: string;
@@ -36,27 +37,25 @@ interface AuthButtonProps {
 }
 
 /**
- * A React functional component that handles authentication, navigation, and role-based UI rendering.
+ * AuthButton component manages user authentication, navigation, and role-based UI rendering.
  *
- * @component
- * @param {AuthButtonProps} props - The component props.
- * @returns {JSX.Element} The rendered authentication button or relevant UI elements.
+ * Behavior:
+ * - Synchronizes authentication state between Redux and localStorage.
+ * - Applies a custom theme to the ConnectButton.
+ * - Determines available wallet authentication methods.
+ * - Conditionally renders different buttons based on the user's role and current page context.
  *
- * @remarks
- * - Uses `thirdweb` to authenticate users with multiple options (email, Google, phone, wallet).
- * - Redirects authenticated users to their profile page.
- * - Shows a "Notifications" button for `SuperAdmin` users.
- * - Displays a "Connect" button when the user is not authenticated.
- * - Utilizes Redux to toggle the notification popup for `SuperAdmin`.
+ * @param {AuthButtonProps} props - Component properties.
+ * @returns {JSX.Element} Rendered button(s) for authentication or navigation.
  */
 const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
-  const navigate = useNavigate(); // Hook for navigating between pages.
-  const dispatch = useDispatch(); // Hook for dispatching Redux actions.
-  const address = useSelector((state: RootState) => state.auth.address); // Get the logged-in address from Redux.
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const address = useSelector((state: RootState) => state.auth.address);
   const firstName = useSelector((state: RootState) => state.user.firstName);
   const { daos } = useMemberDaos(address || "");
 
-  // Sync Redux state with localStorage on load.
+  // Synchronize Redux state with localStorage to persist the user's authentication state.
   useEffect(() => {
     const storedAddress = localStorage.getItem("address");
     if (storedAddress && storedAddress !== address) {
@@ -64,13 +63,14 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     }
   }, [dispatch, address]);
 
+  // Check membership existence for the logged-in user.
   const { memberExists } = useMemberDaos(address || "");
 
   /**
-   * Custom theme configuration for the `ConnectButton`.
+   * Define a custom theme for the ConnectButton using Thirdweb's lightTheme.
    *
    * @remarks
-   * - Changes the primary button's background and text colors.
+   * - Customizes the primary button background and text colors.
    */
   const customTheme = lightTheme({
     colors: {
@@ -80,11 +80,11 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   });
 
   /**
-   * Wallet authentication options available in the app.
+   * Define wallet authentication options using inAppWallet.
    *
    * @remarks
-   * - Users can log in via email, Google, phone, or a wallet.
-   * - Uses a popup authentication mode for a better user experience.
+   * - Supports multiple login methods: email, Google, phone, and wallet.
+   * - Configured to use a popup authentication mode for enhanced UX.
    */
   const wallets = [
     inAppWallet({
@@ -95,12 +95,15 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     }),
   ];
 
+  // Retrieve filtered DAO data and a function to navigate to a selected DAO.
   const { filteredDaos, navigateToDao } = useDaoNavigation(daos);
 
+  // Local state to track the currently selected DAO transaction hash.
   const [selectedDaoTxHash, setSelectedDaoTxHash] = useState<string | number>(
     localStorage.getItem("selectedDaoTxHash") || ""
   );
 
+  // If no DAO is currently selected and DAOs are available, auto-select the first DAO.
   useEffect(() => {
     if (!selectedDaoTxHash && filteredDaos.length > 0) {
       setSelectedDaoTxHash(filteredDaos[0].daoTxHash);
@@ -108,6 +111,15 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     }
   }, [filteredDaos, selectedDaoTxHash]);
 
+  /**
+   * Updates the selected DAO based on user selection from a dropdown.
+   *
+   * @param {React.ChangeEvent<HTMLSelectElement>} event - Event triggered on DAO selection.
+   *
+   * Behavior:
+   * - Updates local state and localStorage with the selected DAO's transaction hash.
+   * - Navigates to the corresponding DAO page using the navigateToDao function.
+   */
   const handleDaoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedTxHash = event.target.value;
     setSelectedDaoTxHash(selectedTxHash);
@@ -120,10 +132,10 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   };
 
   /**
-   * Determines whether to show the "Member Profile" button based on the user's role.
+   * Determines if the "Member Profile" button should be shown.
    *
    * @remarks
-   * - If `className` belongs to certain predefined roles, the profile button is hidden.
+   * - Hides the profile button for certain contexts (e.g., DAO registration, SuperAdmin view).
    */
   const shouldShowMemberProfile = ![
     "DaoProfile",
@@ -134,12 +146,9 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     "navbarMarketPlace",
   ].includes(className);
 
-  /**
-   * Renders the "Profile" button if the user is authenticated and eligible to see it.
-   *
-   * @returns {JSX.Element} Profile button if conditions are met.
-   */
-  // decide which button to display based on whether the member exists in the backend.
+  // Conditional rendering based on authentication and the provided className.
+
+  // 1. Render a "Profile" or "MarketPlace" button for authenticated users in general contexts.
   if (address && shouldShowMemberProfile) {
     return memberExists ? (
       <button
@@ -155,11 +164,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     );
   }
 
-  /**
-   * Renders a "Notifications" button for `SuperAdmin` users.
-   *
-   * @returns {JSX.Element} Notifications button if the user is a SuperAdmin.
-   */
+  // 2. Render a "Notifications" button for SuperAdmin users.
   if (className === "SuperAdmin") {
     return (
       <button
@@ -175,6 +180,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     );
   }
 
+  // 3. For the "DaoProfile" context, render a button displaying the user's first name.
   if (className === "DaoProfile") {
     return (
       <button
@@ -186,6 +192,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     );
   }
 
+  // 4. For navbarDaoMember, render a dropdown to select among available DAOs.
   if (className === "navbarDaoMember") {
     return (
       <select

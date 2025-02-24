@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useActiveAccount } from "thirdweb/react";
-import { useDaoForm } from "../hooks/useDaoForm";
-import { useMemberManagement } from "../hooks/useMemberManagement";
+import { useDaoForm } from "./useDaoForm";
+import { useMemberManagement } from "./useMemberManagement";
 
 export const useCompletedSteps = () => {
   const [completedSteps, setCompletedSteps] = useState<number>(0);
