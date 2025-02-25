@@ -15,9 +15,10 @@ import DaoMembershipHandler from "./routes/DaoMembershipHandler";
 import ProposalHandler from "./routes/ProposalHandler";
 import DaoFundingHandler from "./routes/DaoFundingHandler";
 import BlogContentHandler from "./routes/BlogContentHandler";
+import IsBackendAliveHandler from "./routes/IsBackendAliveHandler";
 
 export const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'www.washikadao.xyz']
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'www.washikadao.xyz', 'http://localhost:3000']
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -38,6 +39,7 @@ app.use("/DaoKit/MemberShip", DaoMembershipHandler);
 app.use("/DaoKit/Proposals", ProposalHandler)//CreateProposalPageHandler Page
 app.use("/DaoKit/Funding", DaoFundingHandler);
 app.use("/LearnBlogs", BlogContentHandler);//Elimu/Jifunze Page
+app.use("/IsBackendAlive", IsBackendAliveHandler);
 
 //Global error handler
 app.use((err, req, res, next) => {
