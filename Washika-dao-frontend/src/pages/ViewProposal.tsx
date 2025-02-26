@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../utils/backendComm";
+import { baseUrl } from "../utils/backendUtils/backendComm";
 
 interface ProposalData {
   proposalCustomIdentifier: string;

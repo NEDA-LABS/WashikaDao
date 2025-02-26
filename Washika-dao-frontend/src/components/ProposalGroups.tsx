@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { baseUrl } from "../utils/backendComm";
+import { baseUrl } from "../utils/backendUtils/backendComm";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 

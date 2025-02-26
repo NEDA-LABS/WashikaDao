@@ -3,7 +3,7 @@
 // to avoid unnecessary network requests.
 
 import { useState, useEffect } from "react";
-import { baseUrl } from "../../utils/backendComm";
+import { baseUrl } from "../../utils/backendUtils/backendComm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setUserDaos } from "../../redux/users/userDaosSlice";

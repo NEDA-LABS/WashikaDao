@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { baseUrl } from "../utils/backendComm.ts";
+import { baseUrl } from "../utils/backendUtils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
