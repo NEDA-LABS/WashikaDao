@@ -3,7 +3,7 @@ import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import TreasuryHistory from "../components/TreasuryHistory";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../utils/backendComm";
+import { baseUrl } from "../utils/backendUtils/backendComm";
 
 /**
  * Interface representing the details of a DAO (Decentralized Autonomous Organization).

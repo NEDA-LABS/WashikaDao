@@ -1,4 +1,5 @@
 import { Address } from "thirdweb";
+import { Account } from "thirdweb/wallets";
 
 export interface IBackendDaoCreation {
   daoName: string;
@@ -49,6 +50,7 @@ export interface IBlockchainDaoCreation {
   daoImageIpfsHash: string;
   daoMultiSigAddr: Address;
   multiSigPhoneNo: bigint;
+  backendDaoMembers: IBackendDaoMember[]
 }
 
 export interface IBackendDaoMember {
@@ -57,9 +59,19 @@ export interface IBackendDaoMember {
   email: string;
   phoneNumber: string;
   nationalIdNo: string;
-  memberRole: string;
+  memberRole: DaoRoleEnum | string;
   memberCustomIdentifier: string;
   memberAddr?: string;
+}
+
+export interface IBackendDaoCreatorDetails {
+  firstName: string; 
+  lastName: string; 
+  email: string; 
+  phoneNumber: string; 
+  nationalIdNo: string; 
+  memberRole: string;  
+  daoCreatorAddress: Account | string | Address | undefined; 
 }
 
 export interface IDaoMemberDetails {
@@ -67,7 +79,7 @@ export interface IDaoMemberDetails {
   emailAddress: string;
   phoneNumber: string;
   nationalId: string;
-  role: string;
+  role: DaoRoleEnum;
   userAddress: Address;
   multiSigPhoneNo: number | bigint;
   memberCustomIdentifier: string;

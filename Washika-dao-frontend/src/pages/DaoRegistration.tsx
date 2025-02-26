@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DaoForm from "../components/DaoForm";
@@ -10,7 +10,14 @@ import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
-import { baseUrl } from "../utils/backendComm.ts";
+//Backend Connectors
+import { _isServerAlive } from "../utils/backendUtils/backendComm.ts"; 
+ import { BASE_BACKEND_ENDPOINT_URL }  from "../utils/backendUtils/backendComm.ts";
+import {  IBackendDaoCreatorDetails } from "../utils/Types.ts";
+import { useActiveAccount } from "thirdweb/react";
+import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
+
+//Verified Arbitrum Sepolia Contract Address: 0xe09115ed74F073E8610cFA7a4aC78a3ef5ac00ab 
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -39,11 +46,17 @@ import { baseUrl } from "../utils/backendComm.ts";
  *
  * @see {@link https://reactjs.org/docs/hooks-intro.html} for more about React hooks.
  */
-const DaoRegistration: React.FC = () => {
+const DaoRegistration: React.FC = (): React.ReactNode => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [newDaoTxHash, setNewDaoTxHash] = useState("");
   const address = useSelector((state: RootState) => state.auth.address);
   const { members, currentMember, handleMemberChange, handleAddMember } = useMemberManagement();
+  const [backendDaoCreatorDetails, setBackendDaoCreatorDetails] = useState<IBackendDaoCreatorDetails>(); 
+
+  const daoCreatorAddress = useActiveAccount();
+
+  //const [daoCreationFormData, setDaoCreationFormData] = useState<IBackendDaoCreation>(); 
   // Find the chairperson member (if any)
   const chairperson = members.find((member) => member.memberRole === "Chairperson");
   const chairpersonPhone = chairperson ? chairperson.phoneNumber : "";
@@ -64,34 +77,40 @@ const DaoRegistration: React.FC = () => {
 
     setIsSubmitting(true); // Set loading state to true
     try {
+      //Sending the Transaction to send the data to create the Dao Onchain first
       const daoTxHash = await handleCreateDao(formData);
       if (!daoTxHash) {
         alert("DAO creation on blockchain failed!");
         setIsSubmitting(false);
         return;
       }
-
+      setNewDaoTxHash(daoTxHash);
       setFormData((prev) => ({ ...prev, daoTxHash }));
+     const redirectUrl = _routeScanRedirectUrlBuilder(daoTxHash); 
 
-
-        const combinedData = {
-          ...formData,
-          daoTxHash,
-          members,
-        };
-
+     const combinedData = {
+        ...formData,
+        daoTxHash,
+        members,
+      };
+          //On Success of the blockchain part, 
         // Send combined data to the backend API
-        const response = await fetch(`${baseUrl}/DaoGenesis/CreateDao?currentAddr=${address}`, {
+          //Check if server is alive before continuing. 
+        const isServerAlive = await _isServerAlive();
+        if (isServerAlive === true) {
+        const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`, {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
           //allow to send request without cors 
-          "Access-Control-Allow-Origin": "*",
+          "Access-Control-Allow-Origin": `${BASE_BACKEND_ENDPOINT_URL}`,
           "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type"
           },
-          body: JSON.stringify(combinedData), // Send combined data
+
+          body: JSON.stringify(combinedData),
         });
+
         const data = await response.json();
         console.log(data);
         // Parse the response JSON
@@ -99,18 +118,30 @@ const DaoRegistration: React.FC = () => {
         if (response.ok) {
           alert("Dao created successfully");
           console.log("DAO created successfully", data);
-          navigate(`/SuperAdmin/${daoTxHash}`); // Navigate to the DAO profile pagehandleSubmit(event);
+          navigate(redirectUrl); // Navigate to the DAO profile pagehandleSubmit(event);
         } else {
           console.error("Error creating DAO:", data.message);
         }
-      
-    } catch (error) {
-      console.error("Error creating DAO:", error);
-    } finally {
-      setIsSubmitting(false); // Reset loading state
+      }
     }
-  };
-  //TODO: Fix below to check including role
+      catch (error) {
+        console.warn("Error Creating Dao onchain or sending the data to our api, please study the error to learn more", error);
+        setIsSubmitting(false); // Reset loading state
+      }
+    }
+    useEffect(()=>{
+      if(daoCreatorAddress) {
+        setBackendDaoCreatorDetails({
+          firstName: currentMember.firstName,
+          lastName: currentMember.lastName,
+          email: currentMember.email,
+          phoneNumber: currentMember.phoneNumber,
+          memberRole: currentMember.memberRole,
+          nationalIdNo: currentMember.nationalIdNo,
+          daoCreatorAddress: daoCreatorAddress
+        });
+      }
+    },[daoCreatorAddress, currentMember]); 
   return (
     <>
       <NavBar className={"DaoRegister"} />
@@ -295,6 +326,6 @@ const DaoRegistration: React.FC = () => {
       <Footer className={""} />
     </>
   );
-};
+}
 
 export default DaoRegistration;

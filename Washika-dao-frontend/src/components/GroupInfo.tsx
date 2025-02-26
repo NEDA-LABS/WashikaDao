@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { baseUrl } from "../utils/backendComm";
+import { baseUrl } from "../utils/backendUtils/backendComm";
 import DaoForm from "./DaoForm";
 import { IBackendDaoMember } from "../utils/Types";
 import { setCurrentUser } from "../redux/users/userSlice";
