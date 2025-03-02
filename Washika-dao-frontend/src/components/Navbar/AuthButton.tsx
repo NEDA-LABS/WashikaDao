@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { createThirdwebClient } from "thirdweb";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
-import { inAppWallet } from "thirdweb/wallets";
+import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
 import { RootState } from "../../redux/store";
 import { login } from "../../redux/auth/authSlice";
@@ -90,9 +90,11 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     inAppWallet({
       auth: {
         mode: "popup", // Enables authentication via a popup.
-        options: ["email", "google", "phone", "wallet"], // Provides multiple login options.
+        options: ["email", "google", "phone", "passkey", "facebook", "apple", "wallet"], // Provides multiple login options.
       },
     }),
+    createWallet("io.metamask"),
+    createWallet("com.coinbase.wallet"),
   ];
 
   // Retrieve filtered DAO data and a function to navigate to a selected DAO.
