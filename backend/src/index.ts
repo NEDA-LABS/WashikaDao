@@ -17,7 +17,7 @@ import DaoFundingHandler from "./routes/DaoFundingHandler";
 import BlogContentHandler from "./routes/BlogContentHandler";
 
 export const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173']
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'https://washikadao.xyz/']
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
