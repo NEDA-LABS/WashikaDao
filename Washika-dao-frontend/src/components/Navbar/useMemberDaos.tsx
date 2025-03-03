@@ -3,7 +3,7 @@
 // to avoid unnecessary network requests.
 
 import { useState, useEffect } from "react";
-import { baseUrl } from "../../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../../utils/backendComm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setUserDaos } from "../../redux/users/userDaosSlice";
@@ -61,7 +61,7 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
       try {
         // Build the API endpoint URL with the member address.
         const response = await fetch(
-          `${baseUrl}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
+          `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
         );
         // Parse the JSON response.
         const data = await response.json();

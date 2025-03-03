@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 
 // Import functions for backend communication and blockchain account management.
-import { baseUrl } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useProposalForm } from "../hooks/useProposalForm";
@@ -67,7 +67,7 @@ const CreateProposal: React.FC = () => {
         return;
       }
       const response = await fetch(
-        `${baseUrl}/DaoKit/Proposals/CreateProposal`,
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/Proposals/CreateProposal`,
         {
           method: "POST",
           headers: {

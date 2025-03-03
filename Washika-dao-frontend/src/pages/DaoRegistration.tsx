@@ -10,7 +10,7 @@ import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
-import { baseUrl } from "../utils/backendComm.ts";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -81,7 +81,7 @@ const DaoRegistration: React.FC = () => {
         };
 
         // Send combined data to the backend API
-        const response = await fetch(`${baseUrl}/DaoGenesis/CreateDao?currentAddr=${address}`, {
+        const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`, {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type

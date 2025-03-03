@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { baseUrl } from "../utils/backendComm.ts";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -152,7 +152,7 @@ const UpdateDao: React.FC = () => {
   const fetchDaoDetails = async () => {
     try {
       const response = await fetch(
-        `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${daoTxHash}`,
         {
           headers: {
             Authorization: token,
@@ -201,7 +201,7 @@ const UpdateDao: React.FC = () => {
     try {
       // Send combined data to the backend API
       const response = await fetch(
-        `${baseUrl}/Daokit/DaoDetails/UpdateDaoDetails/?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/UpdateDaoDetails/?daoTxHash=${daoTxHash}`,
         {
           method: "PUT",
           headers: {

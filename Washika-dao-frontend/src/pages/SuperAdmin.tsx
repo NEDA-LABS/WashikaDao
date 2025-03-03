@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
-import { baseUrl } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -61,7 +61,7 @@ const SuperAdmin: React.FC = () => {
   const fetchDaoDetails = async () => {
     try {
       const response = await fetch(
-        `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
         {
           headers: {
             Authorization: token,
@@ -121,7 +121,7 @@ const SuperAdmin: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${baseUrl}/DaoKit/MemberShip/AddMember/?daoTxHash=${daoTxHash}&adminMemberAddr=${address}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/AddMember/?daoTxHash=${daoTxHash}&adminMemberAddr=${address}`,
         {
           method: "POST",
           headers: {

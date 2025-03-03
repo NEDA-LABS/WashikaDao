@@ -5,7 +5,7 @@ import NavBar from "../components/Navbar/Navbar";
 import DaoForm from "../components/DaoForm";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
-import { baseUrl } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import { IBackendDaoMember } from "../utils/Types";
 
 /**
@@ -99,7 +99,7 @@ const JoinPlatform: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${baseUrl}/DaoKit/MemberShip/RequestToJoinDao/?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/RequestToJoinDao/?daoTxHash=${daoTxHash}`,
         {
           method: "POST",
           headers: {
