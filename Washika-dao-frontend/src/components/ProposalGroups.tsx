@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { baseUrl } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 
@@ -36,7 +36,7 @@ const ProposalGroups: React.FC = () => {
     const fetchProposals = async () => {
       try {
         const response = await fetch(
-          `${baseUrl}/DaoKit/Proposals/GetAllProposalsInDao/?daoMultiSigAddr=${daoMultiSigAddr}`,{
+          `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/Proposals/GetAllProposalsInDao/?daoMultiSigAddr=${daoMultiSigAddr}`,{
             headers: {
               Authorization: token,
               "Content-Type": "application/json",

@@ -4,7 +4,7 @@ import ProposalGroups from "../components/ProposalGroups";
 import Dashboard from "../components/Dashboard";
 import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
-import { baseUrl } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import { Dao, fetchDaos } from "../hooks/useFetchDaos";
 import { useNavigate } from "react-router-dom";
 
@@ -37,6 +37,8 @@ const MemberProfile: React.FC = () => {
   const [daoMultiSigAddr, setDaoMultiSigAddr] = useState<string>("");
   const [guarantor, setGuarantor] = useState<string>("");
   const [memberDaos, setMemberDaos] = useState<string[]>([]);
+
+  const token = localStorage.getItem("token") ?? "";
 
   const handleDaoChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     const selectedDaoName = event.target.value;
@@ -85,12 +87,12 @@ const MemberProfile: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${baseUrl}/DaoKit/MemberShip/RequestToJoinDao`,
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/RequestToJoinDao`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: token,
           },
           body: JSON.stringify(payload),
         }
