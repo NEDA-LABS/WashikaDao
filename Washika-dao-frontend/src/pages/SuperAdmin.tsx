@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
-import {  BASE_BACKEND_ENDPOINT_URL } from "../utils/backendUtils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface

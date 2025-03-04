@@ -1,6 +1,6 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { baseUrl } from "../utils/backendUtils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import DaoForm from "./DaoForm";
 import { IBackendDaoMember } from "../utils/Types";
 import { setCurrentUser } from "../redux/users/userSlice";
@@ -43,7 +43,7 @@ const GroupInfo: React.FC = () => {
   useEffect(() => {
     const fetchDaos = async () => {
       try {
-        const response = await fetch(`${baseUrl}/DaoGenesis/GetAllDaos`, {
+        const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/GetAllDaos`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -173,7 +173,7 @@ const GroupInfo: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${baseUrl}/DaoKit/MemberShip/RequestToJoinDao/?daoTxHash=${selectedGroup.daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/RequestToJoinDao/?daoTxHash=${selectedGroup.daoTxHash}`,
         {
           method: "POST",
           headers: {

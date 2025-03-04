@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../utils/backendUtils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 
 interface ProposalData {
   proposalCustomIdentifier: string;
@@ -53,7 +53,7 @@ const ViewProposal: React.FC = () => {
     const fetchProposalData = async () => {
       try {
         const response = await fetch(
-          `${baseUrl}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}&proposalCustomIdentifier=${proposalCustomIdentifier}`,
+          `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}&proposalCustomIdentifier=${proposalCustomIdentifier}`,
           {
             headers: {
               Authorization: token,
@@ -86,7 +86,7 @@ const ViewProposal: React.FC = () => {
     const voteValue = voteType === "UpVoteProposal";
 
     try {
-      const response = await fetch(`${baseUrl}/DaoKit/Proposals/voteProposal`, {
+      const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoKit/Proposals/voteProposal`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -10,14 +10,7 @@ import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
-//Backend Connectors
-import { _isServerAlive } from "../utils/backendUtils/backendComm.ts"; 
- import { BASE_BACKEND_ENDPOINT_URL }  from "../utils/backendUtils/backendComm.ts";
-import {  IBackendDaoCreatorDetails } from "../utils/Types.ts";
-import { useActiveAccount } from "thirdweb/react";
-import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
-
-//Verified Arbitrum Sepolia Contract Address: 0xe09115ed74F073E8610cFA7a4aC78a3ef5ac00ab 
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -95,9 +88,6 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
       };
           //On Success of the blockchain part, 
         // Send combined data to the backend API
-          //Check if server is alive before continuing. 
-        const isServerAlive = await _isServerAlive();
-        if (isServerAlive === true) {
         const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`, {
           method: "POST", // HTTP method
           headers: {

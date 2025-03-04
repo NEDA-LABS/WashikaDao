@@ -18,7 +18,7 @@ import BlogContentHandler from "./routes/BlogContentHandler";
 import IsBackendAliveHandler from "./routes/IsBackendAliveHandler";
 
 export const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'www.washikadao.xyz', 'http://localhost:3000']
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'https://washikadao.xyz/']
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {

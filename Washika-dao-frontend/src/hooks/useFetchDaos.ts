@@ -1,5 +1,5 @@
 // utils/fetchDaos.ts
-import { baseUrl } from "../utils/backendUtils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 
 export interface Dao {
   daoName: string;
@@ -8,10 +8,11 @@ export interface Dao {
 }
 
 export const fetchDaos = async (): Promise<Dao[]> => {
+  const token = localStorage.getItem('token') ?? "";
   try {
-    const response = await fetch(`${baseUrl}/DaoGenesis/GetAllDaos`, {
+    const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/GetAllDaos`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: token,
         "Content-Type": "application/json",
       },
     });

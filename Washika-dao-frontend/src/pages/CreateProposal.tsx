@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 
 // Import functions for backend communication and blockchain account management.
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendUtils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useProposalForm } from "../hooks/useProposalForm";

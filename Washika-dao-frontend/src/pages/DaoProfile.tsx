@@ -3,7 +3,7 @@ import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import TreasuryHistory from "../components/TreasuryHistory";
 import { useNavigate, useParams } from "react-router-dom";
-import { baseUrl } from "../utils/backendUtils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 
 /**
  * Interface representing the details of a DAO (Decentralized Autonomous Organization).
@@ -75,7 +75,7 @@ const DaoProfile: React.FC = () => {
   const fetchDaoDetails = async () => {
     try {
       const response = await fetch(
-        `${baseUrl}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
         {
           headers: {
             Authorization: token,

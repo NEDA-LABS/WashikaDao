@@ -5,7 +5,7 @@ import NavBar from "../components/Navbar/Navbar";
 import DaoForm from "../components/DaoForm";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendUtils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import { IBackendDaoMember } from "../utils/Types";
 
 /**
