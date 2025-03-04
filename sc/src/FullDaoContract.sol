@@ -1,6 +1,9 @@
 //SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 /**This Contract contains the entire application logic & will not be pushed to mainnet due to lack of privacy compliance, security & huge gas costs both to the platform & users, the backend will handle ux + privacy + scaling + gas optimization by activity optimization */
+/*
+Verified Arbitrum Sepolia Contract Address: 0xe09115ed74F073E8610cFA7a4aC78a3ef5ac00ab 
+*/ 
 contract FullDaoContract {
     enum Role {
         member,
