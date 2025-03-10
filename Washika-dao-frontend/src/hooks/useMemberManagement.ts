@@ -1,4 +1,5 @@
 import { useState } from "react";
+//@ts-ignore
 import { DaoRoleEnum, IBackendDaoCreatorDetails, IBackendDaoMember } from "../utils/Types.ts";
 
 export const useMemberManagement = () => {
@@ -36,7 +37,7 @@ export const useMemberManagement = () => {
 
   const handleDaoCreatorValueChange = (
     field: keyof IBackendDaoCreatorDetails,
-    value: string 
+    value: string
   ) => {
     setDaoCreatorDetails((prev) => ({ ...prev, [field]: value }));
   }
