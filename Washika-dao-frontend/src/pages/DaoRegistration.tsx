@@ -13,49 +13,25 @@ import { RootState } from "../redux/store.ts";
 import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
 import { useActiveAccount } from "thirdweb/react";
 import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
+import { IBackendDaoCreatorDetails } from "../utils/Types.ts";
 
-/**
- * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
- */
 
-/**
- * DaoRegistration component allows users with the "Chairperson" role to register a new DAO.
- * It manages form data for DAO details and member information, handles file uploads to Cloudinary,
- * and submits the combined data to a backend API for DAO creation.
- *
- * @component
- * @returns {React.ReactElement} The rendered component.
- *
- * @remarks
- * - Utilizes React hooks for state management and side effects.
- * - Uses `useNavigate` from `react-router-dom` for navigation upon successful DAO creation.
- * - Relies on `useSelector` from `react-redux` to access user information from the Redux store.
- *
- * @requires ../components/Footer
- * @requires ../components/DaoForm
- * @requires ../components/NavBar
- * @requires ../components/MemberForm
- *
- * @example
- * <DaoRegistration />
- *
- * @see {@link https://reactjs.org/docs/hooks-intro.html} for more about React hooks.
- */
 const DaoRegistration: React.FC = (): React.ReactNode => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [newDaoTxHash, setNewDaoTxHash] = useState("");
   const address = useSelector((state: RootState) => state.auth.address);
   const { members, currentMember, handleMemberChange, handleAddMember } = useMemberManagement();
-  const [backendDaoCreatorDetails, setBackendDaoCreatorDetails] = useState<IBackendDaoCreatorDetails>(); 
+    //@ts-ignore
+  const [backendDaoCreatorDetails, setBackendDaoCreatorDetails] = useState<IBackendDaoCreatorDetails>();
 
   const daoCreatorAddress = useActiveAccount();
 
-  //const [daoCreationFormData, setDaoCreationFormData] = useState<IBackendDaoCreation>(); 
+  //const [daoCreationFormData, setDaoCreationFormData] = useState<IBackendDaoCreation>();
   // Find the chairperson member (if any)
   const chairperson = members.find((member) => member.memberRole === "Chairperson");
   const chairpersonPhone = chairperson ? chairperson.phoneNumber : "";
-  
+
   // Pass the chairpersonPhone into the hook
   const { formData, setFormData, handleChange, handleFileChange } = useDaoForm(chairpersonPhone);
   const completedSteps = useCompletedSteps();
@@ -64,7 +40,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault(); // Prevent default form submission behavior
-    
+
     if (!address) {
       alert("Member Address is required");
       return;
@@ -81,20 +57,20 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
       }
       setNewDaoTxHash(daoTxHash);
       setFormData((prev) => ({ ...prev, daoTxHash }));
-     const redirectUrl = _routeScanRedirectUrlBuilder(daoTxHash); 
+     const redirectUrl = _routeScanRedirectUrlBuilder(newDaoTxHash);
 
      const combinedData = {
         ...formData,
         daoTxHash,
         members,
       };
-          //On Success of the blockchain part, 
+          //On Success of the blockchain part,
         // Send combined data to the backend API
         const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`, {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
-          //allow to send request without cors 
+          //allow to send request without cors
           "Access-Control-Allow-Origin": `${BASE_BACKEND_ENDPOINT_URL}`,
           "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
           "Access-Control-Allow-Headers": "Content-Type"
@@ -114,7 +90,6 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
         } else {
           console.error("Error creating DAO:", data.message);
         }
-      }
     }
       catch (error) {
         console.warn("Error Creating Dao onchain or sending the data to our api, please study the error to learn more", error);
@@ -133,7 +108,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           daoCreatorAddress: daoCreatorAddress
         });
       }
-    },[daoCreatorAddress, currentMember]); 
+    },[daoCreatorAddress, currentMember]);
   return (
     <>
       <NavBar className={"DaoRegister"} />
@@ -252,7 +227,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
                       value: formData.kiasiChaHisa === 0 ? "" : formData.kiasiChaHisa ,
                       onChange: handleChange,
                     },
-                    {   
+                    {
                       label: "Loan Interest",
                       type: "number",
                       name: "interestOnLoans",

@@ -14,9 +14,9 @@ export interface IBackendDaoCreation {
   multiSigPhoneNo: string;
   kiwango: number;
   accountNo: string;
-  nambaZaHisa: number;       
-  kiasiChaHisa: number;        
-  interestOnLoans: number; 
+  nambaZaHisa: number;
+  kiasiChaHisa: number;
+  interestOnLoans: number;
   daoTxHash: string;
 }
 
@@ -33,9 +33,9 @@ export interface IFetchedBackendDao {
   multiSigPhoneNo: string;
   kiwango: number;
   accountNo: string;
-  nambaZaHisa: number;       
-  kiasiChaHisa: number;        
-  interestOnLoans: number; 
+  nambaZaHisa: number;
+  kiasiChaHisa: number;
+  interestOnLoans: number;
   daoTxHash: string;
   chairpersonAddr: string;
 }
@@ -65,13 +65,13 @@ export interface IBackendDaoMember {
 }
 
 export interface IBackendDaoCreatorDetails {
-  firstName: string; 
-  lastName: string; 
-  email: string; 
-  phoneNumber: string; 
-  nationalIdNo: string; 
-  memberRole: string;  
-  daoCreatorAddress: Account | string | Address | undefined; 
+  firstName: string;
+  lastName: string;
+  email: string;
+  phoneNumber: string;
+  nationalIdNo: string;
+  memberRole: string;
+  daoCreatorAddress: Account | string | Address | undefined;
 }
 
 export interface IDaoMemberDetails {
