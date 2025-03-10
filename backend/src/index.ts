@@ -15,6 +15,7 @@ import DaoMembershipHandler from "./routes/DaoMembershipHandler";
 import ProposalHandler from "./routes/ProposalHandler";
 import DaoFundingHandler from "./routes/DaoFundingHandler";
 import BlogContentHandler from "./routes/BlogContentHandler";
+import IsBackendAliveHandler from "./routes/IsBackendAliveHandler";
 
 export const app = express();
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'https://washikadao.xyz/']
@@ -38,6 +39,7 @@ app.use("/DaoKit/MemberShip", DaoMembershipHandler);
 app.use("/DaoKit/Proposals", ProposalHandler)//CreateProposalPageHandler Page
 app.use("/DaoKit/Funding", DaoFundingHandler);
 app.use("/LearnBlogs", BlogContentHandler);//Elimu/Jifunze Page
+app.use("/IsBackendAlive", IsBackendAliveHandler);
 
 //Global error handler
 app.use((err, req, res, next) => {

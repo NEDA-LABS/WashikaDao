@@ -1,6 +1,6 @@
 //import React from "react";
 import { createThirdwebClient } from "thirdweb";
-import {ConnectButton} from "thirdweb/react";
+import {ConnectButton } from "thirdweb/react";
 import { lightTheme } from "thirdweb/react";
 //import { arbitrumSepolia, celoAlfajoresTestnet } from "thirdweb/chains";
 import { arbitrumSepolia } from "thirdweb/chains";
@@ -16,16 +16,18 @@ export default function ConnectWallet() {
   //@ts-ignore
   const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
   const client = createThirdwebClient({ clientId: _clientId });
+
+
   const wallets = [
     inAppWallet({
     auth: {
       mode: "popup", //options are "popup" | "redirect" | "window"
-      options: ["email", "google", "phone", "apple"]
+      options: ["email", "google", "phone", "passkey", "facebook", "apple"]
     //redirectUrl:"desiredredirectlocation"
     }
   }),
-  createWallet("io.metamask")
-  
+  createWallet("io.metamask"),
+  createWallet("com.coinbase.wallet")
 ]
 
   const customTheme = lightTheme({

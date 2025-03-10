@@ -1,5 +1,3 @@
-import { DaoMembershipStatus } from "../entity/DaoMembershipRelations";
-
 export interface IVote {
     voteId?: number;
     proposalCustomIdentifier?: string;
@@ -42,9 +40,6 @@ export interface IDao {
     daoRegDocs: string;
     proposals?: IProposal[];  // Relationship with Proposal entity
     members?: IMemberDetails[];  // Relationship with MemberDetails entity
-    daoStatus?: IDaoStatus[];  // Relationship with DaoStatus entity
-    daoJoinDates?: IDaoJoinDate[];  // Relationship with DaoJoinDate entity
-    daoRoles?: IDaoRole[];  // Relationship with DaoRole entity
 }
 
 export interface IMemberDetails {
@@ -55,30 +50,5 @@ export interface IMemberDetails {
     phoneNumber?: string;
     email?: string;
     nationalIdNo?: string;
-    memberAddr?: string;
-    daos?: IDao[];  // Relationship with Dao entity
-    daoStatus?: IDaoStatus[];  // Relationship with DaoStatus entity
-    daoJoinDates?: IDaoJoinDate[];  // Relationship with DaoJoinDate entity
-    daoRoles?: IDaoRole[];  // Relationship with DaoRole entity
-}
-
-export interface IDaoStatus {
-    id?: number;
-    dao: IDao;
-    member: IMemberDetails;
-    status: DaoMembershipStatus;
-}
-
-export interface IDaoJoinDate {
-    id?: number;
-    dao: IDao;
-    member: IMemberDetails;
-    joinDate: Date;
-}
-
-export interface IDaoRole {
-    id?: number;
-    dao: IDao;
-    member: IMemberDetails;
-    role: string;
+    memberAddr?: string; // Relationship with DaoRole entity
 }

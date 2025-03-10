@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { IBackendDaoMember } from "../utils/Types.ts";
+import { DaoRoleEnum, IBackendDaoCreatorDetails, IBackendDaoMember } from "../utils/Types.ts";
 
 export const useMemberManagement = () => {
   const [members, setMembers] = useState<IBackendDaoMember[]>([]);
@@ -13,6 +13,16 @@ export const useMemberManagement = () => {
     memberCustomIdentifier: crypto.randomUUID(),
   });
 
+  const [daoCreatorDetails, setDaoCreatorDetails] = useState<IBackendDaoCreatorDetails>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    nationalIdNo: "",
+    memberRole: "",
+    daoCreatorAddress:  ""
+  })
+
   const handleMemberChange = (
     field: keyof IBackendDaoMember,
     value: string
@@ -24,6 +34,12 @@ export const useMemberManagement = () => {
     return Object.values(member).every((value) => value);
   };
 
+  const handleDaoCreatorValueChange = (
+    field: keyof IBackendDaoCreatorDetails,
+    value: string 
+  ) => {
+    setDaoCreatorDetails((prev) => ({ ...prev, [field]: value }));
+  }
   const handleAddMember = async () => {
     if (!isValidMember(currentMember)) return;
 
@@ -38,11 +54,25 @@ export const useMemberManagement = () => {
       memberCustomIdentifier: crypto.randomUUID(),
     });
   };
+  const handleAddDaoCreatorDetails = () => {
+    setDaoCreatorDetails({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      nationalIdNo: "",
+      memberRole: "",
+      daoCreatorAddress: "",
+    });
+  }
 
   return {
     members,
     currentMember,
+    daoCreatorDetails,
     handleMemberChange,
     handleAddMember,
+    handleDaoCreatorValueChange,
+    handleAddDaoCreatorDetails
   };
 };
