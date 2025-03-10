@@ -11,6 +11,8 @@ import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
 import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
+import { useActiveAccount } from "thirdweb/react";
+import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
