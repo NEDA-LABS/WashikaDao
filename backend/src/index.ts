@@ -1,7 +1,7 @@
 require('dotenv').config();
 import express, { Express } from "express";
 const router = express.Router();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 import "reflect-metadata"
 import cors from 'cors';
