@@ -1,6 +1,6 @@
 import { useState } from "react";
-//@ts-ignore
-import { DaoRoleEnum, IBackendDaoCreatorDetails, IBackendDaoMember } from "../utils/Types.ts";
+
+import {  IBackendDaoCreatorDetails, IBackendDaoMember } from "../utils/Types.ts";
 
 export const useMemberManagement = () => {
   const [members, setMembers] = useState<IBackendDaoMember[]>([]);

@@ -43,6 +43,12 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   const activeAccount = useActiveAccount();
   const address = useSelector((state: RootState) => state.auth.address);
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  //@ts-ignore
+  const token = import.meta.env.VITE_ROUTE_PROTECTOR;
+  localStorage.setItem("token", token)
+  console.log(token);
+  
 
   /**
    * useEffect hook to synchronize the active blockchain account with the app's authentication state.

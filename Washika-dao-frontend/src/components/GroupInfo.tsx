@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import DaoForm from "./DaoForm";
 import { IBackendDaoMember } from "../utils/Types";
@@ -81,6 +81,7 @@ const GroupInfo: React.FC = () => {
 
   // When a group is clicked, check if the user is already a member.
   // If not, show the popup to choose registration type.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleGroupClick = (group: Dao) => {
     if (!memberAddr) {
       alert("Connect wallet to log in");
@@ -214,55 +215,60 @@ const GroupInfo: React.FC = () => {
 
   return (
     <div className="groups">
-      {daos.map((group, index) => (
-        <div
-          className="group"
-          key={index}
-          onClick={() => handleGroupClick(group)}
-        >
-          <div className="image">
-            <img src={group.daoImageIpfsHash} alt={group.daoTitle} />
-            <div className="taarifaTop">Taarifa</div>
-          </div>
-          <div className="section-1">
-            <div className="left">
-              <h2>{group.daoTitle}</h2>
-              <div className="location">
-                <p>{group.daoLocation}</p>
-                <img src="/images/location.png" alt="location" />
+      {daos.map(
+        (
+          group,
+          index // Iterate over the group data array
+        ) => (
+          <div className="group" key={index}>
+            {" "}
+            {/* Each group's container */}
+            <Link to={`/DaoProfile/${group.daoTxHash}`}>
+              <div className="image">
+                <img src={group.daoImageIpfsHash} alt={group.daoTitle} />
+                <div className="taarifaTop">Taarifa</div>
               </div>
-              <p className="email">
-                {group.daoMultiSigAddr
-                  ? isSmallScreen
-                    ? `${group.daoMultiSigAddr.slice(
-                        0,
-                        14
-                      )}...${group.daoMultiSigAddr.slice(-9)}`
-                    : `${group.daoMultiSigAddr}`
-                  : "N/A"}
-              </p>
-            </div>
-            <div className="right">
-              <h3>Treasury Balance</h3>
-              <div>
-                <p className="currency">TSH</p>
-                <p className="amount">{group.kiwango.toLocaleString()}</p>
+              <div className="section-1">
+                <div className="left">
+                  <h2>{group.daoTitle}</h2>
+                  <div className="location">
+                    <p>{group.daoLocation}</p>
+                    <img src="/images/location.png" />
+                  </div>
+                  <p className="email">
+                    {group.daoMultiSigAddr
+                      ? isSmallScreen
+                        ? `${group.daoMultiSigAddr.slice(
+                            0,
+                            14
+                          )}...${group.daoMultiSigAddr.slice(-9)}`
+                        : `${group.daoMultiSigAddr}`
+                      : "N/A"}
+                  </p>
+                </div>
+                <div className="right">
+                  <h3>Thamani ya hazina</h3>
+                  <div>
+                    <p className="currency">TSH</p>
+                    <p className="amount">{group.kiwango.toLocaleString()}</p>
+                  </div>
+                </div>
               </div>
-            </div>
+              <p className="section-2">{group.daoDescription}</p>
+              <div className="section-3">
+                <div className="top">
+                  <img src="/images/profile.png" alt="idadi" />
+                  <div className="taarifa">Taarifa za wanachama</div>
+                </div>
+                <div className="bottom">
+                  <h2>Idadi ya wanachama</h2>
+                  <p>{group.memberCount}</p>
+                </div>
+              </div>
+            </Link>
           </div>
-          <p className="section-2">{group.daoDescription}</p>
-          <div className="section-3">
-            <div className="top">
-              <img src="/images/profile.png" alt="member details" />
-              <div className="taarifa">Member Details</div>
-            </div>
-            <div className="bottom">
-              <h2>Number of Members</h2>
-              <p>{group.memberCount}</p>
-            </div>
-          </div>
-        </div>
-      ))}
+        )
+      )}
 
       {/* Popup */}
       {showPopup && (

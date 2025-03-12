@@ -3,6 +3,10 @@ p.daoRegistration {
   padding: 180px 12px 72px;
 }
 
+p.daoRegistration.error {
+  color: #ffffff;
+}
+
 .daoRegistration {
   padding-top: clamp(120px, 13vw, 240px);
 }
