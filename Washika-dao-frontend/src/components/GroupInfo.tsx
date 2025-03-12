@@ -82,6 +82,7 @@ const GroupInfo: React.FC = () => {
   // When a group is clicked, check if the user is already a member.
   // If not, show the popup to choose registration type.
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    //@ts-ignore
   const handleGroupClick = (group: Dao) => {
     if (!memberAddr) {
       alert("Connect wallet to log in");
