@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DaoForm from "../components/DaoForm";
@@ -11,21 +11,15 @@ import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
 import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
-import { useActiveAccount } from "thirdweb/react";
-import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
-import { IBackendDaoCreatorDetails } from "../utils/Types.ts";
+// import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
 
 
 const DaoRegistration: React.FC = (): React.ReactNode => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [newDaoTxHash, setNewDaoTxHash] = useState("");
+  // const [newDaoTxHash, setNewDaoTxHash] = useState("");
   const address = useSelector((state: RootState) => state.auth.address);
   const { members, currentMember, handleMemberChange, handleAddMember } = useMemberManagement();
-    //@ts-ignore
-  const [backendDaoCreatorDetails, setBackendDaoCreatorDetails] = useState<IBackendDaoCreatorDetails>();
-
-  const daoCreatorAddress = useActiveAccount();
 
   //const [daoCreationFormData, setDaoCreationFormData] = useState<IBackendDaoCreation>();
   // Find the chairperson member (if any)
@@ -55,14 +49,13 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
         setIsSubmitting(false);
         return;
       }
-      setNewDaoTxHash(daoTxHash);
+      // setNewDaoTxHash(daoTxHash);
       setFormData((prev) => ({ ...prev, daoTxHash }));
-     const redirectUrl = _routeScanRedirectUrlBuilder(newDaoTxHash);
+    //  const redirectUrl = _routeScanRedirectUrlBuilder(newDaoTxHash);
 
      const combinedData = {
         ...formData,
         daoTxHash,
-        members,
       };
           //On Success of the blockchain part,
         // Send combined data to the backend API
@@ -70,10 +63,6 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
-          //allow to send request without cors
-          "Access-Control-Allow-Origin": `${BASE_BACKEND_ENDPOINT_URL}`,
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type"
           },
 
           body: JSON.stringify(combinedData),
@@ -86,7 +75,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
         if (response.ok) {
           alert("Dao created successfully");
           console.log("DAO created successfully", data);
-          navigate(redirectUrl); // Navigate to the DAO profile pagehandleSubmit(event);
+          navigate(`/SuperAdmin/${daoTxHash}`); // Navigate to the DAO profile pagehandleSubmit(event);
         } else {
           console.error("Error creating DAO:", data.message);
         }
@@ -96,19 +85,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
         setIsSubmitting(false); // Reset loading state
       }
     }
-    useEffect(()=>{
-      if(daoCreatorAddress) {
-        setBackendDaoCreatorDetails({
-          firstName: currentMember.firstName,
-          lastName: currentMember.lastName,
-          email: currentMember.email,
-          phoneNumber: currentMember.phoneNumber,
-          memberRole: currentMember.memberRole,
-          nationalIdNo: currentMember.nationalIdNo,
-          daoCreatorAddress: daoCreatorAddress
-        });
-      }
-    },[daoCreatorAddress, currentMember]);
+
   return (
     <>
       <NavBar className={"DaoRegister"} />
@@ -286,7 +263,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           </form>
         </main>
       ) : (
-        <p className="daoRegistration">
+        <p className="daoRegistration error">
           Please log in to create a Dao Contract
         </p>
       )}

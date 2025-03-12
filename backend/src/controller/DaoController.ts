@@ -77,7 +77,7 @@ export async function CreateDao(req: Request, res: Response) {
     });
 
     await daoRepository.save(dao);
-
+    return res.status(201).json({ message: "DAO created successfully", dao });
   } catch (error) {
     console.error("Error creating DAO with members:", error);
     res.status(500).json({ error: error.message });
@@ -109,9 +109,12 @@ export async function GetDaoDetailsByDaoTxHash(req: Request, res: Response) {
   try {
     const daoRepository = AppDataSource.getRepository(Dao);
     const daoDetails = await daoRepository.findOne({
-      where: { daoTxHash },
-      relations: ["members", "daoRoles", "daoRoles.member"],
+      where: { daoTxHash: daoTxHash.toLowerCase().trim() },
     });
+
+    if (!daoDetails) {
+      return res.status(404).json({ error: "DAO not found!" });
+    }
 
       return res.status(200).json({
         message: "DAO found with the details below",

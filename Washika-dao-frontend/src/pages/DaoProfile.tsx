@@ -75,7 +75,7 @@ const DaoProfile: React.FC = () => {
   const fetchDaoDetails = async () => {
     try {
       const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${daoTxHash}`,
         {
           headers: {
             Authorization: token,
@@ -94,7 +94,7 @@ const DaoProfile: React.FC = () => {
         console.error("Error fetching daoDetails:", data.message);
       }
     } catch (error) {
-      alert("Error fetching Dao");
+      // alert("Error fetching Dao");
       console.error(error);
     }
   };

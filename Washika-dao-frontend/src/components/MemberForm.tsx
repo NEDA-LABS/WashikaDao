@@ -1,7 +1,3 @@
-import { Address } from "thirdweb";
-//@ts-ignore
-import { useActiveAccount, useActiveWallet } from "thirdweb/react";
-
 // Define the structure of a Member object
 interface Member {
   firstName: string;
@@ -10,10 +6,6 @@ interface Member {
   phoneNumber: string;
   nationalIdNo: string;
   memberRole: string;
-}
-//@ts-ignore
-interface IDaoCreator extends Member {
-  creatorAddress: Address;
 }
 interface MemberFormProps {
   currentMember: Member;
@@ -41,9 +33,6 @@ const MemberForm: React.FC<MemberFormProps> = ({
   onMemberChange,
   onAddMember,
 }) => {
-    //@ts-ignore
-  const memberAddress= useActiveAccount();
-
   return (
     <div className="wanakikundi">
       <div className="left">

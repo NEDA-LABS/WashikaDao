@@ -71,7 +71,7 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
           setDaos(data.daos);
           dispatch(setUserDaos(data.daos));
           // Store the authentication token in localStorage for future requests.
-          localStorage.setItem("token", data.authCode);
+          // localStorage.setItem("token", data.authCode);
 
           // Retrieve member details from the API response.
           const member = data.member;
