@@ -7,8 +7,7 @@ services:
       - "3000:3000"  # Map port 8080 on the host to port 8080 in the container. all backends use 8080  --for traefik use port 3000 to avoid conflicts with the proxy
     environment:
       NODE_ENV: production
-      DATABASE_URL: ${DATABASE_URL}
-      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_URL: ${DATABASE_URL_INTERNAL}
     restart: on-failure  # Restart the container if it exits with a non-zero status code.
 
 
