@@ -33,13 +33,13 @@ app.use(cors(corsOptions));
 app.use(express.json());// specifying we will be receiving the data in json format
 //Endpoints to be used
 
-app.use("/DaoGenesis", DaoGenesisHandler);//funguaDao Page --> CreateDao
-app.use("/Daokit/DaoDetails", DaoKitHandler);// all in dao activities like creating & managing membership & the various membership tiers
-app.use("/DaoKit/MemberShip", DaoMembershipHandler);
-app.use("/DaoKit/Proposals", ProposalHandler)//CreateProposalPageHandler Page
-app.use("/DaoKit/Funding", DaoFundingHandler);
-app.use("/LearnBlogs", BlogContentHandler);//Elimu/Jifunze Page
-app.use("/IsBackendAlive", IsBackendAliveHandler);
+app.use("/api/DaoGenesis", DaoGenesisHandler);//funguaDao Page --> CreateDao
+app.use("/api/Daokit/DaoDetails", DaoKitHandler);// all in dao activities like creating & managing membership & the various membership tiers
+app.use("/api/DaoKit/MemberShip", DaoMembershipHandler);
+app.use("/api/DaoKit/Proposals", ProposalHandler)//CreateProposalPageHandler Page
+app.use("/api/DaoKit/Funding", DaoFundingHandler);
+app.use("/api/LearnBlogs", BlogContentHandler);//Elimu/Jifunze Page
+app.use("/api/IsBackendAlive", IsBackendAliveHandler);
 
 //Global error handler
 app.use((err, req, res, next) => {
