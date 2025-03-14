@@ -4,7 +4,7 @@ services:
   app:
     build: .  # Build the image from the current directory's Dockerfile.
     ports:
-      - "8080:8080"  # Map port 8080 on the host to port 8080 in the container. all backends use 8080
+      - "3000:3000"  # Map port 8080 on the host to port 8080 in the container. all backends use 8080
     environment:
       NODE_ENV: production
       DATABASE_URL: ${DATABASE_URL}
