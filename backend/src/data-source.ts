@@ -32,7 +32,7 @@ import path from "path";
 
 const AppDataSource = new DataSource({
  url: process.env.DATABASE_URL,
- type: "postgres",
+ type: "mysql",
  synchronize: true, //synchronize only in development
   logging: true, //Log only in development
   entities: [Dao, MemberDetails, Proposal, Vote],
