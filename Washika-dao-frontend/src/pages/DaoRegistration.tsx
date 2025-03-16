@@ -63,6 +63,13 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
+            //allow to send request without cors 
+ 
+          "Access-Control-Allow-Origin": `${BASE_BACKEND_ENDPOINT_URL}`,
+ 
+          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+ 
+          "Access-Control-Allow-Headers": "Content-Type"
           },
 
           body: JSON.stringify(combinedData),
