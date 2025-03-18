@@ -492,8 +492,48 @@ button.createDao {
   font-size: clamp(16px, 4.5vw, 31px);
   font-weight: bold;
   border-radius: 12px;
-  margin: clamp(36px,13vw,84px) 0;
+  margin-bottom: 36px;
 }
+
+.form-progress {
+  width: 30vw;
+  margin: 3.5rem auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: #f2f2f2;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-progress p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.form-progress button {
+  padding: 0 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  min-width: 80px;
+  height: 1.8rem;
+}
+
+.form-progress button:hover {
+  background-color: #0056b3;
+}
+
+
+
 
 @media only screen and (max-width: 1024px) {
   .funguaKikundi {
@@ -755,5 +795,11 @@ button.createDao {
 
   .hazina input::placeholder {
     font-size: 18px;
+  }
+
+  .form-progress {
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 2rem;
   }
 }
