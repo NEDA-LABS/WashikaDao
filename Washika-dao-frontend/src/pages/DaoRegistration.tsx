@@ -29,7 +29,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
 
   // Pass the chairpersonPhone into the hook
   const { formData, setFormData, handleChange, handleFileChange } = useDaoForm(chairpersonPhone);
-  const completedSteps = useCompletedSteps();
+  const completedSteps = useCompletedSteps(formData, members, address);
   const { handleCreateDao } = useDaoTransaction();
 
   // Handle form submission
@@ -92,7 +92,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   return (
     <>
       <NavBar className={"DaoRegister"} />
-      {address ? ( // Only show form if user is logged in
+      {!address ? ( // Only show form if user is logged in
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
