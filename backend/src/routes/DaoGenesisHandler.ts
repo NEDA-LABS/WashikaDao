@@ -2,7 +2,6 @@ import express, { Express } from 'express';
 import { Request, Response } from "express";
 import { CreateDao, GetAllDaosInPlatform } from '../controller/DaoController';
 const router = express.Router();
-import { Authenticator } from '../utils/Authenticator/Authenticator';
 
 
 router.post('/CreateDao', async (req: Request, res: Response) =>{await CreateDao(req, res)});//INFO: Unique route that is only used for creating Daos

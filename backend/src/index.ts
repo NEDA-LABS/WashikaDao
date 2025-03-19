@@ -17,8 +17,11 @@ import DaoFundingHandler from "./routes/DaoFundingHandler";
 import BlogContentHandler from "./routes/BlogContentHandler";
 import IsBackendAliveHandler from "./routes/IsBackendAliveHandler";
 
+//Using our Client Authenticator
+import { Authenticator } from "./utils/Authenticator/Authenticator";
+
 export const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'https://www.washikadao.xyz/', 'https://www.washikadao.xyz.*', '*']
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'https://www.washikadao.xyz/']
 const corsOptions = {
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -26,19 +29,22 @@ const corsOptions = {
         }  else {
             callback(new Error('Cors has you as persona non-grata'))
         }
-    }
+    },
+    credentials: true,
+    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
 }
 
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle OPTIONS requests
 app.use(express.json());// specifying we will be receiving the data in json format
 //Endpoints to be used
 
-app.use("/api/DaoGenesis", DaoGenesisHandler);//funguaDao Page --> CreateDao
-app.use("/api/Daokit/DaoDetails", DaoKitHandler);// all in dao activities like creating & managing membership & the various membership tiers
-app.use("/api/DaoKit/MemberShip", DaoMembershipHandler);
-app.use("/api/DaoKit/Proposals", ProposalHandler)//CreateProposalPageHandler Page
-app.use("/api/DaoKit/Funding", DaoFundingHandler);
-app.use("/api/LearnBlogs", BlogContentHandler);//Elimu/Jifunze Page
+app.use("/api/DaoGenesis", Authenticator,  DaoGenesisHandler);//funguaDao Page --> CreateDao
+app.use("/api/Daokit/DaoDetails", Authenticator, DaoKitHandler);// all in dao activities like creating & managing membership & the various membership tiers
+app.use("/api/DaoKit/MemberShip", Authenticator,  DaoMembershipHandler);
+app.use("/api/DaoKit/Proposals", Authenticator, ProposalHandler)//CreateProposalPageHandler Page
+app.use("/api/DaoKit/Funding", Authenticator, DaoFundingHandler);
+app.use("/api/LearnBlogs", Authenticator, BlogContentHandler);//Elimu/Jifunze Page
 app.use("/api/IsBackendAlive", IsBackendAliveHandler);
 
 //Global error handler

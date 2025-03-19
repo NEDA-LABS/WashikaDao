@@ -6,23 +6,22 @@ import { Request, Response, NextFunction } from 'express';
  * This is not to serve as any form of user oauth but to shield the server from unverified requests
  *
  */
+
 export  function Authenticator(req: Request, res: Response, next: NextFunction): void {
 
-  const authCode = req.headers['authorization'];
+ const apiKey = req.headers['x-api-key'];
+ const ROUTE_PROTECTOR_KEY = process.env.ROUTE_PROTECTOR;
 
-     if(!authCode) {
-              res
-                .status(401)
-                .json({error: "No authorization code provided" })
-       return;
-    } 
-
-    if(authCode !== process.env.ROUTE_PROTECTOR) {
+    if (apiKey === ROUTE_PROTECTOR_KEY) {
+        next();
+    } else {
+        res.status(401).send('Unauthorized');
+    }  if(apiKey !== ROUTE_PROTECTOR_KEY) {
                res
                  .status(403)
                  .json({ error: "Invalid secret code provided" });
-      return; 
-    } 
+      return;
+    }
 
     next();
      }

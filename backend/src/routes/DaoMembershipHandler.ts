@@ -3,7 +3,6 @@ const router = express.Router();
 
 
 import { handleSendInviteSMS } from "../controller/SMSController";
-import { Authenticator }  from "../utils/Authenticator/Authenticator";
 
 /**
 /**
@@ -12,7 +11,7 @@ import { Authenticator }  from "../utils/Authenticator/Authenticator";
     * @request Body - Details of the Member to issue invite to, must include the phone number since this is an SMS
     * @returns - Status code & or error  message
     */
-router.post('/InviteMemberSMS', Authenticator, (req: Request, res: Response) => handleSendInviteSMS(req, res));
+router.post('/InviteMemberSMS',  (req: Request, res: Response) => handleSendInviteSMS(req, res));
 
 export default router;
 //TODO: add middleware to check if user is an owner of the dao or has sufficient permissions to access the endpoint

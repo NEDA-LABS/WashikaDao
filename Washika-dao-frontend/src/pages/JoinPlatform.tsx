@@ -5,7 +5,7 @@ import NavBar from "../components/Navbar/Navbar";
 import DaoForm from "../components/DaoForm";
 import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 import { IBackendDaoMember } from "../utils/Types";
 
 /**
@@ -104,6 +104,7 @@ const JoinPlatform: React.FC = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
           },
           body: JSON.stringify(payload),
         }

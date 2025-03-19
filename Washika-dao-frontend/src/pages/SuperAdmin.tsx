@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -45,7 +45,7 @@ const SuperAdmin: React.FC = () => {
   const { daoTxHash } = useParams<{ daoTxHash: string }>();
   const address = useSelector((state: RootState) => state.auth.address);
   const [authToken, setAuthToken] = useState<string>("");
-  
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       const storedToken = localStorage.getItem("token") || "";
@@ -56,7 +56,7 @@ const SuperAdmin: React.FC = () => {
     }, 10); // check every 100ms
     return () => clearInterval(intervalId);
   }, []);
-  
+
 
   const fetchDaoDetails = async () => {
     try {
@@ -126,6 +126,7 @@ const SuperAdmin: React.FC = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
             Authorization: token,
           },
           body: JSON.stringify(payload),
