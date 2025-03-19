@@ -1,6 +1,4 @@
 import { Request, Response, NextFunction } from 'express';
-
-
 /*
  * Requires request to particular routes to contain an authorization header so only our client application can make requests for our server.
  * This is not to serve as any form of user oauth but to shield the server from unverified requests
