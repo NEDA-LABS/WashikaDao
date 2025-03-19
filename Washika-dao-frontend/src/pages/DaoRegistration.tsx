@@ -10,7 +10,8 @@ import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
+
 // import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
 
 
@@ -63,14 +64,9 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           method: "POST", // HTTP method
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
-            //allow to send request without cors 
- 
-          "Access-Control-Allow-Origin": `${BASE_BACKEND_ENDPOINT_URL}`,
- 
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
- 
-          "Access-Control-Allow-Headers": "Content-Type"
-          },
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
+            //allow to send request without cors
+    },
 
           body: JSON.stringify(combinedData),
         });

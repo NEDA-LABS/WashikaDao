@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 
 // Import functions for backend communication and blockchain account management.
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 import { RootState } from "../redux/store";
 import { useSelector } from "react-redux";
 import { useProposalForm } from "../hooks/useProposalForm";
@@ -72,6 +72,8 @@ const CreateProposal: React.FC = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
             Authorization: token, //include token in the Authorization header
           },
           body: JSON.stringify(proposalData),

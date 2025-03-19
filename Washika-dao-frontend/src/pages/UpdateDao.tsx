@@ -6,7 +6,7 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.ts";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -156,6 +156,9 @@ const UpdateDao: React.FC = () => {
         {
           headers: {
             Authorization: token,
+
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
+
             "Content-Type": "application/json",
           },
         }
@@ -165,7 +168,7 @@ const UpdateDao: React.FC = () => {
       }
       const data = await response.json();
       console.log(data);
-      
+
       setFormData((prevData) => ({
         ...prevData,
         ...data.daoDetails, // Merge existing state with fetched data

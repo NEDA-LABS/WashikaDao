@@ -4,7 +4,7 @@ import ProposalGroups from "../components/ProposalGroups";
 import Dashboard from "../components/Dashboard";
 import { useEffect, useState } from "react";
 import DaoForm from "../components/DaoForm";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 import { Dao, fetchDaos } from "../hooks/useFetchDaos";
 import { useNavigate } from "react-router-dom";
 
@@ -92,6 +92,8 @@ const MemberProfile: React.FC = () => {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
+
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
             Authorization: token,
           },
           body: JSON.stringify(payload),

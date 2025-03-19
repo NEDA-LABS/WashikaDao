@@ -3,7 +3,7 @@ import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import TreasuryHistory from "../components/TreasuryHistory";
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 
 /**
  * Interface representing the details of a DAO (Decentralized Autonomous Organization).
@@ -79,6 +79,7 @@ const DaoProfile: React.FC = () => {
         {
           headers: {
             Authorization: token,
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
             "Content-Type": "application/json",
           },
         }

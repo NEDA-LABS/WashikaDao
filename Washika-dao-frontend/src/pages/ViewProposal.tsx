@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 
 interface ProposalData {
   proposalCustomIdentifier: string;
@@ -90,6 +90,7 @@ const ViewProposal: React.FC = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
           Authorization: token, // Include the token in the Authorization header
         },
         body: JSON.stringify({
