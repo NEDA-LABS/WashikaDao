@@ -9,9 +9,9 @@ export const useDaoTransaction = () => {
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx } = useSendTransaction();
 
-  const prepareCreateDaoTx = (
+  const buildCreateDaoTransaction = (
     formData: IBackendDaoCreation,
-    _multiSigPhoneNo: bigint
+    multiSigPhoneNo: bigint
   ) => {
     if (!currActiveAcc) {
       console.error("Fatal Error, No Active Account found");
@@ -19,8 +19,8 @@ export const useDaoTransaction = () => {
     }
 
     try {
-      console.log("Preparing DAO Creation transaction");
-      const _createDaotx = prepareContractCall({
+      console.debug("Preparing DAO Creation transaction...");
+      return prepareContractCall({
         contract: FullDaoContract,
         method: "createDao",
         params: [
@@ -32,11 +32,9 @@ export const useDaoTransaction = () => {
           formData.daoOverview,
           formData.daoImageIpfsHash,
           currActiveAcc.address, // Multisig address
-          BigInt(_multiSigPhoneNo?.toString() ?? "0"), // Convert to BigInt and handle undefined
+          multiSigPhoneNo,
         ],
       });
-      console.log("Dao Creation transaction prepared", _createDaotx);
-      return _createDaotx;
     } catch (error) {
       console.error("Error preparing transaction:", error);
       return null;
@@ -44,84 +42,63 @@ export const useDaoTransaction = () => {
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const sendCreateDaoTx = async (_createDaotx: any): Promise<string | null> => {
-    if (!_createDaotx) {
+  const executeCreateDaoTransaction = async (transaction: any): Promise<string | null> => {
+    if (!transaction) {
       console.warn("Undefined transaction");
-      return null;
+      throw new Error("Transaction is undefined");
     }
 
-    return new Promise<string | null>((resolve) => {
+    return new Promise<string | null>((resolve, reject) => {
       console.log("Sending transaction...");
       alert("Sending transaction...");
 
-      sendTx(_createDaotx, {
+      sendTx(transaction, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
           setDaoTxHash(receipt.transactionHash);
           resolve(receipt.transactionHash);
         },
         onError: (error) => {
-          if (error instanceof Error && error.message.includes("AA21")) {
-            prompt(
-              "Gas sponsorship issue, please top up your account or request for gas sponsorship"
-            );
-          } else {
-            console.error("Error creating dao", error);
-          }
-          resolve(null);
+          handleTransactionError(error);
+          reject(error);
         },
       });
     });
   };
 
-  const handleCreateDao = async (
-    formData: IBackendDaoCreation
-  ): Promise<string | null> => {
-    // If we're testing and want to skip the onchain transaction,
-    // simply return a dummy transaction hash.
-    function generateDummyTxHash(): string {
-      // Generate a 64-character hexadecimal string (like a real Ethereum tx hash)
-      const randomHex = Array.from({ length: 64 }, () =>
-        Math.floor(Math.random() * 16).toString(16)
-      ).join("");
-      return `0x${randomHex}`;
+
+
+  const handleTransactionError = (error: unknown) => {
+    if (error instanceof Error && error.message.includes("AA21")) {
+      prompt("Gas sponsorship issue, please top up your account or request for gas sponsorship");
+      throw new Error("Gas sponsorship issue detected");
+    } else {
+      console.error("Error creating DAO:", error);
+      throw error; 
     }
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  };
+
+  const generateDummyTxHash = (): string =>
+    `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join("")}`;
+
+  const handleCreateDao = async (formData: IBackendDaoCreation): Promise<string | null> => {
+     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     if (import.meta.env.VITE_SKIP_ONCHAIN === "true") {
       const dummyTxHash = generateDummyTxHash();
-      console.log(
-        "Skipping onchain transaction; using dummy tx hash:",
-        dummyTxHash
-      );
+      console.log("Skipping on-chain transaction; using dummy tx hash:", dummyTxHash);
       return dummyTxHash;
     }
 
     try {
-      //Converting multisigPhoneNo to BigInt with default value
-      const multisigPhoneNoBigInt = BigInt(formData.multiSigPhoneNo || "0");
-      console.log(
-        "Phone number to bind to multisig for dao",
-        multisigPhoneNoBigInt
-      );
-      console.log("------------Now Calling prepareCreateDaoTx------------");
-      const finalTx = prepareCreateDaoTx(formData, multisigPhoneNoBigInt);
-      if (finalTx) {
-        const txHash = await sendCreateDaoTx(finalTx);
-        console.log("Transaction sent successfully");
-        return txHash;
-      } else {
-        console.log("Looks like transaction failed");
-        return null;
-      }
-    } catch (error: unknown) {
-      if (error instanceof Error && error.message.includes("AA21")) {
-        prompt(
-          "Gas sponsorship issue, please top up your account or request for gas sponsorship"
-        );
-      } else {
-        console.error("Error creating dao", error);
-      }
+      const multiSigPhoneNoBigInt = BigInt(formData.multiSigPhoneNo || "0");
+      console.debug("MultiSig Phone No (BigInt):", multiSigPhoneNoBigInt);
+
+      console.debug("Calling buildCreateDaoTransaction...");
+      const finalTx = buildCreateDaoTransaction(formData, multiSigPhoneNoBigInt);
+      return finalTx ? await executeCreateDaoTransaction(finalTx) : null;
+    } catch (error) {
+      handleTransactionError(error);
       return null;
     }
   };
