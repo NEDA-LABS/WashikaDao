@@ -9,15 +9,15 @@ export interface IBackendDaoCreation {
   daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
-  daoRegDocs: string;
-  daoMultiSigAddr: string;
+  daoRegDocs?: string;  // Made optional
+  daoMultiSigAddr?: string;  // Made optional
   multiSigPhoneNo: string;
-  kiwango: number;
-  accountNo: string;
-  nambaZaHisa: number;
-  kiasiChaHisa: number;
-  interestOnLoans: number;
-  daoTxHash: string;
+  kiwango?: number;  // Made optional
+  accountNo?: string;  // Made optional
+  nambaZaHisa?: number;  // Made optional
+  kiasiChaHisa?: number;  // Made optional
+  interestOnLoans?: number;  // Made optional
+  daoTxHash?: string;  // Made optional
 }
 
 export interface IFetchedBackendDao {
@@ -50,7 +50,6 @@ export interface IBlockchainDaoCreation {
   daoImageIpfsHash: string;
   daoMultiSigAddr: Address;
   multiSigPhoneNo: bigint;
-  backendDaoMembers: IBackendDaoMember[]
 }
 
 export interface IBackendDaoMember {
