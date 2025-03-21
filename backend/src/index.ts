@@ -21,21 +21,17 @@ import IsBackendAliveHandler from "./routes/IsBackendAliveHandler";
 import { Authenticator } from "./utils/Authenticator/Authenticator";
 
 export const app = express();
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',') || ['http://localhost:5173', 'https://www.washikadao.xyz/', '*']
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true)
-        }  else {
-            callback(new Error('Cors has you as persona non-grata'))
-        }
-    },
-    credentials: true,
-    methods: 'GET, HEAD, PUT, PATCH, POST, DELETE, OPTIONS',
-}
+const allowedOrigins = [ "http://localhost:5173", "https://www.washikadao.xyz"];
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle OPTIONS requests
+
+app.use(
+ cors({
+      origin: allowedOrigins,
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+     allowedHeaders: ["content-type", "Authorization"],
+     credentials: true,
+    })
+)
 app.use(express.json());// specifying we will be receiving the data in json format
 //Endpoints to be used
 
