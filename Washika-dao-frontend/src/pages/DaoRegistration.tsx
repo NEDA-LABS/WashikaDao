@@ -65,7 +65,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           headers: {
             "Content-Type": "application/json", // Specify JSON content type
             "X-API-KEY": ROUTE_PROTECTOR_KEY,
-            //allow to send request without cors
+            
     },
 
           body: JSON.stringify(combinedData),
