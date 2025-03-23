@@ -46,7 +46,7 @@ app.use("/api/IsBackendAlive", IsBackendAliveHandler);
 //Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something broke!');
+    res.status(500).send('Something broke!', err);
 });
 // Initialize the data source and start the server
 AppDataSource.initialize()
