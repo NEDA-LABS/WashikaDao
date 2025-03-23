@@ -35,12 +35,12 @@ app.use(
 app.use(express.json());// specifying we will be receiving the data in json format
 //Endpoints to be used
 
-app.use("/api/DaoGenesis", Authenticator,  DaoGenesisHandler);//funguaDao Page --> CreateDao
-app.use("/api/Daokit/DaoDetails", Authenticator, DaoKitHandler);// all in dao activities like creating & managing membership & the various membership tiers
-app.use("/api/DaoKit/MemberShip", Authenticator,  DaoMembershipHandler);
+app.use("/api/DaoGenesis",   DaoGenesisHandler);//funguaDao Page --> CreateDao
+app.use("/api/Daokit/DaoDetails",  DaoKitHandler);// all in dao activities like creating & managing membership & the various membership tiers
+app.use("/api/DaoKit/MemberShip",   DaoMembershipHandler);
 app.use("/api/DaoKit/Proposals", Authenticator, ProposalHandler)//CreateProposalPageHandler Page
 app.use("/api/DaoKit/Funding", Authenticator, DaoFundingHandler);
-app.use("/api/LearnBlogs", Authenticator, BlogContentHandler);//Elimu/Jifunze Page
+app.use("/api/LearnBlogs",  BlogContentHandler);//Elimu/Jifunze Page
 app.use("/api/IsBackendAlive", IsBackendAliveHandler);
 
 //Global error handler
