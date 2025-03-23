@@ -26,7 +26,7 @@ export const app = express();
 
 app.use(
  cors({
-      origin: "https://washikadao.xyz",
+      origin: "*",
       //methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
      allowedHeaders: ["content-type", "Authorization", "X-API-KEY"],
 
