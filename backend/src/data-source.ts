@@ -30,6 +30,7 @@ import { Vote } from "./entity/Vote";
 import path from "path";
 // import { DaoJoinDate, DaoRole, DaoStatus } from "./entity/DaoMembershipRelations";
 
+
 const AppDataSource = new DataSource({
  url: process.env.DATABASE_URL,
  type: "postgres",
@@ -40,4 +41,16 @@ const AppDataSource = new DataSource({
   subscribers: [],
 });
 
+
+/* development 
+const AppDataSource = new DataSource({
+  type: "sqlite",
+  database: path.join(__dirname, "database.sqlite"), // Specify the SQLite database file
+  synchronize: true, //synchronize only in development
+  logging: true, //Log only in development
+  entities: [Dao, MemberDetails, Proposal, Vote],
+  migrations: [path.join(__dirname, "./migrations/*{.ts,.js}")], //Configure migrations as needed
+  subscribers: [],
+});
+*/ 
 export default AppDataSource;
