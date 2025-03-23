@@ -21,12 +21,12 @@ import IsBackendAliveHandler from "./routes/IsBackendAliveHandler";
 import { Authenticator } from "./utils/Authenticator/Authenticator";
 
 export const app = express();
-const allowedOrigins = [ "http://localhost:5173", "https://washikadao.xyz"];
+//const allowedOrigins = [ "http://localhost:5173", "https://washikadao.xyz"];
 
 
 app.use(
  cors({
-      origin: allowedOrigins,
+      origin: "https://washikadao.xyz",
       //methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
      allowedHeaders: ["content-type", "Authorization", "X-API-KEY"],
 
