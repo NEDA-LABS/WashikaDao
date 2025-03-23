@@ -27,9 +27,9 @@ const allowedOrigins = [ "http://localhost:5173", "https://washikadao.xyz"];
 app.use(
  cors({
       origin: allowedOrigins,
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
-     allowedHeaders: ["content-type", "Authorization"],
-     credentials: true,
+      //methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
+     allowedHeaders: ["content-type", "Authorization", "X-API-KEY"],
+
     })
 )
 app.use(express.json());// specifying we will be receiving the data in json format
@@ -45,8 +45,12 @@ app.use("/api/IsBackendAlive", IsBackendAliveHandler);
 
 //Global error handler
 app.use((err, req, res, next) => {
+    if (err) {
     console.error(err.stack);
-    res.status(500).send('Something broke!', err);
+    res.status(500).send('Global error handler says Something broke!', err);
+    }
+    next();
+    return;
 });
 // Initialize the data source and start the server
 AppDataSource.initialize()
