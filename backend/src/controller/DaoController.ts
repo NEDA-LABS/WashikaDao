@@ -90,9 +90,9 @@ export async function GetAllDaosInPlatform(req: Request, res: Response) {
     const daoRepository = AppDataSource.getRepository(Dao);
     // Fetch all DAOs
     const daoList = await daoRepository.find();
-    return res.status(200).json({ daoList });
+     res.status(200).json({ daoList });
   } catch (error) {
-    return res.status(500).json({ error: "Error retrieving DAO list" });
+     res.status(500).json({ error: "Error retrieving DAO list" });
   }
 }
 
