@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
-import { useActiveAccount } from "thirdweb/react";
-import { useDaoForm } from "./useDaoForm";
-import { useMemberManagement } from "./useMemberManagement";
+import { IBackendDaoCreation, IBackendDaoMember } from "../utils/Types"; 
 
-export const useCompletedSteps = () => {
+export const useCompletedSteps = (
+  formData: IBackendDaoCreation,
+  members: IBackendDaoMember[],
+  memberAddr: string | null
+) => {
   const [completedSteps, setCompletedSteps] = useState<number>(0);
-  const currUsrAcc = useActiveAccount();
-  const memberAddr = currUsrAcc?.address;
-  const { formData } = useDaoForm();
-  const { members } = useMemberManagement();
 
   useEffect(() => {
     let stepsCompleted = 0;
@@ -20,7 +18,7 @@ export const useCompletedSteps = () => {
     if (members.length > 0) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
-  }, [formData, memberAddr, members.length]);
+  }, [formData, memberAddr, members]);
 
   return completedSteps;
 };

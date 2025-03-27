@@ -18,6 +18,7 @@ import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backend
 const DaoRegistration: React.FC = (): React.ReactNode => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [currentStep, setCurrentStep] = useState(1);
   // const [newDaoTxHash, setNewDaoTxHash] = useState("");
   const address = useSelector((state: RootState) => state.auth.address);
   const { members, currentMember, handleMemberChange, handleAddMember } = useMemberManagement();
@@ -29,7 +30,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
 
   // Pass the chairpersonPhone into the hook
   const { formData, setFormData, handleChange, handleFileChange } = useDaoForm(chairpersonPhone);
-  const completedSteps = useCompletedSteps();
+  const completedSteps = useCompletedSteps(formData, members, address);
   const { handleCreateDao } = useDaoTransaction();
 
   // Handle form submission
@@ -89,6 +90,202 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
       }
     }
 
+    const renderStep = () => {
+      switch (currentStep) {
+        case 1:
+          return (
+            <div className="step step1">
+              <DaoForm
+                className="form one"
+                title="Fill this form to your DAO"
+                description="Tell us about your group"
+                fields={[
+                  {
+                    label: "Name of your Group",
+                    type: "text",
+                    name: "daoName",
+                    value: formData.daoName,
+                    onChange: handleChange,
+                  },
+                  {
+                    label: "Location",
+                    type: "text",
+                    name: "daoLocation",
+                    value: formData.daoLocation,
+                    onChange: handleChange,
+                  },
+                  {
+                    label: "What is your Savings Group about?",
+                    type: "text",
+                    name: "targetAudience",
+                    value: formData.targetAudience,
+                    onChange: handleChange,
+                  },
+                  {
+                    label: "Initial Amount",
+                    type: "number",
+                    name: "kiwango",
+                    value: formData.kiwango === 0 ? "" : formData.kiwango,
+                    onChange: handleChange,
+                  },
+                  {
+                    label: "Bank account number",
+                    type: "text",
+                    name: "accountNo",
+                    value: formData.accountNo,
+                    onChange: handleChange,
+                  },
+                ]}
+              />
+              <div className="form-progress">
+              <button type="button">
+                  
+                  </button>
+                <p>Step 1 of 3</p>
+                <button type="button" onClick={() => setCurrentStep(2)}>
+                  Next
+                </button>
+              </div>
+            </div>
+          );
+        case 2:
+          return (
+            <div className="step step2">
+              <DaoForm
+                className="form two"
+                title="About the group"
+                description="Group overview and its objective"
+                fields={[
+                  {
+                    label: "Header Bio",
+                    type: "text",
+                    name: "daoTitle",
+                    value: formData.daoTitle,
+                    onChange: handleChange,
+                  },
+                  {
+                    label: "Short description",
+                    type: "textarea",
+                    name: "daoDescription",
+                    value: formData.daoDescription,
+                    onChange: handleChange,
+                  },
+                  {
+                    label: "Additional information if any and Group By-laws",
+                    type: "textarea",
+                    name: "daoOverview",
+                    value: formData.daoOverview,
+                    onChange: handleChange,
+                  },
+                  {
+                    group: true,
+                    fields: [
+                      {
+                        label: "Number of SHARES",
+                        type: "number",
+                        name: "nambaZaHisa",
+                        value:
+                          formData.nambaZaHisa === 0
+                            ? ""
+                            : formData.nambaZaHisa,
+                        onChange: handleChange,
+                      },
+                      {
+                        label: "Amount per SHARE",
+                        type: "number",
+                        name: "kiasiChaHisa",
+                        value:
+                          formData.kiasiChaHisa === 0
+                            ? ""
+                            : formData.kiasiChaHisa,
+                        onChange: handleChange,
+                      },
+                      {
+                        label: "Loan Interest",
+                        type: "number",
+                        name: "interestOnLoans",
+                        value:
+                          formData.interestOnLoans === 0
+                            ? ""
+                            : formData.interestOnLoans,
+                        placeholder: "%",
+                        onChange: handleChange,
+                      },
+                    ],
+                    label: "",
+                    type: "",
+                  },
+                  {
+                    label: "",
+                    type: "",
+                    group: true,
+                    fields: [
+                      {
+                        label: "Profile Image",
+                        type: "file",
+                        name: "daoImageIpfsHash",
+                        onChange: (e) =>
+                          handleFileChange(
+                            e as React.ChangeEvent<HTMLInputElement>
+                          ),
+                      },
+                      {
+                        label: "Upload Registration Documents",
+                        type: "file",
+                        name: "daoRegDocs",
+                        onChange: (e) =>
+                          handleFileChange(
+                            e as React.ChangeEvent<HTMLInputElement>
+                          ),
+                      },
+                    ],
+                  },
+                ]}
+              />
+              <div className="form-progress">
+                <button type="button" onClick={() => setCurrentStep(1)}>
+                  Back
+                </button>
+                <p>Step 2 of 3</p>
+                <button type="button" onClick={() => setCurrentStep(3)}>
+                  Next
+                </button>
+              </div>
+            </div>
+          );
+        case 3:
+          return (
+            <div className="step step3">
+              <MemberForm
+                currentMember={currentMember}
+                onMemberChange={handleMemberChange}
+                onAddMember={handleAddMember}
+              />
+              <div className="form-progress">
+                <button type="button" onClick={() => setCurrentStep(2)}>
+                  Back
+                </button>
+                <p>Step 3 of 3</p>
+                <button type="button">
+                  
+                </button>
+              </div>
+              <center>
+                <button
+                  disabled={isSubmitting}
+                  className={`createDao ${isSubmitting ? "loading" : ""}`}
+                  type="submit"
+                >
+                  Create DAO
+                </button>
+              </center>
+            </div>
+          );
+        default:
+          return null;
+      }
+    };
+
   return (
     <>
       <NavBar className={"DaoRegister"} />
@@ -121,148 +318,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           </div>
 
           <form className="combinedForms" onSubmit={handleSubmit}>
-            <DaoForm
-              className="form one"
-              title="Fill this form to your DAO"
-              description="Tell us about your group"
-              fields={[
-                {
-                  label: "Name of your Group",
-                  type: "text",
-                  name: "daoName",
-                  value: formData.daoName,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Location",
-                  type: "text",
-                  name: "daoLocation",
-                  value: formData.daoLocation,
-                  onChange: handleChange,
-                },
-                {
-                  label: "What is your Savings Group about?",
-                  type: "text",
-                  name: "targetAudience",
-                  value: formData.targetAudience,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Initial Amount",
-                  type: "number",
-                  name: "kiwango",
-                  value: formData.kiwango === 0 ? "" : formData.kiwango,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Bank account number",
-                  type: "text",
-                  name: "accountNo",
-                  value: formData.accountNo,
-                  onChange: handleChange,
-                },
-              ]}
-            />
-
-            <DaoForm
-              className="form two"
-              title="About the group"
-              description="Group overview and its objective"
-              fields={[
-                {
-                  label: "Header Bio",
-                  type: "text",
-                  name: "daoTitle",
-                  value: formData.daoTitle,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Short description",
-                  type: "textarea",
-                  name: "daoDescription",
-                  value: formData.daoDescription,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Additional information if any and Group By-laws",
-                  type: "textarea",
-                  name: "daoOverview",
-                  value: formData.daoOverview,
-                  onChange: handleChange,
-                },
-                {
-                  group: true,
-                  fields: [
-                    {
-                      label: "Number of SHARES",
-                      type: "number",
-                      name: "nambaZaHisa",
-                      value: formData.nambaZaHisa === 0 ? "" : formData.nambaZaHisa,
-                      onChange: handleChange,
-                    },
-                    {
-                      label: "Amount per SHARE",
-                      type: "number",
-                      name: "kiasiChaHisa",
-                      value: formData.kiasiChaHisa === 0 ? "" : formData.kiasiChaHisa ,
-                      onChange: handleChange,
-                    },
-                    {
-                      label: "Loan Interest",
-                      type: "number",
-                      name: "interestOnLoans",
-                      value: formData.interestOnLoans === 0 ? "" : formData.interestOnLoans,
-                      placeholder: "%",
-                      onChange: handleChange,
-                    },
-                  ],
-                  label: "",
-                  type: "",
-                },
-                {
-                  label: "",
-                  type: "",
-                  group: true,
-                  fields: [
-                    {
-                      label: "Profile Image",
-                      type: "file",
-                      name: "daoImageIpfsHash",
-                      onChange: (e) =>
-                        handleFileChange(
-                          e as React.ChangeEvent<HTMLInputElement>
-                        ), // File input handler
-                    },
-                    {
-                      label: "Upload Registration Documents",
-                      type: "file",
-                      name: "daoRegDocs",
-                      onChange: (e) =>
-                        handleFileChange(
-                          e as React.ChangeEvent<HTMLInputElement>
-                        ), // File input handler
-                    },
-                  ],
-                },
-              ]}
-            />
-
-            {/* Pass members state and handlers to the MemberForm */}
-            <MemberForm
-              currentMember={currentMember}
-              onMemberChange={handleMemberChange}
-              onAddMember={handleAddMember}
-            />
-
-            <center>
-              <button
-                disabled={isSubmitting}
-                className={`createDao ${isSubmitting ? "loading" : ""}`}
-                type="submit"
-              >
-                Create DAO
-              </button>
-            </center>
+          {renderStep() /* Render the current step */}
           </form>
         </main>
       ) : (
