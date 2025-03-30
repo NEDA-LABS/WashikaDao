@@ -2,37 +2,33 @@ import { useState } from "react";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
 import { FullDaoContract } from "../utils/handlers/Handlers";
-import { IBackendDaoCreation } from "../utils/Types";
+import { IBackendDaoMember } from "../utils/Types";
 
-export const useDaoTransaction = () => {
-  const [daoTxHash, setDaoTxHash] = useState<string>("");
+export const useMemberTransaction = () => {
+  const [memberTxHash, setMemberTxHash] = useState<string>("");
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx } = useSendTransaction();
 
-  const buildCreateDaoTransaction = (
-    formData: IBackendDaoCreation,
-    multiSigPhoneNo: bigint
-  ) => {
+  const buildRegisterMemberTransaction = (currentMember: IBackendDaoMember) => {
     if (!currActiveAcc) {
       console.error("Fatal Error, No Active Account found");
       return null;
     }
 
     try {
-      console.debug("Preparing DAO Creation transaction...");
+      console.debug("Preparing Member Registration transaction...");
       return prepareContractCall({
         contract: FullDaoContract,
-        method: "createDao",
+        method: "addMember",
         params: [
-          formData.daoName,
-          formData.daoLocation,
-          formData.targetAudience,
-          formData.daoTitle,
-          formData.daoDescription,
-          formData.daoOverview,
-          formData.daoImageIpfsHash,
-          currActiveAcc.address, // Multisig address
-          multiSigPhoneNo,
+          currentMember.firstName,
+          currentMember.email,
+          BigInt(currentMember.phoneNumber),
+          BigInt(currentMember.nationalIdNo),
+          currentMember.memberRole,
+          currentMember.memberAddr,
+          currActiveAcc.address,
+          currentMember.multiSigPhoneNo,
         ],
       });
     } catch (error) {
@@ -41,11 +37,11 @@ export const useDaoTransaction = () => {
     }
   };
 
-  const executeCreateDaoTransaction = async (
+  const executeRegisterMemberTransaction = async (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     transaction: any,
-    formData: IBackendDaoCreation,
-    callback?: (data: IBackendDaoCreation, txHash: string) => void
+    currentMember: IBackendDaoMember,
+    callback?: (member: IBackendDaoMember, txHash: string) => void
   ): Promise<string | null> => {
     if (!transaction) {
       console.warn("Undefined transaction");
@@ -59,9 +55,9 @@ export const useDaoTransaction = () => {
       sendTx(transaction, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
-          setDaoTxHash(receipt.transactionHash);
+          setMemberTxHash(receipt.transactionHash);
           if (callback) {
-            callback(formData, receipt.transactionHash);
+            callback(currentMember, receipt.transactionHash);
           }
           resolve(receipt.transactionHash);
         },
@@ -80,7 +76,7 @@ export const useDaoTransaction = () => {
       );
       throw new Error("Gas sponsorship issue detected");
     } else {
-      console.error("Error creating DAO:", error);
+      console.error("Error registering member:", error);
       throw error;
     }
   };
@@ -90,9 +86,9 @@ export const useDaoTransaction = () => {
       Math.floor(Math.random() * 16).toString(16)
     ).join("")}`;
 
-  const handleCreateDao = async (
-    formData: IBackendDaoCreation,
-    callback?: (data: IBackendDaoCreation, txHash: string) => void
+  const handleRegisterMember = async (
+    currentMember: IBackendDaoMember,
+    callback?: (member: IBackendDaoMember, txHash: string) => void
   ): Promise<string | null> => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
@@ -102,24 +98,21 @@ export const useDaoTransaction = () => {
         "Skipping on-chain transaction; using dummy tx hash:",
         dummyTxHash
       );
+      if (callback) {
+        callback(currentMember, dummyTxHash);
+      }
       return dummyTxHash;
     }
 
     try {
-      const multiSigPhoneNoBigInt = BigInt(formData.multiSigPhoneNo || "0");
-      console.debug("MultiSig Phone No (BigInt):", multiSigPhoneNoBigInt);
-
-      console.debug("Calling buildCreateDaoTransaction...");
-      const finalTx = buildCreateDaoTransaction(
-        formData,
-        multiSigPhoneNoBigInt
-      );
-      return finalTx ? await executeCreateDaoTransaction(finalTx, formData, callback) : null;
+      console.debug("Calling buildRegisterMemberTransaction...");
+      const finalTx = buildRegisterMemberTransaction(currentMember);
+      return finalTx ? await executeRegisterMemberTransaction(finalTx, currentMember, callback) : null;
     } catch (error) {
       handleTransactionError(error);
       return null;
     }
   };
 
-  return { daoTxHash, handleCreateDao };
+  return { memberTxHash, handleRegisterMember };
 };

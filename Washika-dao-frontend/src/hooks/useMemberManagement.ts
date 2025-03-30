@@ -12,6 +12,8 @@ export const useMemberManagement = () => {
     nationalIdNo: "",
     memberRole: "",
     memberCustomIdentifier: crypto.randomUUID(),
+    memberAddr: "",
+    multiSigPhoneNo: BigInt("")
   });
 
   const [daoCreatorDetails, setDaoCreatorDetails] = useState<IBackendDaoCreatorDetails>({
@@ -32,7 +34,7 @@ export const useMemberManagement = () => {
   };
 
   const isValidMember = (member: IBackendDaoMember) => {
-    return Object.values(member).every((value) => value);
+    return member.firstName && member.lastName && member.email && member.phoneNumber && member.nationalIdNo && member.memberRole;
   };
 
   const handleDaoCreatorValueChange = (
@@ -53,6 +55,8 @@ export const useMemberManagement = () => {
       nationalIdNo: "",
       memberRole: "",
       memberCustomIdentifier: crypto.randomUUID(),
+      memberAddr: "",
+      multiSigPhoneNo: BigInt("")
     });
   };
   const handleAddDaoCreatorDetails = () => {

@@ -60,7 +60,8 @@ export interface IBackendDaoMember {
   nationalIdNo: string;
   memberRole: DaoRoleEnum | string;
   memberCustomIdentifier: string;
-  memberAddr?: string;
+  memberAddr: string;
+  multiSigPhoneNo: bigint;
 }
 
 export interface IBackendDaoCreatorDetails {
