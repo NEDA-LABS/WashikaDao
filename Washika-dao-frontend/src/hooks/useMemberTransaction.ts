@@ -16,12 +16,27 @@ export const useMemberTransaction = () => {
     }
 
     try {
+       // Combine firstName and lastName for member name
+    const memberName = `${currentMember.firstName} ${currentMember.lastName}`;
+    
+    // Log all parameters before sending to prepareContractCall
+    console.log("Member Registration Parameters:");
+    console.log("Member Name:", memberName);
+    console.log("Email Address:", currentMember.email);
+    console.log("Phone Number (raw):", currentMember.phoneNumber);
+    console.log("Phone Number (BigInt):", BigInt(currentMember.phoneNumber));
+    console.log("National ID (raw):", currentMember.nationalIdNo);
+    console.log("National ID (BigInt):", BigInt(currentMember.nationalIdNo));
+    console.log("Role:", currentMember.memberRole);
+    console.log("User Address:", currentMember.memberAddr);
+    console.log("DAO MultiSig Address:", currActiveAcc.address);
+    console.log("MultiSig Phone No:", currentMember.multiSigPhoneNo);
       console.debug("Preparing Member Registration transaction...");
       return prepareContractCall({
         contract: FullDaoContract,
         method: "addMember",
         params: [
-          currentMember.firstName,
+          `${currentMember.firstName} ${currentMember.lastName}`,
           currentMember.email,
           BigInt(currentMember.phoneNumber),
           BigInt(currentMember.nationalIdNo),

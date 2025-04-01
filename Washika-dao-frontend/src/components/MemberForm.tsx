@@ -10,7 +10,6 @@ interface Member {
 interface MemberFormProps {
   currentMember: Member;
   onMemberChange: (field: keyof Member, value: string) => void; // Function to handle changes to member fields
-  onAddMember: () => void; // Function to add a new member and send  an invite to the member
 }
 /**
  * MemberForm is a React functional component that renders a form for managing
@@ -30,27 +29,26 @@ interface MemberFormProps {
  */
 const MemberForm: React.FC<MemberFormProps> = ({
   currentMember, // Destructure props
-  onMemberChange,
-  onAddMember,
+  onMemberChange
 }) => {
   return (
     <div className="wanakikundi">
       <div className="left">
         <div>
           <h2>Member Information</h2>
-          <p> Add your information as the Chairperson along with the details of the group's Secretary and Treasurer</p>
+          <p>Please provide your information. Your role is set to Chairperson by default.</p>
         </div>
         <div className="two">
           <img src="images/Group.png" alt="profile logo" />
         </div>
       </div>
       <div className="right">
-        <div className="top">Member Information</div>
+        <div className="top">Chairperson Information</div>
         <div className="formDiv">
           <div className="div">
             <div className="first">
               <div className="input">
-                <label>Add members Name</label>
+                <label>Name</label>
                 <div className="memberNames">
                   <input
                     type="text"
@@ -71,16 +69,13 @@ const MemberForm: React.FC<MemberFormProps> = ({
               <div className="input">
                 <label>Members Role</label>
                 <select
-                  value={currentMember.memberRole}
-                  onChange={(e) => onMemberChange("memberRole", e.target.value)}
+                  value="Chairperson"
                   className="short"
+                  disabled
                 >
-                  <option value="" disabled>
-                    Role
+                  <option value="Chairperson">
+                    Chairperson
                   </option>
-                  <option value="Chairperson">Chairperson</option>
-                  <option value="Treasurer">Treasurer</option>
-                  <option value="Secretary">Secretary</option>
                 </select>
               </div>
             </div>
@@ -108,11 +103,11 @@ const MemberForm: React.FC<MemberFormProps> = ({
                 onChange={(e) => onMemberChange("nationalIdNo", e.target.value)}
               />
             </div>
-            <div className="buttons">
+            {/* <div className="buttons">
               <button type="button" className="button-1" onClick={onAddMember}>
                 Save member
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

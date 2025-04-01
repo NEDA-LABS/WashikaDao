@@ -22,20 +22,20 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   const [currentStep, setCurrentStep] = useState(1);
   // const [newDaoTxHash, setNewDaoTxHash] = useState("");
   const address = useSelector((state: RootState) => state.auth.address);
-  const { members, currentMember, handleMemberChange, handleAddMember } =
+  const { currentMember, handleMemberChange, saveMember } =
     useMemberManagement();
 
   //const [daoCreationFormData, setDaoCreationFormData] = useState<IBackendDaoCreation>();
   // Find the chairperson member (if any)
-  const chairperson = members.find(
-    (member) => member.memberRole === "Chairperson"
-  );
-  const chairpersonPhone = chairperson ? chairperson.phoneNumber : "";
+  // const chairperson = members.find(
+  //   (member) => member.memberRole === "Chairperson"
+  // );
+  // const chairpersonPhone = chairperson ? chairperson.phoneNumber : "";
 
   // Pass the chairpersonPhone into the hook
   const { formData, setFormData, handleChange, handleFileChange } =
-    useDaoForm(chairpersonPhone);
-  const completedSteps = useCompletedSteps(formData, members, address);
+    useDaoForm("0");
+  const completedSteps = useCompletedSteps(formData, [], address);
   const { handleCreateDao } = useDaoTransaction();
   const { handleRegisterMember } = useMemberTransaction();
 
@@ -113,6 +113,9 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
       alert("Member Address is required");
       return;
     }
+
+    if (!(await saveMember())) return;
+
     setIsSubmitting(true);
     try {
       const memberTxHash = await handleRegisterMember(currentMember, (member, txHash) => {
@@ -299,7 +302,6 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
             <MemberForm
               currentMember={currentMember}
               onMemberChange={handleMemberChange}
-              onAddMember={handleAddMember}
             />
             <center>
               <button
