@@ -51,7 +51,6 @@ export interface IBlockchainDaoCreation {
   daoMultiSigAddr: Address;
   multiSigPhoneNo: bigint;
 }
-
 export interface IBackendDaoMember {
   firstName: string;
   lastName: string;
@@ -62,6 +61,7 @@ export interface IBackendDaoMember {
   memberCustomIdentifier: string;
   memberAddr?: string;
 }
+
 
 export interface IBackendDaoCreatorDetails {
   firstName: string;

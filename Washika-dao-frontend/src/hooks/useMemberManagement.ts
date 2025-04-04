@@ -45,6 +45,7 @@ export const useMemberManagement = () => {
     if (!isValidMember(currentMember)) return;
 
     setMembers([...members, currentMember]);
+    
     setCurrentMember({
       firstName: "",
       lastName: "",

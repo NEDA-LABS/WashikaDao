@@ -497,15 +497,16 @@ button.createDao {
 
 .form-progress {
   width: 30vw;
-  margin: 3.5rem auto;
+  margin: 3.5rem auto 1rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-top: 1rem;
   padding: 0.75rem 1rem;
-  background-color: #f2f2f2;
+  /* background-color: #f2f2f2; */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  /* border: 1px solid red; */
 }
 
 .form-progress p {

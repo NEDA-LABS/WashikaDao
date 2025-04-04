@@ -41,8 +41,12 @@ export const useDaoTransaction = () => {
     }
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const executeCreateDaoTransaction = async (transaction: any): Promise<string | null> => {
+  const executeCreateDaoTransaction = async (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    transaction: any,
+    formData: IBackendDaoCreation,
+    callback?: (data: IBackendDaoCreation, txHash: string) => void
+  ): Promise<string | null> => {
     if (!transaction) {
       console.warn("Undefined transaction");
       throw new Error("Transaction is undefined");
@@ -56,6 +60,9 @@ export const useDaoTransaction = () => {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
           setDaoTxHash(receipt.transactionHash);
+          if (callback) {
+            callback(formData, receipt.transactionHash);
+          }
           resolve(receipt.transactionHash);
         },
         onError: (error) => {
@@ -66,27 +73,35 @@ export const useDaoTransaction = () => {
     });
   };
 
-
-
   const handleTransactionError = (error: unknown) => {
     if (error instanceof Error && error.message.includes("AA21")) {
-      prompt("Gas sponsorship issue, please top up your account or request for gas sponsorship");
+      prompt(
+        "Gas sponsorship issue, please top up your account or request for gas sponsorship"
+      );
       throw new Error("Gas sponsorship issue detected");
     } else {
       console.error("Error creating DAO:", error);
-      throw error; 
+      throw error;
     }
   };
 
   const generateDummyTxHash = (): string =>
-    `0x${Array.from({ length: 64 }, () => Math.floor(Math.random() * 16).toString(16)).join("")}`;
+    `0x${Array.from({ length: 64 }, () =>
+      Math.floor(Math.random() * 16).toString(16)
+    ).join("")}`;
 
-  const handleCreateDao = async (formData: IBackendDaoCreation): Promise<string | null> => {
-     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  const handleCreateDao = async (
+    formData: IBackendDaoCreation,
+    callback?: (data: IBackendDaoCreation, txHash: string) => void
+  ): Promise<string | null> => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore
     if (import.meta.env.VITE_SKIP_ONCHAIN === "true") {
       const dummyTxHash = generateDummyTxHash();
-      console.log("Skipping on-chain transaction; using dummy tx hash:", dummyTxHash);
+      console.log(
+        "Skipping on-chain transaction; using dummy tx hash:",
+        dummyTxHash
+      );
       return dummyTxHash;
     }
 
@@ -95,8 +110,11 @@ export const useDaoTransaction = () => {
       console.debug("MultiSig Phone No (BigInt):", multiSigPhoneNoBigInt);
 
       console.debug("Calling buildCreateDaoTransaction...");
-      const finalTx = buildCreateDaoTransaction(formData, multiSigPhoneNoBigInt);
-      return finalTx ? await executeCreateDaoTransaction(finalTx) : null;
+      const finalTx = buildCreateDaoTransaction(
+        formData,
+        multiSigPhoneNoBigInt
+      );
+      return finalTx ? await executeCreateDaoTransaction(finalTx, formData, callback) : null;
     } catch (error) {
       handleTransactionError(error);
       return null;

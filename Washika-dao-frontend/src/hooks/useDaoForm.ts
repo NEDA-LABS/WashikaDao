@@ -1,10 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCloudinaryUpload } from "./useCloudinaryUpload.ts";
 import { IBackendDaoCreation } from "../utils/Types.ts";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store.ts";
 
-export const useDaoForm = (chairpersonPhone: string = "") => {
+export const useDaoForm = () => {
   const memberAddr = useSelector((state: RootState) => state.auth.address);
   const { uploadFileToCloudinary } = useCloudinaryUpload();
   const [formData, setFormData] = useState<IBackendDaoCreation>({
@@ -17,7 +17,7 @@ export const useDaoForm = (chairpersonPhone: string = "") => {
     daoImageIpfsHash: "",
     daoRegDocs: "",
     daoMultiSigAddr: memberAddr || "",
-    multiSigPhoneNo: chairpersonPhone, // Set initial value from parameter
+    multiSigPhoneNo: "",
     kiwango: 0,
     accountNo: "",
     nambaZaHisa: 0,
@@ -25,14 +25,6 @@ export const useDaoForm = (chairpersonPhone: string = "") => {
     interestOnLoans: 0,
     daoTxHash: "",
   });
-
-  // Update multiSigPhoneNo if chairpersonPhone changes.
-  useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      multiSigPhoneNo: chairpersonPhone,
-    }));
-  }, [chairpersonPhone]);
 
   const handleChange = (
     e: React.ChangeEvent<
