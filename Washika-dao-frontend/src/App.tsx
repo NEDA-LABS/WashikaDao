@@ -65,7 +65,7 @@ const App: React.FC = () => {
             <Route path="/TestConnection" element={<TestConnection />} />
             <Route path="/MarketPlace" element={<MarketPlace />} />
             <Route path="/DaoProfile/:daoTxHash" element={<DaoProfile />} />
-            <Route path="/SuperAdmin/:daoTxHash" element={<SuperAdmin />} />
+            <Route path="/SuperAdmin/:multiSigAddr" element={<SuperAdmin />} />
             <Route path="/UpdateDao/:daoTxHash" element={<UpdateDao />} />
             <Route
               path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"

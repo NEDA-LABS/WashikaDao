@@ -47,7 +47,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   //@ts-ignore
   const token = import.meta.env.VITE_ROUTE_PROTECTOR;
   localStorage.setItem("token", token)
-  console.log(token);
+  // console.log(token);
   
 
   /**
