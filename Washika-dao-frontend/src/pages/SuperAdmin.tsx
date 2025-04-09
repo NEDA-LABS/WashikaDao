@@ -10,8 +10,10 @@ import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
-import { useReadContract } from "thirdweb/react";
+import { useWalletBalance, useReadContract } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
+import { arbitrumSepolia } from "thirdweb/chains";
+import { client } from "../utils/thirdwebClient";
 
 
 /**
@@ -54,12 +56,21 @@ const SuperAdmin: React.FC = () => {
     contract: FullDaoContract,
     method:
       "getDaoByMultiSig",
-    params: [address!],
+    params: [multiSigAddr!],
   });
 
-  // 2. Parse DAO data once loaded
+  const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
+    address: multiSigAddr!,
+    client,
+    chain: arbitrumSepolia,
+});
+
   useEffect(() => {
     if (rawDaoData && !isPending && !error) {
+      const balance = !balanceLoading && balanceData
+      ? parseFloat(balanceData.displayValue)
+      : 0;
+
       const parsedDao: DaoDetails = {
         daoName: rawDaoData.daoName,
         daoLocation: rawDaoData.location,
@@ -72,7 +83,7 @@ const SuperAdmin: React.FC = () => {
         multiSigPhoneNo: rawDaoData.multiSigPhoneNo.toString(),
         members: [],
         daoRegDocs: "",
-        kiwango: 0,
+        kiwango: balance,
         accountNo: "",
         nambaZaHisa: 0,
         kiasiChaHisa: 0,
@@ -84,7 +95,7 @@ const SuperAdmin: React.FC = () => {
       setDaoDetails(parsedDao);
       setMemberCount(parsedDao.members.length);
     }
-  }, [rawDaoData, isPending, error]);
+  }, [rawDaoData, isPending, error, balanceLoading, balanceData]);
 
   console.log("Dao Details include", daoDetails);
 
