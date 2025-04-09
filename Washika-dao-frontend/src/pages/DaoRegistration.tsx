@@ -229,13 +229,13 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
                   value: formData.accountNo,
                   onChange: handleChange,
                 },
-                {
-                  label: "Initial Amount",
-                  type: "number",
-                  name: "kiwango",
-                  value: formData.kiwango === 0 ? "" : formData.kiwango,
-                  onChange: handleChange,
-                },
+                // {
+                //   label: "Initial Amount",
+                //   type: "number",
+                //   name: "kiwango",
+                //   value: formData.kiwango === 0 ? "" : formData.kiwango,
+                //   onChange: handleChange,
+                // },
                 {
                   group: true,
                   fields: [
