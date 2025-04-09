@@ -2,7 +2,6 @@
 import { ConnectButton, lightTheme } from "thirdweb/react";
 import { arbitrumSepolia } from "thirdweb/chains";
 import { useNavigate } from "react-router-dom";
-import { createThirdwebClient } from "thirdweb";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
@@ -11,6 +10,7 @@ import { RootState } from "../../redux/store";
 import { login } from "../../redux/auth/authSlice";
 import { useMemberDaos } from "./useMemberDaos";
 import { useDaoNavigation } from "./useDaoNavigation";
+import { client } from "../../utils/thirdwebClient";
 
 /**
  * Creates a Thirdweb client instance used for blockchain interactions and authentication.
@@ -19,11 +19,7 @@ import { useDaoNavigation } from "./useDaoNavigation";
  * - Reads the client ID from an environment variable.
  * - This client instance is later passed to the ConnectButton for handling authentication.
  */
-const client = createThirdwebClient({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID, // Retrieve the client ID from environment variables.
-});
+
 
 /**
  * Interface representing the props for the AuthButton component.

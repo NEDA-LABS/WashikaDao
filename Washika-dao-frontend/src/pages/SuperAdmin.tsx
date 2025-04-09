@@ -10,6 +10,11 @@ import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
+import { useWalletBalance, useReadContract } from "thirdweb/react";
+import { FullDaoContract } from "../utils/handlers/Handlers";
+import { arbitrumSepolia } from "thirdweb/chains";
+import { client } from "../utils/thirdwebClient";
+
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -42,9 +47,57 @@ const SuperAdmin: React.FC = () => {
   const dispatch = useDispatch();
   const token = localStorage.getItem("token") ?? "";
   const navigate = useNavigate();
-  const { daoTxHash } = useParams<{ daoTxHash: string }>();
+  const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
   const address = useSelector((state: RootState) => state.auth.address);
   const [authToken, setAuthToken] = useState<string>("");
+
+  // 1. Fetch DAO details using Thirdweb `useReadContract`
+  const { data: rawDaoData, isPending, error } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "getDaoByMultiSig",
+    params: [multiSigAddr!],
+  });
+
+  const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
+    address: multiSigAddr!,
+    client,
+    chain: arbitrumSepolia,
+});
+
+  useEffect(() => {
+    if (rawDaoData && !isPending && !error) {
+      const balance = !balanceLoading && balanceData
+      ? parseFloat(balanceData.displayValue)
+      : 0;
+
+      const parsedDao: DaoDetails = {
+        daoName: rawDaoData.daoName,
+        daoLocation: rawDaoData.location,
+        targetAudience: rawDaoData.targetAudience,
+        daoTitle: rawDaoData.daoTitle,
+        daoDescription: rawDaoData.daoDescription,
+        daoOverview: rawDaoData.daoOverview,
+        daoImageIpfsHash: rawDaoData.daoImageUrlHash,
+        daoMultiSigAddr: rawDaoData.multiSigAddr,
+        multiSigPhoneNo: rawDaoData.multiSigPhoneNo.toString(),
+        members: [],
+        daoRegDocs: "",
+        kiwango: balance,
+        accountNo: "",
+        nambaZaHisa: 0,
+        kiasiChaHisa: 0,
+        interestOnLoans: 0,
+        daoTxHash: "",
+        chairpersonAddr: ""
+      };
+      console.log("ParsedDaoData include", parsedDao);
+      setDaoDetails(parsedDao);
+      setMemberCount(parsedDao.members.length);
+    }
+  }, [rawDaoData, isPending, error, balanceLoading, balanceData]);
+
+  console.log("Dao Details include", daoDetails);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -58,33 +111,33 @@ const SuperAdmin: React.FC = () => {
   }, []);
 
 
-  const fetchDaoDetails = async () => {
-    try {
-      const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
-        {
-          headers: {
-            Authorization: token,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const data = await response.json();
+  // const fetchDaoDetails = async () => {
+  //   try {
+  //     const response = await fetch(
+  //       `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
+  //       {
+  //         headers: {
+  //           Authorization: token,
+  //           "Content-Type": "application/json",
+  //         },
+  //       }
+  //     );
+  //     const data = await response.json();
 
-      if (response.ok) {
-        setDaoDetails(data.daoDetails);
-        setMemberCount(data.daoDetails.members.length);
-      } else {
-        console.error("Error fetching daoDetails:", data.message);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  //     if (response.ok) {
+  //       setDaoDetails(data.daoDetails);
+  //       setMemberCount(data.daoDetails.members.length);
+  //     } else {
+  //       console.error("Error fetching daoDetails:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
   useEffect(() => {
-    if (daoTxHash && authToken) {
-      fetchDaoDetails();
-    }
+    // if (daoTxHash && authToken) {
+    //   fetchDaoDetails();
+    // }
     const handleResize = () => {
       setIsSmallScreen(window.innerWidth <= 1537); // Adjust for your breakpoints
     };
@@ -96,8 +149,7 @@ const SuperAdmin: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [daoTxHash, authToken]);
+  }, [ authToken]);
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
@@ -121,7 +173,7 @@ const SuperAdmin: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/AddMember/?daoTxHash=${daoTxHash}&adminMemberAddr=${address}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/AddMember/?daoTxHash=${multiSigAddr}&adminMemberAddr=${address}`,
         {
           method: "POST",
           headers: {
@@ -139,7 +191,7 @@ const SuperAdmin: React.FC = () => {
         console.log(`Success: ${result.message}`);
         setShowForm(!showForm);
         // Re-fetch DAO details to update Memberount and WanachamaList
-        fetchDaoDetails();
+        // fetchDaoDetails();
       } else {
         console.error(`Error: ${result.error}`);
       }
@@ -147,6 +199,8 @@ const SuperAdmin: React.FC = () => {
       console.error("Submission failed:", error);
     }
   };
+
+  
 
   return (
     <>
@@ -237,7 +291,7 @@ const SuperAdmin: React.FC = () => {
             <button onClick={() => setActiveSection("mikopo")}  className={activeSection === "mikopo" ? "active" : ""}>
               Loan Details
             </button>
-            <button onClick={() => navigate(`/UpdateDao/${daoTxHash}`)}>
+            <button onClick={() => navigate(`/UpdateDao/${multiSigAddr}`)}>
               Edit Settings
             </button>
           </div>

@@ -10,7 +10,7 @@ import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { RootState } from "../redux/store.ts";
-import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
+// import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
 // import { IBackendDaoMember } from "../utils/Types.ts";
 
 // import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
@@ -19,14 +19,16 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
-  const [daoTxHash, setDaoTxHash] = useState<string | null>(null);
+  // const [daoTxHash, setDaoTxHash] = useState<string | null>(null);
   const address = useSelector((state: RootState) => state.auth.address);
-  const { members, currentMember, handleMemberChange, handleAddMember } = useMemberManagement();
+  const { members, currentMember, handleMemberChange, handleAddMember } =
+    useMemberManagement();
 
   //const [daoCreationFormData, setDaoCreationFormData] = useState<IBackendDaoCreation>();
 
   // Pass the chairpersonPhone into the hook
-  const { formData, setFormData, handleChange, handleFileChange } = useDaoForm();
+  const { formData, setFormData, handleChange, handleFileChange } =
+    useDaoForm();
   const completedSteps = useCompletedSteps(formData, members, address);
   const { handleCreateDao } = useDaoTransaction();
 
@@ -41,19 +43,28 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
 
     setIsSubmitting(true);
     try {
-      const txHash = await handleCreateDao(formData, (data, txHash) => {
+      const daoTxHash = await handleCreateDao(formData, (data, txHash) => {
         console.log("DAO registered on-chain:", data, txHash);
       });
 
-      if (!txHash) {
+      if (!daoTxHash) {
         alert("DAO creation on blockchain failed!");
         setIsSubmitting(false);
         return;
       }
 
-      setDaoTxHash(txHash);
-      setFormData((prev) => ({ ...prev, daoTxHash: txHash, multiSigAddr: formData.daoMultiSigAddr || "", }));
-      setCurrentStep(2);
+      // setDaoTxHash(txHash);
+      // console.log(daoTxHash);
+      
+      const multiSigAddr = formData.daoMultiSigAddr || "";
+      setFormData((prev) => ({
+        ...prev,
+        daoTxHash: daoTxHash,
+        multiSigAddr
+      }));
+// console.log(formData);
+
+      navigate(`/SuperAdmin/${multiSigAddr}`);
     } catch (error) {
       console.error("Error creating DAO on blockchain:", error);
     } finally {
@@ -64,85 +75,83 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   /**
    * Step 2: Register DAO in the backend
    */
-  const handleSubmitDaoToBackend = async () => {
-    if (!daoTxHash) {
-      alert("DAO on-chain transaction missing!");
-      return;
-    }
+  // const handleSubmitDaoToBackend = async () => {
+  //   if (!daoTxHash) {
+  //     alert("DAO on-chain transaction missing!");
+  //     return;
+  //   }
 
-    setIsSubmitting(true);
-    try {
-      const finalDaoData = {
-        ...formData,
-        daoTxHash, // Ensure transaction hash is sent
-      };
+  //   setIsSubmitting(true);
+  //   try {
+  //     const finalDaoData = {
+  //       ...formData,
+  //       daoTxHash, // Ensure transaction hash is sent
+  //     };
 
-      const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": ROUTE_PROTECTOR_KEY,
-          },
-          body: JSON.stringify(finalDaoData),
-        }
-      );
+  //     const response = await fetch(
+  //       `${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "X-API-KEY": ROUTE_PROTECTOR_KEY,
+  //         },
+  //         body: JSON.stringify(finalDaoData),
+  //       }
+  //     );
 
-      const data = await response.json();
-      if (response.ok) {
-        alert("DAO successfully created in the backend!");
-        console.log("DAO backend creation success:", data);
-        setCurrentStep(3);
-      } else {
-        console.error("Backend DAO creation failed:", data.message);
-      }
-    } catch (error) {
-      console.error("Error submitting DAO to backend:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       alert("DAO successfully created in the backend!");
+  //       console.log("DAO backend creation success:", data);
+  //       setCurrentStep(3);
+  //     } else {
+  //       console.error("Backend DAO creation failed:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting DAO to backend:", error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   /**
    * Step 3: Register DAO members
    */
-  const handleMemberSubmit = async () => {
-    if (!address) {
-      alert("Member Address is required");
-      return;
-    }
+  // const handleMemberSubmit = async () => {
+  //   if (!address) {
+  //     alert("Member Address is required");
+  //     return;
+  //   }
 
-    setIsSubmitting(true);
-    try {
-      const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": ROUTE_PROTECTOR_KEY,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+  //   setIsSubmitting(true);
+  //   try {
+  //     const response = await fetch(
+  //       `${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //           "X-API-KEY": ROUTE_PROTECTOR_KEY,
+  //         },
+  //         body: JSON.stringify(formData),
+  //       }
+  //     );
 
-      const data = await response.json();
-      if (response.ok) {
-        alert("DAO successfully created in the backend!");
-        console.log("DAO backend creation success:", data);
-        navigate(`/SuperAdmin/${daoTxHash}`);
-      } else {
-        console.error("Backend DAO creation failed:", data.message);
-      }
-    } catch (error) {
-      console.error("Error submitting DAO to backend:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-
+  //     const data = await response.json();
+  //     if (response.ok) {
+  //       alert("DAO successfully created in the backend!");
+  //       console.log("DAO backend creation success:", data);
+  //       navigate(`/SuperAdmin/${daoTxHash}`);
+  //     } else {
+  //       console.error("Backend DAO creation failed:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error submitting DAO to backend:", error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
 
   const renderStep = () => {
     switch (currentStep) {
@@ -184,11 +193,11 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
                 },
               ]}
             />
-             <center>
-              <button disabled={isSubmitting} className={`createDao ${isSubmitting ? "loading" : ""}`} onClick={handleCreateDaoOnchain}>
-                Save On-Chain
+            <div className="form-progress">
+              <button type="button" onClick={() => setCurrentStep(2)}>
+                Next
               </button>
-            </center>
+            </div>
           </div>
         );
       case 2:
@@ -220,13 +229,13 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
                   value: formData.accountNo,
                   onChange: handleChange,
                 },
-                {
-                  label: "Initial Amount",
-                  type: "number",
-                  name: "kiwango",
-                  value: formData.kiwango === 0 ? "" : formData.kiwango,
-                  onChange: handleChange,
-                },
+                // {
+                //   label: "Initial Amount",
+                //   type: "number",
+                //   name: "kiwango",
+                //   value: formData.kiwango === 0 ? "" : formData.kiwango,
+                //   onChange: handleChange,
+                // },
                 {
                   group: true,
                   fields: [
@@ -291,8 +300,12 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
               ]}
             />
             <center>
-              <button disabled={isSubmitting} className={`createDao ${isSubmitting ? "loading" : ""}`} onClick={handleSubmitDaoToBackend}>
-                Submit
+              <button
+                disabled={isSubmitting}
+                className={`createDao ${isSubmitting ? "loading" : ""}`}
+                onClick={handleCreateDaoOnchain}
+              >
+                Save On-Chain
               </button>
             </center>
           </div>
@@ -301,16 +314,16 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
         return (
           <div className="step step3">
             <MemberForm
-                currentMember={currentMember}
-                onMemberChange={handleMemberChange}
-                onAddMember={handleAddMember}
-              />
+              currentMember={currentMember}
+              onMemberChange={handleMemberChange}
+              onAddMember={handleAddMember}
+            />
             <center>
               <button
                 disabled={isSubmitting}
                 className={`createDao ${isSubmitting ? "loading" : ""}`}
-                 type="button"
-                 onClick={handleMemberSubmit}
+                type="button"
+                // onClick={handleMemberSubmit}
               >
                 Create Account
               </button>
@@ -325,7 +338,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   return (
     <>
       <NavBar className={"DaoRegister"} />
-      {address ? ( 
+      {address ? (
         <main className="daoRegistration">
           <div className="funguaKikundi">
             <h1>
@@ -353,9 +366,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
             ))}
           </div>
 
-          <form className="combinedForms">
-            {renderStep() }
-          </form>
+          <form className="combinedForms">{renderStep()}</form>
         </main>
       ) : (
         <p className="daoRegistration error">
