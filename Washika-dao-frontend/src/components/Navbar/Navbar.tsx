@@ -65,11 +65,11 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
       if (lowerCaseAddress !== address) {
         dispatch(login(lowerCaseAddress));
       }
-    } else if (address) {
+    } else if (!address) {
       // The wallet has been disconnected; clear the authentication state.
       dispatch(logoutUser());
 
-      navigate("/", { replace: true });
+      // navigate("/", { replace: true });
     }
   }, [activeAccount, address, dispatch, navigate]);
 

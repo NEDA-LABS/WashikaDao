@@ -108,7 +108,7 @@ const SuperAdmin: React.FC = () => {
           daoTxHash: "",
           chairpersonAddr: ""
         };
-        console.log("ParsedDaoData include", parsedDao);
+        // console.log("ParsedDaoData include", parsedDao);
         setDaoDetails(parsedDao);
         setMemberCount(1);
       }
@@ -118,7 +118,7 @@ const SuperAdmin: React.FC = () => {
   }, [rawDaoData, isPending, error, balanceLoading, balanceData]);
   
 
-  console.log("Dao Details include", daoDetails);
+  // console.log("Dao Details include", daoDetails);
 
   useEffect(() => {
     const intervalId = setInterval(() => {
