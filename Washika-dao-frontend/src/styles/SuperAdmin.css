@@ -494,6 +494,12 @@ nav.SuperAdmin {
   font-weight: bold;
 }
 
+@media only screen and (max-width: 1274px) {
+  .thirdy .right .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media only screen and (max-width: 1024px) {
   .superAdmin .centered {
     display: flex;
@@ -599,4 +605,86 @@ nav.SuperAdmin {
   .superAdmin section.second {
     margin-top: 44px;
   }
+
+  .thirdy {
+    flex-direction: column;
+    gap: 24px;
+    margin: 24px;
+  }
+  .thirdy .left,
+  .thirdy .right {
+    width: 100%;
+  }
+
+  .thirdy .left {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .thirdy .left .two {
+    margin: 0;
+  }
+
+  .thirdy .right .one {
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+  .thirdy .right .one > div {
+    flex: 1 1 calc(50% - 8px);
+    min-width: calc(50% - 8px);
+  }
+
+
 }
+
+@media (max-width: 750px) {
+  .thirdy .right .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .thirdy .right .one {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .thirdy .right .one > div {
+    flex: 1 1 100%;
+    min-width: 100%;
+  }
+
+  .thirdy .right .one .search input {
+    width: 100%;
+  }
+  .thirdy .right .one .sort {
+    width: 100%;
+    justify-content: flex-start;
+    padding-left: 12px;
+  }
+
+  .thirdy .left {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .thirdy .left .components {
+    width: 100%;
+    display: flex;
+    margin: 9px 0;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .thirdy .left .one ul {
+    flex-wrap: wrap;
+  }
+  .thirdy .left .one li {
+    flex: 1 1 calc(50% - 8px);
+    margin-bottom: 8px;
+  }
+}
+
+
+

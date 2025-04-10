@@ -75,19 +75,20 @@ const UpdateDao: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const token = localStorage.getItem("token") ?? "";
-  const { daoTxHash } = useParams<{ daoTxHash: string }>();
-  const { memberAddr, phoneNumber } = useSelector(
+  const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
+  const {  phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
+    const memberAddr = useSelector((state: RootState) => state.auth.address);
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
       setFormData((prevData) => ({
         ...prevData,
-        multiSigAddr: memberAddr.toLowerCase(),
+        multiSigAddr,
       }));
     }
-  }, [memberAddr]);
+  }, [memberAddr, multiSigAddr]);
 
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
@@ -152,7 +153,7 @@ const UpdateDao: React.FC = () => {
   const fetchDaoDetails = async () => {
     try {
       const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${multiSigAddr}`,
         {
           headers: {
             Authorization: token,
@@ -180,11 +181,11 @@ const UpdateDao: React.FC = () => {
 
   // Fetch DAO details on component mount
   useEffect(() => {
-    if (daoTxHash) {
+    if (multiSigAddr) {
       fetchDaoDetails();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [daoTxHash, token]);
+  }, [multiSigAddr, token]);
   // console.log(formData);
 
   // Handle form submission
@@ -204,7 +205,7 @@ const UpdateDao: React.FC = () => {
     try {
       // Send combined data to the backend API
       const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/UpdateDaoDetails/?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/UpdateDaoDetails/?daoTxHash=${multiSigAddr}`,
         {
           method: "PUT",
           headers: {
@@ -222,7 +223,7 @@ const UpdateDao: React.FC = () => {
         alert("Dao updated successfully");
         console.log("DAO updated successfully", data);
 
-        navigate(`/SuperAdmin/${daoTxHash}`); // Navigate to the DAO profile pagehandleSubmit(event);
+        navigate(`/SuperAdmin/${multiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
       } else {
         console.error("Error updating DAO:", data.message);
       }
