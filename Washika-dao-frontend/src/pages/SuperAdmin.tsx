@@ -41,7 +41,7 @@ const SuperAdmin: React.FC = () => {
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
 
   const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(); //state to hold DAO details
-  const [memberCount, setMemberCount] = useState<number>(0);
+  const [memberCount, setMemberCount] = useState<number>(1);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const isVisible = useSelector(
     (state: RootState) => state.notification.isVisible
@@ -110,7 +110,7 @@ const SuperAdmin: React.FC = () => {
         };
         console.log("ParsedDaoData include", parsedDao);
         setDaoDetails(parsedDao);
-        setMemberCount(parsedDao.members.length);
+        setMemberCount(1);
       }
     };
   
