@@ -534,6 +534,40 @@ button.createDao {
 }
 
 
+.loading-popup {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-content {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.spinner {
+  margin-top: 1rem;
+  width: 32px;
+  height: 32px;
+  border: 4px solid #f6be6a;
+  border-top: 4px solid transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
 
 
 @media only screen and (max-width: 1024px) {
