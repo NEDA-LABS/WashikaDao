@@ -80,29 +80,29 @@ const Dashboard: React.FC = () => {
     <div className="dashboard">
       <div className="one">
         <div>
-          <img src="/images/Vector(2).png" alt="logo" />
+          <img src="/images/Vector3.png" alt="logo" />
           <p>Dao Dashboard Overview</p>
         </div>
 
         <ul>
           <li>
-            <img src="/images/Chart Legend Dots [1.0].png" alt="dot" />
+            <img src="/images/Chart Legend Dots1.png" alt="dot" />
             Deposit{" "}
           </li>
           <li>
-            <img src="/images/Chart Legend Dots [1.0](1).png" alt="dot" />
+            <img src="/images/Chart Legend Dots2.png" alt="dot" />
             Loans
           </li>
           <li>
-            <img src="/images/Chart Legend Dots [1.0](2).png" alt="dot" />
+            <img src="/images/Chart Legend Dots3.png" alt="dot" />
             Shares
           </li>
           <li>
-            <img src="/images/Chart Legend Dots [1.0](3).png" alt="dot" />
+            <img src="/images/Chart Legend Dots4.png" alt="dot" />
             Repayments
           </li>
           <li>
-            <img src="/images/Chart Legend Dots [1.0](4).png" alt="dot" />
+            <img src="/images/Chart Legend Dots5.png" alt="dot" />
             Interest
           </li>
           <select name="" id="">

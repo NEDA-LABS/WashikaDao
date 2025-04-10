@@ -330,7 +330,7 @@ const SuperAdmin: React.FC = () => {
               </div>
               <section className="second">
                 <div className="sec">
-                  <img src="/images/Vector(4).png" alt="logo" />
+                  <img src="/images/Vector4.png" alt="logo" />
                   <h1>Current Proposals</h1>
                 </div>
                 <ProposalGroups />
