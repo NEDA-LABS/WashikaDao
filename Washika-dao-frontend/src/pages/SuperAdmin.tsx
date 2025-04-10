@@ -65,7 +65,9 @@ const SuperAdmin: React.FC = () => {
 
   const fetchEthToUsdRate = async (): Promise<number> => {
     try {
-      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
+      const res = await fetch(
+        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
+      );
       const data = await res.json();
       return data.ethereum.usd;
     } catch (error) {
@@ -73,7 +75,6 @@ const SuperAdmin: React.FC = () => {
       return 0; // fallback
     }
   };
-  
 
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
     address: multiSigAddr!,
@@ -83,11 +84,17 @@ const SuperAdmin: React.FC = () => {
 
   useEffect(() => {
     const updateDaoDetails = async () => {
-      if (rawDaoData && !isPending && !error && !balanceLoading && balanceData) {
+      if (
+        rawDaoData &&
+        !isPending &&
+        !error &&
+        !balanceLoading &&
+        balanceData
+      ) {
         const ethBalance = parseFloat(balanceData.displayValue);
         const usdRate = await fetchEthToUsdRate();
         const usdBalance = ethBalance * usdRate;
-  console.log("USD balance is", usdBalance);
+        console.log("USD balance is", usdBalance);
         const parsedDao: DaoDetails = {
           daoName: rawDaoData.daoName,
           daoLocation: rawDaoData.location,
@@ -106,17 +113,16 @@ const SuperAdmin: React.FC = () => {
           kiasiChaHisa: 0,
           interestOnLoans: 0,
           daoTxHash: "",
-          chairpersonAddr: ""
+          chairpersonAddr: "",
         };
         // console.log("ParsedDaoData include", parsedDao);
         setDaoDetails(parsedDao);
         setMemberCount(1);
       }
     };
-  
+
     updateDaoDetails();
   }, [rawDaoData, isPending, error, balanceLoading, balanceData]);
-  
 
   // console.log("Dao Details include", daoDetails);
 
@@ -278,7 +284,9 @@ const SuperAdmin: React.FC = () => {
                   <p className="left">TSH</p>
                   <p className="right">Treasury Balance</p>
                 </div>
-                <p className="amount">{daoDetails?.kiwango.toLocaleString()} USD</p>
+                <p className="amount">
+                  {daoDetails?.kiwango.toLocaleString()} USD
+                </p>
               </div>
               <div className="section">
                 <img src="/images/profile.png" alt="idadi" />
@@ -389,7 +397,7 @@ const SuperAdmin: React.FC = () => {
               <h2 className="heading">List of All members with loans</h2>
               <section className="thirdy">
                 <div className="left">
-                  <div className="one">
+                  <div className="one components">
                     <h2>Keywords</h2>
                     <ul>
                       <li>
@@ -403,7 +411,7 @@ const SuperAdmin: React.FC = () => {
                       </li>
                     </ul>
                   </div>
-                  <div className="two">
+                  <div className="two components">
                     <div className="content">
                       <input type="checkbox" name="" id="" />
                       <div>
@@ -426,14 +434,14 @@ const SuperAdmin: React.FC = () => {
                       </div>
                     </div>
                   </div>
-                  <div>
+                  <div className="components">
                     <div>
                       <label>Label</label>
                       <p>$0 - 10,000</p>
                     </div>
                     <input type="range" name="" id="" />
                   </div>
-                  <div className="two">
+                  <div className="two components">
                     <h2>Color</h2>
                     <div className="content">
                       <input type="checkbox" name="" id="" />
@@ -448,7 +456,7 @@ const SuperAdmin: React.FC = () => {
                       <label>Label</label>
                     </div>
                   </div>
-                  <div>
+                  <div className="components">
                     <h2>Size</h2>
                     <div className="content">
                       <input type="checkbox" name="" id="" />
