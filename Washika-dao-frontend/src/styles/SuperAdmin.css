@@ -673,7 +673,8 @@ nav.SuperAdmin {
     width: 100%;
     display: flex;
     margin: 9px 0;
-    justify-content: space-evenly;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
   .thirdy .left .one ul {
