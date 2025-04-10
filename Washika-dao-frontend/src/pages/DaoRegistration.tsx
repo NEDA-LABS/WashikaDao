@@ -335,9 +335,20 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
     }
   };
 
+  const LoadingPopup = () => (
+    <div className="loading-popup">
+      <div className="loading-content">
+        <p>Creating DAO on-chain...</p>
+        <div className="spinner" />
+      </div>
+    </div>
+  );
+  
+
   return (
     <>
       <NavBar className={"DaoRegister"} />
+      {isSubmitting && <LoadingPopup />}
       {address ? (
         <main className="daoRegistration">
           <div className="funguaKikundi">
