@@ -9,12 +9,14 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../redux/store";
 import { useNavigate, useParams } from "react-router-dom";
 import { toggleNotificationPopup } from "../redux/notifications/notificationSlice";
-import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
+import {
+  BASE_BACKEND_ENDPOINT_URL,
+  ROUTE_PROTECTOR_KEY,
+} from "../utils/backendComm";
 import { useWalletBalance, useReadContract } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { arbitrumSepolia } from "thirdweb/chains";
 import { client } from "../utils/thirdwebClient";
-
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -39,7 +41,7 @@ const SuperAdmin: React.FC = () => {
   const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
 
   const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(); //state to hold DAO details
-  const [memberCount, setMemberCount] = useState<number>(0);
+  const [memberCount, setMemberCount] = useState<number>(1);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const isVisible = useSelector(
     (state: RootState) => state.notification.isVisible
@@ -51,51 +53,70 @@ const SuperAdmin: React.FC = () => {
   const address = useSelector((state: RootState) => state.auth.address);
   const [authToken, setAuthToken] = useState<string>("");
 
-  // 1. Fetch DAO details using Thirdweb `useReadContract`
-  const { data: rawDaoData, isPending, error } = useReadContract({
+  const {
+    data: rawDaoData,
+    isPending,
+    error,
+  } = useReadContract({
     contract: FullDaoContract,
-    method:
-      "getDaoByMultiSig",
+    method: "getDaoByMultiSig",
     params: [multiSigAddr!],
   });
+
+  const fetchEthToUsdRate = async (): Promise<number> => {
+    try {
+      const res = await fetch("https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd");
+      const data = await res.json();
+      return data.ethereum.usd;
+    } catch (error) {
+      console.error("Error fetching ETH to USD rate:", error);
+      return 0; // fallback
+    }
+  };
+  
 
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
     address: multiSigAddr!,
     client,
     chain: arbitrumSepolia,
-});
+  });
 
   useEffect(() => {
-    if (rawDaoData && !isPending && !error) {
-      const balance = !balanceLoading && balanceData
-      ? parseFloat(balanceData.displayValue)
-      : 0;
-
-      const parsedDao: DaoDetails = {
-        daoName: rawDaoData.daoName,
-        daoLocation: rawDaoData.location,
-        targetAudience: rawDaoData.targetAudience,
-        daoTitle: rawDaoData.daoTitle,
-        daoDescription: rawDaoData.daoDescription,
-        daoOverview: rawDaoData.daoOverview,
-        daoImageIpfsHash: rawDaoData.daoImageUrlHash,
-        daoMultiSigAddr: rawDaoData.multiSigAddr,
-        multiSigPhoneNo: rawDaoData.multiSigPhoneNo.toString(),
-        members: [],
-        daoRegDocs: "",
-        kiwango: balance,
-        accountNo: "",
-        nambaZaHisa: 0,
-        kiasiChaHisa: 0,
-        interestOnLoans: 0,
-        daoTxHash: "",
-        chairpersonAddr: ""
-      };
-      console.log("ParsedDaoData include", parsedDao);
-      setDaoDetails(parsedDao);
-      setMemberCount(parsedDao.members.length);
-    }
+    const updateDaoDetails = async () => {
+      if (rawDaoData && !isPending && !error && !balanceLoading && balanceData) {
+        const ethBalance = parseFloat(balanceData.displayValue);
+        const usdRate = await fetchEthToUsdRate();
+        const usdBalance = ethBalance * usdRate;
+  console.log("USD balance is", usdBalance);
+        const parsedDao: DaoDetails = {
+          daoName: rawDaoData.daoName,
+          daoLocation: rawDaoData.location,
+          targetAudience: rawDaoData.targetAudience,
+          daoTitle: rawDaoData.daoTitle,
+          daoDescription: rawDaoData.daoDescription,
+          daoOverview: rawDaoData.daoOverview,
+          daoImageIpfsHash: rawDaoData.daoImageUrlHash,
+          daoMultiSigAddr: rawDaoData.multiSigAddr,
+          multiSigPhoneNo: rawDaoData.multiSigPhoneNo.toString(),
+          members: [],
+          daoRegDocs: "",
+          kiwango: usdBalance, // store USD instead of ETH
+          accountNo: "",
+          nambaZaHisa: 0,
+          kiasiChaHisa: 0,
+          interestOnLoans: 0,
+          daoTxHash: "",
+          chairpersonAddr: ""
+        };
+        console.log("ParsedDaoData include", parsedDao);
+        setDaoDetails(parsedDao);
+        setMemberCount(1);
+      }
+    };
+  
+    updateDaoDetails();
   }, [rawDaoData, isPending, error, balanceLoading, balanceData]);
+  
 
   console.log("Dao Details include", daoDetails);
 
@@ -109,7 +130,6 @@ const SuperAdmin: React.FC = () => {
     }, 10); // check every 100ms
     return () => clearInterval(intervalId);
   }, []);
-
 
   // const fetchDaoDetails = async () => {
   //   try {
@@ -149,7 +169,7 @@ const SuperAdmin: React.FC = () => {
     return () => {
       window.removeEventListener("resize", handleResize);
     };
-  }, [ authToken]);
+  }, [authToken]);
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
@@ -199,8 +219,6 @@ const SuperAdmin: React.FC = () => {
       console.error("Submission failed:", error);
     }
   };
-
-  
 
   return (
     <>
@@ -260,7 +278,7 @@ const SuperAdmin: React.FC = () => {
                   <p className="left">TSH</p>
                   <p className="right">Treasury Balance</p>
                 </div>
-                <p className="amount">{daoDetails?.kiwango.toLocaleString()}</p>
+                <p className="amount">{daoDetails?.kiwango.toLocaleString()} USD</p>
               </div>
               <div className="section">
                 <img src="/images/profile.png" alt="idadi" />
@@ -284,11 +302,17 @@ const SuperAdmin: React.FC = () => {
             <h1>DAO operations</h1>
           </div>
           <div className="button-group buttons">
-            <button onClick={() => setActiveSection("daoOverview")} className={activeSection === "daoOverview" ? "active" : ""}>
+            <button
+              onClick={() => setActiveSection("daoOverview")}
+              className={activeSection === "daoOverview" ? "active" : ""}
+            >
               Dao Overview
             </button>
             <button onClick={handleAddMemberClick}>Add Members</button>
-            <button onClick={() => setActiveSection("mikopo")}  className={activeSection === "mikopo" ? "active" : ""}>
+            <button
+              onClick={() => setActiveSection("mikopo")}
+              className={activeSection === "mikopo" ? "active" : ""}
+            >
               Loan Details
             </button>
             <button onClick={() => navigate(`/UpdateDao/${multiSigAddr}`)}>
