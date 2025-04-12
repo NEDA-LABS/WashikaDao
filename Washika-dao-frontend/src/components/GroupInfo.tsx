@@ -34,7 +34,7 @@ const GroupInfo: React.FC = () => {
   const [registrationType, setRegistrationType] = useState<
     "join" | "funder" | null
   >(null);
-  const [selectedGroup, setSelectedGroup] = useState<Dao | null>(null);
+  const [selectedGroup] = useState<Dao | null>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token") ?? "";
   const activeAccount = useActiveAccount();
@@ -83,21 +83,6 @@ const GroupInfo: React.FC = () => {
 
   // When a group is clicked, check if the user is already a member.
   // If not, show the popup to choose registration type.
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //@ts-ignore
-  const handleGroupClick = (group: Dao) => {
-    if (!memberAddr) {
-      alert("Connect wallet to log in");
-      return;
-    }
-    if (group.members.some((member) => member.memberAddr === memberAddr)) {
-      navigate(`/DaoProfile/${group.daoTxHash}`);
-    } else {
-      setSelectedGroup(group);
-      setShowPopup(true);
-      setRegistrationType(null); // reset selection
-    }
-  };
 
   const closePopup = () => {
     setShowPopup(false);
