@@ -316,11 +316,11 @@ const SuperAdmin: React.FC = () => {
             <div className="two">
               <div className="first">
                 <div className="one">
-                  <p className="left">TSH</p>
+                  <p className="left">USD</p>
                   <p className="right">Treasury Balance</p>
                 </div>
                 <p className="amount">
-                  {daoDetails?.kiwango.toLocaleString()} USD
+                  {daoDetails?.kiwango.toLocaleString()}
                 </p>
               </div>
               <div className="section">
