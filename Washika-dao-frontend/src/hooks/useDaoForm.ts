@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useCloudinaryUpload } from "./useCloudinaryUpload.ts";
 import { IBackendDaoCreation } from "../utils/Types.ts";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store.ts";
+import { useActiveAccount } from "thirdweb/react";
 
 export const useDaoForm = () => {
-  const memberAddr = useSelector((state: RootState) => state.auth.address);
+  const activeAccount = useActiveAccount();
+    const memberAddr = activeAccount?.address;
   const { uploadFileToCloudinary } = useCloudinaryUpload();
   const [formData, setFormData] = useState<IBackendDaoCreation>({
     daoName: "",

@@ -13,10 +13,16 @@ import {
   BASE_BACKEND_ENDPOINT_URL,
   ROUTE_PROTECTOR_KEY,
 } from "../utils/backendComm";
-import { useWalletBalance, useReadContract } from "thirdweb/react";
+import {
+  useWalletBalance,
+  useReadContract,
+  useActiveAccount,
+  useActiveWalletConnectionStatus,
+} from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { arbitrumSepolia } from "thirdweb/chains";
 import { client } from "../utils/thirdwebClient";
+import Footer from "../components/Footer";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -29,6 +35,15 @@ import { client } from "../utils/thirdwebClient";
  *
  * @returns {JSX.Element} The rendered SuperAdmin component.
  */
+
+const LoadingPopup = ({ message }: { message: string }) => (
+  <div className="loading-popup">
+    <div className="loading-content">
+      <p>{message}</p>
+      <div className="spinner" />
+    </div>
+  </div>
+);
 
 const SuperAdmin: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
@@ -50,7 +65,11 @@ const SuperAdmin: React.FC = () => {
   const token = localStorage.getItem("token") ?? "";
   const navigate = useNavigate();
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
-  const address = useSelector((state: RootState) => state.auth.address);
+  const activeAccount = useActiveAccount();
+  const connectionStatus = useActiveWalletConnectionStatus();
+
+  const address = activeAccount?.address;
+
   const [authToken, setAuthToken] = useState<string>("");
 
   const {
@@ -225,6 +244,22 @@ const SuperAdmin: React.FC = () => {
       console.error("Submission failed:", error);
     }
   };
+
+  if (connectionStatus === "connecting") {
+    return <LoadingPopup message="Loading wallet…" />;
+  }
+
+  if (connectionStatus === "disconnected" || !activeAccount) {
+    return (
+      <div className="fullheight">
+        <NavBar className="" />
+        <p className="daoRegistration error">
+          Please connect your wallet to continue
+        </p>
+        <Footer className={""} />
+      </div>
+    );
+  }
 
   return (
     <>

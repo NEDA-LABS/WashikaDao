@@ -6,6 +6,7 @@ import { IBackendDaoMember } from "../utils/Types";
 import { setCurrentUser } from "../redux/users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+import { useActiveAccount } from "thirdweb/react";
 
 interface DaoMember {
   memberAddr: string;
@@ -36,7 +37,8 @@ const GroupInfo: React.FC = () => {
   const [selectedGroup, setSelectedGroup] = useState<Dao | null>(null);
   const navigate = useNavigate();
   const token = localStorage.getItem("token") ?? "";
-  const memberAddr = useSelector((state: RootState) => state.auth.address);
+  const activeAccount = useActiveAccount();
+      const memberAddr = activeAccount?.address;
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user);
 

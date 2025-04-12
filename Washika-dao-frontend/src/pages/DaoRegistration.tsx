@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import DaoForm from "../components/DaoForm";
 import Footer from "../components/Footer";
@@ -9,7 +8,7 @@ import { useDaoForm } from "../hooks/useDaoForm";
 import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
-import { RootState } from "../redux/store.ts";
+import { useActiveAccount } from "thirdweb/react";
 // import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
 // import { IBackendDaoMember } from "../utils/Types.ts";
 
@@ -20,8 +19,9 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   // const [daoTxHash, setDaoTxHash] = useState<string | null>(null);
-  const address = useSelector((state: RootState) => state.auth.address);
-  const { members, currentMember, handleMemberChange, handleAddMember } =
+  const activeAccount = useActiveAccount();
+    const address = activeAccount?.address;
+  const { currentMember, handleMemberChange, handleAddMember } =
     useMemberManagement();
 
   //const [daoCreationFormData, setDaoCreationFormData] = useState<IBackendDaoCreation>();
@@ -29,7 +29,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   // Pass the chairpersonPhone into the hook
   const { formData, setFormData, handleChange, handleFileChange } =
     useDaoForm();
-  const completedSteps = useCompletedSteps(formData, members, address);
+  const completedSteps = useCompletedSteps(formData, address ?? null);
   const { handleCreateDao } = useDaoTransaction();
 
   /**
@@ -346,7 +346,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   
 
   return (
-    <>
+    <div className="fullheight">
       <NavBar className={"DaoRegister"} />
       {isSubmitting && <LoadingPopup />}
       {address ? (
@@ -363,7 +363,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           </div>
 
           <div className="circle-container">
-            {Array.from({ length: 5 }, (_, index) => (
+            {Array.from({ length: 4 }, (_, index) => (
               <React.Fragment key={`circle-${index}`}>
                 <div
                   className={`circle ${
@@ -372,7 +372,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
                 >
                   {index + 1}
                 </div>
-                {index < 4 && <div className="line" />}
+                {index < 3 && <div className="line" />}
               </React.Fragment>
             ))}
           </div>
@@ -385,7 +385,7 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
         </p>
       )}
       <Footer className={""} />
-    </>
+    </div>
   );
 };
 
