@@ -1,5 +1,5 @@
 // Import React hooks for managing state and side effects.
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useActiveAccount } from "thirdweb/react";
 
@@ -8,13 +8,7 @@ import NavLogo from "./NavLogo";
 import MobileMenuButton from "./MobileMenuButton";
 import NavLinks from "./NavLinks";
 
-// Import Redux hooks and types for state management.
-import { useDispatch, useSelector } from "react-redux";
-import { RootState, AppDispatch } from "../../redux/store";
-
 // Import actions for authentication state.
-import { login } from "../../redux/auth/authSlice";
-import { logoutUser } from "../../utils/auth/authThunks";
 
 /**
  * Props interface for the NavBar component.
@@ -39,39 +33,14 @@ interface NavBarProps {
  */
 const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
   const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
   const activeAccount = useActiveAccount();
-  const address = useSelector((state: RootState) => state.auth.address);
+  const address = activeAccount?.address;
   const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   //@ts-ignore
   const token = import.meta.env.VITE_ROUTE_PROTECTOR;
   localStorage.setItem("token", token)
   // console.log(token);
-  
-
-  /**
-   * useEffect hook to synchronize the active blockchain account with the app's authentication state.
-   *
-   * Behavior:
-   * - If an active account is detected, convert its address to lowercase.
-   *   If it differs from the current address in the Redux store, dispatch a login action.
-   * - If no active account exists but an address is present in the Redux state,
-   *   it implies a wallet disconnection. Dispatch a logout action and navigate to the homepage.
-   */
-  useEffect(() => {
-    if (activeAccount?.address) {
-      const lowerCaseAddress = activeAccount.address.toLowerCase();
-      if (lowerCaseAddress !== address) {
-        dispatch(login(lowerCaseAddress));
-      }
-    } else if (!address) {
-      // The wallet has been disconnected; clear the authentication state.
-      dispatch(logoutUser());
-
-      // navigate("/", { replace: true });
-    }
-  }, [activeAccount, address, dispatch, navigate]);
 
   /**
    * Handles click events on the "Register DAO" link.
@@ -86,8 +55,7 @@ const NavBar: React.FC<NavBarProps> = ({ className }): JSX.Element => {
    */
   const handleRegisterDaoLink = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const storedAddress = localStorage.getItem("address");
-    if (storedAddress) {
+    if (address) {
       navigate("/DaoRegistration");
     } else {
       alert("Click on Connect to log in");

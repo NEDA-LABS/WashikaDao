@@ -1,5 +1,5 @@
 // Import dependencies for blockchain authentication, theming, routing, and state management.
-import { ConnectButton, lightTheme } from "thirdweb/react";
+import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import { arbitrumSepolia } from "thirdweb/chains";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -7,7 +7,6 @@ import { toggleNotificationPopup } from "../../redux/notifications/notificationS
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
 import { RootState } from "../../redux/store";
-import { login } from "../../redux/auth/authSlice";
 import { useMemberDaos } from "./useMemberDaos";
 import { useDaoNavigation } from "./useDaoNavigation";
 import { client } from "../../utils/thirdwebClient";
@@ -47,17 +46,18 @@ interface AuthButtonProps {
 const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const address = useSelector((state: RootState) => state.auth.address);
+  const activeAccount = useActiveAccount();
+    const address = activeAccount?.address;
   const firstName = useSelector((state: RootState) => state.user.firstName);
   const { daos } = useMemberDaos(address || "");
 
   // Synchronize Redux state with localStorage to persist the user's authentication state.
-  useEffect(() => {
-    const storedAddress = localStorage.getItem("address");
-    if (storedAddress && storedAddress !== address) {
-      dispatch(login(storedAddress));
-    }
-  }, [dispatch, address]);
+  // useEffect(() => {
+  //   const storedAddress = localStorage.getItem("address");
+  //   if (storedAddress && storedAddress !== address) {
+  //     dispatch(login(storedAddress));
+  //   }
+  // }, [dispatch, address]);
 
   // Check membership existence for the logged-in user.
   const { memberExists } = useMemberDaos(address || "");

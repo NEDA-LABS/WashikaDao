@@ -7,6 +7,7 @@ import { useDispatch } from "react-redux";
 import { setCurrentUser } from "../redux/users/userSlice";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 import { IBackendDaoMember } from "../utils/Types";
+import { useActiveAccount } from "thirdweb/react";
 
 /**
  *@Auth policy: checks if isLoggedIn if not requires you to else proceed
@@ -45,7 +46,8 @@ const JoinPlatform: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [completedSteps, setCompletedSteps] = useState<number>(0);
-  const memberAddr = localStorage.getItem("address");
+  const activeAccount = useActiveAccount();
+      const memberAddr = activeAccount?.address;
   const { daoTxHash } = useParams<{ daoTxHash: string }>();
   const token = localStorage.getItem("token");
 
@@ -118,7 +120,7 @@ const JoinPlatform: React.FC = () => {
         // Dispatch the current user information to the store
         dispatch(
           setCurrentUser({
-            memberAddr: payload.memberAddr,
+            memberAddr: payload.memberAddr ?? null,
             firstName: payload.firstName,
             lastName: payload.lastName,
             email: payload.email,

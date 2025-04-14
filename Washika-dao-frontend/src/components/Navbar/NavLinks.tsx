@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 import AuthButton from "./AuthButton";
 // import { useDaoNavigation } from "./useDaoNavigation";
 // import { useMemberDaos } from "./useMemberDaos";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
 import ReactDOM from "react-dom";
+import { useActiveAccount } from "thirdweb/react";
 
 /**
  * Defines the expected props for the NavLinks component.
@@ -39,7 +38,8 @@ const NavLinks: React.FC<NavLinksProps> = ({
   toggleMenu,
 }) => {
   // Retrieve the user's address from the Redux store.
-  const address = useSelector((state: RootState) => state.auth.address);
+  const activeAccount = useActiveAccount();
+    const address = activeAccount?.address;
 
   // Fetch the DAOs associated with the current address; if none exists, an empty string is passed.
   // const { daos } = useMemberDaos(address || "");

@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
+import { useActiveAccount } from "thirdweb/react";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -79,7 +80,8 @@ const UpdateDao: React.FC = () => {
   const {  phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
-    const memberAddr = useSelector((state: RootState) => state.auth.address);
+    const activeAccount = useActiveAccount();
+        const memberAddr = activeAccount?.address;
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
