@@ -1,61 +1,42 @@
-const cardData = [
-  {
-    id: 1,
-    image: "/images/Image.png",
-    name: "Jina la mwanachama",
-    date: "10/02/2024",
-    amount: "Tsh 340,000",
-  },
-  {
-    id: 2,
-    image: "/images/Image.png",
-    name: "Jina la mwanachama",
-    date: "10/02/2024",
-    amount: "Tsh 340,000",
-  },
-  {
-    id: 3,
-    image: "/images/Image.png",
-    name: "Jina la mwanachama",
-    date: "10/02/2024",
-    amount: "Tsh 340,000",
-  },
-  {
-    id: 4,
-    image: "/images/Image.png",
-    name: "Jina la mwanachama",
-    date: "10/02/2024",
-    amount: "Tsh 340,000",
-  },
-  {
-    id: 5,
-    image: "/images/Image.png",
-    name: "Jina la mwanachama",
-    date: "10/02/2024",
-    amount: "Tsh 340,000",
-  },
-  {
-    id: 6,
-    image: "/images/Image.png",
-    name: "Jina la mwanachama",
-    date: "10/02/2024",
-    amount: "Tsh 340,000",
-  },
-];
 
-const Cards = () => {
+// Cards.tsx
+export interface CardType {
+  id: number;
+  image: string;
+  name: string;
+  date: string;
+  amount: number; // store as number for sorting
+  status: string;
+}
+
+interface CardsProps {
+  cards: CardType[];
+  onApprove: (id: number) => void;
+  onDeny: (id: number) => void;
+}
+
+const Cards = ({ cards, onApprove, onDeny }: CardsProps) => {
+  if (cards.length === 0) {
+    return <p>No loans to display</p>;
+  }
+
   return (
     <div className="cards">
-      {cardData.map((card) => (
+      {cards.map((card) => (
         <div className="card" key={card.id}>
-          <img src={card.image} alt="" />
+          <img src={card.image} alt={card.name} />
           <div className="buttonss">
-            <button className="onee">Approve</button>
-            <button className="twoo">Deny</button>
+            <button className="onee" onClick={() => onApprove(card.id)}>
+              Approve
+            </button>
+            <button className="twoo" onClick={() => onDeny(card.id)}>
+              Deny
+            </button>
           </div>
           <p>{card.name}</p>
           <p>{card.date}</p>
-          <p className="cash">{card.amount}</p>
+          <p className="cash">Tsh {card.amount.toLocaleString()}</p>
+          <p className="status">Status: {card.status}</p>
         </div>
       ))}
     </div>
