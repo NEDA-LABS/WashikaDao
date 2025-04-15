@@ -72,6 +72,11 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
     }
   };
 
+  const handleCancel = () => {
+    setIsSubmitting(false);
+    alert("Transaction canceled by user.");
+  };
+
   /**
    * Step 2: Register DAO in the backend
    */
@@ -339,11 +344,15 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
     <div className="loading-popup">
       <div className="loading-content">
         <p>Creating DAO on-chain...</p>
-        <div className="spinner" />
+        <div className="spinner-and-cancel">
+          <div className="spinner" />
+          <button onClick={handleCancel} className="cancel-button">
+            Cancel
+          </button>
+        </div>
       </div>
     </div>
   );
-  
 
   return (
     <div className="fullheight">

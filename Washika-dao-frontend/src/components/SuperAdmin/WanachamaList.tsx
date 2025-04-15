@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { IFetchedBackendDao } from "../utils/Types";
+import { IFetchedBackendDao } from "../../utils/Types";
 
 interface Wanachama {
   id: number;

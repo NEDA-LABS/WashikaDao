@@ -566,6 +566,13 @@ button.createDao {
   text-align: center;
 }
 
+.spinner-and-cancel {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
 .spinner {
   margin-top: 1rem;
   width: 32px;
@@ -574,6 +581,19 @@ button.createDao {
   border-top: 4px solid transparent;
   border-radius: 50%;
   animation: spin 1s linear infinite;
+}
+
+.cancel-button {
+  padding: 0.5rem 1rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.cancel-button:hover {
+  background-color: #d32f2f;
 }
 
 @keyframes spin {
