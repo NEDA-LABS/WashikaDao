@@ -1,13 +1,45 @@
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../redux/store";
-import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
+import {
+  showNotificationPopup,
+  hideNotificationPopup,
+  removeNotification,
+} from "../../redux/notifications/notificationSlice";
+import { useNavigate } from "react-router-dom";
+import { useEffect } from "react";
 
-export default function Notification() {
-    const isVisible = useSelector(
-        (state: RootState) => state.notification.isVisible
-      );
-      const dispatch = useDispatch();
-    
+
+interface NotificationProps {
+  /** SuperAdmin can pass its setActiveSection; other pages can omit. */
+  setActiveSection?: (section: string) => void;
+}
+
+export default function Notification({ setActiveSection }: NotificationProps) {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { isVisible, notifications } = useSelector(
+    (state: RootState) => state.notification
+  );
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      dispatch(showNotificationPopup());
+    }
+  }, [notifications, dispatch]);
+
+  const handleView = (note: typeof notifications[0]) => {
+    // 1) if it's a section‑switch in SuperAdmin
+    if (note.section && setActiveSection) {
+      setActiveSection(note.section);
+    }
+    // 2) otherwise if it's a link
+    else if (note.link) {
+      navigate(note.link);
+    }
+    // remove from queue
+    dispatch(removeNotification(note.id));
+  };
+  
   return (
     <>
       {isVisible && (
@@ -16,12 +48,21 @@ export default function Notification() {
             <img src="/images/Info.png" alt="info icon" />
           </div>
           <div className="notifications">
-            <h3>Notification</h3>
-            <p>New Member Request</p>
-            <button>View</button>
+            {notifications.length > 0 ? (
+              notifications.map((note) => (
+                <div className="notification-item" key={note.id}>
+                  <div className="notification-content">
+                    <p>{note.message}</p>
+                    <button onClick={() => handleView(note)}>View</button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p>No new notifications</p>
+            )}
           </div>
           <div>
-            <button onClick={() => dispatch(toggleNotificationPopup())}>
+          <button onClick={() => dispatch(hideNotificationPopup())}>
               <img src="/images/X.png" alt="cancel icon" />
             </button>
           </div>

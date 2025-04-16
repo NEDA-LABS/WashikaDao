@@ -23,7 +23,7 @@ nav.SuperAdmin {
 
 .notification {
   width: clamp(235px, 20vw, 300px);
-  height: clamp(100px, 9vw, 130px);
+  min-height: clamp(100px, 9vw, 130px);
   border: 1px solid #757575;
   position: absolute;
   right: 48px;

@@ -1,15 +1,58 @@
-// MikopoInteractive.tsx
 import { useState, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { addNotification } from "../../redux/notifications/notificationSlice";
 import Cards, { CardType } from "./Cards";
 
 // initial dummy data with loan status
 const initialCardData: CardType[] = [
-  { id: 1, image: "/images/Image.png", name: "Jina la mwanachama A", date: "10/02/2024", amount: 340000, status: "pending" },
-  { id: 2, image: "/images/Image.png", name: "Jina la mwanachama B", date: "11/02/2024", amount: 150000, status: "approved" },
-  { id: 3, image: "/images/Image.png", name: "Jina la mwanachama C", date: "12/02/2024", amount: 500000, status: "denied" },
-  { id: 4, image: "/images/Image.png", name: "Jina la mwanachama D", date: "13/02/2024", amount: 250000, status: "pending" },
-  { id: 5, image: "/images/Image.png", name: "Jina la mwanachama E", date: "14/02/2024", amount: 420000, status: "approved" },
-  { id: 6, image: "/images/Image.png", name: "Jina la mwanachama F", date: "15/02/2024", amount: 310000, status: "denied" },
+  {
+    id: 1,
+    image: "/images/Image.png",
+    name: "Jina la mwanachama A",
+    date: "10/02/2024",
+    amount: 340000,
+    status: "pending",
+  },
+  {
+    id: 2,
+    image: "/images/Image.png",
+    name: "Jina la mwanachama B",
+    date: "11/02/2024",
+    amount: 150000,
+    status: "approved",
+  },
+  {
+    id: 3,
+    image: "/images/Image.png",
+    name: "Jina la mwanachama C",
+    date: "12/02/2024",
+    amount: 500000,
+    status: "denied",
+  },
+  {
+    id: 4,
+    image: "/images/Image.png",
+    name: "Jina la mwanachama D",
+    date: "13/02/2024",
+    amount: 250000,
+    status: "pending",
+  },
+  {
+    id: 5,
+    image: "/images/Image.png",
+    name: "Jina la mwanachama E",
+    date: "14/02/2024",
+    amount: 420000,
+    status: "approved",
+  },
+  {
+    id: 6,
+    image: "/images/Image.png",
+    name: "Jina la mwanachama F",
+    date: "15/02/2024",
+    amount: 310000,
+    status: "denied",
+  },
 ];
 
 // derive the maximum amount for slider
@@ -24,6 +67,7 @@ const statusOptions = [
 type SortOption = "new" | "owed" | "paid" | "fee";
 
 export default function Mikopo() {
+  const dispatch = useDispatch();
   const [cards, setCards] = useState<CardType[]>(initialCardData);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
@@ -33,7 +77,9 @@ export default function Mikopo() {
   // toggle status filter
   const toggleStatus = (status: string) => {
     setStatusFilters((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status]
     );
   };
 
@@ -43,10 +89,11 @@ export default function Mikopo() {
 
     // keyword filter
     const byKeyword = cards.filter((c) =>
-      keywords.every((kw) =>
-        c.name.toLowerCase().includes(kw.toLowerCase()) ||
-        c.date.toLowerCase().includes(kw.toLowerCase()) ||
-        c.amount.toString().includes(kw)
+      keywords.every(
+        (kw) =>
+          c.name.toLowerCase().includes(kw.toLowerCase()) ||
+          c.date.toLowerCase().includes(kw.toLowerCase()) ||
+          c.amount.toString().includes(kw)
       )
     );
 
@@ -78,10 +125,32 @@ export default function Mikopo() {
   }, [cards, searchTerm, statusFilters, maxAmount, sortOption]);
 
   const handleApprove = (id: number) => {
+    const approved = cards.find((c) => c.id === id);
     setCards((prev) => prev.filter((c) => c.id !== id));
+    if (approved) {
+      dispatch(
+        addNotification({
+          id: crypto.randomUUID(),
+          type: "success",
+          message: `Loan approved for ${approved.name}`,
+          section: "mikopo",
+        })
+      );
+    }
   };
   const handleDeny = (id: number) => {
+    const denied = cards.find((c) => c.id === id);
     setCards((prev) => prev.filter((c) => c.id !== id));
+    if (denied) {
+      dispatch(
+        addNotification({
+          id: crypto.randomUUID(),
+          type: "error",
+          message: `Loan denied for ${denied.name}`,
+          section: "mikopo",
+        })
+      );
+    }
   };
 
   return (
@@ -94,17 +163,32 @@ export default function Mikopo() {
             <ul>
               {searchTerm && (
                 <li>
-                  Jina <img src="/images/X.png" alt="clear name" onClick={() => setSearchTerm("")} />
+                  Jina{" "}
+                  <img
+                    src="/images/X.png"
+                    alt="clear name"
+                    onClick={() => setSearchTerm("")}
+                  />
                 </li>
               )}
               {maxAmount < initialMaxAmount && (
                 <li>
-                  Kiasi <img src="/images/X.png" alt="clear amount" onClick={() => setMaxAmount(initialMaxAmount)} />
+                  Kiasi{" "}
+                  <img
+                    src="/images/X.png"
+                    alt="clear amount"
+                    onClick={() => setMaxAmount(initialMaxAmount)}
+                  />
                 </li>
               )}
               {sortOption === "fee" && (
                 <li>
-                  Ada <img src="/images/X.png" alt="clear fee" onClick={() => setSortOption("new")} />
+                  Ada{" "}
+                  <img
+                    src="/images/X.png"
+                    alt="clear fee"
+                    onClick={() => setSortOption("new")}
+                  />
                 </li>
               )}
               {statusFilters.map((status) => {
