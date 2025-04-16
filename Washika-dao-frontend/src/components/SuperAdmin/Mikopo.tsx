@@ -19,7 +19,7 @@ const initialCardData: CardType[] = [
     name: "Jina la mwanachama B",
     date: "11/02/2024",
     amount: 150000,
-    status: "approved",
+    status: "pending",
   },
   {
     id: 3,
@@ -27,7 +27,7 @@ const initialCardData: CardType[] = [
     name: "Jina la mwanachama C",
     date: "12/02/2024",
     amount: 500000,
-    status: "denied",
+    status: "pending",
   },
   {
     id: 4,
@@ -43,7 +43,7 @@ const initialCardData: CardType[] = [
     name: "Jina la mwanachama E",
     date: "14/02/2024",
     amount: 420000,
-    status: "approved",
+    status: "pending",
   },
   {
     id: 6,
@@ -51,7 +51,7 @@ const initialCardData: CardType[] = [
     name: "Jina la mwanachama F",
     date: "15/02/2024",
     amount: 310000,
-    status: "denied",
+    status: "pending",
   },
 ];
 
@@ -125,8 +125,12 @@ export default function Mikopo() {
   }, [cards, searchTerm, statusFilters, maxAmount, sortOption]);
 
   const handleApprove = (id: number) => {
+    setCards((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, status: "approved" } : c
+      )
+    );
     const approved = cards.find((c) => c.id === id);
-    setCards((prev) => prev.filter((c) => c.id !== id));
     if (approved) {
       dispatch(
         addNotification({
@@ -138,9 +142,14 @@ export default function Mikopo() {
       );
     }
   };
+
   const handleDeny = (id: number) => {
+    setCards((prev) =>
+      prev.map((c) =>
+        c.id === id ? { ...c, status: "denied" } : c
+      )
+    );
     const denied = cards.find((c) => c.id === id);
-    setCards((prev) => prev.filter((c) => c.id !== id));
     if (denied) {
       dispatch(
         addNotification({
