@@ -29,7 +29,6 @@ app.use(
       origin: "*",
       //methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"],
      allowedHeaders: ["content-type", "Authorization", "X-API-KEY"],
-
     })
 )
 app.use(express.json());// specifying we will be receiving the data in json format
