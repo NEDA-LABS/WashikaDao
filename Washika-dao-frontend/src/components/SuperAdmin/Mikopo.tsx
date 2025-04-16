@@ -3,53 +3,52 @@ import { useDispatch } from "react-redux";
 import { addNotification } from "../../redux/notifications/notificationSlice";
 import Cards, { CardType } from "./Cards";
 
-// initial dummy data with loan status
 const initialCardData: CardType[] = [
   {
     id: 1,
     image: "/images/Image.png",
-    name: "Jina la mwanachama A",
-    date: "10/02/2024",
+    name: "Member A",
+    date: "2024-02-10",
     amount: 340000,
     status: "pending",
   },
   {
     id: 2,
     image: "/images/Image.png",
-    name: "Jina la mwanachama B",
-    date: "11/02/2024",
+    name: "Member B",
+    date: "2024-02-11",
     amount: 150000,
-    status: "pending",
+    status: "approved",
   },
   {
     id: 3,
     image: "/images/Image.png",
-    name: "Jina la mwanachama C",
-    date: "12/02/2024",
+    name: "Member C",
+    date: "2024-02-12",
     amount: 500000,
-    status: "pending",
+    status: "denied",
   },
   {
     id: 4,
     image: "/images/Image.png",
-    name: "Jina la mwanachama D",
-    date: "13/02/2024",
+    name: "Member D",
+    date: "2024-02-13",
     amount: 250000,
-    status: "pending",
+    status: "paid",
   },
   {
     id: 5,
     image: "/images/Image.png",
-    name: "Jina la mwanachama E",
-    date: "14/02/2024",
+    name: "Member E",
+    date: "2024-02-14",
     amount: 420000,
-    status: "pending",
+    status: "approved",
   },
   {
     id: 6,
     image: "/images/Image.png",
-    name: "Jina la mwanachama F",
-    date: "15/02/2024",
+    name: "Member F",
+    date: "2024-02-15",
     amount: 310000,
     status: "pending",
   },
@@ -62,6 +61,7 @@ const statusOptions = [
   { key: "pending", label: "Pending", desc: "Awaiting approval" },
   { key: "approved", label: "Approved", desc: "Loans approved" },
   { key: "denied", label: "Denied", desc: "Loans denied" },
+  { key: "paid", label: "Paid", desc: "Loans fully paid back" },
 ];
 
 type SortOption = "new" | "owed" | "paid" | "fee";
@@ -85,50 +85,55 @@ export default function Mikopo() {
 
   // Filter & sort logic
   const displayedCards = useMemo(() => {
-    const keywords = searchTerm.trim().split(/\s+/).filter(Boolean);
+    // 1) Keyword filter
+    let filtered = cards.filter((c) => {
+      const keywords = searchTerm.trim().toLowerCase().split(/\s+/);
+      return keywords.every((kw) =>
+        [c.name, c.date, c.amount.toString()].some((field) =>
+          field.toLowerCase().includes(kw)
+        )
+      );
+    });
 
-    // keyword filter
-    const byKeyword = cards.filter((c) =>
-      keywords.every(
-        (kw) =>
-          c.name.toLowerCase().includes(kw.toLowerCase()) ||
-          c.date.toLowerCase().includes(kw.toLowerCase()) ||
-          c.amount.toString().includes(kw)
-      )
-    );
+    // 2) Status filter
+    if (statusFilters.length > 0) {
+      filtered = filtered.filter((c) => statusFilters.includes(c.status));
+    }
 
-    // status filter
-    const byStatus =
-      statusFilters.length > 0
-        ? byKeyword.filter((c) => statusFilters.includes(c.status))
-        : byKeyword;
+    // 3) Amount filter
+    filtered = filtered.filter((c) => c.amount <= maxAmount);
 
-    // amount filter
-    const byAmount = byStatus.filter((c) => c.amount <= maxAmount);
-
-    // sort
-    const sorted = [...byAmount];
+    // 4) Sort / special filters
     switch (sortOption) {
       case "new":
-        sorted.sort((a, b) => b.id - a.id);
+        // newest first
+        filtered.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
         break;
+
       case "owed":
-        // treat amount > 300k as 'owed'
-        return sorted.filter((c) => c.amount > 300000);
+        // only outstanding (approved) loans
+        filtered = filtered.filter((c) => c.status === "approved");
+        break;
+
       case "paid":
-        return sorted.filter((c) => c.amount <= 300000);
+        // only fully paid‑back loans
+        filtered = filtered.filter((c) => c.status === "paid");
+        break;
+
       case "fee":
-        sorted.sort((a, b) => a.amount - b.amount);
+        // lowest amount first
+        filtered.sort((a, b) => a.amount - b.amount);
         break;
     }
-    return sorted;
+
+    return filtered;
   }, [cards, searchTerm, statusFilters, maxAmount, sortOption]);
 
   const handleApprove = (id: number) => {
     setCards((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, status: "approved" } : c
-      )
+      prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
     );
     const approved = cards.find((c) => c.id === id);
     if (approved) {
@@ -145,9 +150,7 @@ export default function Mikopo() {
 
   const handleDeny = (id: number) => {
     setCards((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, status: "denied" } : c
-      )
+      prev.map((c) => (c.id === id ? { ...c, status: "denied" } : c))
     );
     const denied = cards.find((c) => c.id === id);
     if (denied) {
@@ -192,7 +195,7 @@ export default function Mikopo() {
               )}
               {sortOption === "fee" && (
                 <li>
-                  Fee{" "}
+                  Lowest Amount{" "}
                   <img
                     src="/images/X.png"
                     alt="clear fee"
@@ -294,7 +297,7 @@ export default function Mikopo() {
               {sortOption === "fee" && (
                 <img src="/images/Check.png" alt="selected" />
               )}
-              Fees
+              Lowest Amount
             </div>
           </div>
 
