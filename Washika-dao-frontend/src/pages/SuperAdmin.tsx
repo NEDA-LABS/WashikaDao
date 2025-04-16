@@ -2,7 +2,7 @@ import NavBar from "../components/Navbar/Navbar";
 
 import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
-import { useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addNotification } from "../redux/notifications/notificationSlice";
 import {
@@ -40,6 +40,9 @@ const SuperAdmin: React.FC = () => {
   );
   const activeAccount = useActiveAccount();
   const connectionStatus = useActiveWalletConnectionStatus();
+
+  const prevConnectionStatus =
+    useRef<typeof connectionStatus>(connectionStatus);
 
   // const [authToken, setAuthToken] = useState<string>("");
 
@@ -81,7 +84,10 @@ const SuperAdmin: React.FC = () => {
   // };
 
   useEffect(() => {
-    if (connectionStatus === "connected") {
+    if (
+      connectionStatus === "connected" &&
+      prevConnectionStatus.current !== "connected"
+    ) {
       dispatch(
         addNotification({
           id: crypto.randomUUID(),
@@ -91,6 +97,7 @@ const SuperAdmin: React.FC = () => {
         })
       );
     }
+    prevConnectionStatus.current = connectionStatus;
   }, [connectionStatus, dispatch]);
 
   if (connectionStatus === "connecting") {
@@ -113,7 +120,7 @@ const SuperAdmin: React.FC = () => {
     <>
       <NavBar className={"SuperAdmin"} />
       <main className="member superAdmin">
-      <Notification setActiveSection={setActiveSection} />
+        <Notification setActiveSection={setActiveSection} />
 
         <AdminTop
           setActiveSection={setActiveSection}
@@ -134,7 +141,10 @@ const SuperAdmin: React.FC = () => {
         {activeSection === "daoOverview" && <DaoOverview />}
 
         {activeSection === "addMember" && (
-          <AdminMemberForm setActiveSection={setActiveSection} prevSection={prevSection}  />
+          <AdminMemberForm
+            setActiveSection={setActiveSection}
+            prevSection={prevSection}
+          />
         )}
         {activeSection === "mikopo" && <Mikopo />}
         {activeSection === "wanachama" && <Wanachama daoDetails={daoDetails} />}
