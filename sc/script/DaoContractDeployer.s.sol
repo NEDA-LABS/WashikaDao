@@ -17,5 +17,4 @@ contract CounterScript is Script {
         console.log("The Dao Contract Deployed to: %s:", address(fullDaoContract));
         vm.stopBroadcast();
     }
-
 }
