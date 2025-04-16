@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { IBackendDaoCreation, IBackendDaoMember } from "../utils/Types"; 
+import { IBackendDaoCreation } from "../utils/Types"; 
 
 export const useCompletedSteps = (
   formData: IBackendDaoCreation,
-  members: IBackendDaoMember[],
+  // members: IBackendDaoMember[],
   memberAddr: string | null
 ) => {
   const [completedSteps, setCompletedSteps] = useState<number>(0);
@@ -15,10 +15,10 @@ export const useCompletedSteps = (
     if (formData.daoName) stepsCompleted++;
     if (formData.daoTitle) stepsCompleted++;
     if (formData.daoImageIpfsHash) stepsCompleted++;
-    if (members.length > 0) stepsCompleted++;
+    // if (members.length > 0) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
-  }, [formData, memberAddr, members]);
+  }, [formData, memberAddr]);
 
   return completedSteps;
 };

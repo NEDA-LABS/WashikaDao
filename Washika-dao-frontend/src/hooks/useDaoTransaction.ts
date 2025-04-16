@@ -54,7 +54,7 @@ export const useDaoTransaction = () => {
 
     return new Promise<string | null>((resolve, reject) => {
       console.log("Sending transaction...");
-      alert("Sending transaction...");
+      // alert("Sending transaction...");
 
       sendTx(transaction, {
         onSuccess: (receipt) => {

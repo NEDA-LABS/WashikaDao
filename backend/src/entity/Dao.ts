@@ -37,7 +37,7 @@ export class Dao {
   @Index()
   multiSigPhoneNo: string;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: "decimal" })
   kiwango: number;
 
   @Column({ type: "bigint" })
@@ -46,10 +46,10 @@ export class Dao {
   @Column()
   nambaZaHisa: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: "decimal" })
   kiasiChaHisa: number;
 
-  @Column({ type: "decimal", precision: 10, scale: 2 })
+  @Column({ type: "decimal" })
   interestOnLoans: number;
 
   @Column({ length: 255 })

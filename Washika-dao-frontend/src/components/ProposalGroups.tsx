@@ -43,7 +43,7 @@ const ProposalGroups: React.FC = () => {
             },}
         );
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         
         setProposals(data.proposalsFound);
       } catch (error) {
@@ -53,7 +53,7 @@ const ProposalGroups: React.FC = () => {
 
     fetchProposals();
   }, [ daoMultiSigAddr]);
-  console.log(proposals);
+  // console.log(proposals);
   const handleProposalClick = () => {
     navigate("/viewProposal");
   };

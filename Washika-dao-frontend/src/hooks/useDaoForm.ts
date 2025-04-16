@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCloudinaryUpload } from "./useCloudinaryUpload.ts";
 import { IBackendDaoCreation } from "../utils/Types.ts";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store.ts";
+import { useActiveAccount } from "thirdweb/react";
 
-export const useDaoForm = (chairpersonPhone: string = "") => {
-  const memberAddr = useSelector((state: RootState) => state.auth.address);
+export const useDaoForm = () => {
+  const activeAccount = useActiveAccount();
+    const memberAddr = activeAccount?.address;
   const { uploadFileToCloudinary } = useCloudinaryUpload();
   const [formData, setFormData] = useState<IBackendDaoCreation>({
     daoName: "",
@@ -17,7 +17,7 @@ export const useDaoForm = (chairpersonPhone: string = "") => {
     daoImageIpfsHash: "",
     daoRegDocs: "",
     daoMultiSigAddr: memberAddr || "",
-    multiSigPhoneNo: chairpersonPhone, // Set initial value from parameter
+    multiSigPhoneNo: "",
     kiwango: 0,
     accountNo: "",
     nambaZaHisa: 0,
@@ -25,14 +25,6 @@ export const useDaoForm = (chairpersonPhone: string = "") => {
     interestOnLoans: 0,
     daoTxHash: "",
   });
-
-  // Update multiSigPhoneNo if chairpersonPhone changes.
-  useEffect(() => {
-    setFormData((prev) => ({
-      ...prev,
-      multiSigPhoneNo: chairpersonPhone,
-    }));
-  }, [chairpersonPhone]);
 
   const handleChange = (
     e: React.ChangeEvent<

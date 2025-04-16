@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
+import { useActiveAccount } from "thirdweb/react";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -75,19 +76,21 @@ const UpdateDao: React.FC = () => {
   const navigate = useNavigate(); // Initialize navigation hook
   const [isSubmitting, setIsSubmitting] = useState(false);
   const token = localStorage.getItem("token") ?? "";
-  const { daoTxHash } = useParams<{ daoTxHash: string }>();
-  const { memberAddr, phoneNumber } = useSelector(
+  const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
+  const {  phoneNumber } = useSelector(
     (state: RootState) => state.user
   );
+    const activeAccount = useActiveAccount();
+        const memberAddr = activeAccount?.address;
 
   useEffect(() => {
     if (typeof memberAddr === "string") {
       setFormData((prevData) => ({
         ...prevData,
-        multiSigAddr: memberAddr.toLowerCase(),
+        multiSigAddr,
       }));
     }
-  }, [memberAddr]);
+  }, [memberAddr, multiSigAddr]);
 
   const [formData, setFormData] = useState<FormData>({
     daoName: "",
@@ -152,7 +155,7 @@ const UpdateDao: React.FC = () => {
   const fetchDaoDetails = async () => {
     try {
       const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash/?daoTxHash=${multiSigAddr}`,
         {
           headers: {
             Authorization: token,
@@ -180,11 +183,11 @@ const UpdateDao: React.FC = () => {
 
   // Fetch DAO details on component mount
   useEffect(() => {
-    if (daoTxHash) {
+    if (multiSigAddr) {
       fetchDaoDetails();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [daoTxHash, token]);
+  }, [multiSigAddr, token]);
   // console.log(formData);
 
   // Handle form submission
@@ -204,7 +207,7 @@ const UpdateDao: React.FC = () => {
     try {
       // Send combined data to the backend API
       const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/UpdateDaoDetails/?daoTxHash=${daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/UpdateDaoDetails/?daoTxHash=${multiSigAddr}`,
         {
           method: "PUT",
           headers: {
@@ -222,7 +225,7 @@ const UpdateDao: React.FC = () => {
         alert("Dao updated successfully");
         console.log("DAO updated successfully", data);
 
-        navigate(`/SuperAdmin/${daoTxHash}`); // Navigate to the DAO profile pagehandleSubmit(event);
+        navigate(`/SuperAdmin/${multiSigAddr}`); // Navigate to the DAO profile pagehandleSubmit(event);
       } else {
         console.error("Error updating DAO:", data.message);
       }

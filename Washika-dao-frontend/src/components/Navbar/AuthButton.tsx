@@ -1,16 +1,15 @@
 // Import dependencies for blockchain authentication, theming, routing, and state management.
-import { ConnectButton, lightTheme } from "thirdweb/react";
+import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import { arbitrumSepolia } from "thirdweb/chains";
 import { useNavigate } from "react-router-dom";
-import { createThirdwebClient } from "thirdweb";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
 import { RootState } from "../../redux/store";
-import { login } from "../../redux/auth/authSlice";
 import { useMemberDaos } from "./useMemberDaos";
 import { useDaoNavigation } from "./useDaoNavigation";
+import { client } from "../../utils/thirdwebClient";
 
 /**
  * Creates a Thirdweb client instance used for blockchain interactions and authentication.
@@ -19,11 +18,7 @@ import { useDaoNavigation } from "./useDaoNavigation";
  * - Reads the client ID from an environment variable.
  * - This client instance is later passed to the ConnectButton for handling authentication.
  */
-const client = createThirdwebClient({
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID, // Retrieve the client ID from environment variables.
-});
+
 
 /**
  * Interface representing the props for the AuthButton component.
@@ -51,17 +46,18 @@ interface AuthButtonProps {
 const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const address = useSelector((state: RootState) => state.auth.address);
+  const activeAccount = useActiveAccount();
+    const address = activeAccount?.address;
   const firstName = useSelector((state: RootState) => state.user.firstName);
   const { daos } = useMemberDaos(address || "");
 
   // Synchronize Redux state with localStorage to persist the user's authentication state.
-  useEffect(() => {
-    const storedAddress = localStorage.getItem("address");
-    if (storedAddress && storedAddress !== address) {
-      dispatch(login(storedAddress));
-    }
-  }, [dispatch, address]);
+  // useEffect(() => {
+  //   const storedAddress = localStorage.getItem("address");
+  //   if (storedAddress && storedAddress !== address) {
+  //     dispatch(login(storedAddress));
+  //   }
+  // }, [dispatch, address]);
 
   // Check membership existence for the logged-in user.
   const { memberExists } = useMemberDaos(address || "");
