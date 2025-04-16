@@ -12,7 +12,7 @@ interface DaoFormProps {
   fields: Field[];
 }
 
-interface Field {
+export interface Field {
   label: string;
   type: string;
   name?: string;
