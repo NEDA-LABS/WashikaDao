@@ -163,7 +163,7 @@ export default function Mikopo() {
             <ul>
               {searchTerm && (
                 <li>
-                  Jina{" "}
+                  Name{" "}
                   <img
                     src="/images/X.png"
                     alt="clear name"
@@ -173,7 +173,7 @@ export default function Mikopo() {
               )}
               {maxAmount < initialMaxAmount && (
                 <li>
-                  Kiasi{" "}
+                  Amount{" "}
                   <img
                     src="/images/X.png"
                     alt="clear amount"
@@ -183,7 +183,7 @@ export default function Mikopo() {
               )}
               {sortOption === "fee" && (
                 <li>
-                  Ada{" "}
+                  Fee{" "}
                   <img
                     src="/images/X.png"
                     alt="clear fee"
@@ -255,26 +255,37 @@ export default function Mikopo() {
               className={`sort ${sortOption === "new" ? "active" : ""}`}
               onClick={() => setSortOption("new")}
             >
-              <img src="/images/Check.png" alt="" />
-              Mikopo Mipya
+              {sortOption === "new" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              New Loans
             </div>
             <div
               className={`sort ${sortOption === "owed" ? "active" : ""}`}
               onClick={() => setSortOption("owed")}
             >
-              Mikopo inayo daiwa
+              {sortOption === "owed" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              Outstanding Loans
             </div>
             <div
               className={`sort ${sortOption === "paid" ? "active" : ""}`}
               onClick={() => setSortOption("paid")}
             >
-              Mikopo iliyo lipwa
+              {sortOption === "paid" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              Paid Loans
             </div>
             <div
               className={`sort ${sortOption === "fee" ? "active" : ""}`}
               onClick={() => setSortOption("fee")}
             >
-              Ada
+              {sortOption === "fee" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              Fees
             </div>
           </div>
 
