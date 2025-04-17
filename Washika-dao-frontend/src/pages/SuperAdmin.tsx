@@ -2,7 +2,9 @@ import NavBar from "../components/Navbar/Navbar";
 
 import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addNotification } from "../redux/notifications/notificationSlice";
 import {
   useActiveAccount,
   useActiveWalletConnectionStatus,
@@ -30,6 +32,7 @@ import { DaoDetails } from "../components/SuperAdmin/WanachamaList";
  */
 
 const SuperAdmin: React.FC = () => {
+  const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [prevSection, setPrevSection] = useState<string>("daoOverview");
   const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(
@@ -37,6 +40,9 @@ const SuperAdmin: React.FC = () => {
   );
   const activeAccount = useActiveAccount();
   const connectionStatus = useActiveWalletConnectionStatus();
+
+  const prevConnectionStatus =
+    useRef<typeof connectionStatus>(connectionStatus);
 
   // const [authToken, setAuthToken] = useState<string>("");
 
@@ -77,6 +83,23 @@ const SuperAdmin: React.FC = () => {
   //   }
   // };
 
+  useEffect(() => {
+    if (
+      connectionStatus === "connected" &&
+      prevConnectionStatus.current !== "connected"
+    ) {
+      dispatch(
+        addNotification({
+          id: crypto.randomUUID(),
+          type: "info",
+          message: "Wallet connected successfully",
+          section: "daoOverview",
+        })
+      );
+    }
+    prevConnectionStatus.current = connectionStatus;
+  }, [connectionStatus, dispatch]);
+
   if (connectionStatus === "connecting") {
     return <LoadingPopup message="Loading wallet…" />;
   }
@@ -97,7 +120,7 @@ const SuperAdmin: React.FC = () => {
     <>
       <NavBar className={"SuperAdmin"} />
       <main className="member superAdmin">
-        <Notification />
+        <Notification setActiveSection={setActiveSection} />
 
         <AdminTop
           setActiveSection={setActiveSection}
@@ -118,7 +141,10 @@ const SuperAdmin: React.FC = () => {
         {activeSection === "daoOverview" && <DaoOverview />}
 
         {activeSection === "addMember" && (
-          <AdminMemberForm setActiveSection={setActiveSection} prevSection={prevSection}  />
+          <AdminMemberForm
+            setActiveSection={setActiveSection}
+            prevSection={prevSection}
+          />
         )}
         {activeSection === "mikopo" && <Mikopo />}
         {activeSection === "wanachama" && <Wanachama daoDetails={daoDetails} />}

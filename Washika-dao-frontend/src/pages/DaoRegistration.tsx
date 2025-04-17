@@ -1,15 +1,17 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DaoForm from "../components/DaoForm";
 import Footer from "../components/Footer";
-import MemberForm from "../components/MemberForm";
+import Step1Form from "../components/DaoRegistration/Step1Form";
+import Step2Form from "../components/DaoRegistration/Step2Form";
+import Step3Members from "../components/DaoRegistration/Step3Members";
+import LoadingPopup from "../components/DaoRegistration/LoadingPopup";
 import NavBar from "../components/Navbar/Navbar.tsx";
 import { useDaoForm } from "../hooks/useDaoForm";
 import { useCompletedSteps } from "../hooks/useDaoProgress.ts";
 import { useDaoTransaction } from "../hooks/useDaoTransaction.ts";
 import { useMemberManagement } from "../hooks/useMemberManagement";
 import { useActiveAccount } from "thirdweb/react";
-// import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
 // import { IBackendDaoMember } from "../utils/Types.ts";
 
 // import { _routeScanRedirectUrlBuilder } from "../utils/blockchainUtils/blockchainComm.ts";
@@ -123,241 +125,80 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
   /**
    * Step 3: Register DAO members
    */
-  // const handleMemberSubmit = async () => {
-  //   if (!address) {
-  //     alert("Member Address is required");
-  //     return;
-  //   }
+  const handleMemberSubmit = async () => {
+    if (!address) {
+      alert("Member Address is required");
+      return;
+    }
 
-  //   setIsSubmitting(true);
-  //   try {
-  //     const response = await fetch(
-  //       `${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`,
-  //       {
-  //         method: "POST",
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //           "X-API-KEY": ROUTE_PROTECTOR_KEY,
-  //         },
-  //         body: JSON.stringify(formData),
-  //       }
-  //     );
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/CreateDao?currentAddr=${address}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-API-KEY": ROUTE_PROTECTOR_KEY,
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
-  //     const data = await response.json();
-  //     if (response.ok) {
-  //       alert("DAO successfully created in the backend!");
-  //       console.log("DAO backend creation success:", data);
-  //       navigate(`/SuperAdmin/${daoTxHash}`);
-  //     } else {
-  //       console.error("Backend DAO creation failed:", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error submitting DAO to backend:", error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
+      const data = await response.json();
+      if (response.ok) {
+        alert("DAO successfully created in the backend!");
+        console.log("DAO backend creation success:", data);
+        // navigate(`y/SuperAdmin/${daoTxHash}`);
+      } else {
+        console.error("Backend DAO creation failed:", data.message);
+      }
+    } catch (error) {
+      console.error("Error submitting DAO to backend:", error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
         return (
-          <div className="step step1">
-            <DaoForm
-              className="form one"
-              title="Fill this form to your DAO"
-              description="Tell us about your group"
-              fields={[
-                {
-                  label: "Name of your Group",
-                  type: "text",
-                  name: "daoName",
-                  value: formData.daoName,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Location",
-                  type: "text",
-                  name: "daoLocation",
-                  value: formData.daoLocation,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Target Audience",
-                  type: "text",
-                  name: "targetAudience",
-                  value: formData.targetAudience,
-                  onChange: handleChange,
-                },
-                {
-                  label: "What is your Savings Group about?",
-                  type: "textarea",
-                  name: "daoDescription",
-                  value: formData.daoDescription,
-                  onChange: handleChange,
-                },
-              ]}
-            />
-            <div className="form-progress">
-              <button type="button" onClick={() => setCurrentStep(2)}>
-                Next
-              </button>
-            </div>
-          </div>
+          <Step1Form
+            formData={formData}
+            handleChange={handleChange}
+            onNextStep={() => setCurrentStep(2)}
+          />
         );
       case 2:
         return (
-          <div className="step step2">
-            <DaoForm
-              className="form two"
-              title="About the group"
-              description="Group overview and its objective"
-              fields={[
-                {
-                  label: "Header Bio",
-                  type: "text",
-                  name: "daoTitle",
-                  value: formData.daoTitle,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Additional information if any and Group By-laws",
-                  type: "textarea",
-                  name: "daoOverview",
-                  value: formData.daoOverview,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Bank account number",
-                  type: "text",
-                  name: "accountNo",
-                  value: formData.accountNo,
-                  onChange: handleChange,
-                },
-                // {
-                //   label: "Initial Amount",
-                //   type: "number",
-                //   name: "kiwango",
-                //   value: formData.kiwango === 0 ? "" : formData.kiwango,
-                //   onChange: handleChange,
-                // },
-                {
-                  group: true,
-                  fields: [
-                    {
-                      label: "Number of SHARES",
-                      type: "number",
-                      name: "nambaZaHisa",
-                      value:
-                        formData.nambaZaHisa === 0 ? "" : formData.nambaZaHisa,
-                      onChange: handleChange,
-                    },
-                    {
-                      label: "Amount per SHARE",
-                      type: "number",
-                      name: "kiasiChaHisa",
-                      value:
-                        formData.kiasiChaHisa === 0
-                          ? ""
-                          : formData.kiasiChaHisa,
-                      onChange: handleChange,
-                    },
-                    {
-                      label: "Loan Interest",
-                      type: "number",
-                      name: "interestOnLoans",
-                      value:
-                        formData.interestOnLoans === 0
-                          ? ""
-                          : formData.interestOnLoans,
-                      placeholder: "%",
-                      onChange: handleChange,
-                    },
-                  ],
-                  label: "",
-                  type: "",
-                },
-                {
-                  label: "",
-                  type: "",
-                  group: true,
-                  fields: [
-                    {
-                      label: "Profile Image",
-                      type: "file",
-                      name: "daoImageIpfsHash",
-                      onChange: (e) =>
-                        handleFileChange(
-                          e as React.ChangeEvent<HTMLInputElement>
-                        ),
-                    },
-                    {
-                      label: "Upload Registration Documents",
-                      type: "file",
-                      name: "daoRegDocs",
-                      onChange: (e) =>
-                        handleFileChange(
-                          e as React.ChangeEvent<HTMLInputElement>
-                        ),
-                    },
-                  ],
-                },
-              ]}
-            />
-            <center>
-              <button
-                disabled={isSubmitting}
-                className={`createDao ${isSubmitting ? "loading" : ""}`}
-                onClick={handleCreateDaoOnchain}
-              >
-                Save On-Chain
-              </button>
-            </center>
-          </div>
+          <Step2Form
+            formData={formData}
+            handleChange={handleChange}
+            handleFileChange={handleFileChange}
+            onSubmit={handleCreateDaoOnchain}
+            isSubmitting={isSubmitting}
+          />
         );
       case 3:
         return (
-          <div className="step step3">
-            <MemberForm
-              currentMember={currentMember}
-              onMemberChange={handleMemberChange}
-              onAddMember={handleAddMember}
-            />
-            <center>
-              <button
-                disabled={isSubmitting}
-                className={`createDao ${isSubmitting ? "loading" : ""}`}
-                type="button"
-                // onClick={handleMemberSubmit}
-              >
-                Create Account
-              </button>
-            </center>
-          </div>
+          <Step3Members
+            currentMember={currentMember}
+            onMemberChange={handleMemberChange}
+            onAddMember={handleAddMember}
+            onSubmit={handleMemberSubmit}
+            isSubmitting={isSubmitting}
+          />
         );
       default:
         return null;
     }
   };
 
-  const LoadingPopup = () => (
-    <div className="loading-popup">
-      <div className="loading-content">
-        <p>Creating DAO on-chain...</p>
-        <div className="spinner-and-cancel">
-          <div className="spinner" />
-          <button onClick={handleCancel} className="cancel-button">
-            Cancel
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-
   return (
     <div className="fullheight">
       <NavBar className={"DaoRegister"} />
-      {isSubmitting && <LoadingPopup />}
+      {isSubmitting && <LoadingPopup onCancel={handleCancel} />}
       {address ? (
         <main className="daoRegistration">
           <div className="funguaKikundi">

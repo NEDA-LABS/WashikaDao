@@ -1,15 +1,57 @@
-// MikopoInteractive.tsx
 import { useState, useMemo } from "react";
+import { useDispatch } from "react-redux";
+import { addNotification } from "../../redux/notifications/notificationSlice";
 import Cards, { CardType } from "./Cards";
 
-// initial dummy data with loan status
 const initialCardData: CardType[] = [
-  { id: 1, image: "/images/Image.png", name: "Jina la mwanachama A", date: "10/02/2024", amount: 340000, status: "pending" },
-  { id: 2, image: "/images/Image.png", name: "Jina la mwanachama B", date: "11/02/2024", amount: 150000, status: "approved" },
-  { id: 3, image: "/images/Image.png", name: "Jina la mwanachama C", date: "12/02/2024", amount: 500000, status: "denied" },
-  { id: 4, image: "/images/Image.png", name: "Jina la mwanachama D", date: "13/02/2024", amount: 250000, status: "pending" },
-  { id: 5, image: "/images/Image.png", name: "Jina la mwanachama E", date: "14/02/2024", amount: 420000, status: "approved" },
-  { id: 6, image: "/images/Image.png", name: "Jina la mwanachama F", date: "15/02/2024", amount: 310000, status: "denied" },
+  {
+    id: 1,
+    image: "/images/Image.png",
+    name: "Member A",
+    date: "2024-02-10",
+    amount: 340000,
+    status: "pending",
+  },
+  {
+    id: 2,
+    image: "/images/Image.png",
+    name: "Member B",
+    date: "2024-02-11",
+    amount: 150000,
+    status: "approved",
+  },
+  {
+    id: 3,
+    image: "/images/Image.png",
+    name: "Member C",
+    date: "2024-02-12",
+    amount: 500000,
+    status: "denied",
+  },
+  {
+    id: 4,
+    image: "/images/Image.png",
+    name: "Member D",
+    date: "2024-02-13",
+    amount: 250000,
+    status: "paid",
+  },
+  {
+    id: 5,
+    image: "/images/Image.png",
+    name: "Member E",
+    date: "2024-02-14",
+    amount: 420000,
+    status: "approved",
+  },
+  {
+    id: 6,
+    image: "/images/Image.png",
+    name: "Member F",
+    date: "2024-02-15",
+    amount: 310000,
+    status: "pending",
+  },
 ];
 
 // derive the maximum amount for slider
@@ -19,11 +61,13 @@ const statusOptions = [
   { key: "pending", label: "Pending", desc: "Awaiting approval" },
   { key: "approved", label: "Approved", desc: "Loans approved" },
   { key: "denied", label: "Denied", desc: "Loans denied" },
+  { key: "paid", label: "Paid", desc: "Loans fully paid back" },
 ];
 
 type SortOption = "new" | "owed" | "paid" | "fee";
 
 export default function Mikopo() {
+  const dispatch = useDispatch();
   const [cards, setCards] = useState<CardType[]>(initialCardData);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
@@ -33,55 +77,92 @@ export default function Mikopo() {
   // toggle status filter
   const toggleStatus = (status: string) => {
     setStatusFilters((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+      prev.includes(status)
+        ? prev.filter((s) => s !== status)
+        : [...prev, status]
     );
   };
 
   // Filter & sort logic
   const displayedCards = useMemo(() => {
-    const keywords = searchTerm.trim().split(/\s+/).filter(Boolean);
+    // 1) Keyword filter
+    let filtered = cards.filter((c) => {
+      const keywords = searchTerm.trim().toLowerCase().split(/\s+/);
+      return keywords.every((kw) =>
+        [c.name, c.date, c.amount.toString()].some((field) =>
+          field.toLowerCase().includes(kw)
+        )
+      );
+    });
 
-    // keyword filter
-    const byKeyword = cards.filter((c) =>
-      keywords.every((kw) =>
-        c.name.toLowerCase().includes(kw.toLowerCase()) ||
-        c.date.toLowerCase().includes(kw.toLowerCase()) ||
-        c.amount.toString().includes(kw)
-      )
-    );
+    // 2) Status filter
+    if (statusFilters.length > 0) {
+      filtered = filtered.filter((c) => statusFilters.includes(c.status));
+    }
 
-    // status filter
-    const byStatus =
-      statusFilters.length > 0
-        ? byKeyword.filter((c) => statusFilters.includes(c.status))
-        : byKeyword;
+    // 3) Amount filter
+    filtered = filtered.filter((c) => c.amount <= maxAmount);
 
-    // amount filter
-    const byAmount = byStatus.filter((c) => c.amount <= maxAmount);
-
-    // sort
-    const sorted = [...byAmount];
+    // 4) Sort / special filters
     switch (sortOption) {
       case "new":
-        sorted.sort((a, b) => b.id - a.id);
+        // newest first
+        filtered.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
         break;
+
       case "owed":
-        // treat amount > 300k as 'owed'
-        return sorted.filter((c) => c.amount > 300000);
+        // only outstanding (approved) loans
+        filtered = filtered.filter((c) => c.status === "approved");
+        break;
+
       case "paid":
-        return sorted.filter((c) => c.amount <= 300000);
+        // only fully paid‑back loans
+        filtered = filtered.filter((c) => c.status === "paid");
+        break;
+
       case "fee":
-        sorted.sort((a, b) => a.amount - b.amount);
+        // lowest amount first
+        filtered.sort((a, b) => a.amount - b.amount);
         break;
     }
-    return sorted;
+
+    return filtered;
   }, [cards, searchTerm, statusFilters, maxAmount, sortOption]);
 
   const handleApprove = (id: number) => {
-    setCards((prev) => prev.filter((c) => c.id !== id));
+    setCards((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
+    );
+    const approved = cards.find((c) => c.id === id);
+    if (approved) {
+      dispatch(
+        addNotification({
+          id: crypto.randomUUID(),
+          type: "success",
+          message: `Loan approved for ${approved.name}`,
+          section: "mikopo",
+        })
+      );
+    }
   };
+
   const handleDeny = (id: number) => {
-    setCards((prev) => prev.filter((c) => c.id !== id));
+    setCards((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, status: "denied" } : c))
+    );
+    const denied = cards.find((c) => c.id === id);
+    if (denied) {
+      dispatch(
+        addNotification({
+          id: crypto.randomUUID(),
+          type: "error",
+          message: `Loan denied for ${denied.name}`,
+          section: "mikopo",
+        })
+      );
+    }
   };
 
   return (
@@ -94,17 +175,32 @@ export default function Mikopo() {
             <ul>
               {searchTerm && (
                 <li>
-                  Jina <img src="/images/X.png" alt="clear name" onClick={() => setSearchTerm("")} />
+                  Name{" "}
+                  <img
+                    src="/images/X.png"
+                    alt="clear name"
+                    onClick={() => setSearchTerm("")}
+                  />
                 </li>
               )}
               {maxAmount < initialMaxAmount && (
                 <li>
-                  Kiasi <img src="/images/X.png" alt="clear amount" onClick={() => setMaxAmount(initialMaxAmount)} />
+                  Amount{" "}
+                  <img
+                    src="/images/X.png"
+                    alt="clear amount"
+                    onClick={() => setMaxAmount(initialMaxAmount)}
+                  />
                 </li>
               )}
               {sortOption === "fee" && (
                 <li>
-                  Ada <img src="/images/X.png" alt="clear fee" onClick={() => setSortOption("new")} />
+                  Lowest Amount{" "}
+                  <img
+                    src="/images/X.png"
+                    alt="clear fee"
+                    onClick={() => setSortOption("new")}
+                  />
                 </li>
               )}
               {statusFilters.map((status) => {
@@ -171,26 +267,37 @@ export default function Mikopo() {
               className={`sort ${sortOption === "new" ? "active" : ""}`}
               onClick={() => setSortOption("new")}
             >
-              <img src="/images/Check.png" alt="" />
-              Mikopo Mipya
+              {sortOption === "new" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              New Loans
             </div>
             <div
               className={`sort ${sortOption === "owed" ? "active" : ""}`}
               onClick={() => setSortOption("owed")}
             >
-              Mikopo inayo daiwa
+              {sortOption === "owed" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              Outstanding Loans
             </div>
             <div
               className={`sort ${sortOption === "paid" ? "active" : ""}`}
               onClick={() => setSortOption("paid")}
             >
-              Mikopo iliyo lipwa
+              {sortOption === "paid" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              Paid Loans
             </div>
             <div
               className={`sort ${sortOption === "fee" ? "active" : ""}`}
               onClick={() => setSortOption("fee")}
             >
-              Ada
+              {sortOption === "fee" && (
+                <img src="/images/Check.png" alt="selected" />
+              )}
+              Lowest Amount
             </div>
           </div>
 

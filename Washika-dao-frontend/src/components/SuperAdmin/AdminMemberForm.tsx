@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { addNotification } from "../../redux/notifications/notificationSlice";
 import { useParams } from "react-router-dom";
 import { useActiveAccount } from "thirdweb/react";
 import {
@@ -23,6 +25,7 @@ export function AdminMemberForm({ setActiveSection, prevSection }: AdminMemberFo
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
   const activeAccount = useActiveAccount();
   const address = activeAccount?.address;
+  const dispatch = useDispatch();
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -58,10 +61,26 @@ export function AdminMemberForm({ setActiveSection, prevSection }: AdminMemberFo
       if (response.ok) {
         console.log(`Success: ${result.message}`);
         setActiveSection(prevSection);
+        dispatch(
+          addNotification({
+            id: crypto.randomUUID(),
+            type: "success",
+            message: `Invited member ${firstName} ${lastName}`,
+            section: "wanachama",
+          })
+        );
         // Re-fetch DAO details to update Memberount and WanachamaList
         // fetchDaoDetails();
       } else {
         console.error(`Error: ${result.error}`);
+        dispatch(
+          addNotification({
+            id: crypto.randomUUID(),
+            type: "error",
+            message: "`Failed to invite member ${firstName} ${lastName}`",
+            section: "wanachama",
+          })
+        );
       }
     } catch (error) {
       console.error("Submission failed:", error);
