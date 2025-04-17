@@ -27,7 +27,6 @@ contract WashikaDao {
 
     struct ProposalDetails {
         address proposalOwner;
-        address daoAddress; // Address of the Dao that contains the Proposal
         bytes32 proposalId; // Identifier for the Proposal
         bytes32 daoId;
         string proposalUrl;
@@ -52,32 +51,22 @@ contract WashikaDao {
     mapping(address daoCreator => address daoAddress) OwnerToDao; // Owner to Dao Address
     mapping(address daoCreator => bytes32[] daoId) CreatorToDaoIds;
     mapping(bytes32 daoId => address daoCreator) DaoIdToCreator;
-    mapping(address daoAddress => address daoMultiSig) DaosToMultiSig; // Daos and their MultiSigs
-    mapping(address daoAddress => bytes32 daoId) DaoAddressToId;
     mapping(bytes32 daoId => address daoMultiSig) DaosByIdToMultiSig;
     mapping(address daoMultiSig => bytes32 daoId) MultiSigToDaoId;
     mapping(bytes32 daoId => address[] memberAddress) DaoIdToMember;
-    mapping(bytes32 daoId => string memberEmail) DaoIdToEmail; //Dao id to email of member
-    mapping(bytes32 daoId => address daoAddress) DaoIdToAddress;
-    mapping(address daoMember => address daoAddress) MemberToDao; //member to Dao they are members of
-    mapping(address daoAddress => bytes32 proposalId) DaosToProposalId; // Daos and their proposal Ids
-    mapping(bytes32 proposalId => address daoAddress) ProposalIdToDaoAddr;
+    mapping(bytes32 daoId => string memberEmail) DaoIdToEmail; //Dao id to email of member //member to Dao they are members of // Daos and their proposal Ids
     mapping(bytes32 proposalId => bytes32 daoId) ProposalIdToDaoId;
     mapping(string proposalTitle => bytes32 proposalId) ProposalTitleToId;
     mapping(bytes32 proposalId => address proposalOwner) ProposalIdToOwnerAddress;
     mapping(bytes32 daoId => bytes32 proposalId) DaoIdToProposalId;
-    mapping(address daoAddress => mapping(address proposalOwner => bytes32 proposalId)) DaosToProposalOwnersToProposalId;
+    mapping(bytes32 daoId => mapping(address proposalOwner => bytes32 proposalId)) DaosToProposalOwnersToProposalId;//
     mapping(address voterAddress => mapping(address daoAddress => bytes32 proposalId)) VoterToDaoToProposalId;
     mapping(address userAddress => mapping(bytes32 proposalId => bool voted)) public hasVoted; //  member address => proposal ID => has voted?
     mapping(address => mapping(bytes32 => bytes32)) public UserAddressToProposalIdToVoteId;
-    mapping(address daoAddress => MemberDetails[] members) private DaosToMembers;
-    mapping(address daoAddress => ProposalDetails[]) private DaoProposals;
-    mapping(address daoAddress => VoteDetails[]) private DaoVotes;
-
+    mapping(bytes32 daoId => MemberDetails[] members) private DaosToMembers;
+    mapping(bytes32 daoId => ProposalDetails[]) private DaoProposals;
+    mapping(bytes32 daoId => VoteDetails[]) private DaoVotes;
     mapping(bytes32 => mapping(address => bool)) public isMember;
-
-    mapping(address userAddress => bool isWhiteList) WhiteListTracker;
-    mapping(address userAddress => bool isBlackList) BlackListTracker;
 
     address contractOwner;
 
@@ -87,14 +76,11 @@ contract WashikaDao {
     // Events
 
     event DAOCREATED(bytes32 indexed daoId, address indexed daoCreator, string daoName);
-    event PROPOSALCREATED(address indexed daoAddress, address indexed proposalCreator, bytes32 proposalId);
-    event UPVOTED(address indexed voterAddress, address indexed daoAddress, bytes32 proposalId, bytes32 voteId);
-    event DOWNVOTED(address indexed voterAddress, address indexed daoAddress, bytes32 proposalId, bytes32 voteId);
+    event PROPOSALCREATED(bytes32 indexed daoId, address indexed proposalCreator, bytes32 proposalId);
+    event UPVOTED(address indexed voterAddress, bytes32 indexed daoId, bytes32 proposalId, bytes32 voteId);
+    event DOWNVOTED(address indexed voterAddress, bytes32 indexed daoId, bytes32 proposalId, bytes32 voteId);
     event MEMBERADDED(bytes32 indexed daoId, address indexed userAddress);
-    event WHITELISTED(address indexed daoAddress, address indexed whiteListedAddress);
-    event BLACKLISTED(address indexed daoAddress, address indexed blackListedAddress);
     event DAOMSIGSET(bytes32 indexed daoId, address indexed daoMultiSig);
-    event DAOADDRSET(address indexed daoCreator, address indexed daoAddress, bytes32 daoId);
 
     uint256 private _saltNum = 254;
     //TODO: Add MATHEMATICAL FUNCTION TO USE Z TO INCREASE RANDOMNESS
@@ -147,18 +133,6 @@ contract WashikaDao {
         return platformDaoList;
     }
 
-    function getDaoAddressByDaoId(bytes32 _daoId) public view returns (address) {
-        require(_isDaoIdValid(_daoId), "InvalidDaoId");
-        address daoAddress = DaoIdToAddress[_daoId];
-        return daoAddress;
-    }
-
-    function getDaoIdByDaoAddress(address _daoAddress) public view returns (bytes32) {
-        bytes32 __daoId = DaoAddressToId[_daoAddress];
-        require(_isDaoIdValid(__daoId), "InvalidDaoIdLocated");
-        return __daoId;
-    }
-
     function getDaoCreatorByDaoId(bytes32 _daoId) public view returns (address) {
         require(_isDaoIdValid(_daoId), "InvalidDaoId");
         address __creatorAddress = DaoIdToCreator[_daoId];
@@ -169,15 +143,6 @@ contract WashikaDao {
         bytes32[] storage daoIds = CreatorToDaoIds[_creator];
         require(daoIds.length > 0, "No DAOsfoundforthiscreator");
         return daoIds[daoIds.length - 1];
-    }
-
-    function setDaoAddress(address _daoAddress, bytes32 _daoId) public {
-        require(_daoAddress != address(0), "ZeroAddressNotAllowed");
-        require(isDaoCreator(msg.sender, _daoId) == true, "OnlyCreator");
-        require(_isDaoIdValid(_daoId), "InvalidDaoId");
-        DaoAddressToId[_daoAddress] = _daoId;
-        DaoIdToAddress[_daoId] = _daoAddress;
-        emit DAOADDRSET(msg.sender, _daoAddress, _daoId);
     }
 
     function setDaoMultiSigById(address _daoMultiSig, bytes32 _daoId) public {
@@ -218,19 +183,15 @@ contract WashikaDao {
         memberDetails.push(newMember); //Tracking members and Daos
         DaoIdToMember[_daoId].push(_memberAddress);
         isMember[_daoId][_memberAddress] = true;
-
         DaoIdToEmail[_daoId] = _memberEmail;
-
-        address daoAddress = DaoIdToAddress[_daoId];
-        DaosToMembers[daoAddress].push(newMember); // Add member to the DAO's member list
+        DaosToMembers[_daoId].push(newMember); // Add member to the DAO's member list
 
         emit MEMBERADDED(_daoId, _memberAddress);
     }
 
     function getDaoMembers(bytes32 _daoId) public view returns (MemberDetails[] memory) {
         require(_isDaoIdValid(_daoId), "InvalidDaoId");
-        address daoAddress = DaoIdToAddress[_daoId];
-        return DaosToMembers[daoAddress];
+        return DaosToMembers[_daoId];
     }
 
     function getMemberDetails(string memory _memberEmail) public view returns (MemberDetails[] memory) {
@@ -259,15 +220,12 @@ contract WashikaDao {
     }
 
     function createProposal(string memory _proposalUrl, string memory _proposalTitle, bytes32 _daoId) public {
-        //Search for Dao Address and set it
-        address _daoAddress = DaoIdToAddress[_daoId];
         require(isDaoCreator(msg.sender, _daoId) == true || isYMemberOfDaoX(_daoId, msg.sender), "OnlyMemberOrCreator");
         bytes32 _proposalId = _generateRandomIds();
         string memory _proposalStatus = "ACTIVE";
         //caller is the proposalOwner, set them here
         ProposalDetails memory newProposal = ProposalDetails({
             proposalOwner: msg.sender,
-            daoAddress: _daoAddress,
             proposalUrl: _proposalUrl,
             proposalId: _proposalId,
             proposalTitle: _proposalTitle,
@@ -276,20 +234,20 @@ contract WashikaDao {
             proposalCreatedAt: block.timestamp
         });
         platformProposalList.push(newProposal);
-        DaoProposals[_daoAddress].push(newProposal);
+        DaoProposals[_daoId].push(newProposal);
         //Update some proposal mappings
-        DaosToProposalId[_daoAddress] = _proposalId;
+        DaoIdToProposalId[_daoId] = _proposalId;
         ProposalIdToDaoId[_proposalId] = _daoId;
-        ProposalIdToDaoAddr[_proposalId] = _daoAddress;
-        DaosToProposalOwnersToProposalId[_daoAddress][msg.sender] = _proposalId;
+        ProposalIdToDaoId[_proposalId] = _daoId;
+        DaosToProposalOwnersToProposalId[_daoId][msg.sender] = _proposalId;
         ProposalTitleToId[_proposalTitle] = _proposalId;
         ProposalIdToOwnerAddress[_proposalId] = msg.sender;
-        emit PROPOSALCREATED(_daoAddress, msg.sender, _proposalId);
+        emit PROPOSALCREATED(_daoId, msg.sender, _proposalId);
     }
 
     function getProposals(bytes32 _daoId) external view returns (ProposalDetails[] memory) {
         require(_isDaoIdValid(_daoId), "InvalidDaoId");
-        return DaoProposals[DaoIdToAddress[_daoId]];
+        return DaoProposals[_daoId];
     }
 
     function getProposalXById(bytes32 _proposalId) public view returns (ProposalDetails memory) {
@@ -324,18 +282,6 @@ contract WashikaDao {
         }
     }
 
-    function doesProposalTitleXExistInDaoAddressY(string memory _proposalTitle, address _daoAddress)
-        public
-        view
-        returns (bool)
-    {
-        bytes32 __proposalId = getProposalIdByTitle(_proposalTitle);
-        if (ProposalIdToDaoAddr[__proposalId] == _daoAddress) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     function getProposalOwnerById(bytes32 _proposalId) public view returns (address) {
         address __proposalOwner = ProposalIdToOwnerAddress[_proposalId];
         return __proposalOwner;
@@ -359,10 +305,10 @@ contract WashikaDao {
             voteType: true
         });
         voteDetails.push(newVote);
-        DaoVotes[ProposalIdToDaoAddr[_proposalId]].push(newVote);
+        DaoVotes[ProposalIdToDaoId[_proposalId]].push(newVote);
         hasVoted[msg.sender][_proposalId] = true; // Update the mapping
         UserAddressToProposalIdToVoteId[msg.sender][_proposalId] = voteId; // Store the voteId
-        emit UPVOTED(msg.sender, ProposalIdToDaoAddr[_proposalId], _proposalId, voteId);
+        emit UPVOTED(msg.sender, ProposalIdToDaoId[_proposalId], _proposalId, voteId);
     }
 
     function downVote(bytes32 _proposalId, bytes32 _daoId) public {
@@ -377,15 +323,15 @@ contract WashikaDao {
             voteType: false
         });
         voteDetails.push(newVote);
-        DaoVotes[ProposalIdToDaoAddr[_proposalId]].push(newVote);
+        DaoVotes[ProposalIdToDaoId[_proposalId]].push(newVote);
         hasVoted[msg.sender][_proposalId] = true; // Update the mapping
         UserAddressToProposalIdToVoteId[msg.sender][_proposalId] = voteId; // Store the voteId
-        emit DOWNVOTED(msg.sender, ProposalIdToDaoAddr[_proposalId], _proposalId, voteId);
+        emit DOWNVOTED(msg.sender, ProposalIdToDaoId[_proposalId], _proposalId, voteId);
     }
 
     function getUpVotes(bytes32 _proposalId) public view returns (uint256) {
         uint256 upVotes = 0;
-        VoteDetails[] memory votes = DaoVotes[ProposalIdToDaoAddr[_proposalId]];
+        VoteDetails[] memory votes = DaoVotes[ProposalIdToDaoId[_proposalId]];
         for (uint256 i = 0; i < votes.length; i++) {
             if (votes[i].voteType) {
                 upVotes++;
@@ -396,7 +342,7 @@ contract WashikaDao {
 
     function getDownVotes(bytes32 _proposalId) public view returns (uint256) {
         uint256 downVotes = 0;
-        VoteDetails[] memory votes = DaoVotes[ProposalIdToDaoAddr[_proposalId]];
+        VoteDetails[] memory votes = DaoVotes[ProposalIdToDaoId[_proposalId]];
         for (uint256 i = 0; i < votes.length; i++) {
             if (!votes[i].voteType) {
                 downVotes++;
@@ -423,7 +369,7 @@ contract WashikaDao {
         for (uint256 i = 0; i < platformProposalList.length; i++) {
             if (platformProposalList[i].proposalId == _proposalId) {
                 platformProposalList[i].proposalStatus = _newStatus;
-                DaoProposals[ProposalIdToDaoAddr[_proposalId]][i].proposalStatus = _newStatus; // Update in the DAO-specific mapping as well
+                DaoProposals[ProposalIdToDaoId[_proposalId]][i].proposalStatus = _newStatus; // Update in the DAO-specific mapping as well
                 break;
             }
         }
@@ -468,9 +414,8 @@ contract WashikaDao {
         }
     }
 
-    function isDaoMember(address _member, bytes32 _proposalId) internal view returns (bool) {
-        address daoAddress = ProposalIdToDaoAddr[_proposalId];
-        MemberDetails[] memory members = DaosToMembers[daoAddress];
+    function isDaoMember(address _member, bytes32 _daoId) internal view returns (bool) {
+        MemberDetails[] memory members = DaosToMembers[_daoId];
         for (uint256 i = 0; i < members.length; i++) {
             if (members[i].memberAddress == _member) {
                 return true;
