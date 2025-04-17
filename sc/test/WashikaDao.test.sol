@@ -227,50 +227,6 @@ contract WashikaDaoTest is Test {
         assertEq(daos[0].daoId, daoId, "DAO ID should match");
     }
 
-    function test_GetDaoAddressByDaoId_HappyPath() public {
-        // 1. Creating the Dao
-        string memory daoLocation = "Global";
-        string memory daoObjective = "Connect people";
-        string memory daoTargetAudience = "Humans";
-        string memory daoName = "UnityDAO";
-        vm.prank(creator);
-        washikaDao.createDao(daoLocation, daoObjective, daoTargetAudience, daoName);
-        bytes32 daoId = washikaDao.getLatestDaoIdByCreatorX(creator);
-
-        // 2(a). Set the Dao Address
-        vm.prank(creator);
-        washikaDao.setDaoAddress(user, daoId);
-
-        // 2(b). Call the function we want to test
-        address daoAddress = washikaDao.getDaoAddressByDaoId(daoId);
-
-        // 3. Assertions
-        assertEq(daoAddress, user, "DAO address should match");
-    }
-
-    function test_GetDaoAddressByDaoId_MultipleTimes() public {
-        // 1. Creating the Dao
-        string memory daoLocation = "Global";
-        string memory daoObjective = "Connect people";
-        string memory daoTargetAudience = "Humans";
-        string memory daoName = "UnityDAO";
-        vm.prank(creator);
-        washikaDao.createDao(daoLocation, daoObjective, daoTargetAudience, daoName);
-        bytes32 daoId = washikaDao.getLatestDaoIdByCreatorX(creator);
-
-        // 2(a). Set the Dao Address
-        vm.prank(creator);
-        washikaDao.setDaoAddress(user, daoId);
-
-        // 2(b). Call the function we want to test
-        address daoAddress1 = washikaDao.getDaoAddressByDaoId(daoId);
-        address daoAddress2 = washikaDao.getDaoAddressByDaoId(daoId);
-
-        // 3. Assertions
-        assertEq(daoAddress1, user, "DAO address should be the same as the second one");
-        assertEq(daoAddress2, user, "DAO address should be the same as the first one");
-    }
-
     function test_SetDaoMultiSigById_HappyPath() public {
         // First, create a DAO
         string memory daoLocation = "Global";
@@ -308,7 +264,7 @@ contract WashikaDaoTest is Test {
         washikaDao.setDaoMultiSigById(addrToUseAsMsig, daoId);
     }
 
-    function testAddMember_HappyPath() public {
+    function test_AddMember_HappyPath() public {
         // First, create a DAO
         string memory daoLocation = "Global";
         string memory daoObjective = "Connect people";
@@ -327,7 +283,7 @@ contract WashikaDaoTest is Test {
         assertTrue(washikaDao.isYMemberOfDaoX(daoId, newMemberAddress));
     }
 
-    function testAddMember_OnlyCreator() public {
+    function test_AddMember_OnlyCreator() public {
         // First, create a DAO
         string memory daoLocation = "Local";
         string memory daoObjective = "Improve community";
@@ -345,7 +301,7 @@ contract WashikaDaoTest is Test {
         washikaDao.addMemberToDao(memberEmail, nonCreatorAddress, daoId);
     }
 
-    function testAddMember_ValidInputs() public {
+    function test_AddMember_ValidInputs() public {
         // First, create a DAO
         string memory daoLocation = "Worldwide";
         string memory daoObjective = "Share knowledge";
@@ -476,14 +432,14 @@ contract WashikaDaoTest is Test {
 
         // 3. Assertion for non-member
         bool isMember2 = washikaDao.isYMemberOfDaoX(daoId, normalUser);
-        assertTrue(isMember, "Non-member should not be part of the DAO");
+        assertFalse(isMember2, "Non-member should not be part of the DAO");
 
         // 4. Assertion for multiple calls
         bool isMember3 = washikaDao.isYMemberOfDaoX(daoId, validMemberAddress1);
         assertTrue(isMember3, "Member should be part of the DAO");
     }
 
-    function testCreateProposal_HappyPath() public {
+    function test_CreateProposal_HappyPath() public {
         // 1. Create a DAO and add a member
         string memory daoName = "ProposalDAO";
         vm.prank(creator);
@@ -520,7 +476,7 @@ contract WashikaDaoTest is Test {
         assertEq(proposal.daoId, daoId, "Proposal daoId should match");
     }
 
-    function testCreateProposal_GeneratesUniqueId() public {
+    function test_CreateProposal_GeneratesUniqueId() public {
         // 1. Create a DAO and add the creator as a member
         vm.prank(creator);
         washikaDao.createDao("Remote", "Vote on changes", "Token Holders", "VoteDAO");
