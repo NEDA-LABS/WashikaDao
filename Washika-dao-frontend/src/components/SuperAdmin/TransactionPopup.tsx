@@ -1,7 +1,7 @@
 // components/SuperAdmin/TransactionPopup.tsx
 import { useEffect, useState } from "react";
 import { DaoDetails } from "./WanachamaList";
-import { fetchEthToUsdRate } from "../../utils/priceUtils";
+import { fetchCeloToUsdRate } from "../../utils/priceUtils";
 
 interface TransactionPopupProps {
   daoDetails?: DaoDetails;
@@ -25,41 +25,38 @@ export default function TransactionPopup({
     if (!daoDetails?.daoMultiSigAddr) return;
     (async () => {
       const address = daoDetails.daoMultiSigAddr;
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      //@ts-ignore
-      const apiKey = import.meta.env.VITE_ARBISCAN_API_KEY;
-      const url = `https://api-sepolia.arbiscan.io/api
-        ?module=account
+      const BLOCKSCOUT_API = "https://celo-alfajores.blockscout.com/api";
+
+      const url = `${BLOCKSCOUT_API}?module=account
         &action=txlist
         &address=${address}
         &startblock=0
         &endblock=99999999
         &page=1
         &offset=8
-        &sort=desc
-        &apikey=${apiKey}`.replace(/\s+/g, "");
+        &sort=desc`.replace(/\s+/g, "");
 
       const [rateRes, txRes] = await Promise.all([
-        fetchEthToUsdRate(),
+        fetchCeloToUsdRate(),
         fetch(url).then((r) => r.json()),
       ]);
 
-      if (txRes.status !== "1") {
+      if (txRes.status !== "1" || !txRes.result) {
         setEntries([]);
         return;
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const parsed: TreasuryEntry[] = (txRes.result as any[]).map((tx) => {
-        const eth = Number(tx.value) / 1e18;
-        const usd = eth * rateRes;
+      const parsed: TreasuryEntry[] = txRes.result.map((tx: any) => {
+        const celo = Number(tx.value) / 1e18;
+        const usd = celo * rateRes;
         const isOut = tx.from.toLowerCase() === address.toLowerCase();
 
         return {
           hash: tx.hash,
           type: isOut ? "Withdraw" : "Deposit",
           date: new Date(Number(tx.timeStamp) * 1000).toLocaleDateString(),
-          amount: `${isOut ? "-" : ""}${eth.toFixed(4)} ETH`,
+          amount: `${isOut ? "-" : ""}${celo.toFixed(4)} CELO`,
           value: `$${usd.toFixed(2)}`,
           icon: isOut ? "/images/withdrawIcon.png" : "/images/deposit.png",
         };
@@ -83,7 +80,7 @@ export default function TransactionPopup({
       <h1>Full Statement</h1>
       <div id="treasury-history">
         {entries.map((entry) => {
-          const txUrl = `https://sepolia.arbiscan.io/tx/${entry.hash}`;
+          const txUrl = `https://explorer.celo.org/alfajores/tx/${entry.hash}`;
           return (
             <a
               key={entry.hash}

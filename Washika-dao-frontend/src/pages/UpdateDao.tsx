@@ -19,7 +19,6 @@ interface FormData {
   daoLocation: string;
   targetAudience: string;
   daoTitle: string;
-  daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
   daoRegDocs: string;
@@ -99,7 +98,6 @@ const UpdateDao: React.FC = () => {
     daoLocation: "",
     targetAudience: "",
     daoTitle: "",
-    daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
     daoRegDocs: "",
@@ -116,8 +114,9 @@ const UpdateDao: React.FC = () => {
     let stepsCompleted = 0;
 
     if (memberAddr) stepsCompleted++;
-    if (formData.daoName) stepsCompleted++;
     if (formData.daoTitle) stepsCompleted++;
+    if (formData.daoOverview) stepsCompleted++;
+    if (formData.interestOnLoans) stepsCompleted++;
     if (formData.daoImageIpfsHash) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
@@ -316,13 +315,6 @@ const UpdateDao: React.FC = () => {
                   type: "text",
                   name: "daoTitle",
                   value: formData.daoTitle,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Short description",
-                  type: "textarea",
-                  name: "daoDescription",
-                  value: formData.daoDescription,
                   onChange: handleChange,
                 },
                 {

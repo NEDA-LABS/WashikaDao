@@ -17,7 +17,6 @@ export const useProposalTransaction = (proposalData: any) => {
    * @returns The prepared transaction object, or null if no active account is found.
    */
   const prepareCreateProposalTx = (
-    _daoMultiSigAddr: string
   ): PreparedTransaction | null => {
     if (!currActiveAcc) {
       console.error("Fatal Error, No Active Account found");
@@ -27,14 +26,9 @@ export const useProposalTransaction = (proposalData: any) => {
       console.log("Preparing Proposal Creation Transaction");
       const _createProposaltx = prepareContractCall({
         contract: FullDaoContract,
-        method: "addProposal",
-        params: [
-          _daoMultiSigAddr,
-          proposalData.proposalTitle,
-          proposalData.proposalSummary,
-          proposalData.proposalDescription,
-          BigInt(proposalData.proposalDuration),
-        ],
+        method:
+          "function createProposal(string _proposalUrl, string _proposalTitle, bytes32 _daoId)",
+        params: [proposalData.proposalUrl, proposalData.proposalTitle, proposalData.daoId],
       }) as PreparedTransaction;
       console.log("Proposal Creation transaction prepared", _createProposaltx);
       return _createProposaltx;
@@ -114,7 +108,7 @@ export const useProposalTransaction = (proposalData: any) => {
     }
 
     if (daoMultiSigAddr) {
-      const finalTx = prepareCreateProposalTx(daoMultiSigAddr);
+      const finalTx = prepareCreateProposalTx();
       if (finalTx) {
         const txHash = await sendCreateProposalTx(finalTx);
         console.log("Transaction sent successfully");

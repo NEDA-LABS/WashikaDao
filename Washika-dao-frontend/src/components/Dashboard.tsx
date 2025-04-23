@@ -6,7 +6,7 @@ import {
   MonthBucket,
 } from "../utils/monthlyBalances";
 import { fetchAllTransactions, RawTxn } from "../utils/arbiscan";
-import { fetchEthToUsdRate } from "../utils/priceUtils";
+import { fetchCeloToUsdRate } from "../utils/priceUtils";
 
 interface DashboardProps {
   daoDetails?: DaoDetails;
@@ -33,7 +33,7 @@ const Dashboard: React.FC<DashboardProps> = ({ daoDetails }) => {
       const buckets = await computeMonthlyUsdHistory(
         address,
         allTxns,
-        fetchEthToUsdRate
+        fetchCeloToUsdRate
       );
       setHistory(buckets);
     })();

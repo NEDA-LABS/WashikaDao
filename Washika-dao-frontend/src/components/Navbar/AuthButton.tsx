@@ -1,6 +1,6 @@
 // Import dependencies for blockchain authentication, theming, routing, and state management.
 import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
-import { arbitrumSepolia } from "thirdweb/chains";
+import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
@@ -206,7 +206,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
         <ConnectButton
           client={client} // Thirdweb client instance.
           theme={customTheme} // Custom theme configuration.
-          accountAbstraction={{ chain: arbitrumSepolia, sponsorGas: false }} // Configures account abstraction for Arbitrum Sepolia.
+          accountAbstraction={{ chain: celoAlfajoresTestnet, sponsorGas: false }} // Configures account abstraction for Arbitrum Sepolia.
           wallets={wallets} // Provides authentication options.
         />
       </select>
@@ -222,7 +222,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     <ConnectButton
       client={client} // Thirdweb client instance.
       theme={customTheme} // Custom theme configuration.
-      accountAbstraction={{ chain: arbitrumSepolia, sponsorGas: false }} // Configures account abstraction for Arbitrum Sepolia.
+      accountAbstraction={{ chain: celoAlfajoresTestnet, sponsorGas: false }} // Configures account abstraction for Arbitrum Sepolia.
       wallets={wallets} // Provides authentication options.
     />
   );

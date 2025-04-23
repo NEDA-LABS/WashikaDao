@@ -31,7 +31,7 @@ interface OnChainProposal {
   expirationTime: bigint; // BigNumber from contract
 }
 
-const PAGE_SIZE = 5;
+const PAGE_SIZE = 4;
 
 const ProposalGroups: React.FC = () => {
   const navigate = useNavigate();

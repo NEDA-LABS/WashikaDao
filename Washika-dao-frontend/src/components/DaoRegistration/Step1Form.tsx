@@ -45,7 +45,7 @@ const Step1Form: React.FC<Step1FormProps> = ({
       onChange: handleChange,
     },
     {
-      label: "What is your Savings Group about?",
+      label: "Group Objective",
       type: "textarea",
       name: "daoDescription",
       value: formData.daoDescription,

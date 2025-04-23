@@ -25,9 +25,9 @@ export interface MonthBucket {
 export async function computeMonthlyUsdHistory(
   address: string,
   rawTxns: RawTxn[],
-  fetchEthToUsdRate: () => Promise<number>
+  fetchCeloToUsdRate: () => Promise<number>
 ): Promise<MonthBucket[]> {
-  const ethToUsd = await fetchEthToUsdRate();
+  const celoToUsd = await fetchCeloToUsdRate();
 
   // initialize months 0–11
   const buckets: MonthBucket[] = MONTH_LABELS.map((month) => ({
@@ -39,7 +39,7 @@ export async function computeMonthlyUsdHistory(
   rawTxns.forEach((tx) => {
     const dt = new Date(tx.timestamp * 1000);
     const idx = dt.getMonth();
-    const usd = tx.valueEth * ethToUsd;
+    const usd = tx.valueCelo * celoToUsd;
     if (tx.to.toLowerCase() === address.toLowerCase()) {
       // Incoming funds (e.g. deposits or repayments)
       buckets[idx].deposits += usd;

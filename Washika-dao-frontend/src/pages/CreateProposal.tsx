@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import LoadingPopup from "../components/DaoRegistration/LoadingPopup";
 
-
 // Import layout components for consistent page structure.
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
@@ -34,17 +33,14 @@ const CreateProposal: React.FC = () => {
   // const userDaos = useSelector((state: RootState) => state.userDaos.daos);
   // const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
   // const selectedDao = userDaos.find(
-    // (dao) => dao.daoTxHash === selectedDaoTxHash
+  // (dao) => dao.daoTxHash === selectedDaoTxHash
   // );
   const memberAddr = localStorage.getItem("address");
   const daoMultiSigAddr = memberAddr || "";
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Use the proposal form hook to manage form state and input handlers.
-  const { proposalData, handleChange, handleFileChange } = useProposalForm(
-    memberAddr,
-    daoMultiSigAddr
-  );
+  const { proposalData, handleChange, handleFileChange } = useProposalForm();
 
   // Calculate completed steps for the progress indicator.
   const completedSteps = useProposalProgress(proposalData, daoMultiSigAddr);
@@ -73,7 +69,11 @@ const CreateProposal: React.FC = () => {
       alert("Proposal creation on blockchain failed!");
       return;
     }
-    navigate(`/ViewProposal/${daoMultiSigAddr}/${encodeURIComponent(proposalData.proposalTitle)}`);
+    navigate(
+      `/ViewProposal/${daoMultiSigAddr}/${encodeURIComponent(
+        proposalData.proposalTitle
+      )}`
+    );
   };
 
   const handleCancel = () => {
@@ -84,7 +84,12 @@ const CreateProposal: React.FC = () => {
   return (
     <>
       <NavBar className={"CreateProposal"} />
-      {isSubmitting && <LoadingPopup  message="Creating proposal on‑chain…" onCancel={handleCancel} />}
+      {isSubmitting && (
+        <LoadingPopup
+          message="Creating proposal on‑chain…"
+          onCancel={handleCancel}
+        />
+      )}
       <main className="createProposal">
         <div className="proposalParag">
           <div className="top">
@@ -126,8 +131,9 @@ const CreateProposal: React.FC = () => {
               onChange={handleChange}
             />
           </div>
-
-          <div className="label three">
+ {
+  /*
+  <div className="label three">
             <label>Summary of project</label>
             <textarea
               name="proposalSummary"
@@ -179,6 +185,9 @@ const CreateProposal: React.FC = () => {
               <option value="members">Members</option>
             </select>
           </div>
+  */
+ }
+          
 
           <div className="six">
             <div>

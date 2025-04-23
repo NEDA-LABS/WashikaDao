@@ -5,14 +5,11 @@ export interface RawTxn {
     timestamp: number;    // seconds since epoch
     from: string;
     to: string;
-    valueEth: number;     // in ETH
+    valueCelo: number;     // in ETH
     isInternal: boolean;  // new flag
   }
   
-  const ARBISCAN_BASE = "https://api-sepolia.arbiscan.io/api";
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
-  const API_KEY = import.meta.env.VITE_ARBISCAN_API_KEY;
+  const BLOCKSCOUT_BASE = "https://celo-alfajores.blockscout.com/api";
   
   // 1) Fetch regular (EOA‑initiated) txns
   async function fetchOnChain(
@@ -20,16 +17,15 @@ export interface RawTxn {
     page = 1,
     offset = 100
   ): Promise<RawTxn[]> {
-    const url = `${ARBISCAN_BASE}?module=account
-      &action=txlist
-      &address=${address}
-      &startblock=0
-      &endblock=99999999
-      &page=${page}
-      &offset=${offset}
-      &sort=desc
-      &apikey=${API_KEY}`
-      .replace(/\s+/g, "");
+    const url = `${BLOCKSCOUT_BASE}?module=account
+    &action=txlist
+    &address=${address}
+    &startblock=0
+    &endblock=99999999
+    &page=${page}
+    &offset=${offset}
+    &sort=desc`
+    .replace(/\s+/g, "");
   
     const res = await fetch(url);
     const { status, result } = await res.json();
@@ -41,7 +37,7 @@ export interface RawTxn {
       timestamp: Number(tx.timeStamp),
       from: tx.from,
       to: tx.to,
-      valueEth: Number(tx.value) / 1e18,
+      valueCelo: Number(tx.value) / 1e18,
       isInternal: false,
     }));
   }
@@ -52,16 +48,15 @@ export interface RawTxn {
     page = 1,
     offset = 100
   ): Promise<RawTxn[]> {
-    const url = `${ARBISCAN_BASE}?module=account
-      &action=txlistinternal
-      &address=${address}
-      &startblock=0
-      &endblock=99999999
-      &page=${page}
-      &offset=${offset}
-      &sort=desc
-      &apikey=${API_KEY}`
-      .replace(/\s+/g, "");
+    const url = `${BLOCKSCOUT_BASE}?module=account
+    &action=txlistinternal
+    &address=${address}
+    &startblock=0
+    &endblock=99999999
+    &page=${page}
+    &offset=${offset}
+    &sort=desc`
+    .replace(/\s+/g, "");
   
     const res = await fetch(url);
     const { status, result } = await res.json();
@@ -73,7 +68,7 @@ export interface RawTxn {
       timestamp: Number(tx.timeStamp),
       from: tx.from,
       to: tx.to,
-      valueEth: Number(tx.value) / 1e18,
+      valueCelo: Number(tx.value) / 1e18,
       isInternal: true,
     }));
   }
