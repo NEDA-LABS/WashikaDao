@@ -620,6 +620,10 @@ section.second::after {
     padding: 0 16px;
   }
 
+  .treasury-history {
+    width: 320px;
+  }
+
   .treasury-history h1 {
     margin: 12px;
     font-size: 24px;

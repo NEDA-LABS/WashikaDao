@@ -722,6 +722,11 @@ nav.SuperAdmin {
     flex: 1 1 calc(50% - 8px);
     margin-bottom: 8px;
   }
+
+  .modal-content {
+    max-width: 350px;
+  }
+  
 }
 
 

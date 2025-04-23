@@ -1,6 +1,6 @@
 // src/pages/ViewProposal.tsx
 import React from "react";
-import { useReadContract, useActiveAccount } from "thirdweb/react";
+import { useReadContract } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/Navbar/Navbar";
@@ -15,11 +15,11 @@ interface OnChainProposal {
   expirationTime: string; // BigNumber as a string
 }
 
-interface VoteDetails {
-  voterAddr: string;
-  pOwner: string;
-  voteType: boolean;
-}
+// interface VoteDetails {
+//   voterAddr: string;
+//   pOwner: string;
+//   voteType: boolean;
+// }
 
 const ViewProposal: React.FC = () => {
   const { daoMultiSigAddr = "", proposalTitle = "" } =
@@ -28,7 +28,7 @@ const ViewProposal: React.FC = () => {
       proposalTitle: string;
     }>();
   const navigate = useNavigate();
-  const activeAccount = useActiveAccount();
+  // const activeAccount = useActiveAccount();
 
   // 1) Fetch all proposals for this DAO on‑chain
   const {
@@ -52,27 +52,27 @@ const ViewProposal: React.FC = () => {
     return rawProposals.find((p) => p.pTitle === proposalTitle);
   }, [rawProposals, proposalTitle]);
 
-  // 3) Fetch votes for this proposal owner
-  const {
-    data: rawVotes,
-    isLoading: loadingVotes,
-    error: votesError,
-  } = useReadContract({
-    contract: FullDaoContract,
-    method: "getVotes",
-    params: [proposal?.pOwner || activeAccount?.address || ""],
-  }) as {
-    data?: VoteDetails[];
-    isLoading: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    error?: any;
-  };
+  // // 3) Fetch votes for this proposal owner
+  // const {
+  //   data: rawVotes,
+  //   isLoading: loadingVotes,
+  //   error: votesError,
+  // } = useReadContract({
+  //   contract: FullDaoContract,
+  //   method: "getVotes",
+  //   params: [proposal?.pOwner || activeAccount?.address || ""],
+  // }) as {
+  //   data?: VoteDetails[];
+  //   isLoading: boolean;
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   error?: any;
+  // };
 
-  if (loadingProposals || loadingVotes) {
+  if (loadingProposals ) {
     return <div>Loading on‑chain data…</div>;
   }
-  if (proposalsError || votesError) {
-    console.error(proposalsError || votesError);
+  if (proposalsError ) {
+    console.error(proposalsError );
     return <div>Error loading on‑chain proposal.</div>;
   }
   if (!proposal) {
@@ -80,8 +80,8 @@ const ViewProposal: React.FC = () => {
   }
 
   // Tally up/down votes
-  const upVotes = rawVotes?.filter((v) => v.voteType).length || 0;
-  const downVotes = rawVotes?.filter((v) => !v.voteType).length || 0;
+  // const upVotes = rawVotes?.filter((v) => v.voteType).length || 0;
+  // const downVotes = rawVotes?.filter((v) => !v.voteType).length || 0;
 
   // Expiration
   const expiryDate = new Date(
@@ -130,7 +130,7 @@ const ViewProposal: React.FC = () => {
                 <p>
                   <span> 600</span>
                 </p>
-                <p className="left">Tsh</p>
+                <p className="left">Usd</p>
               </div>
             </div>
         </section>
@@ -148,7 +148,7 @@ const ViewProposal: React.FC = () => {
             }}
           >
             <img src="/images/Star.png" alt="star" />
-            Vote Yes ({upVotes})
+            Vote Yes
           </button>
           <button
             className="twoe"
@@ -156,7 +156,7 @@ const ViewProposal: React.FC = () => {
               /* cast a downvote on‑chain… */
             }}
           >
-            Deny ({downVotes})
+            Deny 
           </button>
         </div>
       </main>
