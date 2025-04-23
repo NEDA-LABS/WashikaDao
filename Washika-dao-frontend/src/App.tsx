@@ -68,7 +68,7 @@ const App: React.FC = () => {
             <Route path="/SuperAdmin/:multiSigAddr" element={<SuperAdmin />} />
             <Route path="/UpdateDao/:daoTxHash" element={<UpdateDao />} />
             <Route
-              path="/ViewProposal/:daoMultiSigAddr/:proposalCustomIdentifier"
+              path="/ViewProposal/:daoMultiSigAddr/:proposalTitle"
               element={<ViewProposal />}
             />
             <Route path="/MemberProfile/:address" element={<MemberProfile />} />

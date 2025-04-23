@@ -13,9 +13,9 @@ export const useCompletedSteps = (
 
     if (memberAddr) stepsCompleted++;
     if (formData.daoName) stepsCompleted++;
-    if (formData.daoTitle) stepsCompleted++;
-    if (formData.daoImageIpfsHash) stepsCompleted++;
-    // if (members.length > 0) stepsCompleted++;
+    if (formData.targetAudience) stepsCompleted++;
+    if (formData.daoLocation) stepsCompleted++;
+    if (formData.daoDescription) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
   }, [formData, memberAddr]);

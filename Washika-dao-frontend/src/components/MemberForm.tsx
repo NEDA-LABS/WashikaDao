@@ -38,14 +38,14 @@ const MemberForm: React.FC<MemberFormProps> = ({
       <div className="left">
         <div>
           <h2>Member Information</h2>
-          <p> Add your information as the Chairperson along with the details of the group's Secretary and Treasurer</p>
+          <p> Add Members information here</p>
         </div>
         <div className="two">
           <img src="images/Group.png" alt="profile logo" />
         </div>
       </div>
       <div className="right">
-        <div className="top">Member Information</div>
+        {/* <div className="top">Member Information</div> */}
         <div className="formDiv">
           <div className="div">
             <div className="first">
@@ -81,6 +81,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
                   <option value="Chairperson">Chairperson</option>
                   <option value="Treasurer">Treasurer</option>
                   <option value="Secretary">Secretary</option>
+                  <option value="Member">Member</option>
                 </select>
               </div>
             </div>

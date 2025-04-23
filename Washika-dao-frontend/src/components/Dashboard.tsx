@@ -1,57 +1,48 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Balance from "./Balance";
+import { DaoDetails } from "./SuperAdmin/WanachamaList";
+import {
+  computeMonthlyUsdHistory,
+  MonthBucket,
+} from "../utils/monthlyBalances";
+import { fetchAllTransactions, RawTxn } from "../utils/arbiscan";
+import { fetchEthToUsdRate } from "../utils/priceUtils";
 
-const Dashboard: React.FC = () => {
-  const monthlyBalances = [
-    {
-      month: "Jan",
-      balances: [0, 0, 0, 0, 0], // [Deposit, Loan, Shares, Repayments, Interest]
-    },
-    {
-      month: "Feb",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Mar",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Apr",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "May",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Jun",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Jul",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Aug",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Sep",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Oct",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Nov",
-      balances: [0, 0, 0, 0, 0],
-    },
-    {
-      month: "Dec",
-      balances: [0, 0, 0, 0, 0],
-    },
-  ];
+interface DashboardProps {
+  daoDetails?: DaoDetails;
+}
+
+const Dashboard: React.FC<DashboardProps> = ({ daoDetails }) => {
+  const [history, setHistory] = useState<MonthBucket[]>([]);
+  const address = daoDetails?.daoMultiSigAddr;
+
+  useEffect(() => {
+    if (!address) return;
+
+    (async () => {
+      let page = 1;
+      let allTxns: RawTxn[] = [];
+      while (true) {
+        const txns = await fetchAllTransactions(address, page, 100);
+        if (txns.length === 0) break;
+        allTxns = [...allTxns, ...txns];
+        page++;
+      }
+      
+      // 2) compute the monthly net USD inflow/outflow
+      const buckets = await computeMonthlyUsdHistory(
+        address,
+        allTxns,
+        fetchEthToUsdRate
+      );
+      setHistory(buckets);
+    })();
+  }, [address]);
+
+  const monthlyBalances = history.map((b) => ({
+    month: b.month,
+    balances: [b.deposits, b.loans, 0, 0, 0] as number[],
+  }));
 
   // Calculate yearly totals for each balance type
   const yearlyTotals = monthlyBalances.reduce(
@@ -114,7 +105,7 @@ const Dashboard: React.FC = () => {
         </ul>
       </div>
       <Balance
-        deposit={formattedYearlyTotals[0]}
+        deposit={formattedYearlyTotals[0].toLocaleString()}
         loan={formattedYearlyTotals[1]}
         shares={formattedYearlyTotals[2]}
         repayments={formattedYearlyTotals[3]}
@@ -122,20 +113,24 @@ const Dashboard: React.FC = () => {
       />
       <div className="bargraph">
         <div className="level">
-          {/* Dynamically adjust the highest value to be the maximum total */}
-          <p>{(maxTotalBalance / 1000).toFixed(0)}k</p>
-          <p>{((maxTotalBalance * 0.75) / 1000).toFixed(0)}k</p>
-          <p>{((maxTotalBalance * 0.5) / 1000).toFixed(0)}k</p>
-          <p>{((maxTotalBalance * 0.25) / 1000).toFixed(0)}k</p>
-          <p>0</p>
+          {[1, 0.75, 0.5, 0.25, 0].map((fraction, idx) => (
+            <p key={idx}>
+              {fraction === 0
+                ? "0"
+                : maxTotalBalance < 1000
+                ? `${(maxTotalBalance * fraction).toFixed(0)}`
+                : `${((maxTotalBalance * fraction) / 1000).toFixed(2)}k`}
+            </p>
+          ))}
         </div>
+
         <div className="allBars">
           {monthlyBalances.map((monthData, index) => (
             <div key={index} className={`oneBar bar${index}`}>
               {monthData.balances.map((balance, i) => (
                 <div
                   key={i}
-                  className={`bar-${i + 1}`}
+                  className={`bar-${i - 1}`}
                   style={{
                     height: `${(balance / maxTotalBalance) * 100}%`,
                     backgroundColor: [

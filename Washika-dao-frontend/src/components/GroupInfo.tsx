@@ -42,6 +42,8 @@ const GroupInfo: React.FC = () => {
   const dispatch = useDispatch();
   const currentUser = useSelector((state: RootState) => state.user);
 
+  
+
   useEffect(() => {
     const fetchDaos = async () => {
       try {

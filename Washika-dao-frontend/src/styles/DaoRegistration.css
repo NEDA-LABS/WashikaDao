@@ -127,6 +127,10 @@ form {
   font-style: italic;
 }
 
+.wanakikundi .left p {
+  color: #000000;
+}
+
 .form .formDiv {
   padding: 9px 12px 0;
   width: 67%;
@@ -272,8 +276,9 @@ form {
 
 .wanakikundi {
   display: flex;
+  align-items: center;
   position: relative;
-  margin: 0px 72px 36px 0px;
+  margin: 36px 72px 36px 0px;
   margin-left: clamp(48px, 8vw, 132px);
   padding-bottom: 72px;
   display: flex;

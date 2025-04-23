@@ -1,15 +1,16 @@
 // Import hooks and utilities from React and React Router for component state and navigation.
 import { useNavigate } from "react-router-dom";
-import React from "react";
+import React, { useState } from "react";
+import LoadingPopup from "../components/DaoRegistration/LoadingPopup";
+
 
 // Import layout components for consistent page structure.
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 
 // Import functions for backend communication and blockchain account management.
-import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
-import { RootState } from "../redux/store";
-import { useSelector } from "react-redux";
+// import { RootState } from "../redux/store";
+// import { useSelector } from "react-redux";
 import { useProposalForm } from "../hooks/useProposalForm";
 import { useProposalProgress } from "../hooks/useProposalProgress";
 import { useProposalTransaction } from "../hooks/useProposalTransaction";
@@ -30,20 +31,23 @@ import { useProposalTransaction } from "../hooks/useProposalTransaction";
  */
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();
-  const userDaos = useSelector((state: RootState) => state.userDaos.daos);
-  const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
-  const selectedDao = userDaos.find(
-    (dao) => dao.daoTxHash === selectedDaoTxHash
-  );
+  // const userDaos = useSelector((state: RootState) => state.userDaos.daos);
+  // const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
+  // const selectedDao = userDaos.find(
+    // (dao) => dao.daoTxHash === selectedDaoTxHash
+  // );
   const memberAddr = localStorage.getItem("address");
-  const token = localStorage.getItem("token") ?? "";
-  const daoMultiSigAddr = selectedDao ? selectedDao.daoMultiSigAddr : "";
+  const daoMultiSigAddr = memberAddr || "";
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Use the proposal form hook to manage form state and input handlers.
-  const { proposalData, handleChange, handleFileChange } = useProposalForm(memberAddr, daoMultiSigAddr);
+  const { proposalData, handleChange, handleFileChange } = useProposalForm(
+    memberAddr,
+    daoMultiSigAddr
+  );
 
-   // Calculate completed steps for the progress indicator.
-   const completedSteps = useProposalProgress(proposalData, daoMultiSigAddr);
+  // Calculate completed steps for the progress indicator.
+  const completedSteps = useProposalProgress(proposalData, daoMultiSigAddr);
 
   // Use the proposal transaction hook.
   const { handleCreateProposal } = useProposalTransaction(proposalData);
@@ -59,46 +63,28 @@ const CreateProposal: React.FC = () => {
    */
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    try {
-      const ProposaltxHash = await handleCreateProposal(daoMultiSigAddr);
 
-      if (!ProposaltxHash) {
-        alert("Proposal creation on blockchain failed!");
-        return;
-      }
-      const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/Proposals/CreateProposal`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+    setIsSubmitting(true);
 
-            "X-API-KEY": ROUTE_PROTECTOR_KEY,
-            Authorization: token, //include token in the Authorization header
-          },
-          body: JSON.stringify(proposalData),
-        }
-      );
-      const data = await response.json();
+    const ProposaltxHash = await handleCreateProposal(daoMultiSigAddr);
 
-      if (response.ok) {
-        const proposalCustomIdentifier =
-          data.createdProposal?.proposalCustomIdentifier;
-        navigate(
-          `/ViewProposal/${daoMultiSigAddr}/${proposalCustomIdentifier}`
-        );
-      } else {
-        console.error(`Error: ${data.error}`);
-      }
-    } catch (error) {
-      alert("Error creating Proposal");
-      console.error("Error:", error);
+    setIsSubmitting(false);
+    if (!ProposaltxHash) {
+      alert("Proposal creation on blockchain failed!");
+      return;
     }
+    navigate(`/ViewProposal/${daoMultiSigAddr}/${encodeURIComponent(proposalData.proposalTitle)}`);
+  };
+
+  const handleCancel = () => {
+    setIsSubmitting(false);
+    alert("Transaction canceled by user.");
   };
 
   return (
     <>
       <NavBar className={"CreateProposal"} />
+      {isSubmitting && <LoadingPopup  message="Creating proposal on‑chain…" onCancel={handleCancel} />}
       <main className="createProposal">
         <div className="proposalParag">
           <div className="top">

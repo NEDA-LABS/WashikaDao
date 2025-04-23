@@ -5,6 +5,7 @@ import { useReadContract, useWalletBalance } from "thirdweb/react";
 import { FullDaoContract } from "../../utils/handlers/Handlers";
 import { client } from "../../utils/thirdwebClient";
 import { DaoDetails } from "./WanachamaList";
+import { fetchEthToUsdRate } from "../../utils/priceUtils";
 
 interface AdminTopProps {
   daoDetails?: DaoDetails;
@@ -12,10 +13,15 @@ interface AdminTopProps {
   setDaoDetails: (d: DaoDetails) => void;
 }
 
-export default function AdminTop({ daoDetails, setActiveSection, setDaoDetails }: AdminTopProps) {
+export default function AdminTop({
+  daoDetails,
+  setActiveSection,
+  setDaoDetails,
+}: AdminTopProps) {
   const [memberCount, setMemberCount] = useState<number>(0);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
+
   const {
     data: rawDaoData,
     isPending,
@@ -26,18 +32,6 @@ export default function AdminTop({ daoDetails, setActiveSection, setDaoDetails }
     params: [multiSigAddr!],
   });
 
-  const fetchEthToUsdRate = async (): Promise<number> => {
-    try {
-      const res = await fetch(
-        "https://api.coingecko.com/api/v3/simple/price?ids=ethereum&vs_currencies=usd"
-      );
-      const data = await res.json();
-      return data.ethereum.usd;
-    } catch (error) {
-      console.error("Error fetching ETH to USD rate:", error);
-      return 0; // fallback
-    }
-  };
 
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
     address: multiSigAddr!,
@@ -85,7 +79,14 @@ export default function AdminTop({ daoDetails, setActiveSection, setDaoDetails }
     };
 
     updateDaoDetails();
-  }, [rawDaoData, isPending, error, balanceLoading, balanceData, setDaoDetails]);
+  }, [
+    rawDaoData,
+    isPending,
+    error,
+    balanceLoading,
+    balanceData,
+    setDaoDetails,
+  ]);
 
   useEffect(() => {
     // if (daoTxHash && authToken) {
@@ -107,7 +108,16 @@ export default function AdminTop({ daoDetails, setActiveSection, setDaoDetails }
     <>
       <div className="centered">
         <div className="daoImage one">
-          <img src={daoDetails?.daoImageIpfsHash} alt="DaoImage" />
+          <img
+            src={
+              daoDetails?.daoImageIpfsHash || "/images/default.png"
+            }
+            alt="DaoImage"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = "/images/default.png";
+            }}
+          />
         </div>
       </div>
       <div className="top">

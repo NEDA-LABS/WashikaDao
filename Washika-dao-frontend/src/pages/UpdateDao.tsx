@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
 import { useActiveAccount } from "thirdweb/react";
+// import Step2Form from "../components/DaoRegistration/Step2Form";
+// import Step3Members from "../components/DaoRegistration/Step3Members";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -268,7 +270,7 @@ const UpdateDao: React.FC = () => {
           </div>
 
           <form className="combinedForms" onSubmit={handleSubmit}>
-            <DaoForm
+            {/* <DaoForm
               className="form one"
               title="Update Dao"
               description="Update the details of your DAO"
@@ -302,7 +304,7 @@ const UpdateDao: React.FC = () => {
                   onChange: handleChange,
                 },
               ]}
-            />
+            /> */}
 
             <DaoForm
               className="form two"

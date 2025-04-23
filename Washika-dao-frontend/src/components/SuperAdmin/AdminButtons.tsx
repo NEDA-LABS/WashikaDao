@@ -3,19 +3,16 @@ import { useNavigate, useParams } from "react-router-dom";
 interface AdminButtonsProps {
   activeSection: string;
   setActiveSection: (section: string) => void;
-  setPrevSection: (section: string) => void;
 }
 
 export default function AdminButtons({
   activeSection,
   setActiveSection,
-  setPrevSection,
 }: AdminButtonsProps) {
   const navigate = useNavigate();
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
 
   const handleAddMember = () => {
-    setPrevSection(activeSection);
     setActiveSection("addMember");
   };
   return (
@@ -26,7 +23,7 @@ export default function AdminButtons({
       >
         Dao Overview
       </button>
-      <button onClick={handleAddMember}>Add Members</button>
+      <button onClick={handleAddMember} className={activeSection === "addMember" ? "active" : ""}>Add Members</button>
       <button
         onClick={() => setActiveSection("mikopo")}
         className={activeSection === "mikopo" ? "active" : ""}

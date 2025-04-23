@@ -238,6 +238,10 @@ main.daoMain {
   font-weight: bold;
 }
 
+.treasury-history {
+  width: 420px;
+}
+
 .treasury-history h1 {
   margin-left: 28px;
   color: #7d7272;
@@ -295,6 +299,7 @@ main.daoMain {
 .slot .left p {
   font-size: 11px;
   margin-left: 4px;
+  color: #433939;
 }
 
 .slot h1 {
@@ -319,7 +324,7 @@ main.daoMain {
   gap: 12px;
 }
 
-.slot .right .top {
+.slot .right .topy {
   padding: 0;
   color: #433939;
   font-size: 15px;

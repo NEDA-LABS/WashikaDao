@@ -63,7 +63,6 @@ export const useProposalTransaction = (proposalData: any) => {
 
     return new Promise<string | null>((resolve) => {
       console.log("Sending transaction...");
-      alert("Transaction is being sent...");
       sendTx(_createProposaltx, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);

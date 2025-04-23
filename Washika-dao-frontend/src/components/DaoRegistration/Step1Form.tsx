@@ -12,13 +12,15 @@ export interface Step1FormProps {
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) => void;
-  onNextStep: () => void;
+  onSubmit: () => void;
+  isSubmitting: boolean;
 }
 
 const Step1Form: React.FC<Step1FormProps> = ({
   formData,
   handleChange,
-  onNextStep,
+  onSubmit,
+  isSubmitting,
 }) => {
   const fields: Field[] = [
     {
@@ -59,11 +61,15 @@ const Step1Form: React.FC<Step1FormProps> = ({
         description="Tell us about your group"
         fields={fields}
       />
-      <div className="form-progress">
-        <button type="button" onClick={onNextStep}>
-          Next
+      <center>
+        <button
+          disabled={isSubmitting}
+          className={`createDao ${isSubmitting ? "loading" : ""}`}
+          onClick={onSubmit}
+        >
+          Save On-Chain
         </button>
-      </div>
+      </center>
     </div>
   );
 };

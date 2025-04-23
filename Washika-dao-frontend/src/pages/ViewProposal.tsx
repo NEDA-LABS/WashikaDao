@@ -1,135 +1,92 @@
-import React, { useEffect, useState } from "react";
-import Footer from "../components/Footer";
-import NavBar from "../components/Navbar/Navbar";
+// src/pages/ViewProposal.tsx
+import React from "react";
+import { useReadContract, useActiveAccount } from "thirdweb/react";
+import { FullDaoContract } from "../utils/handlers/Handlers";
 import { useNavigate, useParams } from "react-router-dom";
-import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
+import NavBar from "../components/Navbar/Navbar";
+import Footer from "../components/Footer";
 
-interface ProposalData {
-  proposalCustomIdentifier: string;
-  proposalOwner: string;
-  proposalTitle: string;
-  proposalSummary: string;
-  proposalDescription: string;
-  proposalStatus: string;
-  amountRequested: number;
-  profitSharePercent: number;
+interface OnChainProposal {
+  pOwner: string;
   daoMultiSigAddr: string;
-  numUpvotes: number;
-  numDownvotes: number;
+  pTitle: string;
+  pSummary: string;
+  pDescription: string;
+  expirationTime: string; // BigNumber as a string
 }
-/**
- * @Auth Policy: Visible to all
- * @returns
- */
-/**
- * A React functional component that displays detailed information about a specific proposal.
- * It fetches proposal data from a backend service using the proposal ID and multi-signature address
- * obtained from the URL parameters. The component renders a loading state while fetching data
- * and displays the proposal details once the data is available.
- *
- * @component
- * @returns {JSX.Element} The rendered component displaying proposal details, including title,
- * description, amount requested, currency, and additional information. It also provides
- * navigation options to view linked resources, view votes, re-propose, and fund the project.
- *
- * @remarks
- * - Utilizes `useParams` to extract URL parameters and `useNavigate` for navigation.
- * - Handles errors during data fetching and logs them to the console.
- * - Displays a loading message until the proposal data is successfully fetched.
- */
+
+interface VoteDetails {
+  voterAddr: string;
+  pOwner: string;
+  voteType: boolean;
+}
+
 const ViewProposal: React.FC = () => {
-  const { proposalCustomIdentifier, daoMultiSigAddr } = useParams<{
-    proposalCustomIdentifier: string;
-    daoMultiSigAddr: string;
-  }>(); // Get both proposalCustomIdentifier and daoMultiSigAddr from the URL
-  console.log(daoMultiSigAddr, proposalCustomIdentifier);
+  const { daoMultiSigAddr = "", proposalTitle = "" } =
+    useParams<{
+      daoMultiSigAddr: string;
+      proposalTitle: string;
+    }>();
   const navigate = useNavigate();
-  const [proposalData, setProposalData] = useState<ProposalData | null>(null); // State to hold proposal data
-  const token = localStorage.getItem("token") ?? "";
-  const memberAddr = localStorage.getItem("address");
-  const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
+  const activeAccount = useActiveAccount();
 
-  useEffect(() => {
-    const fetchProposalData = async () => {
-      try {
-        const response = await fetch(
-          `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/Proposals/GetProposalDetails/?daoMultiSigAddr=${daoMultiSigAddr}&proposalCustomIdentifier=${proposalCustomIdentifier}`,
-          {
-            headers: {
-              Authorization: token,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data: ProposalData = await response.json();
-        console.log("Fetched Proposal Data:", data);
-        setProposalData(data);
-      } catch (error) {
-        console.error("Error fetching proposal data:", error);
-      }
-    };
-
-    if (daoMultiSigAddr && proposalCustomIdentifier) {
-      fetchProposalData();
-    }
-  }, [daoMultiSigAddr, proposalCustomIdentifier, token]);
-
-  const handleVote = async (
-    voteType: "UpVoteProposal" | "DownVoteProposal"
-  ) => {
-    if (!daoMultiSigAddr || !proposalCustomIdentifier) return;
-
-    // Determine the vote value: true for upvote, false for downvote.
-    const voteValue = voteType === "UpVoteProposal";
-
-    try {
-      const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoKit/Proposals/voteProposal`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-            "X-API-KEY": ROUTE_PROTECTOR_KEY,
-          Authorization: token, // Include the token in the Authorization header
-        },
-        body: JSON.stringify({
-          proposalCustomIdentifier,
-          daoMultiSigAddr,
-          voterAddr: memberAddr,
-          voteValue,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to cast vote");
-      }
-
-      // Refresh proposal data after voting
-      const updatedData = await response.json();
-      alert(voteValue ? "Voted Yes" : "Voted No");
-      console.log("Updated Proposal Data:", updatedData);
-      if (updatedData.amountRequested !== undefined) {
-        setProposalData(updatedData);
-      } else {
-        console.warn("Unexpected API response:", updatedData);
-      }
-    } catch (error) {
-      console.error("Error voting:", error);
-      alert("Already voted");
-    }
+  // 1) Fetch all proposals for this DAO on‑chain
+  const {
+    data: rawProposals,
+    isLoading: loadingProposals,
+    error: proposalsError,
+  } = useReadContract({
+    contract: FullDaoContract,
+    method: "getProposals",
+    params: [daoMultiSigAddr],
+  }) as {
+    data?: OnChainProposal[];
+    isLoading: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    error?: any;
   };
 
-  const handleBackClick = () => {
-    if (proposalData) {
-      navigate(`/DaoProfile/${selectedDaoTxHash}`);
-    }
+  // 2) Pick out the one matching our identifier (by title)
+  const proposal = React.useMemo(() => {
+    if (!rawProposals) return null;
+    return rawProposals.find((p) => p.pTitle === proposalTitle);
+  }, [rawProposals, proposalTitle]);
+
+  // 3) Fetch votes for this proposal owner
+  const {
+    data: rawVotes,
+    isLoading: loadingVotes,
+    error: votesError,
+  } = useReadContract({
+    contract: FullDaoContract,
+    method: "getVotes",
+    params: [proposal?.pOwner || activeAccount?.address || ""],
+  }) as {
+    data?: VoteDetails[];
+    isLoading: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    error?: any;
   };
 
-  // Render loading state if proposal data is not yet available
-  if (!proposalData) {
-    return <div>Loading...</div>;
+  if (loadingProposals || loadingVotes) {
+    return <div>Loading on‑chain data…</div>;
   }
+  if (proposalsError || votesError) {
+    console.error(proposalsError || votesError);
+    return <div>Error loading on‑chain proposal.</div>;
+  }
+  if (!proposal) {
+    return <div>Proposal “{proposalTitle}” not found on‑chain.</div>;
+  }
+
+  // Tally up/down votes
+  const upVotes = rawVotes?.filter((v) => v.voteType).length || 0;
+  const downVotes = rawVotes?.filter((v) => !v.voteType).length || 0;
+
+  // Expiration
+  const expiryDate = new Date(
+    Number(proposal.expirationTime) * 1000
+  ).toLocaleString();
 
   return (
     <>
@@ -138,61 +95,68 @@ const ViewProposal: React.FC = () => {
         <div className="one">
           <img
             src="/images/arrow-back-black.png"
-            alt="arrow-black"
-            width={99}
-            height={99}
-            onClick={handleBackClick}
+            alt="back"
+            width={32}
+            height={32}
+            onClick={() => navigate(-1)}
+            style={{ cursor: "pointer" }}
           />
-          <button
-            className={
-              proposalData.proposalStatus === "open" ? "inProgress" : "rejected"
-            }
-          >
-            Pending
-          </button>
+          <button className="inProgress">On‑Chain</button>
         </div>
 
         <article>
-          <h1>{proposalData.proposalTitle}</h1>
+          <h1>{proposal.pTitle}</h1>
           <div className="buttons">
-            <button className="twoo">Fund Project</button>
-            <button className="twooo">View Statement</button>
+            <button disabled>Fund Project</button>
+            <button disabled>View Statement</button>
           </div>
-          <p>{proposalData.proposalSummary}</p>
+          <p>{proposal.pSummary}</p>
         </article>
 
         <section>
+          <div className="dooh">
+            <p className="first">Expires at</p>
+            <div className="second">
+              <p>{expiryDate}</p>
+            </div>
+          </div>
+        </section>
+
+        <section>
           <button>View linked resources</button>
-          {proposalData?.amountRequested !== undefined ? (
             <div className="dooh">
               <p className="first">Amount Requested</p>
               <div className="second">
                 <p>
-                  <span> {proposalData.amountRequested.toLocaleString()}</span>
+                  <span> 600</span>
                 </p>
                 <p className="left">Tsh</p>
               </div>
             </div>
-          ) : (
-            <p>Loading amount requested...</p>
-          )}
         </section>
 
         <div className="about">
           <h1>About proposal</h1>
-          <p>{proposalData.proposalDescription}</p>
+          <p>{proposal.pDescription}</p>
         </div>
 
         <div className="buttons buttonss">
-          <button className="onee" onClick={() => handleVote("UpVoteProposal")}>
+          <button
+            className="onee"
+            onClick={() => {
+              /* cast an upvote on‑chain… */
+            }}
+          >
             <img src="/images/Star.png" alt="star" />
-            Vote Yes
+            Vote Yes ({upVotes})
           </button>
           <button
             className="twoe"
-            onClick={() => handleVote("DownVoteProposal")}
+            onClick={() => {
+              /* cast a downvote on‑chain… */
+            }}
           >
-            Deny
+            Deny ({downVotes})
           </button>
         </div>
       </main>
