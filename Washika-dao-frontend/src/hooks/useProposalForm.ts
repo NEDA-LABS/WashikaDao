@@ -20,6 +20,9 @@ export interface ProposalData {
 }
 
 export const useProposalForm = () => {
+  const daoId = localStorage.getItem("daoId") ?? "";
+  console.log("This is the daoId", daoId);
+  
   const { uploadFileToCloudinary } = useCloudinaryUpload();
   const [proposalData, setProposalData] = useState<ProposalData>({
     // proposalCustomIdentifier: crypto.randomUUID(),
@@ -31,7 +34,7 @@ export const useProposalForm = () => {
     // proposalStatus: "open",
     // amountRequested: "",
     // profitSharePercent: "",
-    daoId: "",
+    daoId: daoId,
     // numUpvotes: 0,
     // numDownvotes: 0,
     // proposalDuration: 6000,
@@ -58,7 +61,7 @@ export const useProposalForm = () => {
       if (fileUrl) {
         setProposalData((prevData) => ({
           ...prevData,
-          fileUrl: fileUrl,
+          proposalUrl: fileUrl,
         }));
       }
     }

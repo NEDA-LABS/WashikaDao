@@ -107,9 +107,12 @@ export default function AdminTop({
         interestOnLoans: 0,
         daoTxHash: "",
         chairpersonAddr: active?.address || "",
+        daoId: found.daoId,
       };
 
       setDaoDetails(parsed);
+      
+      
       setMemberCount(1); // or derive from on-chain if you add a memberCount getter
     });
   }, [
@@ -122,6 +125,7 @@ export default function AdminTop({
     setDaoDetails,
   ]);
 
+
   // handle resizing…
   useEffect(() => {
     const onResize = () =>
@@ -130,6 +134,11 @@ export default function AdminTop({
     onResize();
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  console.log("This is the dao",daoDetails);
+  if (!daoDetails) return null;
+  const daoId = daoDetails.daoId
+  localStorage.setItem("daoId", daoId)
 
   if (loadingDaos) return <div>Loading DAO…</div>;
 

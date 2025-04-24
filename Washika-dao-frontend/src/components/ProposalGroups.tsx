@@ -23,13 +23,17 @@ import { FullDaoContract } from "../utils/handlers/Handlers";
 // }
 
 interface OnChainProposal {
-  pOwner: string;
-  daoMultiSigAddr: string;
-  pTitle: string;
-  pSummary: string;
-  pDescription: string;
-  expirationTime: bigint; // BigNumber from contract
+  proposalOwner: string;
+  proposalId: string;
+  daoId: string;
+  proposalUrl: string;
+  proposalTitle: string;      
+  proposalStatus: string;
+  proposalCreatedAt: bigint;
 }
+
+const ZERO_BYTES32 =
+  "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
 
 const PAGE_SIZE = 4;
 
@@ -40,6 +44,9 @@ const ProposalGroups: React.FC = () => {
   // const userDaos = useSelector((state: RootState) => state.userDaos.daos);
   // const selectedDao = userDaos.find((dao) => dao.daoTxHash === selectedDaoTxHash);
   const daoMultiSigAddr = activeAccount?.address || "";
+  const daoId = localStorage.getItem("daoId")
+
+  const idParam = (daoId || ZERO_BYTES32) as `0x${string}`;
 
   // 1) Read all proposals on-chain
   const {
@@ -48,8 +55,9 @@ const ProposalGroups: React.FC = () => {
     error,
   } = useReadContract({
     contract: FullDaoContract,
-    method: "getProposals",
-    params: [daoMultiSigAddr],
+    method:
+      "function getProposals(bytes32 _daoId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt)[])",
+    params: [idParam] as const,
   }) as {
     data?: OnChainProposal[];
     isLoading: boolean;
@@ -83,24 +91,26 @@ const ProposalGroups: React.FC = () => {
   const start = currentPage * PAGE_SIZE;
   const proposalsRev = [...rawProposals].reverse();
   const pageItems = proposalsRev.slice(start, start + PAGE_SIZE);
+  console.log(pageItems);
+  
 
   return (
     <div className="proposal-groups">
       {pageItems.map((p) => {
         // use the title as your client‐side “identifier’
-        const identifier = encodeURIComponent(p.pTitle);
+        const identifier = encodeURIComponent(p.proposalTitle);
         // const expiry = new Date(Number(p.expirationTime) * 1000).toLocaleDateString();
         return (
           <Link
-            key={p.pTitle}
+            key={p.proposalTitle}
             to={`/ViewProposal/${daoMultiSigAddr}/${identifier}`}
           >
             <div className="proposal">
               <div className="one">
-                <h1>{p.pTitle}</h1>
+                <h1>{p.proposalTitle}</h1>
                 <div className="inProgress">open</div>
               </div>
-              <p className="two">{p.pDescription}</p>
+              <p className="two">proposal description</p>
               <div className="three">
                 <div className="button-group button">
                   <button onClick={handleProposalClick}>

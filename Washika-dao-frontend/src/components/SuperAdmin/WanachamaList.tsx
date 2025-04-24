@@ -9,6 +9,7 @@ interface Wanachama {
 }
 
 export interface DaoDetails extends IFetchedBackendDao {
+  daoId: string;
   members: Wanachama[];
 }
 
