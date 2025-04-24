@@ -8,17 +8,17 @@ export const useProposalProgress = (proposalData: ProposalData, daoMultiSigAddr:
   useEffect(() => {
     let stepsCompleted = 0;
     if (daoMultiSigAddr) stepsCompleted++;
-    if (proposalData.amountRequested) stepsCompleted++;
+    // if (proposalData.amountRequested) stepsCompleted++;
     if (proposalData.proposalTitle) stepsCompleted++;
-    if (proposalData.proposalDescription) stepsCompleted++;
-    if (proposalData.fileUrl) stepsCompleted++;
+    // if (proposalData.proposalDescription) stepsCompleted++;
+    if (proposalData.proposalUrl) stepsCompleted++;
     setCompletedSteps(stepsCompleted);
   }, [
     daoMultiSigAddr,
-    proposalData.amountRequested,
+    // proposalData.amountRequested,
     proposalData.proposalTitle,
-    proposalData.proposalDescription,
-    proposalData.fileUrl,
+    // proposalData.proposalDescription,
+    proposalData.proposalUrl,
   ]);
 
   return completedSteps;
