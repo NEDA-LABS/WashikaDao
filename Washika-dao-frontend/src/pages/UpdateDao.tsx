@@ -8,6 +8,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
 import { useActiveAccount } from "thirdweb/react";
+// import Step2Form from "../components/DaoRegistration/Step2Form";
+// import Step3Members from "../components/DaoRegistration/Step3Members";
 
 /**
  * @Auth Policy -> Check if user is authenticated definitely should be before being allowed access to this page ---> If Dao Registration successful should be redirected to the page with the dao admin page
@@ -17,7 +19,6 @@ interface FormData {
   daoLocation: string;
   targetAudience: string;
   daoTitle: string;
-  daoDescription: string;
   daoOverview: string;
   daoImageIpfsHash: string;
   daoRegDocs: string;
@@ -97,7 +98,6 @@ const UpdateDao: React.FC = () => {
     daoLocation: "",
     targetAudience: "",
     daoTitle: "",
-    daoDescription: "",
     daoOverview: "",
     daoImageIpfsHash: "",
     daoRegDocs: "",
@@ -114,8 +114,9 @@ const UpdateDao: React.FC = () => {
     let stepsCompleted = 0;
 
     if (memberAddr) stepsCompleted++;
-    if (formData.daoName) stepsCompleted++;
     if (formData.daoTitle) stepsCompleted++;
+    if (formData.daoOverview) stepsCompleted++;
+    if (formData.interestOnLoans) stepsCompleted++;
     if (formData.daoImageIpfsHash) stepsCompleted++;
 
     setCompletedSteps(stepsCompleted);
@@ -268,7 +269,7 @@ const UpdateDao: React.FC = () => {
           </div>
 
           <form className="combinedForms" onSubmit={handleSubmit}>
-            <DaoForm
+            {/* <DaoForm
               className="form one"
               title="Update Dao"
               description="Update the details of your DAO"
@@ -302,7 +303,7 @@ const UpdateDao: React.FC = () => {
                   onChange: handleChange,
                 },
               ]}
-            />
+            /> */}
 
             <DaoForm
               className="form two"
@@ -314,13 +315,6 @@ const UpdateDao: React.FC = () => {
                   type: "text",
                   name: "daoTitle",
                   value: formData.daoTitle,
-                  onChange: handleChange,
-                },
-                {
-                  label: "Short description",
-                  type: "textarea",
-                  name: "daoDescription",
-                  value: formData.daoDescription,
                   onChange: handleChange,
                 },
                 {

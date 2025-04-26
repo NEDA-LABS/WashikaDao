@@ -7,8 +7,8 @@ export interface IBackendDaoCreation {
   targetAudience: string;
   daoTitle: string;
   daoDescription: string;
-  daoOverview: string;
-  daoImageIpfsHash: string;
+  daoOverview?: string;
+  daoImageIpfsHash?: string;
   daoRegDocs?: string;  // Made optional
   daoMultiSigAddr?: string;  // Made optional
   multiSigPhoneNo: string;

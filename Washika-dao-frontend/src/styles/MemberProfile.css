@@ -252,6 +252,9 @@ body :has(.member) {
   overflow: scroll;
 }
 
+.allBars {
+  padding: 0;
+}
 
 .dashboard .bargraph .oneBar {
   width: 100%;
@@ -269,6 +272,7 @@ body :has(.member) {
   justify-content: space-between;
   color: #525866;
   font-size: 14px;
+  margin-bottom: 34px;
 }
 
 .bar-1,

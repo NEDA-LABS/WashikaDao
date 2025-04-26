@@ -3,42 +3,42 @@ import { useState } from "react";
 import { useCloudinaryUpload } from "./useCloudinaryUpload";
 
 export interface ProposalData {
-  proposalCustomIdentifier: string;
-  proposalOwner: string | null;
-  otherMember: string;
+  // proposalCustomIdentifier: string;
+  // proposalOwner: string | null;
+  // otherMember: string;
   proposalTitle: string;
-  proposalSummary: string;
-  proposalDescription: string;
-  proposalStatus: string;
-  amountRequested: string;
-  profitSharePercent: string;
-  daoMultiSigAddr: string;
-  numUpvotes: number;
-  numDownvotes: number;
-  proposalDuration: number;
-  fileUrl: string;
+  // proposalSummary: string;
+  // proposalDescription: string;
+  // proposalStatus: string;
+  // amountRequested: string;
+  // profitSharePercent: string;
+  daoId: string;
+  // numUpvotes: number;
+  // numDownvotes: number;
+  // proposalDuration: number;
+  proposalUrl: string;
 }
 
-export const useProposalForm = (
-  memberAddr: string | null,
-  daoMultiSigAddr: string
-) => {
+export const useProposalForm = () => {
+  const daoId = localStorage.getItem("daoId") ?? "";
+  console.log("This is the daoId", daoId);
+  
   const { uploadFileToCloudinary } = useCloudinaryUpload();
   const [proposalData, setProposalData] = useState<ProposalData>({
-    proposalCustomIdentifier: crypto.randomUUID(),
-    proposalOwner: memberAddr,
-    otherMember: "",
+    // proposalCustomIdentifier: crypto.randomUUID(),
+    // proposalOwner: memberAddr,
+    // otherMember: "",
     proposalTitle: "",
-    proposalSummary: "",
-    proposalDescription: "",
-    proposalStatus: "open",
-    amountRequested: "",
-    profitSharePercent: "",
-    daoMultiSigAddr: daoMultiSigAddr,
-    numUpvotes: 0,
-    numDownvotes: 0,
-    proposalDuration: 6000,
-    fileUrl: "",
+    // proposalSummary: "",
+    // proposalDescription: "",
+    // proposalStatus: "open",
+    // amountRequested: "",
+    // profitSharePercent: "",
+    daoId: daoId,
+    // numUpvotes: 0,
+    // numDownvotes: 0,
+    // proposalDuration: 6000,
+    proposalUrl: "",
   });
 
   const handleChange = (
@@ -61,7 +61,7 @@ export const useProposalForm = (
       if (fileUrl) {
         setProposalData((prevData) => ({
           ...prevData,
-          fileUrl: fileUrl,
+          proposalUrl: fileUrl,
         }));
       }
     }

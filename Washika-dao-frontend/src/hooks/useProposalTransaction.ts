@@ -16,9 +16,7 @@ export const useProposalTransaction = (proposalData: any) => {
    * @param _daoMultiSigAddr - The multisig address for the DAO.
    * @returns The prepared transaction object, or null if no active account is found.
    */
-  const prepareCreateProposalTx = (
-    _daoMultiSigAddr: string
-  ): PreparedTransaction | null => {
+  const prepareCreateProposalTx = (): PreparedTransaction | null => {
     if (!currActiveAcc) {
       console.error("Fatal Error, No Active Account found");
       return null;
@@ -27,13 +25,12 @@ export const useProposalTransaction = (proposalData: any) => {
       console.log("Preparing Proposal Creation Transaction");
       const _createProposaltx = prepareContractCall({
         contract: FullDaoContract,
-        method: "addProposal",
+        method:
+          "function createProposal(string _proposalUrl, string _proposalTitle, bytes32 _daoId)",
         params: [
-          _daoMultiSigAddr,
+          proposalData.proposalUrl,
           proposalData.proposalTitle,
-          proposalData.proposalSummary,
-          proposalData.proposalDescription,
-          BigInt(proposalData.proposalDuration),
+          proposalData.daoId,
         ],
       }) as PreparedTransaction;
       console.log("Proposal Creation transaction prepared", _createProposaltx);
@@ -63,7 +60,6 @@ export const useProposalTransaction = (proposalData: any) => {
 
     return new Promise<string | null>((resolve) => {
       console.log("Sending transaction...");
-      alert("Transaction is being sent...");
       sendTx(_createProposaltx, {
         onSuccess: (receipt) => {
           console.log("Transaction successful!", receipt);
@@ -115,7 +111,7 @@ export const useProposalTransaction = (proposalData: any) => {
     }
 
     if (daoMultiSigAddr) {
-      const finalTx = prepareCreateProposalTx(daoMultiSigAddr);
+      const finalTx = prepareCreateProposalTx();
       if (finalTx) {
         const txHash = await sendCreateProposalTx(finalTx);
         console.log("Transaction sent successfully");

@@ -7,27 +7,31 @@ import { setCurrentUser } from "../redux/users/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import { useActiveAccount } from "thirdweb/react";
-
-interface DaoMember {
-  memberAddr: string;
-}
+import { useReadContract } from "thirdweb/react";
+import { FullDaoContract } from "../utils/handlers/Handlers";
 
 interface Dao {
+  // daoName: string;
+  // daoLocation: string;
+  // targetAudience: string;
+  // daoTitle: string;
+  // daoDescription: string;
+  // daoOverview: string;
+  // daoImageIpfsHash: string;
+  // daoTxHash: string;
+  // daoMultiSigAddr: string;
+  // kiwango: number;
+  // memberCount: number;
+  // members: DaoMember[];
   daoName: string;
   daoLocation: string;
-  targetAudience: string;
-  daoTitle: string;
-  daoDescription: string;
-  daoOverview: string;
-  daoImageIpfsHash: string;
-  daoTxHash: string;
-  daoMultiSigAddr: string;
-  kiwango: number;
-  memberCount: number;
-  members: DaoMember[];
+  daoObjective: string;
+  daoTargetAudience: string;
+  daoCreator: string;
+  daoId: string;
 }
 
-const GroupInfo: React.FC = () => {
+export default function GroupInfo() {
   const [daos, setDaos] = useState<Dao[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [showPopup, setShowPopup] = useState<boolean>(false);
@@ -36,58 +40,11 @@ const GroupInfo: React.FC = () => {
   >(null);
   const [selectedGroup] = useState<Dao | null>(null);
   const navigate = useNavigate();
-  const token = localStorage.getItem("token") ?? "";
   const activeAccount = useActiveAccount();
-      const memberAddr = activeAccount?.address;
+  const memberAddr = activeAccount?.address;
   const dispatch = useDispatch();
+
   const currentUser = useSelector((state: RootState) => state.user);
-
-  useEffect(() => {
-    const fetchDaos = async () => {
-      try {
-        const response = await fetch(`${BASE_BACKEND_ENDPOINT_URL}/DaoGenesis/GetAllDaos`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (!response.ok)
-          throw new Error(`HTTP error! status: ${response.status}`);
-
-        const data = await response.json();
-
-        if (Array.isArray(data.daoList)) {
-          const daoWithMemberCounts = data.daoList.map((dao: Dao) => ({
-            ...dao,
-            memberCount: dao.members ? dao.members.length : 0,
-          }));
-          setDaos(daoWithMemberCounts);
-        } else {
-          console.error("daoList is missing or not an array");
-        }
-      } catch (error) {
-        console.error("Failed to fetch DAOs:", error);
-      }
-    };
-
-    fetchDaos();
-
-    const handleResize = () => {
-      setIsSmallScreen(window.innerWidth <= 1537);
-    };
-
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [token]);
-
-  // When a group is clicked, check if the user is already a member.
-  // If not, show the popup to choose registration type.
-
-  const closePopup = () => {
-    setShowPopup(false);
-    setRegistrationType(null);
-  };
 
   // currentMember holds form data. For "join" we'll collect full details,
   // for "funder" we only need a name (stored in firstName).
@@ -114,6 +71,59 @@ const GroupInfo: React.FC = () => {
       }));
     }
   }, [currentUser]);
+
+  const { data: rawDaos, isPending: loadingDaos } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "function getDaosInPlatformArr() view returns ((string, string, string, string, address, bytes32)[])",
+  });
+
+  useEffect(() => {
+    if (!rawDaos) return;
+    const parsed = (
+      rawDaos as Array<[string, string, string, string, string, string]>
+    ).map(
+      ([
+        daoName,
+        daoLocation,
+        daoObjective,
+        daoTargetAudience,
+        daoCreator,
+        daoId,
+      ]) => ({
+        daoName,
+        daoLocation,
+        daoObjective,
+        daoTargetAudience,
+        daoCreator,
+        daoId,
+      })
+    );
+
+    setDaos(parsed);
+
+    const handleResize = () => {
+      setIsSmallScreen(window.innerWidth <= 1537);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [rawDaos]);
+
+  if (loadingDaos) {
+    return <div>Loading DAOs…</div>;
+  }
+
+  console.log("Daos are:", daos);
+
+  // When a group is clicked, check if the user is already a member.
+  // If not, show the popup to choose registration type.
+
+  const closePopup = () => {
+    setShowPopup(false);
+    setRegistrationType(null);
+  };
 
   // Consolidated onChange handler for all fields.
   const handleFieldChange =
@@ -162,7 +172,7 @@ const GroupInfo: React.FC = () => {
 
     try {
       const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/RequestToJoinDao/?daoTxHash=${selectedGroup.daoTxHash}`,
+        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/RequestToJoinDao/?daoTxHash=${selectedGroup.daoId}`,
         {
           method: "POST",
           headers: {
@@ -187,11 +197,11 @@ const GroupInfo: React.FC = () => {
           })
         );
         // Navigate based on the registration type.
-      if (registrationType === "join") {
-        navigate(`/MemberProfile/${memberAddr}`);
-      } else if (registrationType === "funder") {
-        navigate(`/Funder/${memberAddr}`);
-      }
+        if (registrationType === "join") {
+          navigate(`/MemberProfile/${memberAddr}`);
+        } else if (registrationType === "funder") {
+          navigate(`/Funder/${memberAddr}`);
+        }
       } else {
         console.error("Member creation transaction failed");
         alert("Member creation failed. Please check your inputs and try again");
@@ -211,38 +221,45 @@ const GroupInfo: React.FC = () => {
           <div className="group" key={index}>
             {" "}
             {/* Each group's container */}
-            <Link to={`/DaoProfile/${group.daoTxHash}`}>
+            <Link to={`/DaoProfile/${group.daoId}`}>
               <div className="image">
-                <img src={group.daoImageIpfsHash} alt={group.daoTitle} />
+                <img
+                  src={group?.daoId || "/images/default.png"}
+                  alt="DaoImage"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.src = "/images/default.png";
+                  }}
+                />
                 <div className="taarifaTop">Taarifa</div>
               </div>
               <div className="section-1">
                 <div className="left">
-                  <h2>{group.daoTitle}</h2>
+                  <h2>{group.daoName}</h2>
                   <div className="location">
                     <p>{group.daoLocation}</p>
                     <img src="/images/location.png" />
                   </div>
                   <p className="email">
-                    {group.daoMultiSigAddr
+                    {group.daoCreator
                       ? isSmallScreen
-                        ? `${group.daoMultiSigAddr.slice(
+                        ? `${group.daoCreator.slice(
                             0,
                             14
-                          )}...${group.daoMultiSigAddr.slice(-9)}`
-                        : `${group.daoMultiSigAddr}`
+                          )}...${group.daoCreator.slice(-9)}`
+                        : `${group.daoCreator}`
                       : "N/A"}
                   </p>
                 </div>
                 <div className="right">
                   <h3>Thamani ya hazina</h3>
                   <div>
-                    <p className="currency">TSH</p>
-                    <p className="amount">{group.kiwango.toLocaleString()}</p>
+                    <p className="currency">usd</p>
+                    <p className="amount">500 USD</p>
                   </div>
                 </div>
               </div>
-              <p className="section-2">{group.daoDescription}</p>
+              <p className="section-2">{group.daoObjective}</p>
               <div className="section-3">
                 <div className="top">
                   <img src="/images/profile.png" alt="idadi" />
@@ -250,7 +267,7 @@ const GroupInfo: React.FC = () => {
                 </div>
                 <div className="bottom">
                   <h2>Idadi ya wanachama</h2>
-                  <p>{group.memberCount}</p>
+                  <p>1</p>
                 </div>
               </div>
             </Link>
@@ -346,6 +363,4 @@ const GroupInfo: React.FC = () => {
       )}
     </div>
   );
-};
-
-export default GroupInfo;
+}

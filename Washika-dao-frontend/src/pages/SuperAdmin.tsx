@@ -34,7 +34,6 @@ import { DaoDetails } from "../components/SuperAdmin/WanachamaList";
 const SuperAdmin: React.FC = () => {
   const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
-  const [prevSection, setPrevSection] = useState<string>("daoOverview");
   const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(
     undefined
   );
@@ -135,15 +134,12 @@ const SuperAdmin: React.FC = () => {
         <AdminButtons
           activeSection={activeSection}
           setActiveSection={setActiveSection}
-          setPrevSection={setPrevSection}
         />
 
-        {activeSection === "daoOverview" && <DaoOverview />}
+        {activeSection === "daoOverview" && <DaoOverview daoDetails={daoDetails} />}
 
         {activeSection === "addMember" && (
           <AdminMemberForm
-            setActiveSection={setActiveSection}
-            prevSection={prevSection}
           />
         )}
         {activeSection === "mikopo" && <Mikopo />}

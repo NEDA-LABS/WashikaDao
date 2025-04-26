@@ -1,14 +1,23 @@
 import Dashboard from "../Dashboard";
 import ProposalGroups from "../ProposalGroups";
+import TransactionPopup from "./TransactionPopup";
+import { DaoDetails } from "./WanachamaList";
+import { useState } from "react";
 
-export default function DaoOverview() {
+interface DaoOverviewProps {
+  daoDetails?: DaoDetails;
+}
+
+export default function DaoOverview({ daoDetails }: DaoOverviewProps) {
+  const [showStatement, setShowStatement] = useState(false);
+
   return (
     <>
       <div className="dashboard-wrapper">
         <div className="fullStatement">
-          <button>Full Statement</button>
+        <button onClick={() => setShowStatement(true)}>Full Statement</button>
         </div>
-        <Dashboard />
+        <Dashboard daoDetails={daoDetails} />
       </div>
       <section className="second">
         <div className="sec">
@@ -17,6 +26,19 @@ export default function DaoOverview() {
         </div>
         <ProposalGroups />
       </section>
+      {showStatement && (
+        <div className="modal-overlay" onClick={() => setShowStatement(false)}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+          >
+            <TransactionPopup daoDetails={daoDetails} />
+            <button onClick={() => setShowStatement(false)} className="close-btn">
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }

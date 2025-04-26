@@ -9,10 +9,7 @@ export const useDaoTransaction = () => {
   const currActiveAcc = useActiveAccount();
   const { mutate: sendTx } = useSendTransaction();
 
-  const buildCreateDaoTransaction = (
-    formData: IBackendDaoCreation,
-    multiSigPhoneNo: bigint
-  ) => {
+  const buildCreateDaoTransaction = (formData: IBackendDaoCreation) => {
     if (!currActiveAcc) {
       console.error("Fatal Error, No Active Account found");
       return null;
@@ -22,17 +19,13 @@ export const useDaoTransaction = () => {
       console.debug("Preparing DAO Creation transaction...");
       return prepareContractCall({
         contract: FullDaoContract,
-        method: "createDao",
+        method:
+          "function createDao(string _daoLocation, string _daoObjective, string _daoTargetAudience, string _daoName)",
         params: [
-          formData.daoName,
           formData.daoLocation,
-          formData.targetAudience,
-          formData.daoTitle,
           formData.daoDescription,
-          formData.daoOverview,
-          formData.daoImageIpfsHash,
-          currActiveAcc.address, // Multisig address
-          multiSigPhoneNo,
+          formData.targetAudience,
+          formData.daoName,
         ],
       });
     } catch (error) {
@@ -42,7 +35,7 @@ export const useDaoTransaction = () => {
   };
 
   const executeCreateDaoTransaction = async (
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     transaction: any,
     formData: IBackendDaoCreation,
     callback?: (data: IBackendDaoCreation, txHash: string) => void
@@ -106,15 +99,11 @@ export const useDaoTransaction = () => {
     }
 
     try {
-      const multiSigPhoneNoBigInt = BigInt(formData.multiSigPhoneNo || "0");
-      console.debug("MultiSig Phone No (BigInt):", multiSigPhoneNoBigInt);
-
       console.debug("Calling buildCreateDaoTransaction...");
-      const finalTx = buildCreateDaoTransaction(
-        formData,
-        multiSigPhoneNoBigInt
-      );
-      return finalTx ? await executeCreateDaoTransaction(finalTx, formData, callback) : null;
+      const finalTx = buildCreateDaoTransaction(formData);
+      return finalTx
+        ? await executeCreateDaoTransaction(finalTx, formData, callback)
+        : null;
     } catch (error) {
       handleTransactionError(error);
       return null;
