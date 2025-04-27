@@ -52,14 +52,14 @@ export interface IBlockchainDaoCreation {
   multiSigPhoneNo: bigint;
 }
 export interface IBackendDaoMember {
-  firstName?: string;
-  lastName?: string;
+  firstName: string;
+  lastName: string;
   email: string;
-  phoneNumber?: string;
-  nationalIdNo?: string;
-  memberRole?: DaoRoleEnum | string;
-  memberCustomIdentifier?: string;
-  memberAddr: string;
+  phoneNumber: string;
+  nationalIdNo: string;
+  memberRole: DaoRoleEnum | string;
+  memberCustomIdentifier: string;
+  memberAddr?: string;
 }
 
 
@@ -87,8 +87,6 @@ export interface IDaoMemberDetails {
 export type daoCreationTxResult = {
   txHash: string;
 };
-
-
 export interface IVoteDetails {
   voterAddr: Address;
   proposalOwner: Address;

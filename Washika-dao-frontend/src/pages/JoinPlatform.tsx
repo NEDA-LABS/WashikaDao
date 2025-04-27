@@ -59,6 +59,7 @@ const JoinPlatform: React.FC = () => {
     nationalIdNo: "",
     memberRole: "",
     memberCustomIdentifier: crypto.randomUUID(),
+    memberAddr,
   });
   useEffect(() => {
     let stepsCompleted = 0;
