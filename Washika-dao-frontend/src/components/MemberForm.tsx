@@ -1,15 +1,8 @@
-// Define the structure of a Member object
-interface Member {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phoneNumber: string;
-  nationalIdNo: string;
-  memberRole: string;
-}
+import { IBackendDaoMember } from "../utils/Types";
+
 interface MemberFormProps {
-  currentMember: Member;
-  onMemberChange: (field: keyof Member, value: string) => void; // Function to handle changes to member fields
+  currentMember: IBackendDaoMember;
+  onMemberChange: (field: keyof IBackendDaoMember, value: string) => void; // Function to handle changes to member fields
   onAddMember: () => void; // Function to add a new member and send  an invite to the member
 }
 /**
@@ -45,7 +38,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
         </div>
       </div>
       <div className="right">
-        {/* <div className="top">Member Information</div> */}
+        <div className="top">Member Information</div>
         <div className="formDiv">
           <div className="div">
             <div className="first">
@@ -94,11 +87,11 @@ const MemberForm: React.FC<MemberFormProps> = ({
               />
             </div>
             <div className="input">
-              <label>Contact</label>
+              <label>Member Address</label>
               <input
-                type="tel"
-                value={currentMember.phoneNumber}
-                onChange={(e) => onMemberChange("phoneNumber", e.target.value)}
+                type="text"
+                value={currentMember.memberAddr}
+                onChange={(e) => onMemberChange("memberAddr", e.target.value)}
               />
             </div>
             <div className="input">

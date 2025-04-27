@@ -3,13 +3,12 @@ import { IFetchedBackendDao } from "../../utils/Types";
 
 interface Wanachama {
   id: number;
-  firstName: string;
-  lastName: string;
-  phoneNumber: string;
+  email: string;
+  wallet: string;
 }
 
 export interface DaoDetails extends IFetchedBackendDao {
-  daoId: string;
+  daoId: `0x${string}`;
   members: Wanachama[];
 }
 
@@ -103,9 +102,7 @@ const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
 }) => {
   const itemsPerPage = 5; // Number of items per page
   const [currentPage, setCurrentPage] = useState(1);
-  const [wanachamaData, setWanachamaData] = useState<Wanachama[]>(
-    daoDetails?.members ?? []
-  );
+  const [wanachamaData, setWanachamaData] = useState<Wanachama[]>([]);
 
   useEffect(() => {
     if (daoDetails?.members) {
@@ -130,10 +127,8 @@ const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
       <div className="wanachama">
         {paginatedData.map((member, index) => (
           <div className="mwanachama" key={index}>
-            <p className="name">
-              {member.firstName} {member.lastName}
-            </p>
-            <p className="phoneNo">{member.phoneNumber}</p>
+            <p className="name">{member.email}</p>
+            <p className="phoneNo">{member.wallet}</p>
             <button>Manage</button>
           </div>
         ))}
