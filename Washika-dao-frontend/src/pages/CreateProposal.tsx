@@ -95,7 +95,7 @@ const CreateProposal: React.FC = () => {
           <div className="top">
             <h1>Create a proposal</h1>
             <img
-              src="/images/arrow-back.png"
+              src="/images/arrowback.png"
               alt="arrow-back"
               onClick={() => navigate(-1)}
             />

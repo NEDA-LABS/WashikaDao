@@ -8,12 +8,6 @@ import MemberForm from "../MemberForm";
 import { useMemberManagement } from "../../hooks/useMemberManagement";
 
 export function AdminMemberForm() {
-  // // Form data state
-  // const [firstName, setFirstName] = useState<string>("");
-  // const [lastName, setLastName] = useState<string>("");
-  // const [email, setEmail] = useState<string>("");
-  // const [phoneNumber, setPhoneNumber] = useState<number | string>("");
-  // const [nationalIdNo, setNationalIdNo] = useState<number | string>("");
   const token = localStorage.getItem("token") ?? "";
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
   const activeAccount = useActiveAccount();

@@ -136,6 +136,7 @@ export default function AdminTop({
   }, []);
 
   console.log("This is the dao",daoDetails);
+  console.log("The daoMultiSig is", daoDetails?.daoMultiSigAddr, "and chairpersonaddr is", daoDetails?.chairpersonAddr);
   if (!daoDetails) return null;
   const daoId = daoDetails.daoId
   localStorage.setItem("daoId", daoId)

@@ -1,6 +1,11 @@
 // src/pages/ViewProposal.tsx
-import React from "react";
-import { useReadContract } from "thirdweb/react";
+import React, { useEffect, useState } from "react";
+import { prepareContractCall, PreparedTransaction } from "thirdweb";
+import {
+  useReadContract,
+  useSendTransaction,
+  useActiveAccount,
+} from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/Navbar/Navbar";
@@ -27,7 +32,13 @@ const ViewProposal: React.FC = () => {
     proposalTitle: string;
   }>();
   const navigate = useNavigate();
-  const ZERO_ID = "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
+  const [isUpVoting, setIsUpVoting] = useState(false);
+  const [isDownVoting, setIsDownVoting] = useState(false);
+  const { mutate: sendTransaction } = useSendTransaction();
+  const activeAccount = useActiveAccount();
+
+  const ZERO_ID =
+    "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
   // const activeAccount = useActiveAccount();
 
   //
@@ -61,13 +72,32 @@ const ViewProposal: React.FC = () => {
     contract: FullDaoContract,
     method:
       "function getProposalXById(bytes32 _proposalId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt))",
-      params: [idParam] as const,
+    params: [idParam] as const,
   }) as {
     data?: OnChainProposal;
     isLoading: boolean;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     error?: any;
   };
+
+  // 3️⃣ Check if the user has already voted
+  const { data: onChainHasVoted, isLoading: loadingHasVoted } = useReadContract(
+    {
+      contract: FullDaoContract,
+      method:
+        "function hasVoted(address voter, bytes32 proposalId) view returns (bool)",
+      params: [activeAccount?.address ?? "", idParam] as const,
+    }
+  ) as { data?: boolean; isLoading: boolean };
+
+  // local state, seeded from on-chain but then controlled locally
+  const [userHasVoted, setUserHasVoted] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (!loadingHasVoted && typeof onChainHasVoted === "boolean") {
+      setUserHasVoted(onChainHasVoted);
+    }
+  }, [loadingHasVoted, onChainHasVoted]);
 
   // loading / error states
   if (loadingId || loadingProposal) {
@@ -86,6 +116,57 @@ const ViewProposal: React.FC = () => {
     Number(rawProposal.proposalCreatedAt) * 1000
   ).toLocaleString();
 
+  const handleUpVote = () => {
+    console.log("Submitting upVote for", rawProposal.proposalId);
+    setIsUpVoting(true);
+    setUserHasVoted(true); // optimistically hide buttons
+    const tx = prepareContractCall({
+      contract: FullDaoContract,
+      method: "function upVote(bytes32 _proposalId, bytes32 _daoId)",
+      params: [
+        rawProposal.proposalId as `0x${string}`,
+        rawProposal.daoId as `0x${string}`,
+      ],
+    }) as PreparedTransaction;
+    console.log("Prepared upVote tx:", tx);
+    sendTransaction(tx, {
+      onSuccess: (receipt) => {
+        console.log("upVote successful:", receipt);
+        setIsUpVoting(false);
+      },
+      onError: (err) => {
+        console.error("upVote failed:", err);
+        setIsUpVoting(false);
+        setUserHasVoted(false);
+      },
+    });
+  };
+
+  const handleDownVote = () => {
+    console.log("Submitting downVote for", rawProposal.proposalId);
+    setIsDownVoting(true);
+    setUserHasVoted(true);
+    const tx = prepareContractCall({
+      contract: FullDaoContract,
+      method: "function downVote(bytes32 _proposalId, bytes32 _daoId)",
+      params: [
+        rawProposal.proposalId as `0x${string}`,
+        rawProposal.daoId as `0x${string}`,
+      ],
+    }) as PreparedTransaction;
+    console.log("Prepared downVote tx:", tx);
+    sendTransaction(tx, {
+      onSuccess: (receipt) => {
+        console.log("downVote successful:", receipt);
+        setIsDownVoting(false);
+      },
+      onError: (err) => {
+        console.error("downVote failed:", err);
+        setIsDownVoting(false);
+        setUserHasVoted(false);
+      },
+    });
+  };
   return (
     <>
       <NavBar className="navbarProposal" />
@@ -138,25 +219,30 @@ const ViewProposal: React.FC = () => {
           <p>Proposal Description</p>
         </div>
 
-        <div className="buttons buttonss">
-          <button
+        {loadingHasVoted || userHasVoted === null ? (
+          <div>Checking vote status…</div>
+        ) : userHasVoted ? (
+          <div className="alreadyVoted">
+            ✅ You have voted for this proposal.
+          </div>
+        ) : (
+          <div className="buttons buttonss">
+            <button
             className="onee"
-            onClick={() => {
-              /* cast an upvote on‑chain… */
-            }}
-          >
-            <img src="/images/Star.png" alt="star" />
-            Vote Yes
-          </button>
-          <button
+              onClick={handleUpVote}
+              disabled={isUpVoting || isDownVoting}
+            >
+              {isUpVoting ? "Voting…" : <>👍 Vote Yes</>}
+            </button>
+            <button
             className="twoe"
-            onClick={() => {
-              /* cast a downvote on‑chain… */
-            }}
-          >
-            Deny
-          </button>
-        </div>
+              onClick={handleDownVote}
+              disabled={isUpVoting || isDownVoting}
+            >
+              {isDownVoting ? "Voting…" : "👎 Deny"}
+            </button>
+          </div>
+        )}
       </main>
       <Footer className="footerProposal" />
     </>
