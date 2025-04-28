@@ -1,12 +1,13 @@
 import { useState } from "react";
-import {
-  BASE_BACKEND_ENDPOINT_URL,
-  ROUTE_PROTECTOR_KEY,
-} from "../utils/backendComm";
-import {  IBackendDaoCreatorDetails, IBackendDaoMember } from "../utils/Types.ts";
+import {  IBackendDaoMember } from "../utils/Types.ts";
+import { prepareContractCall, PreparedTransaction } from "thirdweb";
+import { useSendTransaction } from "thirdweb/react";
+import { FullDaoContract } from "../utils/handlers/Handlers";
 
-export const useMemberManagement = ( multiSigAddr: string | undefined,
-  token: string,
+
+
+export const useMemberManagement = ( daoId: `0x${string}` | undefined,
+  // token: string,
   adminAddress: string | undefined,
   notify: (type: "success" | "error", message: string) => void) => {
   const [currentMember, setCurrentMember] = useState<IBackendDaoMember>({
@@ -17,17 +18,8 @@ export const useMemberManagement = ( multiSigAddr: string | undefined,
     nationalIdNo: "",
     memberRole: "",
     memberCustomIdentifier: crypto.randomUUID(),
+    memberAddr: ""
   });
-
-  const [daoCreatorDetails, setDaoCreatorDetails] = useState<IBackendDaoCreatorDetails>({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phoneNumber: "",
-    nationalIdNo: "",
-    memberRole: "",
-    daoCreatorAddress:  ""
-  })
 
   const handleMemberChange = (
     field: keyof IBackendDaoMember,
@@ -36,43 +28,47 @@ export const useMemberManagement = ( multiSigAddr: string | undefined,
     setCurrentMember((prev) => ({ ...prev, [field]: value }));
   };
 
-  const isValidMember = (member: IBackendDaoMember) => {
-    return Object.values(member).every((value) => value);
-  };
+  // const isValidMember = (member: IBackendDaoMember) => {
+  //   return Object.values(member).every((value) => value);
+  // };
 
-  const handleDaoCreatorValueChange = (
-    field: keyof IBackendDaoCreatorDetails,
-    value: string
-  ) => {
-    setDaoCreatorDetails((prev) => ({ ...prev, [field]: value }));
-  }
-  const handleAddMember = async () => {
-    if (!isValidMember(currentMember)) {
-      notify("error", "Please fill in all member fields.");
-      return;
+  const { mutate: sendTx } = useSendTransaction();
+  
+  const handleAddMember = () => {
+    // 1) validate
+    if (!currentMember.email) {
+      return notify("error", "Please fill in email.");
+    }
+    if (!daoId) {
+      return notify("error", "DAO ID not available.");
+    }
+    if (!adminAddress) {
+      return notify("error", "Your wallet must be connected.");
     }
 
-    try {
-      const response = await fetch(
-        `${BASE_BACKEND_ENDPOINT_URL}/DaoKit/MemberShip/AddMember/?daoTxHash=${multiSigAddr}&adminMemberAddr=${adminAddress}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-API-KEY": ROUTE_PROTECTOR_KEY,
-            Authorization: token,
-          },
-          body: JSON.stringify(currentMember),
-        }
-      );
+    // 2) fire the on-chain tx
+    const tx = prepareContractCall({
+      contract: FullDaoContract,
+      method:
+        "function addMemberToDao(string _memberEmail, address _memberAddress, bytes32 _daoId)",
+      params: [
+        // pass the email you collected
+        currentMember.email,
+        // the address of the member you're adding:
+        adminAddress,
+        // the DAO ID (bytes32):
+        daoId,
+      ],
+    }) as PreparedTransaction;
 
-      const result = await response.json();
-
-      if (response.ok) {
+    sendTx(tx, {
+      onSuccess: (receipt) => {
         notify(
           "success",
-          `Invited ${currentMember.firstName} ${currentMember.lastName}`
+          `Successfully added ${currentMember.email} on‐chain!`
         );
+        console.log(receipt);
+        // reset form
         setCurrentMember({
           firstName: "",
           lastName: "",
@@ -81,34 +77,20 @@ export const useMemberManagement = ( multiSigAddr: string | undefined,
           nationalIdNo: "",
           memberRole: "",
           memberCustomIdentifier: crypto.randomUUID(),
+          memberAddr: ""
         });
-      } else {
-        notify("error", result.error || "Failed to invite member");
-      }
-    } catch (error) {
-      notify("error", "Error sending member data.");
-      console.error(error);
-    }
+      },
+      onError: (err) => {
+        console.error(err);
+        notify("error", "On-chain addMemberToDao failed");
+      },
+    });
   };
 
-  const handleAddDaoCreatorDetails = () => {
-    setDaoCreatorDetails({
-      firstName: "",
-      lastName: "",
-      email: "",
-      phoneNumber: "",
-      nationalIdNo: "",
-      memberRole: "",
-      daoCreatorAddress: "",
-    });
-  }
 
   return {
     currentMember,
-    daoCreatorDetails,
     handleMemberChange,
     handleAddMember,
-    handleDaoCreatorValueChange,
-    handleAddDaoCreatorDetails
   };
 };

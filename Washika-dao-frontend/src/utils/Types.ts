@@ -87,27 +87,6 @@ export interface IDaoMemberDetails {
 export type daoCreationTxResult = {
   txHash: string;
 };
-
-export interface IBlockchainProposal {
-  multiSigAddr: Address;
-  proposalTitle: string;
-  proposalSummary: string; //Remove in mainnet
-  proposalDescription: string;
-  proposalDuration: number;
-  proposalStatus: string;
-}
-export interface IBackendProposalCreate extends IBlockchainProposal {
-  proposalOwner: Address;
-  proposalId: number;
-  daoId: number;
-  amountRequested: number;
-  profitSharePercent: number;
-  numUpVotes: number;
-  numDownVotes: number;
-  proposalFileUrl: string; //Maybe from ipfs
-  otherMember: string;
-}
-
 export interface IVoteDetails {
   voterAddr: Address;
   proposalOwner: Address;

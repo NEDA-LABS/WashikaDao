@@ -17,7 +17,7 @@ interface OnchainDao {
   daoObjective: string;
   daoTargetAudience: string;
   daoCreator: `0x${string}`;
-  daoId: string;
+  daoId: `0x${string}`;
 }
 
 interface AdminTopProps {
@@ -112,8 +112,6 @@ export default function AdminTop({
 
       setDaoDetails(parsed);
       
-      
-      setMemberCount(1); // or derive from on-chain if you add a memberCount getter
     });
   }, [
     rawDaos,
@@ -124,6 +122,39 @@ export default function AdminTop({
     active,
     setDaoDetails,
   ]);
+
+  const daoID = daoDetails?.daoId; 
+
+   // ◆◆◆ FETCH ON-CHAIN MEMBERS ◆◆◆
+   const {
+    data: onchainMembers,
+    isLoading: loadingMembers,
+  } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "function getDaoMembers(bytes32 _daoId) view returns ((string memberEmail, address memberAddress)[])",
+      params: daoID ? [daoID] : ([] as unknown as [`0x${string}`]),
+  });
+
+  useEffect(() => {
+    if (loadingMembers || !onchainMembers) return;
+    const members = (onchainMembers as Array<{
+      memberEmail: string;
+      memberAddress: string;
+    }>).map((t, i) => ({
+      id: i,
+      email: t.memberEmail,
+      wallet: t.memberAddress,
+    }));
+    if (daoDetails?.members.length === members.length) return;
+
+    setDaoDetails({
+      ...daoDetails,
+      members,
+    } as DaoDetails);
+    setMemberCount(members.length);
+  }, [onchainMembers, loadingMembers, daoDetails, setDaoDetails]);
+  
 
 
   // handle resizing…
@@ -136,6 +167,7 @@ export default function AdminTop({
   }, []);
 
   console.log("This is the dao",daoDetails);
+  console.log("The daoMultiSig is", daoDetails?.daoMultiSigAddr, "and chairpersonaddr is", daoDetails?.chairpersonAddr);
   if (!daoDetails) return null;
   const daoId = daoDetails.daoId
   localStorage.setItem("daoId", daoId)
