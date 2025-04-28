@@ -5,12 +5,12 @@ import {createThirdwebClient, ThirdwebClient} from "thirdweb";
 //add import for celo in prod too
 //TODO: move to a separate component for better readability
 
-import { arbitrumSepolia } from "thirdweb/chains";
+import { celoAlfajoresTestnet} from "thirdweb/chains";
 export default function WC() {
   //@ts-ignore
   const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
   const client: ThirdwebClient = createThirdwebClient({clientId: _clientId});
-  const chain = arbitrumSepolia;
+  const chain = celoAlfajoresTestnet;
   const customTheme: Theme = lightTheme({
     colors: {
       modalBg: "red",
