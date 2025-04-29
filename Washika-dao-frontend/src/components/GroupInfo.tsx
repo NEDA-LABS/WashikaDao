@@ -1,5 +1,5 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 import DaoForm from "./DaoForm";
 import { IBackendDaoMember } from "../utils/Types";
@@ -9,6 +9,7 @@ import { RootState } from "../redux/store";
 import { useActiveAccount } from "thirdweb/react";
 import { useReadContract } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
+import GroupCard from "./GroupCard";
 
 interface Dao {
   // daoName: string;
@@ -28,7 +29,7 @@ interface Dao {
   daoObjective: string;
   daoTargetAudience: string;
   daoCreator: string;
-  daoId: string;
+  daoId: `0x${string}`;
 }
 
 export default function GroupInfo() {
@@ -81,7 +82,7 @@ export default function GroupInfo() {
   useEffect(() => {
     if (!rawDaos) return;
     const parsed = (
-      rawDaos as Array<[string, string, string, string, string, string]>
+      rawDaos as Array<[string, string, string, string, string, `0x${string}`]>
     ).map(
       ([
         daoName,
@@ -215,63 +216,13 @@ export default function GroupInfo() {
     <div className="groups">
       {daos.map(
         (
-          group,
-          index // Iterate over the group data array
+          group // Iterate over the group data array
         ) => (
-          <div className="group" key={index}>
-            {" "}
-            {/* Each group's container */}
-            <Link to={`/DaoProfile/${group.daoId}`}>
-              <div className="image">
-                <img
-                  src={group?.daoId || "/images/default.png"}
-                  alt="DaoImage"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = "/images/default.png";
-                  }}
-                />
-                <div className="taarifaTop">Taarifa</div>
-              </div>
-              <div className="section-1">
-                <div className="left">
-                  <h2>{group.daoName}</h2>
-                  <div className="location">
-                    <p>{group.daoLocation}</p>
-                    <img src="/images/location.png" />
-                  </div>
-                  <p className="email">
-                    {group.daoCreator
-                      ? isSmallScreen
-                        ? `${group.daoCreator.slice(
-                            0,
-                            14
-                          )}...${group.daoCreator.slice(-9)}`
-                        : `${group.daoCreator}`
-                      : "N/A"}
-                  </p>
-                </div>
-                <div className="right">
-                  <h3>Thamani ya hazina</h3>
-                  <div>
-                    <p className="currency">usd</p>
-                    <p className="amount">500 USD</p>
-                  </div>
-                </div>
-              </div>
-              <p className="section-2">{group.daoObjective}</p>
-              <div className="section-3">
-                <div className="top">
-                  <img src="/images/profile.png" alt="idadi" />
-                  <div className="taarifa">Taarifa za wanachama</div>
-                </div>
-                <div className="bottom">
-                  <h2>Idadi ya wanachama</h2>
-                  <p>1</p>
-                </div>
-              </div>
-            </Link>
-          </div>
+          <GroupCard
+          key={group.daoId}
+          group={group}
+          isSmallScreen={isSmallScreen}
+        />
         )
       )}
 
