@@ -1,116 +1,118 @@
+import React, { useEffect, useState } from "react";
+import { fetchCeloToUsdRate } from "../utils/priceUtils";
+import { fetchAllTransactions, RawTxn } from "../utils/arbiscan";
+
 interface TreasuryEntry {
+  hash: string;
   type: "Withdraw" | "Deposit";
   date: string;
   amount: string;
   value: string;
   icon: string;
 }
-/**
- * A React functional component that displays a mini statement of treasury transactions.
- * 
- * This component renders a list of treasury entries, each representing a financial transaction
- * such as a deposit or withdrawal. Each entry includes details like the transaction type, date,
- * amount, value, and an associated icon. The component also provides a button to view the full statement.
- * 
- * @interface TreasuryEntry
- * @property {("Withdraw" | "Deposit")} type - The type of the transaction.
- * @property {string} date - The date of the transaction.
- * @property {string} amount - The amount involved in the transaction, including currency.
- * @property {string} value - The value of the transaction in USD.
- * @property {string} icon - The URL of the icon representing the transaction type.
- * 
- * @returns {JSX.Element} A JSX element representing the mini statement UI.
- */
-const TreasuryHistory: React.FC = () => {
-  const treasuryData: TreasuryEntry[] = [
-    {
-      type: "Withdraw",
-      date: "10/07/2023",
-      amount: "-409.95USDC",
-      value: "$409.95",
-      icon: "/images/withdrawIcon.png",
-    },
-    {
-      type: "Deposit",
-      date: "10/07/2023",
-      amount: "409.95USDC",
-      value: "$409.95",
-      icon: "/images/deposit.png",
-    },
-    {
-      type: "Deposit",
-      date: "10/07/2023",
-      amount: "409.95USDC",
-      value: "$409.95",
-      icon: "/images/deposit.png",
-    },
-    {
-      type: "Deposit",
-      date: "10/07/2023",
-      amount: "409.95USDC",
-      value: "$409.95",
-      icon: "/images/deposit.png",
-    },
-    {
-      type: "Withdraw",
-      date: "10/07/2023",
-      amount: "-409.95USDC",
-      value: "$409.95",
-      icon: "/images/withdrawIcon.png",
-    },
-    {
-      type: "Deposit",
-      date: "10/07/2023",
-      amount: "409.95USDC",
-      value: "$409.95",
-      icon: "/images/deposit.png",
-    },
-    {
-      type: "Deposit",
-      date: "10/07/2023",
-      amount: "409.95USDC",
-      value: "$409.95",
-      icon: "/images/deposit.png",
-    },
-    {
-      type: "Withdraw",
-      date: "10/07/2023",
-      amount: "-409.95USDC",
-      value: "$409.95",
-      icon: "/images/withdrawIcon.png",
-    },
-  ];
+
+interface TreasuryHistoryProps {
+  daoMultiSigAddr: string;
+  limit?: number;   // how many to show in mini‐statement
+}
+
+const TreasuryHistory: React.FC<TreasuryHistoryProps> = ({
+  daoMultiSigAddr,
+  limit = 5,
+}) => {
+  const [entries, setEntries] = useState<TreasuryEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!daoMultiSigAddr) return;
+
+    (async () => {
+      const address = daoMultiSigAddr.toLowerCase();
+      const [rate, raw] = await Promise.all([
+        fetchCeloToUsdRate(),
+        fetchAllTransactions(address),
+      ]);
+
+      // filter out zero‐value and keep only send/receive
+      const filtered = (raw as RawTxn[]).filter(
+        (tx) =>
+          tx.valueCelo !== 0 &&
+          (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
+      );
+
+      // map → UI model
+      const parsed: TreasuryEntry[] = filtered.map((tx) => {
+        const isOut = tx.from.toLowerCase() === address;
+        const usd   = tx.valueCelo * rate;
+        return {
+          hash:   tx.hash,
+          type:   isOut ? "Withdraw" : "Deposit",
+          date:   new Date(tx.timestamp * 1000).toLocaleDateString(),
+          amount: `${isOut ? "-" : ""}${tx.valueCelo.toFixed(4)} CELO`,
+          value:  `$${usd.toFixed(2)}`,
+          icon:   isOut ? "/images/withdrawIcon.png" : "/images/deposit.png",
+        };
+      });
+
+      setEntries(parsed.slice(0, limit));
+      setLoading(false);
+    })();
+  }, [daoMultiSigAddr, limit]);
+
+  if (loading) {
+    return <div>Loading treasury history…</div>;
+  }
+
+  if (entries.length === 0) {
+    return (
+      <div className="treasury-history">
+        <h1>Mini Statement</h1>
+        <p style={{ padding: "1rem" }}>No transactions found.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="treasury-history">
       <h1>Mini Statement</h1>
       <div id="treasury-history">
-        {treasuryData.map((entry, index) => (
-          <div className="slot" key={index}>
-            <div className="left">
-              <img
-                src={entry.icon}
-                alt={`${entry.type} icon`}
-                width="27"
-                height="29"
-              />
-              <div>
-                <h1>{entry.type}</h1>
-                <p>{entry.date}</p>
+        {entries.map((entry) => {
+          const txUrl = `https://explorer.celo.org/alfajores/tx/${entry.hash}`;
+          return (
+            <a
+              key={entry.hash}
+              href={txUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="slot"
+            >
+              <div className="left">
+                <img
+                  src={entry.icon}
+                  alt={`${entry.type} icon`}
+                  width="27"
+                  height="29"
+                />
+                <div>
+                  <h1>{entry.type}</h1>
+                  <p>{entry.date}</p>
+                </div>
               </div>
-            </div>
-            <div className="right">
-              <div>
-                <p className="top">{entry.amount}</p>
-                <p className="bottom">{entry.value}</p>
+              <div className="right">
+                <div className="state-right">
+                  <p className="topy">{entry.amount}</p>
+                  <p className="bottom">{entry.value}</p>
+                </div>
+                <img src="/images/expand.png" alt="expand icon" />
               </div>
-              <img src="/images/expand.png" alt="expand icon" />
-            </div>
-          </div>
-        ))}
+            </a>
+          );
+        })}
       </div>
       <div className="history-button">
-        <button>Full Statement</button>
+        <button onClick={() => {/* TODO: open full‐statement popup or navigate */}}>
+          Full Statement
+        </button>
       </div>
     </div>
   );

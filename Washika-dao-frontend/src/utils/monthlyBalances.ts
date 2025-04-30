@@ -18,8 +18,8 @@ const MONTH_LABELS = [
 
 export interface MonthBucket {
   month: string;
-  deposits: number; // ETH in
-  loans: number; // ETH out
+  deposits: number;
+  loans: number;
 }
 
 export async function computeMonthlyUsdHistory(
@@ -41,10 +41,10 @@ export async function computeMonthlyUsdHistory(
     const idx = dt.getMonth();
     const usd = tx.valueCelo * celoToUsd;
     if (tx.to.toLowerCase() === address.toLowerCase()) {
-      // Incoming funds (e.g. deposits or repayments)
+      // Incoming funds 
       buckets[idx].deposits += usd;
     } else if (tx.from.toLowerCase() === address.toLowerCase()) {
-      // Outgoing funds (e.g. loans)
+      // Outgoing funds 
       buckets[idx].loans += usd;
     }
   });

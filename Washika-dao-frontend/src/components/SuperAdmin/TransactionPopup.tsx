@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { DaoDetails } from "./WanachamaList";
 import { fetchCeloToUsdRate } from "../../utils/priceUtils";
+import { fetchAllTransactions, RawTxn } from "../../utils/arbiscan";
 
 interface TransactionPopupProps {
   daoDetails?: DaoDetails;
@@ -11,8 +12,8 @@ interface TreasuryEntry {
   hash: string;
   type: "Withdraw" | "Deposit";
   date: string;
-  amount: string; // e.g. "-0.123 ETH"
-  value: string; // e.g. "$234.56"
+  amount: string;
+  value: string;
   icon: string;
 }
 
@@ -24,39 +25,28 @@ export default function TransactionPopup({
   useEffect(() => {
     if (!daoDetails?.daoMultiSigAddr) return;
     (async () => {
-      const address = daoDetails.daoMultiSigAddr;
-      const BLOCKSCOUT_API = "https://celo-alfajores.blockscout.com/api";
+      const address = daoDetails.daoMultiSigAddr.toLowerCase();
 
-      const url = `${BLOCKSCOUT_API}?module=account
-        &action=txlist
-        &address=${address}
-        &startblock=0
-        &endblock=99999999
-        &page=1
-        &offset=8
-        &sort=desc`.replace(/\s+/g, "");
-
-      const [rateRes, txRes] = await Promise.all([
+      const [rateRes, rawTxns] = await Promise.all([
         fetchCeloToUsdRate(),
-        fetch(url).then((r) => r.json()),
+        fetchAllTransactions(address),
       ]);
 
-      if (txRes.status !== "1" || !txRes.result) {
-        setEntries([]);
-        return;
-      }
+      const nonZero = rawTxns.filter(
+        (tx) =>
+          tx.valueCelo !== 0 &&
+          (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
+      );
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const parsed: TreasuryEntry[] = txRes.result.map((tx: any) => {
-        const celo = Number(tx.value) / 1e18;
-        const usd = celo * rateRes;
-        const isOut = tx.from.toLowerCase() === address.toLowerCase();
+      const parsed: TreasuryEntry[] = nonZero.map((tx: RawTxn) => {
+        const isOut = tx.from.toLowerCase() === address;
+        const usd = tx.valueCelo * rateRes;
 
         return {
           hash: tx.hash,
           type: isOut ? "Withdraw" : "Deposit",
-          date: new Date(Number(tx.timeStamp) * 1000).toLocaleDateString(),
-          amount: `${isOut ? "-" : ""}${celo.toFixed(4)} CELO`,
+          date: new Date(Number(tx.timestamp) * 1000).toLocaleDateString(),
+          amount: `${isOut ? "-" : ""}${tx.valueCelo.toFixed(4)} CELO`,
           value: `$${usd.toFixed(2)}`,
           icon: isOut ? "/images/withdrawIcon.png" : "/images/deposit.png",
         };
