@@ -7,7 +7,7 @@ import {
   useActiveAccount,
 } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer";
 
@@ -180,7 +180,7 @@ const ViewProposal: React.FC = () => {
             onClick={() => navigate(-1)}
             style={{ cursor: "pointer" }}
           />
-          <button className="inProgress">On‑Chain</button>
+          <button className="inProgress">{rawProposal.proposalStatus}</button>
         </div>
 
         <article>
@@ -189,7 +189,7 @@ const ViewProposal: React.FC = () => {
             <button disabled>Fund Project</button>
             <button disabled>View Statement</button>
           </div>
-          <p>Summary from backend here</p>
+          {/* <p>Summary from backend here</p> */}
         </article>
 
         <section>
@@ -202,7 +202,7 @@ const ViewProposal: React.FC = () => {
         </section>
 
         <section>
-          <button>View linked resources</button>
+          <Link to={rawProposal.proposalUrl} className="link">View linked resources</Link>
           <div className="dooh">
             <p className="first">Amount Requested</p>
             <div className="second">

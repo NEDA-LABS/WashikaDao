@@ -36,8 +36,9 @@ const TreasuryHistory: React.FC<TreasuryHistoryProps> = ({
       // filter out zero‐value and keep only send/receive
       const filtered = (raw as RawTxn[]).filter(
         (tx) =>
-          tx.valueCelo !== 0 &&
-          (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
+          !tx.isInternal &&
+        tx.valueCelo !== 0 &&
+        (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
       );
 
       // map → UI model

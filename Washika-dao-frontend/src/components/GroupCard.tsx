@@ -107,7 +107,7 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
           </div>
 
           <div className="right">
-            <h3>Thamani ya hazina</h3>
+            <h3>Treasury Value</h3>
             <div>
               <p className="currency">USD</p>
               <p className="amount">
@@ -126,10 +126,10 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
         <div className="section-3">
           <div className="top">
             <img src="/images/profile.png" alt="idadi" />
-            <div className="taarifa">Taarifa za wanachama</div>
+            <div className="taarifa">Member Information</div>
           </div>
           <div className="bottom">
-            <h2>Idadi ya wanachama</h2>
+            <h2>Members</h2>
             <p>{memberCount}</p>
           </div>
         </div>

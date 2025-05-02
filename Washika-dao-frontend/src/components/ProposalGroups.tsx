@@ -35,7 +35,7 @@ interface OnChainProposal {
 const ZERO_BYTES32 =
   "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 2;
 
 const ProposalGroups: React.FC = () => {
   const navigate = useNavigate();
@@ -91,7 +91,6 @@ const ProposalGroups: React.FC = () => {
   const start = currentPage * PAGE_SIZE;
   const proposalsRev = [...rawProposals].reverse();
   const pageItems = proposalsRev.slice(start, start + PAGE_SIZE);
-  console.log(pageItems);
   
 
   return (
@@ -108,7 +107,7 @@ const ProposalGroups: React.FC = () => {
             <div className="proposal">
               <div className="one">
                 <h1>{p.proposalTitle}</h1>
-                <div className="inProgress">open</div>
+                <div className="inProgress">{p.proposalStatus}</div>
               </div>
               <p className="two">proposal description</p>
               <div className="three">

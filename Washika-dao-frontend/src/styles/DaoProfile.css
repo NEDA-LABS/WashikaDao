@@ -250,7 +250,7 @@ main.daoMain {
 }
 
 .treasury-history #treasury-history {
-  height: 481px;
+  max-height: 481px;
   border-radius: 10px;
   margin: 16px 0 24px 12px;
   display: flex;
@@ -580,8 +580,9 @@ section.second::after {
   }
 
   .treasury {
-    padding: 24px 0;
-    margin: 24px 0;
+    padding: 78px 0 24px;
+    margin: 24px 0 72px;
+    border: 1px solid red;
   }
 
   .treasury .first {
@@ -632,7 +633,7 @@ section.second::after {
   .treasury-history #treasury-history {
     width: auto;
     margin: 12px;
-    height: 320px;
+    max-height: 320px;
     gap: 24px;
   }
 

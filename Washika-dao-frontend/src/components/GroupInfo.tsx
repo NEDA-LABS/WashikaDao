@@ -116,8 +116,6 @@ export default function GroupInfo() {
     return <div>Loading DAOs…</div>;
   }
 
-  console.log("Daos are:", daos);
-
   // When a group is clicked, check if the user is already a member.
   // If not, show the popup to choose registration type.
 

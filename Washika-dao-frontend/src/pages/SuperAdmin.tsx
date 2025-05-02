@@ -4,7 +4,7 @@ import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
 import { useRef, useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addNotification } from "../redux/notifications/notificationSlice";
+import { addNotification, removeNotification, showNotificationPopup } from "../redux/notifications/notificationSlice";
 import {
   useActiveAccount,
   useActiveWalletConnectionStatus,
@@ -87,14 +87,19 @@ const SuperAdmin: React.FC = () => {
       connectionStatus === "connected" &&
       prevConnectionStatus.current !== "connected"
     ) {
+      const id = crypto.randomUUID()
       dispatch(
         addNotification({
-          id: crypto.randomUUID(),
+          id,
           type: "info",
           message: "Wallet connected successfully",
           section: "daoOverview",
         })
       );
+      dispatch(showNotificationPopup());
+      setTimeout(() => {
+        dispatch(removeNotification(id));
+      }, 10000);
     }
     prevConnectionStatus.current = connectionStatus;
   }, [connectionStatus, dispatch]);
@@ -119,7 +124,7 @@ const SuperAdmin: React.FC = () => {
     <>
       <NavBar className={"SuperAdmin"} />
       <main className="member superAdmin">
-        <Notification setActiveSection={setActiveSection} />
+        <Notification />
 
         <AdminTop
           setActiveSection={setActiveSection}
