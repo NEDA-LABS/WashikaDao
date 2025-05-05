@@ -10,6 +10,9 @@ interface DaoOverviewProps {
 
 export default function DaoOverview({ daoDetails }: DaoOverviewProps) {
   const [showStatement, setShowStatement] = useState(false);
+  if (!daoDetails) {
+    return <div>Loading DAO overview…</div>;
+  }
   const daoMultisigAddr = daoDetails!.daoMultiSigAddr;
 
   return (

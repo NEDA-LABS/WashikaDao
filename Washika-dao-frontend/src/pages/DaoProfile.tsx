@@ -11,11 +11,12 @@ import {
   removeNotification,
 } from "../redux/notifications/notificationSlice";
 import Notification from "../components/SuperAdmin/Notification";
-import { useActiveAccount, useReadContract, useWalletBalance } from "thirdweb/react";
+import { useActiveAccount, useActiveWalletConnectionStatus, useReadContract, useWalletBalance } from "thirdweb/react";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 import { client } from "../utils/thirdwebClient";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
 interface PreloadedState {
   group: {
@@ -55,6 +56,7 @@ const DaoProfile: React.FC = () => {
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const connectionStatus = useActiveWalletConnectionStatus();
 
   // on-chain: read all DAOs
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
@@ -181,8 +183,13 @@ const DaoProfile: React.FC = () => {
 
   const handleClick = () => navigate("/CreateProposal");
 
-  if (loading) return <div>Loading...</div>;
-  if (!daoDetails) return <div>DAO Details not available</div>;
+    if (loading || !daoDetails || connectionStatus === "connecting") {
+      return <LoadingPopup message="Loading wallet…" />;
+    }
+
+    if (!daoDetails) return <div>DAO Details not available</div>;
+
+
   if (!activeAccount?.address) {
     return (
       <div className="fullheight">

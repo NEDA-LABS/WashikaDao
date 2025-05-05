@@ -1,5 +1,3 @@
-// useDaoNavigation.tsx
-import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { OnchainDao } from "../../utils/Types";
 import { useActiveAccount } from "thirdweb/react";
@@ -14,14 +12,10 @@ import { useActiveAccount } from "thirdweb/react";
  */
 export const useDaoNavigation = (daos: OnchainDao[]) => {
   const navigate = useNavigate();
-  const [filteredDaos, setFilteredDaos] = useState<OnchainDao[]>([]);
   const activeAccount = useActiveAccount();
   const memberAddr = activeAccount?.address;
 
-  // useEffect hook that filters the DAOs when the input array changes.
-  useEffect(() => {
-    setFilteredDaos(daos || []);
-  }, [daos]);
+  const filteredDaos = daos.filter((dao) => dao.daoCreator);
 
   const navigateToDao = (dao: OnchainDao) => {
     // Navigate to the admin dashboard for DAOs where the user holds an admin role.

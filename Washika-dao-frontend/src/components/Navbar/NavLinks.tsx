@@ -39,7 +39,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
 }) => {
   // Retrieve the user's address from the Redux store.
   const activeAccount = useActiveAccount();
-    const address = activeAccount?.address;
+  const address = activeAccount?.address;
 
   // Fetch the DAOs associated with the current address; if none exists, an empty string is passed.
   const { daos } = useMemberDaos(address || "");
@@ -63,7 +63,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
   const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const selectedDaoId = localStorage.getItem("selectedDaoId");
-
+    console.log("this is the selectedDaoId", selectedDaoId);
     if (selectedDaoId) {
       const selectedDao = filteredDaos.find(
         (dao) => dao.daoId === selectedDaoId
@@ -77,6 +77,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
     if (filteredDaos.length === 1) {
       navigateToDao(filteredDaos[0]);
     }
+    
   };
 
   // Determines if the "Open Dao" link should be shown based on the current page context.
@@ -125,7 +126,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
         //   <Link to={`/SuperAdmin/${address}`}>DAO Tool Kit</Link>
         // </li>
         // )
-        
       )}
       {/* Render the authentication button with a prop to toggle the mobile menu */}
       <AuthButton className={className} toggleMenu={toggleMenu} />

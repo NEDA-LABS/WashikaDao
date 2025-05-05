@@ -20,6 +20,7 @@ import { readContract } from "thirdweb";
 interface UseMemberDaosResult {
   daos: OnchainDao[];
   memberExists: boolean;
+  isLoading: boolean;
 }
 
 /**
@@ -44,10 +45,10 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
   const [daos, setDaos] = useState<OnchainDao[]>(storedDaos || []);
   // Local state to track whether the member exists (based on API response).
   const [memberExists, setMemberExists] = useState<boolean>(false);
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const {
-    data: allDaosRaw,
+    data: allDaosRaw, isLoading: rawLoading
   } = useReadContract({
     contract: FullDaoContract,
     method:
@@ -58,21 +59,22 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
   // useEffect hook triggers whenever the member address or stored DAOs change.
   useEffect(() => {
     // Exit early if there is no member address provided.
-    if (!memberAddr || !allDaosRaw) return;
+    if (!memberAddr || rawLoading) return;
 
     // If DAOs are already cached in Redux, use them and mark the member as existing.
-    if (storedDaos && storedDaos.length > 0 && storedDaos[0].daoId === allDaosRaw[0]?.daoId) {
-      setDaos(storedDaos);
-      setMemberExists(true);
-      return;
-    }
+    // if (storedDaos && storedDaos.length > 0 && storedDaos[0].daoId === allDaosRaw[0]?.daoId) {
+    //   setDaos(storedDaos);
+    //   setMemberExists(true);
+    //   return;
+    // }
 
     const fetchMemberDaos = async () => {
+      setIsLoading(true);
       try {
         // for each on-chain DAO, ask if member is in it
         const checks = await Promise.all(
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          allDaosRaw.map(async (d: any) => {
+          (allDaosRaw as any[]).map(async (d: any) => {
             const isMember = await readContract({
               contract: FullDaoContract,
               method:
@@ -104,16 +106,13 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
         // dispatch(setCurrentUser({ memberAddr, ... }))
       } catch (err) {
         console.error("on-chain member lookup failed", err);
+      }finally {
+        setIsLoading(false);
       }
     };
 
     fetchMemberDaos();
-  }, [
-    allDaosRaw,
-    dispatch,
-    memberAddr,
-    storedDaos,
-  ]);
+  }, [allDaosRaw, dispatch, memberAddr, rawLoading, storedDaos]);
 
-  return { daos, memberExists };
+  return { daos, memberExists, isLoading };
 };

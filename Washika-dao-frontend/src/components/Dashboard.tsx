@@ -8,7 +8,7 @@ import { fetchAllTransactions, RawTxn } from "../utils/arbiscan";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 
 interface DashboardProps {
-  address: string;
+  address: string | undefined;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ address }) => {

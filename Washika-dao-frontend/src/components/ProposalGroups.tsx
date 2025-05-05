@@ -1,33 +1,15 @@
+// ProposalGroups.tsx
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-// import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
-// import { RootState } from "../redux/store";
-// import { useSelector } from "react-redux";
 import { useReadContract } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
-
-// interface ProposalData {
-//   proposalId: number;
-//   proposalOwner: string;
-//   proposalTitle: string;
-//   projectSummary: string;
-//   proposalDescription: string;
-//   proposalStatus: "open" | "closed";
-//   amountRequested: number;
-//   profitSharePercent: number;
-//   daoMultiSigAddr: string;
-//   numUpVotes: number;
-//   numDownVotes: number;
-//   proposalCustomIdentifier: string;
-// }
 
 interface OnChainProposal {
   proposalOwner: string;
   proposalId: `0x${string}`;
   daoId: string;
   proposalUrl: string;
-  proposalTitle: string;      
+  proposalTitle: string;
   proposalStatus: string;
   proposalCreatedAt: bigint;
 }
@@ -37,16 +19,14 @@ const ZERO_BYTES32 =
 
 const PAGE_SIZE = 2;
 
-const ProposalGroups: React.FC = () => {
+type ProposalGroupsProps = {
+  ownerFilter?: string;
+};
+
+const ProposalGroups: React.FC<ProposalGroupsProps> = ({ ownerFilter }) => {
   const navigate = useNavigate();
-  // const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
-  // const userDaos = useSelector((state: RootState) => state.userDaos.daos);
-  // const selectedDao = userDaos.find((dao) => dao.daoTxHash === selectedDaoTxHash);
-  const daoId = localStorage.getItem("daoId")
+  const daoId = localStorage.getItem("daoId") || ZERO_BYTES32;
 
-  const idParam = (daoId || ZERO_BYTES32) as `0x${string}`;
-
-  // 1) Read all proposals on-chain
   const {
     data: rawProposals,
     isLoading,
@@ -55,7 +35,7 @@ const ProposalGroups: React.FC = () => {
     contract: FullDaoContract,
     method:
       "function getProposals(bytes32 _daoId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt)[])",
-    params: [idParam] as const,
+    params: [daoId as `0x${string}`] as const,
   }) as {
     data?: OnChainProposal[];
     isLoading: boolean;
@@ -65,13 +45,12 @@ const ProposalGroups: React.FC = () => {
 
   const [currentPage, setCurrentPage] = useState(0);
 
-  if (isLoading) {
-    return <div>Loading on-chain proposals…</div>;
-  }
+  if (isLoading) return <div>Loading on-chain proposals…</div>;
   if (error) {
     console.error(error);
     return <div>Error loading on-chain proposals.</div>;
   }
+
   if (!rawProposals || rawProposals.length === 0) {
     return (
       <div className="noProposals">
@@ -80,28 +59,27 @@ const ProposalGroups: React.FC = () => {
       </div>
     );
   }
-  const handleProposalClick = () => {
-    navigate("/viewProposal");
-  };
 
-  // pagination logic
-  const totalPages = Math.ceil(rawProposals.length / PAGE_SIZE);
+  // filter by owner if provided
+  const filtered = ownerFilter
+    ? rawProposals.filter(
+        (p) => p.proposalOwner.toLowerCase() === ownerFilter.toLowerCase()
+      )
+    : rawProposals;
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
   const start = currentPage * PAGE_SIZE;
-  const proposalsRev = [...rawProposals].reverse();
-  const pageItems = proposalsRev.slice(start, start + PAGE_SIZE);
-  
+  const pageItems = [...filtered].reverse().slice(start, start + PAGE_SIZE);
 
   return (
     <div className="proposal-groups">
       {pageItems.map((p) => {
-        // use the title as your client‐side “identifier’
         const identifier = encodeURIComponent(p.proposalTitle);
-        // const expiry = new Date(Number(p.expirationTime) * 1000).toLocaleDateString();
         return (
           <Link
-            key={p.proposalTitle}
+            key={p.proposalId}
             to={`/ViewProposal/${daoId}/${identifier}`}
-            state = {{ proposal: p}}
+            state={{ proposal: p }}
           >
             <div className="proposal">
               <div className="one">
@@ -111,17 +89,13 @@ const ProposalGroups: React.FC = () => {
               <p className="two">proposal description</p>
               <div className="three">
                 <div className="button-group button">
-                  <button onClick={handleProposalClick}>
+                  <button onClick={() => navigate(`/ViewProposal/${daoId}/${identifier}`)}>
                     Vote on Proposal
                   </button>
-                  <button className="button-2" onClick={handleProposalClick}>
+                  <button className="button-2" onClick={() => navigate(`/ViewProposal/${daoId}/${identifier}`)}>
                     View linked resources
                   </button>
                 </div>
-                {/* <div className="proposal-right">
-                  <h2>Expires</h2>
-                  <p>{expiry}</p>
-                </div> */}
                 <div className="proposal-right">
                   <h2>Amount Requested</h2>
                   <p>
@@ -134,8 +108,8 @@ const ProposalGroups: React.FC = () => {
           </Link>
         );
       })}
-      {/* pagination controls */}
-      <div
+
+<div
         className="pagination-controls"
         style={{ marginTop: "1rem", textAlign: "center" }}
       >

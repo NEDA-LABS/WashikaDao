@@ -2,12 +2,12 @@ import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import Dashboard from "../components/Dashboard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DaoForm from "../components/DaoForm";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
-import { Dao, fetchDaos } from "../hooks/useFetchDaos";
-import { useNavigate } from "react-router-dom";
-import { useActiveAccount } from "thirdweb/react";
+import { useNavigate, useParams } from "react-router-dom";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
+import { useMemberDaos } from "../components/Navbar/useMemberDaos";
 
 /**
  * @Auth policy: Should definitely be authenticated to make sense
@@ -27,8 +27,6 @@ const MemberProfile: React.FC = () => {
   // const [guaranter, setGuaranter] = useState<string>("");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
   const navigate = useNavigate();
-  const [daos, setDaos] = useState<Dao[]>([]); // DAOs for selection
-
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -38,10 +36,13 @@ const MemberProfile: React.FC = () => {
   const [daoMultiSigAddr, setDaoMultiSigAddr] = useState<string>("");
   const [guarantor, setGuarantor] = useState<string>("");
   const [memberDaos, setMemberDaos] = useState<string[]>([]);
-  const activeAccount = useActiveAccount();
-  const memberAddr = activeAccount!.address;
+
 
   const token = localStorage.getItem("token") ?? "";
+  const params = useParams<{ address: string }>();
+  const memberAddr = params.address ?? "";
+  
+  const { daos } = useMemberDaos(memberAddr);
 
   const handleDaoChange = (event: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     const selectedDaoName = event.target.value;
@@ -51,17 +52,9 @@ const MemberProfile: React.FC = () => {
 
     if (chosenDao && !memberDaos.includes(chosenDao.daoName)) {
       setMemberDaos((prevDaos) => [...prevDaos, chosenDao.daoName]);
-      setDaoMultiSigAddr(chosenDao.daoMultiSigAddr); // Save selected DAO’s address
+      setDaoMultiSigAddr(chosenDao.daoCreator); // Save selected DAO’s address
     }
   };
-
-  useEffect(() => {
-    const getDaos = async () => {
-      const daoList = await fetchDaos();
-      setDaos(daoList);
-    };
-    getDaos();
-  }, []);
 
   // Toggle the form popup visibility
   const handleAddMemberClick = () => {
@@ -105,6 +98,8 @@ const MemberProfile: React.FC = () => {
 
       const result = await response.json();
 
+      
+
       if (response.ok) {
         setShowForm(!showForm);
         console.log(`Success: ${result.message}`);
@@ -115,6 +110,13 @@ const MemberProfile: React.FC = () => {
       console.error("Submission failed:", error);
     }
   };
+
+  if (
+    !memberAddr
+  ) {
+    return <LoadingPopup message="Loading wallet…" />;
+  }
+  const handleClick = () => navigate("/CreateProposal");
   return (
     <>
       <NavBar className={"navbarDaoMember"} />
@@ -157,7 +159,7 @@ const MemberProfile: React.FC = () => {
         <div className="button-group buttons">
           <button>Account Information</button>
           <button>Make Payments</button>
-          <button>Apply for Loan</button>
+          <button onClick={handleClick}>Apply for Loan</button>
           <button onClick={handleAddMemberClick}>Edit Settings</button>
         </div>
 
@@ -171,9 +173,9 @@ const MemberProfile: React.FC = () => {
         <section className="second">
           <div className="sec">
             <img src="/images/Vector4.png" alt="logo" />
-            <h1>Current Proposals</h1>
+            <h1>My Proposals</h1>
           </div>
-          <ProposalGroups />
+          <ProposalGroups ownerFilter={memberAddr} />
         </section>
         {showForm && (
           <div className=" popupp">

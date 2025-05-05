@@ -47,18 +47,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const dispatch = useDispatch();
   const activeAccount = useActiveAccount();
     const address = activeAccount?.address;
-  const { daos } = useMemberDaos(address || "");
-
-  // Synchronize Redux state with localStorage to persist the user's authentication state.
-  // useEffect(() => {
-  //   const storedAddress = localStorage.getItem("address");
-  //   if (storedAddress && storedAddress !== address) {
-  //     dispatch(login(storedAddress));
-  //   }
-  // }, [dispatch, address]);
-
-  // Check membership existence for the logged-in user.
-  const { memberExists } = useMemberDaos(address || "");
+    const { daos, memberExists } = useMemberDaos(address || "");
 
   /**
    * Define a custom theme for the ConnectButton using Thirdweb's lightTheme.
