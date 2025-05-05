@@ -3,6 +3,9 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import TreasuryHistory from "../components/TreasuryHistory";
+import { useDispatch } from "react-redux";
+import { addNotification, showNotificationPopup, removeNotification } from "../redux/notifications/notificationSlice";
+import Notification from "../components/SuperAdmin/Notification";
 
 interface PreloadedState {
   group: {
@@ -35,6 +38,7 @@ const DaoProfile: React.FC = () => {
   const { daoTxHash } = useParams<{ daoTxHash: string }>();
   const { state } = useLocation();
   const preloaded = (state as PreloadedState) || null;
+  const dispatch = useDispatch();
 
   const [daoDetails] = useState<DaoDetails | null>(
     preloaded
@@ -54,6 +58,7 @@ const DaoProfile: React.FC = () => {
   );
   const [loading] = useState(!preloaded);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  localStorage.setItem(preloaded.group.daoId, "daoId")
 
   useEffect(() => {
     const onResize = () => setIsSmallScreen(window.innerWidth <= 1537);
@@ -61,6 +66,32 @@ const DaoProfile: React.FC = () => {
     onResize();
     return () => window.removeEventListener("resize", onResize);
   }, []);
+
+  const fullAddress = daoDetails?.daoMultiSigAddr || "";
+    const displayAddress = fullAddress
+      ? isSmallScreen
+        ? `${fullAddress.slice(0, 14)}…${fullAddress.slice(-9)}`
+        : fullAddress
+      : "N/A";
+  
+    const handleCopy = () => {
+      if (!fullAddress) return;
+  
+      navigator.clipboard.writeText(fullAddress).then(() => {
+        const id = crypto.randomUUID();
+        dispatch(
+          addNotification({
+            id,
+            type: "info",
+            message: "Address copied to clipboard!",
+          })
+        );
+        dispatch(showNotificationPopup());
+        setTimeout(() => {
+          dispatch(removeNotification(id));
+        }, 10000);
+      });
+    };
 
   const handleClick = () => {
     navigate(`/CreateProposal/${daoTxHash}`);
@@ -73,12 +104,11 @@ const DaoProfile: React.FC = () => {
     <>
       <NavBar className="DaoProfile" />
       <main className="daoMain">
+        <Notification />
         <div className="daoImage">
           <img
             src={daoDetails.daoImageIpfsHash || "/images/default.png"}
             alt="DaoImage"
-            width={1450}
-            height={509}
             onError={(e) => {
               (e.target as HTMLImageElement).src = "/images/default.png";
             }}
@@ -97,14 +127,30 @@ const DaoProfile: React.FC = () => {
                   height="31"
                 />
               </div>
-              <p className="email">
-                {isSmallScreen
-                  ? `${daoDetails.daoMultiSigAddr.slice(
-                      0,
-                      14
-                    )}…${daoDetails.daoMultiSigAddr.slice(-9)}`
-                  : daoDetails.daoMultiSigAddr}
-              </p>
+              <div className="address">
+                <p className="email">{displayAddress}</p>
+                {fullAddress && (
+                  <button
+                    onClick={handleCopy}
+                    aria-label="Copy address"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      color: "#555",
+                      display: "flex",
+                    }}
+                  >
+                    <img
+                      src="/images/copy.png"
+                      alt="copy"
+                      width={20}
+                      style={{ opacity: 0.4 }}
+                    />
+                  </button>
+                )}
+              </div>
             </div>
 
             <p className="section-21">

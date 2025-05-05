@@ -133,7 +133,7 @@ const MemberProfile: React.FC = () => {
                   <h1>Credit Score</h1>
                 </div>
                 <div className="right">
-                  <img src="/images/Vector(1).png" alt="" />
+                  <img src="/images/Vector1.png" alt="" />
                   <p>Apply</p>
                 </div>
               </div>
@@ -168,7 +168,7 @@ const MemberProfile: React.FC = () => {
         </button>
         <section className="second">
           <div className="sec">
-            <img src="/images/Vector(4).png" alt="logo" />
+            <img src="/images/Vector4.png" alt="logo" />
             <h1>Current Proposals</h1>
           </div>
           <ProposalGroups />

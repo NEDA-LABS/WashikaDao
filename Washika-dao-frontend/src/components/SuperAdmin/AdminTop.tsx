@@ -239,7 +239,12 @@ export default function AdminTop({
                       display: "flex",
                     }}
                   >
-                    <img src="/images/copy.png" alt="copy" width={20} style={{opacity: 0.4}} />
+                    <img
+                      src="/images/copy.png"
+                      alt="copy"
+                      width={20}
+                      style={{ opacity: 0.4 }}
+                    />
                   </button>
                 )}
               </div>

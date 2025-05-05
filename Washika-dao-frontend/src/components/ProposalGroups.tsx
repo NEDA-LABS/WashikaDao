@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 // import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
 // import { RootState } from "../redux/store";
 // import { useSelector } from "react-redux";
-import { useReadContract, useActiveAccount } from "thirdweb/react";
+import { useReadContract } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 
 // interface ProposalData {
@@ -39,11 +39,9 @@ const PAGE_SIZE = 2;
 
 const ProposalGroups: React.FC = () => {
   const navigate = useNavigate();
-  const activeAccount = useActiveAccount();
   // const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
   // const userDaos = useSelector((state: RootState) => state.userDaos.daos);
   // const selectedDao = userDaos.find((dao) => dao.daoTxHash === selectedDaoTxHash);
-  const daoMultiSigAddr = activeAccount?.address || "";
   const daoId = localStorage.getItem("daoId")
 
   const idParam = (daoId || ZERO_BYTES32) as `0x${string}`;
@@ -102,7 +100,7 @@ const ProposalGroups: React.FC = () => {
         return (
           <Link
             key={p.proposalTitle}
-            to={`/ViewProposal/${daoMultiSigAddr}/${identifier}`}
+            to={`/ViewProposal/${daoId}/${identifier}`}
           >
             <div className="proposal">
               <div className="one">
