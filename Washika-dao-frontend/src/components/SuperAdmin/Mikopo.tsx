@@ -1,61 +1,24 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { addNotification } from "../../redux/notifications/notificationSlice";
+import {
+  addNotification,
+  removeNotification,
+  showNotificationPopup,
+} from "../../redux/notifications/notificationSlice";
 import Cards, { CardType } from "./Cards";
+import { useReadContract } from "thirdweb/react";
+import { FullDaoContract } from "../../utils/handlers/Handlers";
 
-const initialCardData: CardType[] = [
-  {
-    id: 1,
-    image: "/images/Image.png",
-    name: "Member A",
-    date: "2024-02-10",
-    amount: 340000,
-    status: "pending",
-  },
-  {
-    id: 2,
-    image: "/images/Image.png",
-    name: "Member B",
-    date: "2024-02-11",
-    amount: 150000,
-    status: "approved",
-  },
-  {
-    id: 3,
-    image: "/images/Image.png",
-    name: "Member C",
-    date: "2024-02-12",
-    amount: 500000,
-    status: "denied",
-  },
-  {
-    id: 4,
-    image: "/images/Image.png",
-    name: "Member D",
-    date: "2024-02-13",
-    amount: 250000,
-    status: "paid",
-  },
-  {
-    id: 5,
-    image: "/images/Image.png",
-    name: "Member E",
-    date: "2024-02-14",
-    amount: 420000,
-    status: "approved",
-  },
-  {
-    id: 6,
-    image: "/images/Image.png",
-    name: "Member F",
-    date: "2024-02-15",
-    amount: 310000,
-    status: "pending",
-  },
-];
+interface OnChainProposal {
+  proposalOwner: string;
+  proposalId: string;
+  daoId: string;
+  proposalUrl: string;
+  proposalTitle: string;
+  proposalStatus: string;
+  proposalCreatedAt: bigint;
+}
 
-// derive the maximum amount for slider
-const initialMaxAmount = Math.max(...initialCardData.map((c) => c.amount));
 
 const statusOptions = [
   { key: "pending", label: "Pending", desc: "Awaiting approval" },
@@ -64,15 +27,69 @@ const statusOptions = [
   { key: "paid", label: "Paid", desc: "Loans fully paid back" },
 ];
 
-type SortOption = "new" | "owed" | "paid" | "fee";
 
-export default function Mikopo() {
+const ZERO_BYTES32 =
+  "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
+
+  export default function Mikopo() {
   const dispatch = useDispatch();
-  const [cards, setCards] = useState<CardType[]>(initialCardData);
-  const [searchTerm, setSearchTerm] = useState<string>("");
+  const daoId = (localStorage.getItem("daoId") || ZERO_BYTES32) as `0x${string}`;
+
+  // 1) Fetch on-chain proposals
+  const {
+    data: rawProposals = [],
+    isLoading,
+    error,
+  } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "function getProposals(bytes32 _daoId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt)[])",
+    params: [daoId] as const,
+  }) as {
+    data?: OnChainProposal[];
+    isLoading: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    error?: any;
+  };
+
+  // 2) Map to CardType
+  const mappedCards: CardType[] = useMemo(
+    () =>
+      rawProposals.map((p, idx) => ({
+        id: idx + 1,
+        image: "/images/default.png",
+        name: p.proposalOwner,
+        // convert seconds (bigint) → ms → locale date
+        date: new Date(Number(p.proposalCreatedAt) * 1000).toLocaleDateString(),
+        amount: 0, // or fetch amountRequested if you extend OnChainProposal
+        status: p.proposalStatus as string,
+      })),
+    [rawProposals]
+  );
+
+  // Local state for filtering/sorting
+  const [cards, setCards] = useState<CardType[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const [statusFilters, setStatusFilters] = useState<string[]>([]);
-  const [maxAmount, setMaxAmount] = useState<number>(initialMaxAmount);
-  const [sortOption, setSortOption] = useState<SortOption>("new");
+  const [maxAmount, setMaxAmount] = useState(0);
+  const [sortOption, setSortOption] = useState<"new" | "owed" | "paid" | "fee">(
+    "new"
+  );
+
+  // When raw proposals arrive, bootstrap state
+  useEffect(() => {
+    if (!isLoading && !error) {
+      setCards(mappedCards);
+      // set maxAmount based on incoming amounts
+      setMaxAmount(Math.max(...mappedCards.map((c) => c.amount), 0));
+    }
+  }, [isLoading, error, mappedCards]);
+
+  // derive initialMaxAmount
+  const initialMaxAmount = useMemo(
+    () => Math.max(...cards.map((c) => c.amount), 0),
+    [cards]
+  );
 
   // toggle status filter
   const toggleStatus = (status: string) => {
@@ -83,9 +100,8 @@ export default function Mikopo() {
     );
   };
 
-  // Filter & sort logic
+  // Filter & sort logic (unchanged)
   const displayedCards = useMemo(() => {
-    // 1) Keyword filter
     let filtered = cards.filter((c) => {
       const keywords = searchTerm.trim().toLowerCase().split(/\s+/);
       return keywords.every((kw) =>
@@ -95,56 +111,49 @@ export default function Mikopo() {
       );
     });
 
-    // 2) Status filter
     if (statusFilters.length > 0) {
       filtered = filtered.filter((c) => statusFilters.includes(c.status));
     }
 
-    // 3) Amount filter
     filtered = filtered.filter((c) => c.amount <= maxAmount);
 
-    // 4) Sort / special filters
     switch (sortOption) {
       case "new":
-        // newest first
         filtered.sort(
           (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
         );
         break;
-
       case "owed":
-        // only outstanding (approved) loans
         filtered = filtered.filter((c) => c.status === "approved");
         break;
-
       case "paid":
-        // only fully paid‑back loans
         filtered = filtered.filter((c) => c.status === "paid");
         break;
-
       case "fee":
-        // lowest amount first
         filtered.sort((a, b) => a.amount - b.amount);
         break;
     }
-
     return filtered;
   }, [cards, searchTerm, statusFilters, maxAmount, sortOption]);
 
+  // Handlers (approve/deny) now refer to CardType.name, status etc.
   const handleApprove = (id: number) => {
     setCards((prev) =>
       prev.map((c) => (c.id === id ? { ...c, status: "approved" } : c))
     );
     const approved = cards.find((c) => c.id === id);
     if (approved) {
+      const noteId = crypto.randomUUID();
       dispatch(
         addNotification({
-          id: crypto.randomUUID(),
+          id: noteId,
           type: "success",
-          message: `Loan approved for ${approved.name}`,
+          message: `Proposal by ${approved.name} approved`,
           section: "mikopo",
         })
       );
+      dispatch(showNotificationPopup());
+      setTimeout(() => dispatch(removeNotification(noteId)), 10000);
     }
   };
 
@@ -154,16 +163,22 @@ export default function Mikopo() {
     );
     const denied = cards.find((c) => c.id === id);
     if (denied) {
+      const noteId = crypto.randomUUID();
       dispatch(
         addNotification({
-          id: crypto.randomUUID(),
+          id: noteId,
           type: "error",
-          message: `Loan denied for ${denied.name}`,
+          message: `Proposal by ${denied.name} denied`,
           section: "mikopo",
         })
       );
+      dispatch(showNotificationPopup());
+      setTimeout(() => dispatch(removeNotification(noteId)), 10000);
     }
   };
+
+  if (isLoading) return <div>Loading proposals…</div>;
+  if (error) return <div>Error loading proposals.</div>;
 
   return (
     <>

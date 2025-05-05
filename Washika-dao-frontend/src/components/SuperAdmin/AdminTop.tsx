@@ -10,6 +10,12 @@ import { FullDaoContract } from "../../utils/handlers/Handlers";
 import { client } from "../../utils/thirdwebClient";
 import { DaoDetails } from "./WanachamaList";
 import { fetchCeloToUsdRate } from "../../utils/priceUtils";
+import { useDispatch } from "react-redux";
+import {
+  addNotification,
+  removeNotification,
+  showNotificationPopup,
+} from "../../redux/notifications/notificationSlice";
 
 interface OnchainDao {
   daoName: string;
@@ -35,6 +41,7 @@ export default function AdminTop({
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
   const active = useActiveAccount();
+  const dispatch = useDispatch();
 
   // 1️⃣ Fetch all DAOs on-chain
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
@@ -54,9 +61,9 @@ export default function AdminTop({
     if (!rawDaos || loadingDaos || balanceLoading) return;
 
     // 3️⃣ Map tuples → objects
-    const allDaos = (rawDaos as Array<
-      [string, string, string, string, string, string]
-    >).map(
+    const allDaos = (
+      rawDaos as Array<[string, string, string, string, string, string]>
+    ).map(
       ([
         daoName,
         daoLocation,
@@ -77,8 +84,7 @@ export default function AdminTop({
 
     // 4️⃣ Find the one matching our route param
     const found = allDaos.find(
-      (d) =>
-        d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase()
+      (d) => d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase()
     );
     if (!found) return;
 
@@ -92,12 +98,12 @@ export default function AdminTop({
         daoName: found.daoName,
         daoLocation: found.daoLocation,
         targetAudience: found.daoTargetAudience,
-        daoTitle: found.daoName,            // if you don’t have separate on-chain title/description,
+        daoTitle: found.daoName, // if you don’t have separate on-chain title/description,
         daoDescription: found.daoObjective, // you can repurpose or leave blank
         daoOverview: "",
         daoImageIpfsHash: "",
         daoMultiSigAddr: found.daoCreator,
-        multiSigPhoneNo: "",                // not on-chain here
+        multiSigPhoneNo: "", // not on-chain here
         members: [],
         daoRegDocs: "",
         kiwango: usdBal,
@@ -106,12 +112,11 @@ export default function AdminTop({
         kiasiChaHisa: 0,
         interestOnLoans: 0,
         daoTxHash: "",
-        chairpersonAddr: active?.address || "",
+        chairpersonAddr: found.daoCreator,
         daoId: found.daoId,
       };
 
       setDaoDetails(parsed);
-      
     });
   }, [
     rawDaos,
@@ -123,25 +128,24 @@ export default function AdminTop({
     setDaoDetails,
   ]);
 
-  const daoID = daoDetails?.daoId; 
+  const daoID = daoDetails?.daoId;
 
-   // ◆◆◆ FETCH ON-CHAIN MEMBERS ◆◆◆
-   const {
-    data: onchainMembers,
-    isLoading: loadingMembers,
-  } = useReadContract({
+  // ◆◆◆ FETCH ON-CHAIN MEMBERS ◆◆◆
+  const { data: onchainMembers, isLoading: loadingMembers } = useReadContract({
     contract: FullDaoContract,
     method:
       "function getDaoMembers(bytes32 _daoId) view returns ((string memberEmail, address memberAddress)[])",
-      params: daoID ? [daoID] : ([] as unknown as [`0x${string}`]),
+    params: daoID ? [daoID] : ([] as unknown as [`0x${string}`]),
   });
 
   useEffect(() => {
     if (loadingMembers || !onchainMembers) return;
-    const members = (onchainMembers as Array<{
-      memberEmail: string;
-      memberAddress: string;
-    }>).map((t, i) => ({
+    const members = (
+      onchainMembers as Array<{
+        memberEmail: string;
+        memberAddress: string;
+      }>
+    ).map((t, i) => ({
       id: i,
       email: t.memberEmail,
       wallet: t.memberAddress,
@@ -154,23 +158,44 @@ export default function AdminTop({
     } as DaoDetails);
     setMemberCount(members.length);
   }, [onchainMembers, loadingMembers, daoDetails, setDaoDetails]);
-  
-
 
   // handle resizing…
   useEffect(() => {
-    const onResize = () =>
-      setIsSmallScreen(window.innerWidth <= 1537);
+    const onResize = () => setIsSmallScreen(window.innerWidth <= 1537);
     window.addEventListener("resize", onResize);
     onResize();
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  console.log("This is the dao",daoDetails);
-  console.log("The daoMultiSig is", daoDetails?.daoMultiSigAddr, "and chairpersonaddr is", daoDetails?.chairpersonAddr);
+  const fullAddress = daoDetails?.chairpersonAddr || "";
+  const displayAddress = fullAddress
+    ? isSmallScreen
+      ? `${fullAddress.slice(0, 14)}…${fullAddress.slice(-9)}`
+      : fullAddress
+    : "N/A";
+
+  const handleCopy = () => {
+    if (!fullAddress) return;
+
+    navigator.clipboard.writeText(fullAddress).then(() => {
+      const id = crypto.randomUUID();
+      dispatch(
+        addNotification({
+          id,
+          type: "info",
+          message: "Address copied to clipboard!",
+        })
+      );
+      dispatch(showNotificationPopup());
+      setTimeout(() => {
+        dispatch(removeNotification(id));
+      }, 10000);
+    });
+  };
+
   if (!daoDetails) return null;
-  const daoId = daoDetails.daoId
-  localStorage.setItem("daoId", daoId)
+  const daoId = daoDetails.daoId;
+  localStorage.setItem("daoId", daoId);
 
   if (loadingDaos) return <div>Loading DAO…</div>;
 
@@ -196,16 +221,28 @@ export default function AdminTop({
             <img src="/images/locationIcon.png" width="27" height="31" />
           </div>
           <div>
-            {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
+            {daoDetails?.daoMultiSigAddr !== daoDetails?.chairpersonAddr ? (
               <button>Generate MultiSigAddress</button>
             ) : (
-              <p className="email">
-                {daoDetails?.daoMultiSigAddr
-                  ? isSmallScreen
-                    ? `${daoDetails?.daoMultiSigAddr.slice(0, 14)}...${daoDetails?.daoMultiSigAddr.slice(-9)}`
-                    : daoDetails?.daoMultiSigAddr
-                  : "N/A"}
-              </p>
+              <div className="address">
+                <p className="email">{displayAddress}</p>
+                {fullAddress && (
+                  <button
+                    onClick={handleCopy}
+                    aria-label="Copy address"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      color: "#555",
+                      display: "flex",
+                    }}
+                  >
+                    <img src="/images/copy.png" alt="copy" width={20} style={{opacity: 0.4}} />
+                  </button>
+                )}
+              </div>
             )}
           </div>
         </div>
@@ -226,7 +263,10 @@ export default function AdminTop({
             <p>{memberCount}</p>
           </div>
 
-          <button className="taarifa" onClick={() => setActiveSection("wanachama")}>
+          <button
+            className="taarifa"
+            onClick={() => setActiveSection("wanachama")}
+          >
             Member Details
           </button>
         </div>

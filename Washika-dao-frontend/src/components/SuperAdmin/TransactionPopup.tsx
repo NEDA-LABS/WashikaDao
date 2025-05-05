@@ -32,10 +32,10 @@ export default function TransactionPopup({
         fetchAllTransactions(address),
       ]);
 
-      const nonZero = rawTxns.filter(
-        (tx) =>
-          tx.valueCelo !== 0 &&
-          (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
+      const nonZero = rawTxns.filter(tx =>
+        !tx.isInternal &&
+        tx.valueCelo !== 0 &&
+        (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
       );
 
       const parsed: TreasuryEntry[] = nonZero.map((tx: RawTxn) => {

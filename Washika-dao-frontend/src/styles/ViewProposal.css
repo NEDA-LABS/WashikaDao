@@ -77,7 +77,7 @@
   margin-bottom: 16px;
 }
 
-.viewProposal section button {
+.viewProposal section .link {
   width: 466px;
   height: 69px;
   border-radius: 34px;
@@ -85,6 +85,9 @@
   color: #ffffff;
   font-size: 39px;
   text-decoration: underline;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .viewProposal section .dooh {

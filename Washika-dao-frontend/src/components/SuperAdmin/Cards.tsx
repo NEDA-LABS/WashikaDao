@@ -24,7 +24,14 @@ const Cards = ({ cards, onApprove, onDeny }: CardsProps) => {
     <div className="cards">
       {cards.map((card) => (
         <div className="card" key={card.id}>
-          <img src={card.image} alt={card.name} />
+          <img
+            src={card.image || "/images/default.png"}
+            alt={card.image}
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.src = "/images/default.png";
+            }}
+          />
           <div className="buttonss">
             <button className="onee" onClick={() => onApprove(card.id)}>
               Approve
@@ -33,7 +40,8 @@ const Cards = ({ cards, onApprove, onDeny }: CardsProps) => {
               Deny
             </button>
           </div>
-          <p>{card.name}</p>
+          {card.name.slice(0, 14)}…{card.name.slice(-9)}
+          {/* <p>{card.name}</p> */}
           <p>{card.date}</p>
           <p className="cash">Tsh {card.amount.toLocaleString()}</p>
           <p className="status">Status: {card.status}</p>
