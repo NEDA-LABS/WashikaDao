@@ -7,6 +7,7 @@ import DaoForm from "../components/DaoForm";
 import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 import { Dao, fetchDaos } from "../hooks/useFetchDaos";
 import { useNavigate } from "react-router-dom";
+import { useActiveAccount } from "thirdweb/react";
 
 /**
  * @Auth policy: Should definitely be authenticated to make sense
@@ -37,6 +38,8 @@ const MemberProfile: React.FC = () => {
   const [daoMultiSigAddr, setDaoMultiSigAddr] = useState<string>("");
   const [guarantor, setGuarantor] = useState<string>("");
   const [memberDaos, setMemberDaos] = useState<string[]>([]);
+  const activeAccount = useActiveAccount();
+  const memberAddr = activeAccount!.address;
 
   const token = localStorage.getItem("token") ?? "";
 
@@ -70,7 +73,7 @@ const MemberProfile: React.FC = () => {
     setRole("Member")
     // Build payload data
     const payload = {
-      memberAddr: localStorage.getItem("address"),
+      memberAddr,
       firstName,
       lastName,
       email,
@@ -160,7 +163,7 @@ const MemberProfile: React.FC = () => {
 
         <div className="dashboard-wrapper">
           <h2>This is your account information</h2>
-          <Dashboard />
+          <Dashboard address={memberAddr}/>
         </div>
         <button className="create" onClick={() => navigate("/CreateProposal")}>
           Create a Proposal

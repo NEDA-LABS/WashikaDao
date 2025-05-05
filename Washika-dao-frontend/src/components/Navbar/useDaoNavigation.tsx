@@ -29,7 +29,7 @@ export const useDaoNavigation = (daos: OnchainDao[]) => {
       navigate(`/SuperAdmin/${dao.daoCreator}`);
     } else {
       // Navigate to the regular DAO profile page.
-      navigate(`/DaoProfile/${dao.daoId}`);
+      navigate(`/DaoProfile/${dao.daoCreator}`);
     }
   };
 

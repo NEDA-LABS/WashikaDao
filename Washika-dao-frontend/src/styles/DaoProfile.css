@@ -10,7 +10,6 @@ nav.DaoProfile {
 main.daoMain {
   background-color: #ffffff;
   padding-top: clamp(640px, 32vw, 680px);
-  border: 1px solid red;
 }
 
 .daoImage {

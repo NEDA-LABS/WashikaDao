@@ -24,7 +24,7 @@ import { FullDaoContract } from "../utils/handlers/Handlers";
 
 interface OnChainProposal {
   proposalOwner: string;
-  proposalId: string;
+  proposalId: `0x${string}`;
   daoId: string;
   proposalUrl: string;
   proposalTitle: string;      
@@ -101,6 +101,7 @@ const ProposalGroups: React.FC = () => {
           <Link
             key={p.proposalTitle}
             to={`/ViewProposal/${daoId}/${identifier}`}
+            state = {{ proposal: p}}
           >
             <div className="proposal">
               <div className="one">

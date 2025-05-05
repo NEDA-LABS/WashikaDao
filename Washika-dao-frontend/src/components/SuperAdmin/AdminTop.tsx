@@ -46,7 +46,7 @@ export default function AdminTop({
 
   // 2️⃣ Get treasury balance for the target DAO
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
-    address: multiSigAddr!,
+    address: multiSigAddr || "",
     client,
     chain: celoAlfajoresTestnet,
   });
