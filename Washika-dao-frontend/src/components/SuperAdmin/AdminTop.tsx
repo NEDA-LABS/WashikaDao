@@ -16,15 +16,9 @@ import {
   removeNotification,
   showNotificationPopup,
 } from "../../redux/notifications/notificationSlice";
+import { OnchainDao } from "../../utils/Types";
 
-interface OnchainDao {
-  daoName: string;
-  daoLocation: string;
-  daoObjective: string;
-  daoTargetAudience: string;
-  daoCreator: `0x${string}`;
-  daoId: `0x${string}`;
-}
+
 
 interface AdminTopProps {
   daoDetails?: DaoDetails;

@@ -1,6 +1,6 @@
 // src/redux/userDaosSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Dao } from "../../utils/Types";
+import { OnchainDao } from "../../utils/Types";
 
 // Import the Dao type from your hook (or define it here if preferred)
 export type DaoRoleEnum =
@@ -11,7 +11,7 @@ export type DaoRoleEnum =
   | "Funder";
 
 interface UserDaosState {
-  daos: Dao[];
+  daos: OnchainDao[];
 }
 
 const initialState: UserDaosState = {
@@ -22,7 +22,7 @@ const userDaosSlice = createSlice({
   name: "userDaos",
   initialState,
   reducers: {
-    setUserDaos(state, action: PayloadAction<Dao[]>) {
+    setUserDaos(state, action: PayloadAction<OnchainDao[]>) {
       state.daos = action.payload;
     },
     clearUserDaos(state) {
