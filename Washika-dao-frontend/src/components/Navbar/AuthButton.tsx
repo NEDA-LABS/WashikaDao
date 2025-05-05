@@ -199,12 +199,6 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
             {dao.daoName}
           </option>
         ))}
-        <ConnectButton
-          client={client} // Thirdweb client instance.
-          theme={customTheme} // Custom theme configuration.
-          accountAbstraction={{ chain: celoAlfajoresTestnet, sponsorGas: false }} // Configures account abstraction for Arbitrum Sepolia.
-          wallets={wallets} // Provides authentication options.
-        />
       </select>
     );
   }

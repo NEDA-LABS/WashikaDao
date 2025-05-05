@@ -55,7 +55,7 @@ export const useMemberManagement = ( daoId: `0x${string}` | undefined,
         // pass the email you collected
         currentMember.email,
         // the address of the member you're adding:
-        adminAddress,
+        currentMember.memberAddr,
         // the DAO ID (bytes32):
         daoId,
       ],

@@ -118,11 +118,10 @@ const MemberProfile: React.FC = () => {
       <main className="member">
         <section className="one">
           <div className="first">
-            <h1>Karibu mshikaDAU</h1>
+            <h1>Welcome Member</h1>
             <p>
-              Tuna kurahisishia kujua na kupata taarifa zako
-              <br />
-              zote muhimu za vikundi vyako vya kifedha{" "}
+            We make it easy for you to find and access<br/>
+            all the important information about your financial groups
             </p>
           </div>
           <div className="center">

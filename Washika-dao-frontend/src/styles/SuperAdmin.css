@@ -75,7 +75,7 @@ nav.SuperAdmin {
   max-width: clamp(400px, 56vw, 800px);
 }
 
-.one .address {
+.address {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -439,7 +439,6 @@ nav.SuperAdmin {
 
 .fourth {
   margin: 36px clamp(24px, 5vw, 96px);
-  width: 70%;
 }
 
 .fourth .search {
