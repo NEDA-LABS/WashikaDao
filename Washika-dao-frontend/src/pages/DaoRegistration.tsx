@@ -228,9 +228,13 @@ const DaoRegistration: React.FC = (): React.ReactNode => {
           </form>
         </main>
       ) : (
-        <p className="daoRegistration error">
-          Please log in to create a Dao Contract
-        </p>
+        <div className="fullheight">
+        <NavBar className="DaoRegister" />
+        <div className="daoRegistration error">
+          <p>Please connect your wallet to continue</p>
+        </div>
+        <Footer className={""} />
+      </div>
       )}
       <Footer className={""} />
     </div>

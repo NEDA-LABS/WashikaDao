@@ -64,9 +64,9 @@ const App: React.FC = () => {
             <Route path="/JoinPlatform" element={<JoinPlatform />} />
             <Route path="/TestConnection" element={<TestConnection />} />
             <Route path="/MarketPlace" element={<MarketPlace />} />
-            <Route path="/DaoProfile/:daoTxHash" element={<DaoProfile />} />
+            <Route path="/DaoProfile/:multisigAddr" element={<DaoProfile />} />
             <Route path="/SuperAdmin/:multiSigAddr" element={<SuperAdmin />} />
-            <Route path="/UpdateDao/:daoTxHash" element={<UpdateDao />} />
+            <Route path="/UpdateDao/:multisigAddr" element={<UpdateDao />} />
             <Route
               path="/ViewProposal/:daoMultiSigAddr/:proposalTitle"
               element={<ViewProposal />}

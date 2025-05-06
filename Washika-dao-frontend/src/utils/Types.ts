@@ -103,10 +103,12 @@ export enum DaoRoleEnum {
 }
 
 
-export interface Dao {
-  daoTxHash: string;
+export interface OnchainDao {
   daoName: string;
-  role: DaoRoleEnum | null;
-  daoMultiSigAddr: string;
+  daoLocation: string;
+  daoObjective: string;
+  daoTargetAudience: string;
+  daoCreator: `0x${string}`;
+  daoId: `0x${string}`;
 }
 

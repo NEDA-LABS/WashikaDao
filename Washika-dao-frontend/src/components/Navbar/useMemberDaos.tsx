@@ -3,22 +3,24 @@
 // to avoid unnecessary network requests.
 
 import { useState, useEffect } from "react";
-import { BASE_BACKEND_ENDPOINT_URL } from "../../utils/backendComm";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 import { setUserDaos } from "../../redux/users/userDaosSlice";
-import { setCurrentUser } from "../../redux/users/userSlice";
-import { Dao } from "../../utils/Types";
+import { OnchainDao } from "../../utils/Types";
+import { FullDaoContract } from "../../utils/handlers/Handlers";
+import { useReadContract } from "thirdweb/react";
+import { readContract } from "thirdweb";
 
 /**
  * Interface defining the return structure of the useMemberDaos hook.
  *
- * @property {Dao[]} daos - An array of DAO objects associated with the member.
+ * @property {OnchainDao[]} daos - An array of DAO objects associated with the member.
  * @property {boolean} memberExists - Flag indicating if the member exists in the DAO system.
  */
 interface UseMemberDaosResult {
-  daos: Dao[];
+  daos: OnchainDao[];
   memberExists: boolean;
+  isLoading: boolean;
 }
 
 /**
@@ -37,74 +39,82 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
   const dispatch = useDispatch();
   const storedDaos = useSelector(
     (state: RootState) => state.userDaos.daos
-  ) as Dao[];
+  ) as OnchainDao[];
 
   // Local state to hold the list of DAOs. Initialize with stored DAOs if available.
-  const [daos, setDaos] = useState<Dao[]>(storedDaos || []);
+  const [daos, setDaos] = useState<OnchainDao[]>(storedDaos || []);
   // Local state to track whether the member exists (based on API response).
   const [memberExists, setMemberExists] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
+  const {
+    data: allDaosRaw, isLoading: rawLoading
+  } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "function getDaosInPlatformArr() view returns ((string daoName, string daoLocation, string daoObjective, string daoTargetAudience, address daoCreator, bytes32 daoId)[])",
+    params: [],
+  });
 
   // useEffect hook triggers whenever the member address or stored DAOs change.
   useEffect(() => {
     // Exit early if there is no member address provided.
-    if (!memberAddr) return;
+    if (!memberAddr || rawLoading) return;
 
     // If DAOs are already cached in Redux, use them and mark the member as existing.
-    if (storedDaos && storedDaos.length > 0) {
-      setDaos(storedDaos);
-      setMemberExists(true);
-      return;
-    }
+    // if (storedDaos && storedDaos.length > 0 && storedDaos[0].daoId === allDaosRaw[0]?.daoId) {
+    //   setDaos(storedDaos);
+    //   setMemberExists(true);
+    //   return;
+    // }
 
-    // Asynchronous function to fetch DAOs from the backend.
-    const fetchDaos = async () => {
+    const fetchMemberDaos = async () => {
+      setIsLoading(true);
       try {
-        // Build the API endpoint URL with the member address.
-        const response = await fetch(
-          `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetMemberDaos/?memberAddr=${memberAddr}`
+        // for each on-chain DAO, ask if member is in it
+        const checks = await Promise.all(
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          (allDaosRaw as any[]).map(async (d: any) => {
+            const isMember = await readContract({
+              contract: FullDaoContract,
+              method:
+                "function isYMemberOfDaoX(bytes32 _daoId, address _userAddress) view returns (bool)",
+              params: [d.daoId, memberAddr],
+            });
+
+            const isCreator = d.daoCreator.toLowerCase() === memberAddr.toLowerCase();
+            if (!isMember && !isCreator) return null;
+            return {
+              daoName: d.daoName,
+              daoLocation: d.daoLocation,
+              daoObjective: d.daoObjective,
+              daoTargetAudience: d.daoTargetAudience,
+              daoCreator: d.daoCreator,
+              daoId: d.daoId,
+            } as OnchainDao;
+          })
         );
-        // Parse the JSON response.
-        const data = await response.json();
 
-        // If DAOs are returned from the API, update the local state and Redux store.
-        if (data.daos) {
-          setDaos(data.daos);
-          dispatch(setUserDaos(data.daos));
-          // Store the authentication token in localStorage for future requests.
-          // localStorage.setItem("token", data.authCode);
+        // filter only those where the member exists
+        const memberDaos = checks.filter((d): d is OnchainDao => d !== null);
 
-          // Retrieve member details from the API response.
-          const member = data.member;
-          if (member) {
-            // Dispatch an action to update the current user in Redux.
-            dispatch(
-              setCurrentUser({
-                memberAddr: member.memberAddr,
-                firstName: member.firstName,
-                lastName: member.lastName,
-                email: member.email,
-                phoneNumber: member.phoneNumber,
-                nationalIdNo: member.nationalIdNo,
-              })
-            );
-            // Set the flag indicating that the member exists.
-            setMemberExists(true);
-          }
-        } else {
-          // If no DAOs are found in the response, clear the local DAO list and mark member as non-existent.
-          setDaos([]);
-          setMemberExists(false);
-        }
-      } catch (error) {
-        // Log any errors that occur during the fetch operation.
-        console.error("Failed to fetch DAOs:", error);
+        // update local + redux store
+        setDaos(memberDaos);
+        setMemberExists(memberDaos.length > 0);
+        dispatch(setUserDaos(memberDaos));
+
+        // here you could also fetch on-chain member metadata (if you expose it)
+        // or fall back to your backend for profile info:
+        // dispatch(setCurrentUser({ memberAddr, ... }))
+      } catch (err) {
+        console.error("on-chain member lookup failed", err);
+      }finally {
+        setIsLoading(false);
       }
     };
 
-    // Call the function to fetch DAOs.
-    fetchDaos();
-  }, [dispatch, memberAddr, storedDaos]);
+    fetchMemberDaos();
+  }, [allDaosRaw, dispatch, memberAddr, rawLoading, storedDaos]);
 
-  // Return the current list of DAOs and the member existence flag.
-  return { daos, memberExists };
+  return { daos, memberExists, isLoading };
 };

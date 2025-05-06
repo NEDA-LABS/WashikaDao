@@ -2,11 +2,10 @@
 import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
-import { RootState } from "../../redux/store";
 import { useMemberDaos } from "./useMemberDaos";
 import { useDaoNavigation } from "./useDaoNavigation";
 import { client } from "../../utils/thirdwebClient";
@@ -48,19 +47,7 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   const dispatch = useDispatch();
   const activeAccount = useActiveAccount();
     const address = activeAccount?.address;
-  const firstName = useSelector((state: RootState) => state.user.firstName);
-  const { daos } = useMemberDaos(address || "");
-
-  // Synchronize Redux state with localStorage to persist the user's authentication state.
-  // useEffect(() => {
-  //   const storedAddress = localStorage.getItem("address");
-  //   if (storedAddress && storedAddress !== address) {
-  //     dispatch(login(storedAddress));
-  //   }
-  // }, [dispatch, address]);
-
-  // Check membership existence for the logged-in user.
-  const { memberExists } = useMemberDaos(address || "");
+    const { daos, memberExists } = useMemberDaos(address || "");
 
   /**
    * Define a custom theme for the ConnectButton using Thirdweb's lightTheme.
@@ -95,19 +82,18 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
 
   // Retrieve filtered DAO data and a function to navigate to a selected DAO.
   const { filteredDaos, navigateToDao } = useDaoNavigation(daos);
-
-  // Local state to track the currently selected DAO transaction hash.
-  const [selectedDaoTxHash, setSelectedDaoTxHash] = useState<string | number>(
-    localStorage.getItem("selectedDaoTxHash") || ""
+  // Local state to track the currently selected DAO ID.
+  const [selectedDaoId, setSelectedDaoId] = useState<string | number>(
+    localStorage.getItem("selectedDaoId") || ""
   );
 
   // If no DAO is currently selected and DAOs are available, auto-select the first DAO.
   useEffect(() => {
-    if (!selectedDaoTxHash && filteredDaos.length > 0) {
-      setSelectedDaoTxHash(filteredDaos[0].daoTxHash);
-      localStorage.setItem("selectedDaoTxHash", filteredDaos[0].daoTxHash);
+    if (!selectedDaoId && filteredDaos.length > 0) {
+      setSelectedDaoId(filteredDaos[0].daoId);
+      localStorage.setItem("selectedDaoId", filteredDaos[0].daoId);
     }
-  }, [filteredDaos, selectedDaoTxHash]);
+  }, [filteredDaos, selectedDaoId]);
 
   /**
    * Updates the selected DAO based on user selection from a dropdown.
@@ -119,12 +105,12 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
    * - Navigates to the corresponding DAO page using the navigateToDao function.
    */
   const handleDaoChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const selectedTxHash = event.target.value;
-    setSelectedDaoTxHash(selectedTxHash);
-    localStorage.setItem("selectedDaoTxHash", selectedTxHash);
+    const selectedDaoId = event.target.value;
+    setSelectedDaoId(selectedDaoId);
+    localStorage.setItem("selectedDaoId", selectedDaoId);
 
     const selectedDao = filteredDaos.find(
-      (dao) => dao.daoTxHash === selectedTxHash
+      (dao) => dao.daoId === selectedDaoId
     );
     if (selectedDao) navigateToDao(selectedDao);
   };
@@ -178,14 +164,13 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     );
   }
 
-  // 3. For the "DaoProfile" context, render a button displaying the user's first name.
   if (className === "DaoProfile") {
     return (
       <button
         className="portalButton"
         onClick={() => navigate(`/MemberProfile/${address}`)}
       >
-        {firstName}
+        Profile
       </button>
     );
   }
@@ -195,20 +180,14 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
     return (
       <select
         className="portalButton select"
-        value={selectedDaoTxHash}
+        value={selectedDaoId}
         onChange={handleDaoChange}
       >
         {filteredDaos.map((dao) => (
-          <option key={dao.daoTxHash} value={dao.daoTxHash}>
+          <option key={dao.daoId} value={dao.daoId}>
             {dao.daoName}
           </option>
         ))}
-        <ConnectButton
-          client={client} // Thirdweb client instance.
-          theme={customTheme} // Custom theme configuration.
-          accountAbstraction={{ chain: celoAlfajoresTestnet, sponsorGas: false }} // Configures account abstraction for Arbitrum Sepolia.
-          wallets={wallets} // Provides authentication options.
-        />
       </select>
     );
   }

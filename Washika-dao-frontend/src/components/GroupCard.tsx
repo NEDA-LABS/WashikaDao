@@ -73,7 +73,7 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
   return (
     <div className="group">
       <Link
-        to={`/DaoProfile/${group.daoId}`}
+        to={`/DaoProfile/${group.daoCreator}`}
         state={{
             group,
             kiwango: treasuryUsd,

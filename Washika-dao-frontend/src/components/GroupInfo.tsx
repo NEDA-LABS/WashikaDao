@@ -57,6 +57,7 @@ export default function GroupInfo() {
     nationalIdNo: "",
     memberRole: "",
     memberCustomIdentifier: crypto.randomUUID(),
+    memberAddr: "",
   });
 
   // If a current user exists, prefill the form with his details.

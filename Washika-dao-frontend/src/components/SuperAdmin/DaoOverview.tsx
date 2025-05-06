@@ -10,6 +10,10 @@ interface DaoOverviewProps {
 
 export default function DaoOverview({ daoDetails }: DaoOverviewProps) {
   const [showStatement, setShowStatement] = useState(false);
+  if (!daoDetails) {
+    return <div>Loading DAO overview…</div>;
+  }
+  const daoMultisigAddr = daoDetails!.daoMultiSigAddr;
 
   return (
     <>
@@ -17,7 +21,7 @@ export default function DaoOverview({ daoDetails }: DaoOverviewProps) {
         <div className="fullStatement">
         <button onClick={() => setShowStatement(true)}>Full Statement</button>
         </div>
-        <Dashboard daoDetails={daoDetails} />
+        <Dashboard address={daoMultisigAddr} />
       </div>
       <section className="second">
         <div className="sec">

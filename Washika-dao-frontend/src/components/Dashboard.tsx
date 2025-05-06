@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Balance from "./Balance";
-import { DaoDetails } from "./SuperAdmin/WanachamaList";
 import {
   computeMonthlyUsdHistory,
   MonthBucket,
@@ -9,12 +8,11 @@ import { fetchAllTransactions, RawTxn } from "../utils/arbiscan";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 
 interface DashboardProps {
-  daoDetails?: DaoDetails;
+  address: string | undefined;
 }
 
-const Dashboard: React.FC<DashboardProps> = ({ daoDetails }) => {
+const Dashboard: React.FC<DashboardProps> = ({ address }) => {
   const [history, setHistory] = useState<MonthBucket[]>([]);
-  const address = daoDetails?.daoMultiSigAddr;
 
   useEffect(() => {
     if (!address) return;

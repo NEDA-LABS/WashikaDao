@@ -2,9 +2,7 @@ import NavBar from "../components/Navbar/Navbar";
 
 import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
-import { useRef, useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { addNotification, removeNotification, showNotificationPopup } from "../redux/notifications/notificationSlice";
+import { useState } from "react";
 import {
   useActiveAccount,
   useActiveWalletConnectionStatus,
@@ -32,16 +30,12 @@ import { DaoDetails } from "../components/SuperAdmin/WanachamaList";
  */
 
 const SuperAdmin: React.FC = () => {
-  const dispatch = useDispatch();
   const [activeSection, setActiveSection] = useState<string>("daoOverview");
   const [daoDetails, setDaoDetails] = useState<DaoDetails | undefined>(
     undefined
   );
   const activeAccount = useActiveAccount();
   const connectionStatus = useActiveWalletConnectionStatus();
-
-  const prevConnectionStatus =
-    useRef<typeof connectionStatus>(connectionStatus);
 
   // const [authToken, setAuthToken] = useState<string>("");
 
@@ -82,28 +76,6 @@ const SuperAdmin: React.FC = () => {
   //   }
   // };
 
-  useEffect(() => {
-    if (
-      connectionStatus === "connected" &&
-      prevConnectionStatus.current !== "connected"
-    ) {
-      const id = crypto.randomUUID()
-      dispatch(
-        addNotification({
-          id,
-          type: "info",
-          message: "Wallet connected successfully",
-          section: "daoOverview",
-        })
-      );
-      dispatch(showNotificationPopup());
-      setTimeout(() => {
-        dispatch(removeNotification(id));
-      }, 10000);
-    }
-    prevConnectionStatus.current = connectionStatus;
-  }, [connectionStatus, dispatch]);
-
   if (connectionStatus === "connecting") {
     return <LoadingPopup message="Loading wallet…" />;
   }
@@ -112,9 +84,9 @@ const SuperAdmin: React.FC = () => {
     return (
       <div className="fullheight">
         <NavBar className="" />
-        <p className="daoRegistration error">
-          Please connect your wallet to continue
-        </p>
+        <div className="daoRegistration error">
+          <p>Please connect your wallet to continue</p>
+        </div>
         <Footer className={""} />
       </div>
     );

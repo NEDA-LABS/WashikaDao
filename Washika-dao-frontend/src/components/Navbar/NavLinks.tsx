@@ -1,8 +1,8 @@
 // Import dependencies for routing, authentication, state management, and rendering.
 import { Link } from "react-router-dom";
 import AuthButton from "./AuthButton";
-// import { useDaoNavigation } from "./useDaoNavigation";
-// import { useMemberDaos } from "./useMemberDaos";
+import { useDaoNavigation } from "./useDaoNavigation";
+import { useMemberDaos } from "./useMemberDaos";
 import ReactDOM from "react-dom";
 import { useActiveAccount } from "thirdweb/react";
 
@@ -39,16 +39,16 @@ const NavLinks: React.FC<NavLinksProps> = ({
 }) => {
   // Retrieve the user's address from the Redux store.
   const activeAccount = useActiveAccount();
-    const address = activeAccount?.address;
+  const address = activeAccount?.address;
 
   // Fetch the DAOs associated with the current address; if none exists, an empty string is passed.
-  // const { daos } = useMemberDaos(address || "");
+  const { daos } = useMemberDaos(address || "");
 
   // Determine if the "DAO Tool Kit" link should be visible (only when DAOs exist).
-  // const showDaoToolKit = daos && daos.length > 0;
+  const showDaoToolKit = daos && daos.length > 0;
 
   // Use the custom hook to filter DAOs and to obtain a navigation function for the selected DAO.
-  // const { filteredDaos, navigateToDao } = useDaoNavigation(daos);
+  const { filteredDaos, navigateToDao } = useDaoNavigation(daos);
 
   /**
    * Handles the click event for the "DAO Tool Kit" link.
@@ -60,24 +60,24 @@ const NavLinks: React.FC<NavLinksProps> = ({
    *
    * @param {React.MouseEvent<HTMLAnchorElement>} e - The click event.
    */
-  // const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-  //   e.preventDefault();
-  //   const selectedDaoTxHash = localStorage.getItem("selectedDaoTxHash");
+  const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const selectedDaoId = localStorage.getItem("selectedDaoId");
+    if (selectedDaoId) {
+      const selectedDao = filteredDaos.find(
+        (dao) => dao.daoId === selectedDaoId
+      );
+      if (selectedDao) {
+        navigateToDao(selectedDao);
+        return;
+      }
+    }
 
-  //   if (selectedDaoTxHash) {
-  //     const selectedDao = filteredDaos.find(
-  //       (dao) => dao.daoTxHash === selectedDaoTxHash
-  //     );
-  //     if (selectedDao) {
-  //       navigateToDao(selectedDao);
-  //       return;
-  //     }
-  //   }
-
-  //   if (filteredDaos.length === 1) {
-  //     navigateToDao(filteredDaos[0]);
-  //   }
-  // };
+    if (filteredDaos.length === 1) {
+      navigateToDao(filteredDaos[0]);
+    }
+    
+  };
 
   // Determines if the "Open Dao" link should be shown based on the current page context.
   const shouldShowRegisterDao = ![
@@ -113,19 +113,18 @@ const NavLinks: React.FC<NavLinksProps> = ({
           </li>
         </>
       ) : (
-        // showDaoToolKit && (
-        //   <li className="three">
-        //     <Link to="" onClick={handleDaoToolKitClick}>
-        //       DAO Tool Kit
-        //     </Link>
-        //   </li>
-        // )
-        address && (
+        showDaoToolKit && (
           <li className="three">
-          <Link to={`/SuperAdmin/${address}`}>DAO Tool Kit</Link>
-        </li>
+            <Link to="" onClick={handleDaoToolKitClick}>
+              DAO Tool Kit
+            </Link>
+          </li>
         )
-        
+        // address && (
+        //   <li className="three">
+        //   <Link to={`/SuperAdmin/${address}`}>DAO Tool Kit</Link>
+        // </li>
+        // )
       )}
       {/* Render the authentication button with a prop to toggle the mobile menu */}
       <AuthButton className={className} toggleMenu={toggleMenu} />
@@ -168,18 +167,18 @@ const NavLinks: React.FC<NavLinksProps> = ({
           </>
         ) : (
           // For regular users with DAO memberships, render the DAO Tool Kit link.
-          // showDaoToolKit && (
-          //   <li className="three">
-          //     <Link to="" onClick={handleDaoToolKitClick}>
-          //       DAO Tool Kit
-          //     </Link>
-          //   </li>
-          // )
-          address && (
+          showDaoToolKit && (
             <li className="three">
-            <Link to={`/SuperAdmin/${address}`}>DAO Tool Kit</Link>
-          </li>
+              <Link to="" onClick={handleDaoToolKitClick}>
+                DAO Tool Kit
+              </Link>
+            </li>
           )
+          // address && (
+          //   <li className="three">
+          //   <Link to={`/SuperAdmin/${address}`}>DAO Tool Kit</Link>
+          // </li>
+          // )
         )}
 
         {/* Render the authentication button (handles login/logout actions) */}

@@ -5,13 +5,18 @@
   justify-content: space-between;
 }
 
-p.daoRegistration {
-  font-size: 24px;
-  padding: 180px 12px 72px;
+.daoRegistration.error {
+  flex-grow: 1;
+  display: flex;
+  align-items: center;
 }
 
-p.daoRegistration.error {
+.daoRegistration.error p{
+  flex-grow: 1;
+  font-size: 24px;
   color: #ffffff;
+  text-align: center;
+  padding-bottom: 120px;
 }
 
 .daoRegistration {

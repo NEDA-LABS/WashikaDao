@@ -9,7 +9,7 @@ import { FullDaoContract } from "../utils/handlers/Handlers";
 export const useMemberManagement = ( daoId: `0x${string}` | undefined,
   // token: string,
   adminAddress: string | undefined,
-  notify: (type: "success" | "error", message: string) => void) => {
+  notify: (type: "success" | "error", message: string) => void, setIsSubmitting: (v: boolean) => void) => {
   const [currentMember, setCurrentMember] = useState<IBackendDaoMember>({
     firstName: "",
     lastName: "",
@@ -37,12 +37,15 @@ export const useMemberManagement = ( daoId: `0x${string}` | undefined,
   const handleAddMember = () => {
     // 1) validate
     if (!currentMember.email) {
+      setIsSubmitting(false);
       return notify("error", "Please fill in email.");
     }
     if (!daoId) {
+      setIsSubmitting(false);
       return notify("error", "DAO ID not available.");
     }
     if (!adminAddress) {
+      setIsSubmitting(false);
       return notify("error", "Your wallet must be connected.");
     }
 
@@ -55,7 +58,7 @@ export const useMemberManagement = ( daoId: `0x${string}` | undefined,
         // pass the email you collected
         currentMember.email,
         // the address of the member you're adding:
-        adminAddress,
+        currentMember.memberAddr!,
         // the DAO ID (bytes32):
         daoId,
       ],
@@ -63,6 +66,7 @@ export const useMemberManagement = ( daoId: `0x${string}` | undefined,
 
     sendTx(tx, {
       onSuccess: (receipt) => {
+        setIsSubmitting(false);
         notify(
           "success",
           `Successfully added ${currentMember.email} on‐chain!`

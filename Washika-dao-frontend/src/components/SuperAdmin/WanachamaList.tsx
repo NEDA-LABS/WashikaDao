@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { IFetchedBackendDao } from "../../utils/Types";
+import { useDispatch } from "react-redux";
+import { addNotification, showNotificationPopup, removeNotification } from "../../redux/notifications/notificationSlice";
 
 interface Wanachama {
   id: number;
@@ -102,6 +104,7 @@ const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
 }) => {
   const itemsPerPage = 5; // Number of items per page
   const [currentPage, setCurrentPage] = useState(1);
+  const dispatch = useDispatch();
   const [wanachamaData, setWanachamaData] = useState<Wanachama[]>([]);
 
   useEffect(() => {
@@ -109,6 +112,25 @@ const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
       setWanachamaData(daoDetails.members);
     }
   }, [daoDetails]);
+
+  const handleCopy = (wallet: string) => {
+      if (!wallet) return;
+  
+      navigator.clipboard.writeText(wallet).then(() => {
+        const id = crypto.randomUUID();
+        dispatch(
+          addNotification({
+            id,
+            type: "info",
+            message: "Address copied to clipboard!",
+          })
+        );
+        dispatch(showNotificationPopup());
+        setTimeout(() => {
+          dispatch(removeNotification(id));
+        }, 3000);
+      });
+    };
 
   const totalPages = Math.ceil(wanachamaData.length / itemsPerPage);
 
@@ -128,7 +150,29 @@ const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
         {paginatedData.map((member, index) => (
           <div className="mwanachama" key={index}>
             <p className="name">{member.email}</p>
-            <p className="phoneNo">{member.wallet}</p>
+            <div className="address">
+              <p className="phoneNo">{member.wallet}</p>
+              <button
+                    onClick={() => handleCopy(member.wallet)}
+                    aria-label="Copy address"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      color: "#555",
+                      display: "flex",
+                    }}
+                  >
+                    <img
+                      src="/images/copy.png"
+                      alt="copy"
+                      width={12}
+                      style={{ opacity: 0.4 }}
+                    />
+                  </button>
+            </div>
+
             <button>Manage</button>
           </div>
         ))}

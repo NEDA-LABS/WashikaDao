@@ -3,6 +3,20 @@ import { useLocation, useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/ProposalGroups";
 import TreasuryHistory from "../components/TreasuryHistory";
+import Footer from "../components/Footer";
+import { useDispatch } from "react-redux";
+import {
+  addNotification,
+  showNotificationPopup,
+  removeNotification,
+} from "../redux/notifications/notificationSlice";
+import Notification from "../components/SuperAdmin/Notification";
+import { useActiveAccount, useActiveWalletConnectionStatus, useReadContract, useWalletBalance } from "thirdweb/react";
+import { celoAlfajoresTestnet } from "thirdweb/chains";
+import { FullDaoContract } from "../utils/handlers/Handlers";
+import { fetchCeloToUsdRate } from "../utils/priceUtils";
+import { client } from "../utils/thirdwebClient";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
 interface PreloadedState {
   group: {
@@ -28,33 +42,44 @@ interface DaoDetails {
   daoMultiSigAddr: string;
   kiwango: number;
   memberCount: number;
+  daoId?: string; // on-chain ID
 }
 
 const DaoProfile: React.FC = () => {
   const navigate = useNavigate();
-  const { daoTxHash } = useParams<{ daoTxHash: string }>();
+  const { multisigAddr } = useParams<{ multisigAddr : string }>();
   const { state } = useLocation();
   const preloaded = (state as PreloadedState) || null;
+  const dispatch = useDispatch();
+  const activeAccount = useActiveAccount();
 
-  const [daoDetails] = useState<DaoDetails | null>(
-    preloaded
-      ? {
-          daoName:       preloaded.group.daoName,
-          daoLocation:   preloaded.group.daoLocation,
-          targetAudience:preloaded.group.daoTargetAudience,
-          daoTitle:      preloaded.group.daoName,
-          daoDescription:preloaded.group.daoObjective,
-          daoOverview:   "",
-          daoImageIpfsHash: "",
-          daoMultiSigAddr: preloaded.group.daoCreator,
-          kiwango:      preloaded.kiwango,
-          memberCount:  preloaded.memberCount,
-        }
-      : null
-  );
-  const [loading] = useState(!preloaded);
+  const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const connectionStatus = useActiveWalletConnectionStatus();
 
+  // on-chain: read all DAOs
+  const { data: rawDaos, isPending: loadingDaos } = useReadContract({
+    contract: FullDaoContract,
+    method: "function getDaosInPlatformArr() view returns ((string,string,string,string,address,bytes32)[])",
+  });
+
+  // on-chain: get treasury balance
+  const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
+    address: multisigAddr || "",
+    client,
+    chain: celoAlfajoresTestnet,
+  });
+
+  // on-chain: fetch members
+  const { data: onchainMembers, isLoading: loadingMembers } = useReadContract({
+    contract: FullDaoContract,
+    method: "function getDaoMembers(bytes32) view returns ((string,address)[])",
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    params: daoDetails?.daoId ? [daoDetails.daoId] : ([] as any),
+  });
+
+  // handle screen size
   useEffect(() => {
     const onResize = () => setIsSmallScreen(window.innerWidth <= 1537);
     window.addEventListener("resize", onResize);
@@ -62,23 +87,132 @@ const DaoProfile: React.FC = () => {
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const handleClick = () => {
-    navigate(`/CreateProposal/${daoTxHash}`);
+  // init dao details from state or on-chain
+  useEffect(() => {
+    async function initDao() {
+      if (preloaded) {
+        setDaoDetails({
+          daoName: preloaded.group.daoName,
+          daoLocation: preloaded.group.daoLocation,
+          targetAudience: preloaded.group.daoTargetAudience,
+          daoTitle: preloaded.group.daoName,
+          daoDescription: preloaded.group.daoObjective,
+          daoOverview: "",
+          daoImageIpfsHash: "",
+          daoMultiSigAddr: preloaded.group.daoCreator,
+          kiwango: preloaded.kiwango,
+          memberCount: preloaded.memberCount,
+          daoId: preloaded.group.daoId,
+        });
+        setLoading(false);
+        return;
+      }
+
+      if (!rawDaos || loadingDaos) return;
+
+      const allDaos = (rawDaos as Array<[string,string,string,string,string,string]>).map(
+        ([daoName, daoLocation, daoObjective, daoTargetAudience, daoCreator, daoIdBytes]) => ({
+          daoName,
+          daoLocation,
+          daoObjective,
+          daoTargetAudience,
+          daoCreator,
+          daoId: daoIdBytes,
+        })
+      );
+
+      const found = allDaos.find(
+        (d) => d.daoCreator.toLowerCase() === multisigAddr!.toLowerCase()
+      );
+      if (!found) {
+        setLoading(false);
+        return;
+      }
+
+      if (balanceLoading) return;
+      const celoBal = balanceData ? parseFloat(balanceData.displayValue) : 0;
+      const rate = await fetchCeloToUsdRate();
+      const usdBal = celoBal * rate;
+
+      setDaoDetails({
+        daoName: found.daoName,
+        daoLocation: found.daoLocation,
+        targetAudience: found.daoTargetAudience,
+        daoTitle: found.daoName,
+        daoDescription: found.daoObjective,
+        daoOverview: "",
+        daoImageIpfsHash: "",
+        daoMultiSigAddr: found.daoCreator,
+        kiwango: usdBal,
+        memberCount: 0,
+        daoId: found.daoId,
+      });
+      setLoading(false);
+    }
+
+    initDao();
+  }, [preloaded, rawDaos, loadingDaos, balanceData, balanceLoading, multisigAddr]);
+
+  // update member count when on-chain members load
+  useEffect(() => {
+    if (!daoDetails || loadingMembers || !onchainMembers) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const count = (onchainMembers as Array<any>).length;
+    if (count !== daoDetails.memberCount) {
+      setDaoDetails({ ...daoDetails, memberCount: count });
+    }
+  }, [onchainMembers, loadingMembers, daoDetails]);
+
+  // Copy address notification
+  const fullAddress = daoDetails?.daoMultiSigAddr || "";
+  const displayAddress = fullAddress
+    ? isSmallScreen
+      ? `${fullAddress.slice(0,14)}…${fullAddress.slice(-9)}`
+      : fullAddress
+    : "N/A";
+
+  const handleCopy = () => {
+    if (!fullAddress) return;
+    navigator.clipboard.writeText(fullAddress).then(() => {
+      const id = crypto.randomUUID();
+      dispatch(addNotification({ id, type: "info", message: "Address copied to clipboard!" }));
+      dispatch(showNotificationPopup());
+      setTimeout(() => dispatch(removeNotification(id)), 10000);
+    });
   };
 
-  if (loading) return <div>Loading...</div>;
-  if (!daoDetails) return <div>DAO Details not available</div>;
+  const handleClick = () => navigate("/CreateProposal");
+
+    if (loading || !daoDetails || connectionStatus === "connecting") {
+      return <LoadingPopup message="Loading wallet…" />;
+    }
+
+    if (!daoDetails) return <div>DAO Details not available</div>;
+
+
+  if (!activeAccount?.address) {
+    return (
+      <div className="fullheight">
+        <NavBar className={""} />
+        <div className="daoRegistration error">
+          <p>Please connect your wallet to continue</p>
+        </div>
+        <Footer className={""} />
+      </div>
+    );
+  }
+
+  localStorage.setItem("daoId", daoDetails.daoId!);
 
   return (
     <>
       <NavBar className="DaoProfile" />
       <main className="daoMain">
+        <Notification />
         <div className="daoImage">
           <img
             src={daoDetails.daoImageIpfsHash || "/images/default.png"}
             alt="DaoImage"
-            width={1450}
-            height={509}
             onError={(e) => {
               (e.target as HTMLImageElement).src = "/images/default.png";
             }}
@@ -91,37 +225,43 @@ const DaoProfile: React.FC = () => {
               <h1>{daoDetails.daoName}</h1>
               <div className="location">
                 <p>{daoDetails.daoLocation}</p>
-                <img
-                  src="/images/locationIcon.png"
-                  width="27"
-                  height="31"
-                />
+                <img src="/images/locationIcon.png" width="27" height="31" />
               </div>
-              <p className="email">
-                {isSmallScreen
-                  ? `${daoDetails.daoMultiSigAddr.slice(
-                      0,
-                      14
-                    )}…${daoDetails.daoMultiSigAddr.slice(-9)}`
-                  : daoDetails.daoMultiSigAddr}
-              </p>
+              <div className="address">
+                <p className="email">{displayAddress}</p>
+                {fullAddress && (
+                  <button
+                    onClick={handleCopy}
+                    aria-label="Copy address"
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      padding: 0,
+                      color: "#555",
+                      display: "flex",
+                    }}
+                  >
+                    <img
+                      src="/images/copy.png"
+                      alt="copy"
+                      width={20}
+                      style={{ opacity: 0.4 }}
+                    />
+                  </button>
+                )}
+              </div>
             </div>
 
-            <p className="section-21">
-              {daoDetails.daoDescription}
-            </p>
+            <p className="section-21">{daoDetails.daoDescription}</p>
             <p className="section-22">{daoDetails.daoOverview}</p>
 
             <div className="DaoOperations">
               <h1>DAO operations</h1>
               <div className="button-group">
-                <button onClick={handleClick}>
-                  Dao Overview
-                </button>
+                <button>Dao Overview</button>
                 <button>Buy Shares</button>
-                <button onClick={handleClick}>
-                  Apply for Loan
-                </button>
+                <button onClick={handleClick}>Apply for Loan</button>
                 <button>Make Payments</button>
               </div>
             </div>
@@ -156,7 +296,10 @@ const DaoProfile: React.FC = () => {
               </div>
             </div>
 
-            <TreasuryHistory daoMultiSigAddr={daoDetails.daoMultiSigAddr} limit={4} />
+            <TreasuryHistory
+              daoMultiSigAddr={daoDetails.daoMultiSigAddr}
+              limit={4}
+            />
           </div>
         </section>
 

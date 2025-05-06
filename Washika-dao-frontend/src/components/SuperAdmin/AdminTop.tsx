@@ -16,15 +16,9 @@ import {
   removeNotification,
   showNotificationPopup,
 } from "../../redux/notifications/notificationSlice";
+import { OnchainDao } from "../../utils/Types";
 
-interface OnchainDao {
-  daoName: string;
-  daoLocation: string;
-  daoObjective: string;
-  daoTargetAudience: string;
-  daoCreator: `0x${string}`;
-  daoId: `0x${string}`;
-}
+
 
 interface AdminTopProps {
   daoDetails?: DaoDetails;
@@ -52,7 +46,7 @@ export default function AdminTop({
 
   // 2️⃣ Get treasury balance for the target DAO
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
-    address: multiSigAddr!,
+    address: multiSigAddr || "",
     client,
     chain: celoAlfajoresTestnet,
   });
@@ -82,9 +76,12 @@ export default function AdminTop({
         } as OnchainDao)
     );
 
+    const DaoId = localStorage.getItem("selectedDaoId")
+
     // 4️⃣ Find the one matching our route param
     const found = allDaos.find(
-      (d) => d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase()
+      (d) => d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase() &&
+      d.daoId === DaoId
     );
     if (!found) return;
 
@@ -239,7 +236,12 @@ export default function AdminTop({
                       display: "flex",
                     }}
                   >
-                    <img src="/images/copy.png" alt="copy" width={20} style={{opacity: 0.4}} />
+                    <img
+                      src="/images/copy.png"
+                      alt="copy"
+                      width={20}
+                      style={{ opacity: 0.4 }}
+                    />
                   </button>
                 )}
               </div>

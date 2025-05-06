@@ -334,7 +334,6 @@ body :has(.member) {
   border-radius: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   padding: 20px;
-  height: 60%;
 }
 
 .popupp .form {

@@ -1,7 +1,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap");
 
 nav.DaoProfile {
-  height: clamp(156px, 60vw, 571px);
+  height: clamp(156px, 40vw, 571px);
   background-color: #636844;
   align-items: flex-start;
   border-radius: 0 0 8px 8px;
@@ -9,14 +9,15 @@ nav.DaoProfile {
 
 main.daoMain {
   background-color: #ffffff;
-  padding-top: clamp(640px, 48vw, 680px);
+  padding-top: clamp(640px, 32vw, 680px);
 }
 
 .daoImage {
-  width: 100%;
+  width: clamp(400px, 100vw, 2648px);
+  height: clamp(500px, 20vw, 500px);
   padding: 0 24px;
   position: absolute;
-  top: clamp(64px, 9vw, 164px);
+  top: clamp(64px, 9vw, 120px);
   z-index: 5;
   display: flex;
   justify-content: center;
@@ -239,7 +240,7 @@ main.daoMain {
 }
 
 .treasury-history {
-  width: 420px;
+  min-width: 420px;
 }
 
 .treasury-history h1 {
@@ -520,12 +521,11 @@ section.second::after {
 
 @media only screen and (max-width: 1024px) {
   main.daoMain {
-    padding-top: clamp(200px, 74vw, 680px);
+    padding-top: clamp(370px, 60vw, 500px);
   }
 
-  .daoImage img {
-    width: 95vw;
-    height: auto;
+  .daoImage {
+    height: clamp(240px, 40vw, 360px);
   }
 
   .daoMain .first {
@@ -582,7 +582,6 @@ section.second::after {
   .treasury {
     padding: 78px 0 24px;
     margin: 24px 0 72px;
-    border: 1px solid red;
   }
 
   .treasury .first {
@@ -750,7 +749,7 @@ section.second::after {
 
   @media only screen and (max-width: 532px) {
     main.daoMain {
-      padding-top: clamp(170px, 84vw, 680px);
+      padding-top: 370px;
     }
 
     .daoMain .section-2 {
