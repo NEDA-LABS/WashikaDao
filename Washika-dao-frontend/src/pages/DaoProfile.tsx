@@ -177,7 +177,7 @@ const DaoProfile: React.FC = () => {
       const id = crypto.randomUUID();
       dispatch(addNotification({ id, type: "info", message: "Address copied to clipboard!" }));
       dispatch(showNotificationPopup());
-      setTimeout(() => dispatch(removeNotification(id)), 10000);
+      setTimeout(() => dispatch(removeNotification(id)),4000);
     });
   };
 

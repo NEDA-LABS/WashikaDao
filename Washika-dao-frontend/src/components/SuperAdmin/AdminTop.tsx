@@ -186,7 +186,7 @@ export default function AdminTop({
       dispatch(showNotificationPopup());
       setTimeout(() => {
         dispatch(removeNotification(id));
-      }, 10000);
+      }, 4000);
     });
   };
 
@@ -218,7 +218,7 @@ export default function AdminTop({
             <img src="/images/locationIcon.png" width="27" height="31" />
           </div>
           <div>
-            {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
+            {daoDetails?.daoMultiSigAddr !== daoDetails?.chairpersonAddr ? (
               <button>Generate MultiSigAddress</button>
             ) : (
               <div className="address">

@@ -66,7 +66,7 @@ const Owner: React.FC = () => {
 
         <div className="dashboard-wrapper">
           <h2>This is your account information</h2>
-          <Dashboard/>
+          <Dashboard address={undefined}/>
         </div>
 
         <section className="second">

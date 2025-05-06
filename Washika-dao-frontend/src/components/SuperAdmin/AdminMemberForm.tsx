@@ -30,7 +30,7 @@ export function AdminMemberForm() {
     dispatch(showNotificationPopup());
     setTimeout(() => {
       dispatch(removeNotification(id));
-    }, 60000);
+    }, 4000);
   };
 
   const { currentMember, handleMemberChange, handleAddMember } =

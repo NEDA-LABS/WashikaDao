@@ -552,8 +552,12 @@ nav.SuperAdmin {
     width: 100vw;
   }
 
+  .member.superAdmin {
+    padding-top: clamp(330px, 38vw, 350px);
+  }
+
   .superAdmin .daoImage.one {
-    width: auto;
+    width: 90%;
     margin: 16px;
   }
 
@@ -688,6 +692,10 @@ nav.SuperAdmin {
     grid-template-columns: 1fr;
   }
 
+  .member.superAdmin {
+    padding-top: clamp(320px, 38vw, 200px);
+  }
+
   .thirdy .right .one {
     flex-direction: column;
     gap: 8px;
@@ -732,6 +740,11 @@ nav.SuperAdmin {
   .modal-content {
     max-width: 350px;
   }
+
+  .modal-content .treasury-history {
+    min-width: 100px;
+  }
+  
   
 }
 

@@ -30,7 +30,7 @@ export default function Notification() {
     if (!isVisible) return;
     const timer = setTimeout(() => {
       dispatch(hideNotificationPopup());
-    }, 6000);
+    }, 4000);
     return () => clearTimeout(timer);
   }, [isVisible, dispatch]);
 
