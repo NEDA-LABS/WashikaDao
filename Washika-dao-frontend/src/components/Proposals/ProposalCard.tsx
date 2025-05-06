@@ -32,10 +32,10 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
   const displayStatus =
     expired && !loadingOutcome && outcome ? outcome : p.proposalStatus;
 
-  const identifier = encodeURIComponent(p.proposalId);
+  const identifier = encodeURIComponent(p.proposalTitle);
 
   return (
-    <Link to={`/ViewProposal/${daoId}/${identifier}`} state={{ proposal: p }}>
+    <Link to={`/ViewProposal/${identifier}`} state={{ proposal: p }}>
       <div className="proposal">
         <div className="one">
           <h1>{p.proposalTitle}</h1>
@@ -45,7 +45,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
         <div className="three">
           <div className="button-group button">
             <button
-              onClick={() => navigate(`/ViewProposal/${daoId}/${identifier}`)}
+              onClick={() => navigate(`/ViewProposal/${identifier}`)}
             >
               Vote on Proposal
             </button>

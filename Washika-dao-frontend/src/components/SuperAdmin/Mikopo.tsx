@@ -39,7 +39,7 @@ export default function Mikopo() {
     () =>
       rawProposals.map((p, idx) => ({
         id: idx + 1,
-        image: "/images/default.png",
+        image: p.proposalUrl,
         name: p.proposalOwner,
         date: new Date(Number(p.proposalCreatedAt) * 1000).toLocaleDateString(),
         amount: 0,

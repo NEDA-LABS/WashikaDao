@@ -13,6 +13,8 @@ import NavBar from "../components/Navbar/Navbar";
 import { useProposalForm } from "../hooks/useProposalForm";
 import { useProposalProgress } from "../hooks/useProposalProgress";
 import { useProposalTransaction } from "../hooks/useProposalTransaction";
+import { useReadContract } from "thirdweb/react";
+import { FullDaoContract } from "../utils/handlers/Handlers";
 
 /**
  * CreateProposal component renders a form that allows authenticated users
@@ -35,19 +37,25 @@ const CreateProposal: React.FC = () => {
   // const selectedDao = userDaos.find(
   // (dao) => dao.daoTxHash === selectedDaoTxHash
   // );
-  const memberAddr = localStorage.getItem("address");
-  const daoMultiSigAddr = memberAddr || "";
+  
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const daoId = (localStorage.getItem("daoId") ?? "") as `0x${string}`;
   // Use the proposal form hook to manage form state and input handlers.
   const { proposalData, handleChange, handleFileChange } = useProposalForm();
-
-  // Calculate completed steps for the progress indicator.
-  const completedSteps = useProposalProgress(proposalData, daoMultiSigAddr);
 
   // Use the proposal transaction hook.
   const { handleCreateProposal } = useProposalTransaction(proposalData);
 
+  // 🔁 Get DAO creator address from contract
+  const { data: daoCreator, isPending } = useReadContract({
+    contract: FullDaoContract,
+    method: "function getDaoCreatorByDaoId(bytes32 _daoId) view returns (address)",
+    params: [daoId],
+  });
+
+    // Calculate completed steps for the progress indicator.
+    const completedSteps = useProposalProgress(proposalData, daoCreator ?? "");
   /**
    * Handles form submission for creating a proposal.
    *
@@ -60,9 +68,15 @@ const CreateProposal: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
+    if (!daoCreator || isPending) {
+      alert("DAO creator address is not yet available.");
+      return;
+    }
+
     setIsSubmitting(true);
 
-    const ProposaltxHash = await handleCreateProposal(daoMultiSigAddr);
+    const ProposaltxHash = await handleCreateProposal(daoCreator);
+    console.log("This is the txhash", ProposaltxHash);
 
     setIsSubmitting(false);
     if (!ProposaltxHash) {
@@ -70,7 +84,7 @@ const CreateProposal: React.FC = () => {
       return;
     }
     navigate(
-      `/ViewProposal/${daoMultiSigAddr}/${encodeURIComponent(
+      `/ViewProposal/${encodeURIComponent(
         proposalData.proposalTitle
       )}`
     );
