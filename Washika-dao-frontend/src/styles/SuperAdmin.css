@@ -50,10 +50,16 @@ nav.SuperAdmin {
   flex-direction: column;
   align-items: start;
   gap: 6px;
+  max-width: 100%;
+  word-wrap: break-word;
+  word-break: break-word;
 }
 
 .notifications p {
   font-size: 14px;
+  margin: 0;
+  white-space: normal;
+  overflow-wrap: break-word;
 }
 
 .notifications button {
