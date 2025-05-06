@@ -27,15 +27,8 @@ const MemberProfile: React.FC = () => {
   // const [guaranter, setGuaranter] = useState<string>("");
   const [showForm, setShowForm] = useState<boolean>(false); // State to toggle the popup form visibility
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
-  const [nationalIdNo, setNationalIdNo] = useState<string>("");
-  const [role, setRole] = useState<string>("");
-  const [daoMultiSigAddr, setDaoMultiSigAddr] = useState<string>("");
-  const [guarantor, setGuarantor] = useState<string>("");
-  const [memberDaos, setMemberDaos] = useState<string[]>([]);
+  const [daoId, setDaoId] = useState<string>("");
 
 
   const token = localStorage.getItem("token") ?? "";
@@ -50,9 +43,8 @@ const MemberProfile: React.FC = () => {
     // Find the selected DAO in the list based on its name
     const chosenDao = daos.find((dao) => dao.daoName === selectedDaoName);
 
-    if (chosenDao && !memberDaos.includes(chosenDao.daoName)) {
-      setMemberDaos((prevDaos) => [...prevDaos, chosenDao.daoName]);
-      setDaoMultiSigAddr(chosenDao.daoCreator); // Save selected DAO’s address
+    if (chosenDao ){
+      setDaoId(chosenDao.daoId); // Save selected DAO’s address
     }
   };
 
@@ -63,20 +55,11 @@ const MemberProfile: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setRole("Member")
     // Build payload data
     const payload = {
       memberAddr,
-      firstName,
-      lastName,
       email,
-      phoneNumber,
-      nationalIdNo,
-      memberRole: role,
-      daoMultiSigAddr,
-      daos: memberDaos,
-      guarantor,
-      memberCustomIdentifier: crypto.randomUUID(),
+      daoId,
     };
 
     console.log("Payload:", payload);
@@ -186,29 +169,9 @@ const MemberProfile: React.FC = () => {
                 description=""
                 fields={[
                   {
-                    label: "First Name",
-                    type: "text",
-                    onChange: (e) => setFirstName(e.target.value),
-                  },
-                  {
-                    label: "Last Name",
-                    type: "text",
-                    onChange: (e) => setLastName(e.target.value),
-                  },
-                  {
                     label: "email",
                     type: "email",
                     onChange: (e) => setEmail(e.target.value),
-                  },
-                  {
-                    label: "Phone Number",
-                    type: "tel",
-                    onChange: (e) => setPhoneNumber(e.target.value),
-                  },
-                  {
-                    label: "National Id",
-                    type: "number",
-                    onChange: (e) => setNationalIdNo(e.target.value),
                   },
                   {
                     label: "Select Dao",
@@ -221,16 +184,11 @@ const MemberProfile: React.FC = () => {
                         selected: true,
                       },
                       ...daos.map((dao) => ({
-                        label: "",
+                        label: dao.daoName,
                         value: dao.daoName,
                       })),
                     ],
                     onChange: handleDaoChange,
-                  },
-                  {
-                    label: "Guarantor Number",
-                    type: "number",
-                    onChange: (e) => setGuarantor(e.target.value),
                   },
                 ]}
               />
