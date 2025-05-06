@@ -1,22 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import NavBar from "../components/Navbar/Navbar";
-import ProposalGroups from "../components/ProposalGroups";
-import TreasuryHistory from "../components/TreasuryHistory";
-import Footer from "../components/Footer";
 import { useDispatch } from "react-redux";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { celoAlfajoresTestnet } from "thirdweb/chains";
+import { useActiveAccount, useActiveWalletConnectionStatus, useReadContract, useWalletBalance } from "thirdweb/react";
+import Footer from "../components/Footer";
+import NavBar from "../components/Navbar/Navbar";
+import ProposalGroups from "../components/Proposals/ProposalGroups";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
+import Notification from "../components/SuperAdmin/Notification";
+import TreasuryHistory from "../components/TreasuryHistory";
 import {
   addNotification,
-  showNotificationPopup,
   removeNotification,
+  showNotificationPopup,
 } from "../redux/notifications/notificationSlice";
-import Notification from "../components/SuperAdmin/Notification";
-import { useActiveAccount, useActiveWalletConnectionStatus, useReadContract, useWalletBalance } from "thirdweb/react";
-import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 import { client } from "../utils/thirdwebClient";
-import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
 interface PreloadedState {
   group: {

@@ -406,27 +406,14 @@ nav.SuperAdmin {
   margin: 0 0 16px 0;
 }
 
-.thirdy .right .cards .card .buttonss {
-  display: flex;
-  gap: 12px;
-}
-
-.thirdy .right .cards .card .buttonss button {
-  width: 64px;
+.thirdy .right .cards .card button {
+  width: 128px;
   font-size: 10px;
   color: #f3f3f3;
   padding: 6px;
   border-radius: 5px;
-}
-
-.thirdy .right .cards .card .buttonss button.onee {
   background-color: #259725;
   border: 1px solid #ffbd59;
-}
-
-.thirdy .right .cards .card .buttonss button.twoo {
-  background-color: #ec221f;
-  border: 1px solid #2c2c2c8e;
 }
 
 .thirdy .right .card p {

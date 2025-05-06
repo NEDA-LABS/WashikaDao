@@ -179,21 +179,21 @@ const ViewProposal: React.FC = () => {
         <Footer className={""} />
       </div>
     );
-    if (connectionStatus === "connecting") {
-      return <LoadingPopup message="Loading wallet…" />;
-    }
-  
-    if (connectionStatus === "disconnected" || !activeAccount) {
-      return (
-        <div className="fullheight">
-          <NavBar className="" />
-          <div className="daoRegistration error">
-            <p>Please connect your wallet to continue</p>
-          </div>
-          <Footer className={""} />
+  if (connectionStatus === "connecting") {
+    return <LoadingPopup message="Loading wallet…" />;
+  }
+
+  if (connectionStatus === "disconnected" || !activeAccount) {
+    return (
+      <div className="fullheight">
+        <NavBar className="" />
+        <div className="daoRegistration error">
+          <p>Please connect your wallet to continue</p>
         </div>
-      );
-    }
+        <Footer className={""} />
+      </div>
+    );
+  }
 
   const handleUpVote = () => {
     console.log("Submitting upVote for", proposalDetails.proposalId);
@@ -313,12 +313,14 @@ const ViewProposal: React.FC = () => {
           <div>Checking vote status…</div>
         ) : userHasVoted ? (
           <div className="alreadyVoted">
-            <div className="">
-              ✅ You have voted for this proposal.
-            </div>
+            <div className="">✅ You have voted for this proposal.</div>
             <div className="buttons buttonss">
-              <p className="onee">👍 Yes: {loadingUp ? "…" : upVotes?.toString() ?? "0"}</p>
-              <p className="twoe">👎 No: {loadingDown ? "…" : downVotes?.toString() ?? "0"}</p>
+              <p className="onee">
+                👍 Yes: {loadingUp ? "…" : upVotes?.toString() ?? "0"}
+              </p>
+              <p className="twoe">
+                👎 No: {loadingDown ? "…" : downVotes?.toString() ?? "0"}
+              </p>
             </div>
           </div>
         ) : expired ? (
