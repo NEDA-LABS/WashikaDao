@@ -74,7 +74,7 @@ const ProposalGroups: React.FC<ProposalGroupsProps> = ({ ownerFilter }) => {
   return (
     <div className="proposal-groups">
       {pageItems.map((p) => {
-        const identifier = encodeURIComponent(p.proposalTitle);
+        const identifier = encodeURIComponent(p.proposalId);
         return (
           <Link
             key={p.proposalId}

@@ -5,11 +5,13 @@ import {
   useReadContract,
   useSendTransaction,
   useActiveAccount,
+  useActiveWalletConnectionStatus,
 } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
 interface PreloadedState {
   proposal: {
@@ -32,37 +34,87 @@ interface OnChainProposal {
   proposalCreatedAt: bigint;
 }
 
-// interface VoteDetails {
-//   voterAddr: string;
-//   pOwner: string;
-//   voteType: boolean;
-// }
-
 const ViewProposal: React.FC = () => {
   const { state } = useLocation();
   const preloaded = (state as PreloadedState) || null;
-  const [proposalDetails] = useState<OnChainProposal | null>(
-    preloaded
-      ? {
-          proposalOwner: preloaded.proposal.proposalOwner,
-          proposalId: preloaded.proposal.proposalId,
-          daoId: preloaded.proposal.daoId,
-          proposalUrl: preloaded.proposal.proposalUrl,
-          proposalTitle: preloaded.proposal.proposalTitle,
-          proposalStatus: preloaded.proposal.proposalStatus,
-          proposalCreatedAt: preloaded.proposal.proposalCreatedAt,
-        }
-      : null
-  );
-  const [loading] = useState(!preloaded);
+
+  const { proposalId: paramProposalId } = useParams<{ proposalId: string }>();
+
+  const [proposalDetails, setProposalDetails] =
+    useState<OnChainProposal | null>(
+      preloaded
+        ? {
+            proposalOwner: preloaded.proposal.proposalOwner,
+            proposalId: preloaded.proposal.proposalId,
+            daoId: preloaded.proposal.daoId,
+            proposalUrl: preloaded.proposal.proposalUrl,
+            proposalTitle: preloaded.proposal.proposalTitle,
+            proposalStatus: preloaded.proposal.proposalStatus,
+            proposalCreatedAt: preloaded.proposal.proposalCreatedAt,
+          }
+        : null
+    );
+  const [loading, setLoading] = useState(!preloaded);
   const navigate = useNavigate();
   const [isUpVoting, setIsUpVoting] = useState(false);
   const [isDownVoting, setIsDownVoting] = useState(false);
   const { mutate: sendTransaction } = useSendTransaction();
   const activeAccount = useActiveAccount();
+  const connectionStatus = useActiveWalletConnectionStatus();
+
+  const {
+    data: fetchedProposal,
+    isLoading: loadingFetched,
+    error: fetchError,
+  } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "function getProposalXById(bytes32 _proposalId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt))",
+    params: [
+      (preloaded
+        ? preloaded.proposal.proposalId
+        : (paramProposalId as `0x${string}`)) as `0x${string}`,
+    ],
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  }) as { data?: OnChainProposal; isLoading: boolean; error?: any };
+
+  useEffect(() => {
+    if (!preloaded) {
+      if (!loadingFetched && fetchedProposal) {
+        setProposalDetails(fetchedProposal);
+        setLoading(false);
+      }
+      if (fetchError) {
+        console.error("Failed to fetch proposal:", fetchError);
+        setLoading(false);
+      }
+    }
+  }, [preloaded, loadingFetched, fetchedProposal, fetchError]);
 
   // Check if the user has already voted
   const proposalId = proposalDetails!.proposalId;
+  const createdTs = Number(proposalDetails?.proposalCreatedAt) * 1000;
+  const expiryTs = createdTs + 24 * 3600 * 1000;
+
+  const { data: upVotes, isLoading: loadingUp } = useReadContract({
+    contract: FullDaoContract,
+    method: "function getUpVotes(bytes32 _proposalId) view returns (uint256)",
+    params: [proposalId],
+  });
+
+  const { data: downVotes, isLoading: loadingDown } = useReadContract({
+    contract: FullDaoContract,
+    method: "function getDownVotes(bytes32 _proposalId) view returns (uint256)",
+    params: [proposalId],
+  });
+
+  const { data: onChainOutcome, isLoading: loadingOutcome } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "function getProposalOutcome(bytes32 _proposalId) view returns (string)",
+    params: [proposalId],
+  });
+
   const { data: onChainHasVoted, isLoading: loadingHasVoted } = useReadContract(
     {
       contract: FullDaoContract,
@@ -81,8 +133,42 @@ const ViewProposal: React.FC = () => {
     }
   }, [loadingHasVoted, onChainHasVoted]);
 
+  // 4. Track live time / expiry
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const iv = setInterval(() => setNow(Date.now()), 5_000);
+    return () => clearInterval(iv);
+  }, []);
+
+  const expired = now >= expiryTs;
+
+  useEffect(() => {
+    if (
+      expired &&
+      !loadingOutcome &&
+      onChainOutcome &&
+      proposalDetails?.proposalStatus !== onChainOutcome
+    ) {
+      setProposalDetails((p) => p! && { ...p, proposalStatus: onChainOutcome });
+    }
+  }, [
+    expired,
+    loadingOutcome,
+    onChainOutcome,
+    proposalDetails?.proposalStatus,
+  ]);
+
   // loading / error states
-  if (loading) return <div>Loading...</div>;
+  if (loading)
+    return (
+      <div className="fullheight">
+        <NavBar className="" />
+        <div className="daoRegistration error">
+          <p>Loading...</p>
+        </div>
+        <Footer className={""} />
+      </div>
+    );
   if (!proposalDetails)
     return (
       <div className="fullheight">
@@ -93,21 +179,21 @@ const ViewProposal: React.FC = () => {
         <Footer className={""} />
       </div>
     );
-  if (!activeAccount?.address)
-    return (
-      <div className="fullheight">
-        <NavBar className="" />
-        <div className="daoRegistration error">
-          <p>Please connect your wallet to continue</p>
+    if (connectionStatus === "connecting") {
+      return <LoadingPopup message="Loading wallet…" />;
+    }
+  
+    if (connectionStatus === "disconnected" || !activeAccount) {
+      return (
+        <div className="fullheight">
+          <NavBar className="" />
+          <div className="daoRegistration error">
+            <p>Please connect your wallet to continue</p>
+          </div>
+          <Footer className={""} />
         </div>
-        <Footer className={""} />
-      </div>
-    );
-
-  // compute expiration
-  const expiryDate = new Date(
-    Number(proposalDetails.proposalCreatedAt) * 1000
-  ).toLocaleString();
+      );
+    }
 
   const handleUpVote = () => {
     console.log("Submitting upVote for", proposalDetails.proposalId);
@@ -173,23 +259,32 @@ const ViewProposal: React.FC = () => {
             onClick={() => navigate(-1)}
             style={{ cursor: "pointer" }}
           />
-          <button className="inProgress">{proposalDetails.proposalStatus}</button>
+          <button className="inProgress">
+            {proposalDetails.proposalStatus}
+          </button>
         </div>
 
         <article>
           <h1>{proposalDetails.proposalTitle}</h1>
           <div className="buttons">
-            <button disabled>Fund Project</button>
-            <button disabled>View Statement</button>
+            <button disabled className="twoo">
+              Fund Project
+            </button>
+            <button disabled className="twooo">
+              View Statement
+            </button>
           </div>
-          {/* <p>Summary from backend here</p> */}
+          <p>Proposal Summary</p>
         </article>
 
         <section>
           <div className="dooh">
             <p className="first">Expires at</p>
             <div className="second">
-              <p>{expiryDate}</p>
+              <p>
+                {new Date(expiryTs).toLocaleString()}
+                {expired && " (voting closed)"}
+              </p>
             </div>
           </div>
         </section>
@@ -218,8 +313,16 @@ const ViewProposal: React.FC = () => {
           <div>Checking vote status…</div>
         ) : userHasVoted ? (
           <div className="alreadyVoted">
-            ✅ You have voted for this proposal.
+            <div className="">
+              ✅ You have voted for this proposal.
+            </div>
+            <div className="buttons buttonss">
+              <p className="onee">👍 Yes: {loadingUp ? "…" : upVotes?.toString() ?? "0"}</p>
+              <p className="twoe">👎 No: {loadingDown ? "…" : downVotes?.toString() ?? "0"}</p>
+            </div>
           </div>
+        ) : expired ? (
+          <div className="closed">Voting period has ended.</div>
         ) : (
           <div className="buttons buttonss">
             <button

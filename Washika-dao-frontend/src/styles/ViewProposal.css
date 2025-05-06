@@ -152,16 +152,22 @@
   background-color: #4339396b;
 }
 
+.viewProposal .alreadyVoted {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
 .viewProposal .buttonss {
   margin: 0;
   gap: 16px;
 }
 
-.viewProposal .buttonss button {
+.viewProposal .buttonss button, .viewProposal .buttonss p {
   color: #ffffff;
   width: 190px;
   border-radius: 8px;
+  padding: 4px 0;
 }
 
 .viewProposal .buttons .onee {
@@ -173,6 +179,9 @@
 
 .viewProposal .buttons .twoe {
   background-color: #ec221f;
+  display: flex;
+  justify-content: center;
+  gap: 6px;
 }
 
 .viewProposal .buttonGroup .three {

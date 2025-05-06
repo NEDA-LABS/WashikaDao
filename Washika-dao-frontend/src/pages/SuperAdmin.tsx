@@ -84,9 +84,9 @@ const SuperAdmin: React.FC = () => {
     return (
       <div className="fullheight">
         <NavBar className="" />
-        <p className="daoRegistration error">
-          Please connect your wallet to continue
-        </p>
+        <div className="daoRegistration error">
+          <p>Please connect your wallet to continue</p>
+        </div>
         <Footer className={""} />
       </div>
     );
