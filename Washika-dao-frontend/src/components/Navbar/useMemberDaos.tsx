@@ -81,7 +81,9 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
                 "function isYMemberOfDaoX(bytes32 _daoId, address _userAddress) view returns (bool)",
               params: [d.daoId, memberAddr],
             });
-            if (!isMember) return null;
+
+            const isCreator = d.daoCreator.toLowerCase() === memberAddr.toLowerCase();
+            if (!isMember && !isCreator) return null;
             return {
               daoName: d.daoName,
               daoLocation: d.daoLocation,

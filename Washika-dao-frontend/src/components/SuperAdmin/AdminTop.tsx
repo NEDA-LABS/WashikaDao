@@ -76,9 +76,12 @@ export default function AdminTop({
         } as OnchainDao)
     );
 
+    const DaoId = localStorage.getItem("selectedDaoId")
+
     // 4️⃣ Find the one matching our route param
     const found = allDaos.find(
-      (d) => d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase()
+      (d) => d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase() &&
+      d.daoId === DaoId
     );
     if (!found) return;
 
