@@ -57,6 +57,7 @@ const ViewProposal: React.FC = () => {
   const navigate = useNavigate();
   const [isUpVoting, setIsUpVoting] = useState(false);
   const [isDownVoting, setIsDownVoting] = useState(false);
+  const isVoting = isUpVoting || isDownVoting;
   const { mutate: sendTransaction } = useSendTransaction();
   const activeAccount = useActiveAccount();
   const connectionStatus = useActiveWalletConnectionStatus();
@@ -252,6 +253,11 @@ const ViewProposal: React.FC = () => {
   return (
     <>
       <NavBar className="navbarProposal" />
+      {isVoting && (
+        <LoadingPopup
+          message="Submitting your vote…"
+        />
+      )}
       <main className="viewProposal">
         <div className="one">
           <img
