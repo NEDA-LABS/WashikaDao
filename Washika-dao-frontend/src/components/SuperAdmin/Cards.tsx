@@ -53,7 +53,8 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
 {isApproved && <button className="onee">Release Funds</button>}
 
       <p>
-        {card.name.slice(0, 14)}…{card.name.slice(-9)}
+        {/* {card.name.slice(0, 14)}…{card.name.slice(-9)} */}
+        {card.name}
       </p>
       <p>{card.date}</p>
       <p className="cash">Tsh {card.amount.toLocaleString()}</p>
