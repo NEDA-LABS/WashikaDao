@@ -38,8 +38,7 @@ const ViewProposal: React.FC = () => {
   const { state } = useLocation();
   const preloaded = (state as PreloadedState) || null;
 
-  const { proposalId: paramProposalId } = useParams<{ proposalId: string }>();
-
+  const { proposalTitle: paramProposalTitle } = useParams<{ proposalTitle: string }>();
   const [proposalDetails, setProposalDetails] =
     useState<OnChainProposal | null>(
       preloaded
@@ -58,9 +57,18 @@ const ViewProposal: React.FC = () => {
   const navigate = useNavigate();
   const [isUpVoting, setIsUpVoting] = useState(false);
   const [isDownVoting, setIsDownVoting] = useState(false);
+  const isVoting = isUpVoting || isDownVoting;
   const { mutate: sendTransaction } = useSendTransaction();
   const activeAccount = useActiveAccount();
   const connectionStatus = useActiveWalletConnectionStatus();
+
+  const { 
+    data: fetchedProposalId, 
+  } = useReadContract({
+    contract: FullDaoContract,
+    method: "function getProposalIdByTitle(string _proposalTitle) view returns (bytes32)",
+    params: [paramProposalTitle!],
+  });
 
   const {
     data: fetchedProposal,
@@ -70,13 +78,8 @@ const ViewProposal: React.FC = () => {
     contract: FullDaoContract,
     method:
       "function getProposalXById(bytes32 _proposalId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt))",
-    params: [
-      (preloaded
-        ? preloaded.proposal.proposalId
-        : (paramProposalId as `0x${string}`)) as `0x${string}`,
-    ],
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  }) as { data?: OnChainProposal; isLoading: boolean; error?: any };
+      params: [fetchedProposalId as `0x${string}`],
+  })
 
   useEffect(() => {
     if (!preloaded) {
@@ -92,27 +95,28 @@ const ViewProposal: React.FC = () => {
   }, [preloaded, loadingFetched, fetchedProposal, fetchError]);
 
   // Check if the user has already voted
-  const proposalId = proposalDetails!.proposalId;
+  const proposalIdFinal: `0x${string}` = proposalDetails?.proposalId ?? "0x0000000000000000000000000000000000000000"; 
+
   const createdTs = Number(proposalDetails?.proposalCreatedAt) * 1000;
   const expiryTs = createdTs + 24 * 3600 * 1000;
 
   const { data: upVotes, isLoading: loadingUp } = useReadContract({
     contract: FullDaoContract,
     method: "function getUpVotes(bytes32 _proposalId) view returns (uint256)",
-    params: [proposalId],
+    params: [proposalIdFinal],
   });
 
   const { data: downVotes, isLoading: loadingDown } = useReadContract({
     contract: FullDaoContract,
     method: "function getDownVotes(bytes32 _proposalId) view returns (uint256)",
-    params: [proposalId],
+    params: [proposalIdFinal],
   });
 
   const { data: onChainOutcome, isLoading: loadingOutcome } = useReadContract({
     contract: FullDaoContract,
     method:
       "function getProposalOutcome(bytes32 _proposalId) view returns (string)",
-    params: [proposalId],
+    params: [proposalIdFinal],
   });
 
   const { data: onChainHasVoted, isLoading: loadingHasVoted } = useReadContract(
@@ -120,7 +124,7 @@ const ViewProposal: React.FC = () => {
       contract: FullDaoContract,
       method:
         "function hasVoted(address voter, bytes32 proposalId) view returns (bool)",
-      params: [activeAccount?.address ?? "", proposalId] as const,
+      params: [activeAccount?.address ?? "", proposalIdFinal] as const,
     }
   ) as { data?: boolean; isLoading: boolean };
 
@@ -179,21 +183,21 @@ const ViewProposal: React.FC = () => {
         <Footer className={""} />
       </div>
     );
-    if (connectionStatus === "connecting") {
-      return <LoadingPopup message="Loading wallet…" />;
-    }
-  
-    if (connectionStatus === "disconnected" || !activeAccount) {
-      return (
-        <div className="fullheight">
-          <NavBar className="" />
-          <div className="daoRegistration error">
-            <p>Please connect your wallet to continue</p>
-          </div>
-          <Footer className={""} />
+  if (connectionStatus === "connecting") {
+    return <LoadingPopup message="Loading wallet…" />;
+  }
+
+  if (connectionStatus === "disconnected" || !activeAccount) {
+    return (
+      <div className="fullheight">
+        <NavBar className="" />
+        <div className="daoRegistration error">
+          <p>Please connect your wallet to continue</p>
         </div>
-      );
-    }
+        <Footer className={""} />
+      </div>
+    );
+  }
 
   const handleUpVote = () => {
     console.log("Submitting upVote for", proposalDetails.proposalId);
@@ -249,6 +253,11 @@ const ViewProposal: React.FC = () => {
   return (
     <>
       <NavBar className="navbarProposal" />
+      {isVoting && (
+        <LoadingPopup
+          message="Submitting your vote…"
+        />
+      )}
       <main className="viewProposal">
         <div className="one">
           <img
@@ -313,12 +322,14 @@ const ViewProposal: React.FC = () => {
           <div>Checking vote status…</div>
         ) : userHasVoted ? (
           <div className="alreadyVoted">
-            <div className="">
-              ✅ You have voted for this proposal.
-            </div>
+            <div className="">✅ You have voted for this proposal.</div>
             <div className="buttons buttonss">
-              <p className="onee">👍 Yes: {loadingUp ? "…" : upVotes?.toString() ?? "0"}</p>
-              <p className="twoe">👎 No: {loadingDown ? "…" : downVotes?.toString() ?? "0"}</p>
+              <p className="onee">
+                👍 Yes: {loadingUp ? "…" : upVotes?.toString() ?? "0"}
+              </p>
+              <p className="twoe">
+                👎 No: {loadingDown ? "…" : downVotes?.toString() ?? "0"}
+              </p>
             </div>
           </div>
         ) : expired ? (

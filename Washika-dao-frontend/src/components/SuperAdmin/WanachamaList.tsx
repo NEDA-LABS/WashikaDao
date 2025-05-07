@@ -128,7 +128,7 @@ const WanachamaList: React.FC<{ daoDetails?: DaoDetails }> = ({
         dispatch(showNotificationPopup());
         setTimeout(() => {
           dispatch(removeNotification(id));
-        }, 3000);
+        }, 4000);
       });
     };
 

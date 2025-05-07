@@ -1,8 +1,8 @@
+import { useState } from "react";
 import Dashboard from "../Dashboard";
-import ProposalGroups from "../ProposalGroups";
+import ProposalGroups from "../Proposals/ProposalGroups";
 import TransactionPopup from "./TransactionPopup";
 import { DaoDetails } from "./WanachamaList";
-import { useState } from "react";
 
 interface DaoOverviewProps {
   daoDetails?: DaoDetails;
@@ -11,7 +11,11 @@ interface DaoOverviewProps {
 export default function DaoOverview({ daoDetails }: DaoOverviewProps) {
   const [showStatement, setShowStatement] = useState(false);
   if (!daoDetails) {
-    return <div>Loading DAO overview…</div>;
+    return (
+      <div className="noProposals">
+        <p>Loading dao overview</p>
+      </div>
+    );
   }
   const daoMultisigAddr = daoDetails!.daoMultiSigAddr;
 
@@ -19,7 +23,7 @@ export default function DaoOverview({ daoDetails }: DaoOverviewProps) {
     <>
       <div className="dashboard-wrapper">
         <div className="fullStatement">
-        <button onClick={() => setShowStatement(true)}>Full Statement</button>
+          <button onClick={() => setShowStatement(true)}>Full Statement</button>
         </div>
         <Dashboard address={daoMultisigAddr} />
       </div>
@@ -37,7 +41,10 @@ export default function DaoOverview({ daoDetails }: DaoOverviewProps) {
             onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
           >
             <TransactionPopup daoDetails={daoDetails} />
-            <button onClick={() => setShowStatement(false)} className="close-btn">
+            <button
+              onClick={() => setShowStatement(false)}
+              className="close-btn"
+            >
               Close
             </button>
           </div>

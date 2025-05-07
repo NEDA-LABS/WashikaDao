@@ -1,11 +1,11 @@
 // import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import Dashboard from "../components/Dashboard";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
-import ProposalGroups from "../components/ProposalGroups";
+import ProposalGroups from "../components/Proposals/ProposalGroups";
 import Strip from "../components/Strip";
-import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
-import Dashboard from "../components/Dashboard";
 /**
  * @Auth Policy: Requires auth in order to be able to fetch data concerning the owner 
  * @returns 
@@ -66,7 +66,7 @@ const Owner: React.FC = () => {
 
         <div className="dashboard-wrapper">
           <h2>This is your account information</h2>
-          <Dashboard/>
+          <Dashboard address={undefined}/>
         </div>
 
         <section className="second">

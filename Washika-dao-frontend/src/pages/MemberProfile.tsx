@@ -1,13 +1,13 @@
+import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import DaoForm from "../components/DaoForm";
+import Dashboard from "../components/Dashboard";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
-import ProposalGroups from "../components/ProposalGroups";
-import Dashboard from "../components/Dashboard";
-import { useState } from "react";
-import DaoForm from "../components/DaoForm";
-import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
-import { useNavigate, useParams } from "react-router-dom";
-import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 import { useMemberDaos } from "../components/Navbar/useMemberDaos";
+import ProposalGroups from "../components/Proposals/ProposalGroups";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
 
 /**
  * @Auth policy: Should definitely be authenticated to make sense

@@ -519,7 +519,7 @@ section.second::after {
   text-align: center;
 }
 
-@media only screen and (max-width: 1024px) {
+@media only screen and (max-width: 1100px) {
   main.daoMain {
     padding-top: clamp(370px, 60vw, 500px);
   }
@@ -586,6 +586,7 @@ section.second::after {
 
   .treasury .first {
     padding: 0 0 24px;
+    margin-bottom: 0px;
   }
 
   .treasury .one .left, .superAdmin .top .two .one .left {

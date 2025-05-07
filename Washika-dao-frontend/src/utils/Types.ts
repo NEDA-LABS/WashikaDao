@@ -112,3 +112,14 @@ export interface OnchainDao {
   daoId: `0x${string}`;
 }
 
+export interface OnChainProposal {
+  proposalOwner: string;
+  proposalId: `0x${string}`;
+  daoId: string;
+  proposalUrl: string;
+  proposalTitle: string;
+  proposalStatus: string;
+  proposalCreatedAt: bigint;
+}
+
+

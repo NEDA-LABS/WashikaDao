@@ -21,7 +21,6 @@ export interface ProposalData {
 
 export const useProposalForm = () => {
   const daoId = localStorage.getItem("daoId") ?? "";
-  console.log("This is the daoId", daoId);
   
   const { uploadFileToCloudinary } = useCloudinaryUpload();
   const [proposalData, setProposalData] = useState<ProposalData>({

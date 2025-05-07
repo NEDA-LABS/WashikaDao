@@ -186,7 +186,7 @@ export default function AdminTop({
       dispatch(showNotificationPopup());
       setTimeout(() => {
         dispatch(removeNotification(id));
-      }, 10000);
+      }, 4000);
     });
   };
 
