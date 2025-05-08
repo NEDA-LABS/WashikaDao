@@ -622,7 +622,7 @@ section.second::after {
   }
 
   .treasury-history {
-    width: 320px;
+    min-width: 320px;
   }
 
   .treasury-history h1 {
