@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
-import { fetchAllTransactions, RawTxn } from "../utils/arbiscan";
+import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan";
 
 interface TreasuryEntry {
   hash: string;
@@ -30,7 +30,7 @@ const TreasuryHistory: React.FC<TreasuryHistoryProps> = ({
       const address = daoMultiSigAddr.toLowerCase();
       const [rate, raw] = await Promise.all([
         fetchCeloToUsdRate(),
-        fetchAllTransactions(address),
+        fetchTokenTransfers(address),
       ]);
 
       // filter out zero‐value and keep only send/receive

@@ -181,9 +181,10 @@
 }
 
 .findAndJoin .select-1, .popupp form select {
-  width: clamp(200px, 20vw, 435px);
+  /* width: clamp(200px, 20vw, 435px); */
   height: clamp(36px, 3vw, 69px);
   border-radius: 16px;
+  padding: 0 16px;
   border: 1px solid #dcb273;
   background-color: #856d4a;
   font-size: clamp(16px, 1.5vw, 30px);

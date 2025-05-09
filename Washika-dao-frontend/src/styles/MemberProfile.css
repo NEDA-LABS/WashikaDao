@@ -139,7 +139,7 @@ body :has(.member) {
 }
 
 .dashboard-wrapper {
-  margin: clamp(16px,5vw,24px) clamp(24px, 7vw, 96px);
+  margin: clamp(16px, 5vw, 24px) clamp(24px, 7vw, 96px);
 }
 
 .dashboard-wrapper h2 {
@@ -172,13 +172,13 @@ body :has(.member) {
   display: flex;
   gap: 9px;
   font-weight: 500;
-  font-size: clamp(12px,4vw,19px);
+  font-size: clamp(12px, 4vw, 19px);
   color: #0e121b;
 }
 
 .dashboard .one ul {
   width: 48%;
-  font-size: clamp(10px,1vw,16px);
+  font-size: clamp(10px, 1vw, 16px);
 }
 
 .dashboard .one ul select {
@@ -190,7 +190,7 @@ body :has(.member) {
 .dashboard .two {
   display: flex;
   justify-content: space-between;
-  font-size: clamp(9px,1.3vw,14px);
+  font-size: clamp(9px, 1.3vw, 14px);
   padding: 16px 0;
   border-bottom: 1px solid #e1e4ea;
 }
@@ -221,13 +221,13 @@ body :has(.member) {
 }
 
 .dashboard .two .totals .groupss p {
-  font-size: clamp(6px,1.2vw,13px);
+  font-size: clamp(6px, 1.2vw, 13px);
   color: #99a0ae;
   font-weight: 500;
 }
 
 .dashboard .two .totals .groupss .amount p {
-  font-size: clamp(12px,1.7vw,19px);
+  font-size: clamp(12px, 1.7vw, 19px);
   color: #0e121b;
 }
 
@@ -244,7 +244,8 @@ body :has(.member) {
   background-color: #ffc0c5;
 }
 
- .dashboard .bargraph, .allBars {
+.dashboard .bargraph,
+.allBars {
   display: flex;
   gap: 24px;
   padding: 20px 0 0;
@@ -325,6 +326,8 @@ body :has(.member) {
   left: 0;
   width: 100%;
   height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 1000;
 }
 
 .popupp form {
@@ -342,7 +345,7 @@ body :has(.member) {
 
 .popupp .form .left {
   width: auto;
-} 
+}
 
 .popupp .form .formDiv {
   width: auto;
@@ -369,6 +372,106 @@ body :has(.member) {
 
 .footerDaoMember {
   background-color: #282424;
+}
+
+.payment-modal {
+  background-color: #fff;          /* white card */
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  padding: 24px 32px;
+  width: 90%;
+  max-width: 400px;                /* reasonable max on desktop */
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-family: sans-serif;
+}
+
+/* Heading */
+.payment-modal h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+  color: #333;
+}
+
+/* Label + select */
+.payment-modal label {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.payment-modal select {
+  margin-top: 8px;
+  padding: 8px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fafafa;
+  transition: border-color 0.2s;
+}
+
+.payment-modal select:focus {
+  outline: none;
+  border-color: #007aff;
+}
+
+/* Action buttons container */
+.payment-modal > button {
+  width: 100%;
+  padding: 10px 0;
+  font-size: 1rem;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+}
+
+/* Primary “Send Payment” */
+.payment-modal > button:first-of-type {
+  background-color: #007aff;
+  color: #fff;
+}
+
+.payment-modal > button:first-of-type:hover:not(:disabled) {
+  background-color: #005ec2;
+}
+
+.payment-modal > button:first-of-type:disabled {
+  background-color: #a3caff;
+  cursor: not-allowed;
+}
+
+/* Secondary “Cancel” */
+.payment-modal > button:nth-of-type(2) {
+  background-color: transparent;
+  color: #555;
+  border: 1px solid #ccc;
+}
+
+.payment-modal > button:nth-of-type(2):hover {
+  background-color: #f0f0f0;
+}
+
+/* Responsive tweaks */
+@media (max-width: 480px) {
+  .payment-modal {
+    padding: 16px;
+    gap: 12px;
+  }
+
+  .payment-modal h2 {
+    font-size: 1.25rem;
+  }
+
+  .payment-modal select,
+  .payment-modal > button {
+    font-size: 0.95rem;
+  }
 }
 
 @media only screen and (max-width: 900px) {
@@ -430,10 +533,9 @@ body :has(.member) {
     display: initial;
   }
 
-
   .dashboard .one ul {
     width: 100%;
-    font-size: clamp(6px, 2vw,16px);
+    font-size: clamp(6px, 2vw, 16px);
   }
 
   .dashboard .one ul select {
@@ -455,11 +557,14 @@ body :has(.member) {
   }
 
   .member .sec img {
-  width: 30px;
-}
+    width: 30px;
+  }
 
   .member .sec h1,
-.owner .sec h1 {
-  font-size: 24px;
-}
+  .owner .sec h1 {
+    font-size: 24px;
+  }
+  .popupp .center {
+    margin-top: 24px;
+  }
 }
