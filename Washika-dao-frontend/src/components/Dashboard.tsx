@@ -19,74 +19,126 @@ interface DashboardProps {
   address: string | undefined;
 }
 
+interface Bucket {
+  label: string;
+  balances: number[]; // [deposits, loans, shares, repayments, interest]
+}
+
 const Dashboard: React.FC<DashboardProps> = ({ address }) => {
   const [history, setHistory] = useState<MonthBucket[]>([]);
+  const [allTxns, setAllTxns] = useState<RawTxn[]>([]);
+  const [rate, setRate] = useState<number>(1);
   const [filterWindow, setFilterWindow] = useState<WindowKey>("1y");
 
-  // Fetch & compute once
+  // 1️⃣ Fetch once: txns, rate, monthly buckets
   useEffect(() => {
     if (!address) return;
     (async () => {
+      // fetch all txns
       let page = 1;
-      const allTxns: RawTxn[] = [];
+      const txs: RawTxn[] = [];
       while (true) {
-        const txns = await fetchTokenTransfers(address, page++, 100);
-        if (!txns.length) break;
-        allTxns.push(...txns);
+        const batch = await fetchTokenTransfers(address, page++, 100);
+        if (!batch.length) break;
+        txs.push(...batch);
       }
-      const buckets = await computeMonthlyUsdHistory(
+      setAllTxns(txs);
+
+      // fetch rate
+      const usdRate = await fetchCeloToUsdRate();
+      setRate(usdRate);
+
+      // compute monthly USD history
+      const mBuckets = await computeMonthlyUsdHistory(
         address,
-        allTxns,
-        fetchCeloToUsdRate
+        txs,
+        async () => usdRate
       );
-      setHistory(buckets);
+      setHistory(mBuckets);
     })();
   }, [address]);
 
-  // Build full-year balances
-  const monthlyBalances = useMemo(
+  // 2️⃣ Monthly buckets Jan–Dec
+  const monthlyBuckets = useMemo<Bucket[]>(
     () =>
       history.map((b) => ({
-        month: b.month,
-        balances: [b.deposits, b.loans, 0, 0, 0] as number[],
+        label: b.month,
+        balances: [b.deposits, b.loans, 0, 0, 0],
       })),
     [history]
   );
 
-  // 3) Pick last N months ending on the current month
-  const displayBalances = useMemo(() => {
-    if (filterWindow === "1y") {
-      return monthlyBalances;
+  // 3️⃣ Weekly buckets for current month
+  const weeklyBuckets = useMemo<Bucket[]>(() => {
+    if (filterWindow !== "1m" || !address) return [];
+    const now = new Date();
+    const ym = now.getFullYear();
+    const mm = now.getMonth(); // 0–11
+
+    // filter txns in current month
+    const cur = allTxns.filter((tx) => {
+      const d = new Date(tx.timestamp * 1000);
+      return d.getFullYear() === ym && d.getMonth() === mm;
+    });
+
+    // group into weeks 0..4
+    const weeks: Record<number, { deposits: number; loans: number }> = {};
+    for (const tx of cur) {
+      const d = new Date(tx.timestamp * 1000);
+      const w = Math.floor((d.getDate() - 1) / 7); // week index
+      if (!weeks[w]) weeks[w] = { deposits: 0, loans: 0 };
+      const usd = tx.valueCelo * rate;
+      if (tx.to.toLowerCase() === address.toLowerCase())
+        weeks[w].deposits += usd;
+      else weeks[w].loans += usd;
     }
 
+    // map to array
+    return Object.entries(weeks)
+      .sort(([a], [b]) => +a - +b)
+      .map(([w, vals]) => {
+        const start = +w * 7 + 1;
+        const lastDay = new Date(ym, mm + 1, 0).getDate();
+        const end = Math.min(start + 6, lastDay);
+        return {
+          label: `W${+w + 1} (${start}-${end})`,
+          balances: [vals.deposits, vals.loans, 0, 0, 0],
+        };
+      });
+  }, [filterWindow, allTxns, rate, address]);
+
+  // 4️⃣ Choose display buckets
+  const displayBuckets = useMemo<Bucket[]>(() => {
+    if (filterWindow === "1y") return monthlyBuckets;
+    if (filterWindow === "1m") return weeklyBuckets;
+    // 6m or 3m
     const now = new Date();
-    const currIdx = now.getMonth();
-    const span = filterWindow === "6m" ? 6
-              : filterWindow === "3m" ? 3
-              : filterWindow === "1m" ? 1
-              : 12;
-    // compute start index, but never below 0
-    const start = Math.max(0, currIdx - span + 1);
-    const end = currIdx + 1; // slice is exclusive
-    return monthlyBalances.slice(start, end);
-  }, [monthlyBalances, filterWindow]);
+    const idx = now.getMonth(); // 0–11
+    const span = filterWindow === "6m" ? 6 : 3;
+    const start = Math.max(0, idx - span + 1);
+    return monthlyBuckets.slice(start, idx + 1);
+  }, [filterWindow, monthlyBuckets, weeklyBuckets]);
 
-  // Totals & maxima based on displayBalances
-  const totals = useMemo(() => {
-    const totals = [0, 0, 0, 0, 0];
-    displayBalances.forEach((m) =>
-      m.balances.forEach((v, i) => (totals[i] += v))
-    );
-    return totals.map((x) => `$${x.toLocaleString()}`);
-  }, [displayBalances]);
+  // 5️⃣ Totals for Balance
+  const totals = useMemo(
+    () =>
+      displayBuckets
+        .reduce<number[]>(
+          (acc, b) => acc.map((sum, i) => sum + (b.balances[i] || 0)),
+          [0, 0, 0, 0, 0]
+        )
+        .map((x) => `$${x.toLocaleString()}`),
+    [displayBuckets]
+  );
 
-
-  const maxTotalBalance = useMemo(
+  // 6️⃣ maxTotalBalance scale
+  const maxTotal = useMemo(
     () =>
       Math.max(
-        ...displayBalances.map((m) => m.balances.reduce((sum, v) => sum + v, 0))
+        0,
+        ...displayBuckets.map((b) => b.balances.reduce((sum, v) => sum + v, 0))
       ),
-    [displayBalances]
+    [displayBuckets]
   );
 
   return (
@@ -98,29 +150,28 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
         </div>
         <ul>
           <li>
-            <img src="/images/Chart Legend Dots1.png" alt="dot" /> Deposit
+            <img src="/images/Chart Legend Dots1.png" alt="" /> Deposit
           </li>
           <li>
-            <img src="/images/Chart Legend Dots2.png" alt="dot" /> Loans
+            <img src="/images/Chart Legend Dots2.png" alt="" /> Loans
           </li>
           <li>
-            <img src="/images/Chart Legend Dots3.png" alt="dot" /> Shares
+            <img src="/images/Chart Legend Dots3.png" alt="" /> Shares
           </li>
           <li>
-            <img src="/images/Chart Legend Dots4.png" alt="dot" /> Repayments
+            <img src="/images/Chart Legend Dots4.png" alt="" /> Repayments
           </li>
           <li>
-            <img src="/images/Chart Legend Dots5.png" alt="dot" /> Interest
+            <img src="/images/Chart Legend Dots5.png" alt="" /> Interest
           </li>
 
-          {/* 5) time‐window select */}
           <select
             value={filterWindow}
             onChange={(e) => setFilterWindow(e.target.value as WindowKey)}
           >
-            {Object.entries(WINDOW_LABELS).map(([key, label]) => (
-              <option key={key} value={key}>
-                {label}
+            {Object.entries(WINDOW_LABELS).map(([k, lab]) => (
+              <option key={k} value={k}>
+                {lab}
               </option>
             ))}
           </select>
@@ -137,29 +188,29 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
 
       <div className="bargraph">
         <div className="level">
-          {[1, 0.75, 0.5, 0.25, 0].map((fraction, idx) => (
-            <p key={idx}>
-              {fraction === 0
+          {[1, 0.75, 0.5, 0.25, 0].map((f, i) => {
+            const val =
+              f === 0
                 ? "0"
-                : maxTotalBalance < 1000
-                ? `${(maxTotalBalance * fraction).toFixed(0)}`
-                : `${((maxTotalBalance * fraction) / 1000).toFixed(2)}k`}
-            </p>
-          ))}
+                : maxTotal < 1000
+                ? `${(maxTotal * f).toFixed(0)}`
+                : `${((maxTotal * f) / 1000).toFixed(2)}k`;
+            return <p key={i}>{val}</p>;
+          })}
         </div>
 
         <div className="allBars">
-          {displayBalances.map((monthData, idx) => (
+          {displayBuckets.map((b, idx) => (
             <div key={idx} className="oneBar">
               {filterWindow === "1y" ? (
-                // stacked style
-                monthData.balances.map((bal, i) => (
+                // stacked months
+                b.balances.map((v, i) => (
                   <div
                     key={i}
-                    title={`$${bal.toLocaleString()}`}
+                    title={`$${v.toLocaleString()}`}
                     className={`bar-${i}`}
                     style={{
-                      height: `${(bal / maxTotalBalance) * 100}%`,
+                      height: `${maxTotal ? (v / maxTotal) * 100 : 0}%`,
                       backgroundColor: [
                         "#33C759",
                         "#30ADE6",
@@ -171,15 +222,15 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
                   />
                 ))
               ) : (
-                // grouped style: 5 side-by-side bars
+                // grouped weeks or months
                 <div className="grouped">
-                  {monthData.balances.map((bal, i) => (
+                  {b.balances.map((v, i) => (
                     <div
                       key={i}
-                      title={`$${bal.toLocaleString()}`}
+                      title={`$${v.toLocaleString()}`}
                       className="grouped-bar"
                       style={{
-                        height: `${(bal / maxTotalBalance) * 100}%`,
+                        height: `${maxTotal ? (v / maxTotal) * 100 : 0}%`,
                         backgroundColor: [
                           "#33C759",
                           "#30ADE6",
@@ -192,14 +243,13 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
                   ))}
                 </div>
               )}
-
-              <div className="month-label">{monthData.month}</div>
+              <div className="month-label">{b.label}</div>
             </div>
           ))}
         </div>
       </div>
     </div>
   );
-}
+};
 
 export default Dashboard;
