@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Balance from "./Balance";
 import {
   computeMonthlyUsdHistory,
@@ -7,27 +7,33 @@ import {
 import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 
+type WindowKey = "1y" | "6m" | "3m" | "1m";
+const WINDOW_LABELS: Record<WindowKey, string> = {
+  "1y": "Last Year",
+  "6m": "Six Months",
+  "3m": "Three Months",
+  "1m": "This Month",
+};
+
 interface DashboardProps {
   address: string | undefined;
 }
 
 const Dashboard: React.FC<DashboardProps> = ({ address }) => {
   const [history, setHistory] = useState<MonthBucket[]>([]);
+  const [filterWindow, setFilterWindow] = useState<WindowKey>("1y");
 
+  // Fetch & compute once
   useEffect(() => {
     if (!address) return;
-
     (async () => {
       let page = 1;
-      let allTxns: RawTxn[] = [];
+      const allTxns: RawTxn[] = [];
       while (true) {
-        const txns = await fetchTokenTransfers(address, page, 100);
-        if (txns.length === 0) break;
-        allTxns = [...allTxns, ...txns];
-        page++;
+        const txns = await fetchTokenTransfers(address, page++, 100);
+        if (!txns.length) break;
+        allTxns.push(...txns);
       }
-      
-      // 2) compute the monthly net USD inflow/outflow
       const buckets = await computeMonthlyUsdHistory(
         address,
         allTxns,
@@ -37,32 +43,50 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
     })();
   }, [address]);
 
-  const monthlyBalances = history.map((b) => ({
-    month: b.month,
-    balances: [b.deposits, b.loans, 0, 0, 0] as number[],
-  }));
-
-  // Calculate yearly totals for each balance type
-  const yearlyTotals = monthlyBalances.reduce(
-    (totals, monthData) => {
-      monthData.balances.forEach((balance, index) => {
-        totals[index] += balance;
-      });
-      return totals;
-    },
-    [0, 0, 0, 0, 0] // Initialize totals for [Deposit, Loan, Shares, Repayments, Interest]
+  // Build full-year balances
+  const monthlyBalances = useMemo(
+    () =>
+      history.map((b) => ({
+        month: b.month,
+        balances: [b.deposits, b.loans, 0, 0, 0] as number[],
+      })),
+    [history]
   );
 
-  // Format yearly totals
-  const formattedYearlyTotals = yearlyTotals.map(
-    (total) => `$${total.toLocaleString()}`
-  );
+  // 3) Pick last N months ending on the current month
+  const displayBalances = useMemo(() => {
+    if (filterWindow === "1y") {
+      return monthlyBalances;
+    }
 
-  // Calculate the maximum total balance for any month
-  const maxTotalBalance = Math.max(
-    ...monthlyBalances.map((month) =>
-      month.balances.reduce((sum, value) => sum + value, 0)
-    )
+    const now = new Date();
+    const currIdx = now.getMonth();
+    const span = filterWindow === "6m" ? 6
+              : filterWindow === "3m" ? 3
+              : filterWindow === "1m" ? 1
+              : 12;
+    // compute start index, but never below 0
+    const start = Math.max(0, currIdx - span + 1);
+    const end = currIdx + 1; // slice is exclusive
+    return monthlyBalances.slice(start, end);
+  }, [monthlyBalances, filterWindow]);
+
+  // Totals & maxima based on displayBalances
+  const totals = useMemo(() => {
+    const totals = [0, 0, 0, 0, 0];
+    displayBalances.forEach((m) =>
+      m.balances.forEach((v, i) => (totals[i] += v))
+    );
+    return totals.map((x) => `$${x.toLocaleString()}`);
+  }, [displayBalances]);
+
+
+  const maxTotalBalance = useMemo(
+    () =>
+      Math.max(
+        ...displayBalances.map((m) => m.balances.reduce((sum, v) => sum + v, 0))
+      ),
+    [displayBalances]
   );
 
   return (
@@ -72,43 +96,45 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
           <img src="/images/Vector3.png" alt="logo" />
           <p>Dao Dashboard Overview</p>
         </div>
-
         <ul>
           <li>
-            <img src="/images/Chart Legend Dots1.png" alt="dot" />
-            Deposit{" "}
+            <img src="/images/Chart Legend Dots1.png" alt="dot" /> Deposit
           </li>
           <li>
-            <img src="/images/Chart Legend Dots2.png" alt="dot" />
-            Loans
+            <img src="/images/Chart Legend Dots2.png" alt="dot" /> Loans
           </li>
           <li>
-            <img src="/images/Chart Legend Dots3.png" alt="dot" />
-            Shares
+            <img src="/images/Chart Legend Dots3.png" alt="dot" /> Shares
           </li>
           <li>
-            <img src="/images/Chart Legend Dots4.png" alt="dot" />
-            Repayments
+            <img src="/images/Chart Legend Dots4.png" alt="dot" /> Repayments
           </li>
           <li>
-            <img src="/images/Chart Legend Dots5.png" alt="dot" />
-            Interest
+            <img src="/images/Chart Legend Dots5.png" alt="dot" /> Interest
           </li>
-          <select name="" id="">
-            <option value="Last Year">Last Year</option>
-            <option value="Last Year">Last Year</option>
-            <option value="Last Year">Last Year</option>
-            <option value="Last Year">Last Year</option>
+
+          {/* 5) time‐window select */}
+          <select
+            value={filterWindow}
+            onChange={(e) => setFilterWindow(e.target.value as WindowKey)}
+          >
+            {Object.entries(WINDOW_LABELS).map(([key, label]) => (
+              <option key={key} value={key}>
+                {label}
+              </option>
+            ))}
           </select>
         </ul>
       </div>
+
       <Balance
-        deposit={formattedYearlyTotals[0].toLocaleString()}
-        loan={formattedYearlyTotals[1]}
-        shares={formattedYearlyTotals[2]}
-        repayments={formattedYearlyTotals[3]}
-        interest={formattedYearlyTotals[4]}
+        deposit={totals[0]}
+        loan={totals[1]}
+        shares={totals[2]}
+        repayments={totals[3]}
+        interest={totals[4]}
       />
+
       <div className="bargraph">
         <div className="level">
           {[1, 0.75, 0.5, 0.25, 0].map((fraction, idx) => (
@@ -123,24 +149,50 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
         </div>
 
         <div className="allBars">
-          {monthlyBalances.map((monthData, index) => (
-            <div key={index} className={`oneBar bar${index}`}>
-              {monthData.balances.map((balance, i) => (
-                <div
-                  key={i}
-                  className={`bar-${i - 1}`}
-                  style={{
-                    height: `${(balance / maxTotalBalance) * 100}%`,
-                    backgroundColor: [
-                      "#33C759", // Deposit
-                      "#30ADE6", // Loan
-                      "#00C7BE", // Shares
-                      "#FF9A00", // Repayments
-                      "#6F00D7", // Interest
-                    ][i],
-                  }}
-                ></div>
-              ))}
+          {displayBalances.map((monthData, idx) => (
+            <div key={idx} className="oneBar">
+              {filterWindow === "1y" ? (
+                // stacked style
+                monthData.balances.map((bal, i) => (
+                  <div
+                    key={i}
+                    title={`$${bal.toLocaleString()}`}
+                    className={`bar-${i}`}
+                    style={{
+                      height: `${(bal / maxTotalBalance) * 100}%`,
+                      backgroundColor: [
+                        "#33C759",
+                        "#30ADE6",
+                        "#00C7BE",
+                        "#FF9A00",
+                        "#6F00D7",
+                      ][i],
+                    }}
+                  />
+                ))
+              ) : (
+                // grouped style: 5 side-by-side bars
+                <div className="grouped">
+                  {monthData.balances.map((bal, i) => (
+                    <div
+                      key={i}
+                      title={`$${bal.toLocaleString()}`}
+                      className="grouped-bar"
+                      style={{
+                        height: `${(bal / maxTotalBalance) * 100}%`,
+                        backgroundColor: [
+                          "#33C759",
+                          "#30ADE6",
+                          "#00C7BE",
+                          "#FF9A00",
+                          "#6F00D7",
+                        ][i],
+                      }}
+                    />
+                  ))}
+                </div>
+              )}
+
               <div className="month-label">{monthData.month}</div>
             </div>
           ))}
@@ -148,6 +200,6 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
       </div>
     </div>
   );
-};
+}
 
 export default Dashboard;

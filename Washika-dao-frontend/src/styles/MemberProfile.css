@@ -255,6 +255,8 @@ body :has(.member) {
 
 .allBars {
   padding: 0;
+  display: flex;
+  gap: 16px;
 }
 
 .dashboard .bargraph .oneBar {
@@ -284,6 +286,18 @@ body :has(.member) {
   width: 100%;
   transition: height 0.3s ease-in-out;
 }
+
+.dashboard .bargraph .oneBar .grouped {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 200px;
+}
+.dashboard .bargraph .oneBar .grouped-bar {
+  flex: 1;
+  transition: height 0.3s;
+}
+
 
 .month-label {
   text-align: center;
