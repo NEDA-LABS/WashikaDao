@@ -4,7 +4,7 @@ import {
   computeMonthlyUsdHistory,
   MonthBucket,
 } from "../utils/monthlyBalances";
-import { fetchAllTransactions, RawTxn } from "../utils/arbiscan";
+import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 
 interface DashboardProps {
@@ -21,7 +21,7 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
       let page = 1;
       let allTxns: RawTxn[] = [];
       while (true) {
-        const txns = await fetchAllTransactions(address, page, 100);
+        const txns = await fetchTokenTransfers(address, page, 100);
         if (txns.length === 0) break;
         allTxns = [...allTxns, ...txns];
         page++;

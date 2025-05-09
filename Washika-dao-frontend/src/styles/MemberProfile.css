@@ -372,6 +372,10 @@ body :has(.member) {
 }
 
 @media only screen and (max-width: 900px) {
+  .member {
+    background: linear-gradient(to bottom, #ffffff 59%, #282424 98%);
+  }
+
   .member section.one {
     display: initial;
   }

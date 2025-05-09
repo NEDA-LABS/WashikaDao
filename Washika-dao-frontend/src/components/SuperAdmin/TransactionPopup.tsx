@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { DaoDetails } from "./WanachamaList";
 import { fetchCeloToUsdRate } from "../../utils/priceUtils";
-import { fetchAllTransactions, RawTxn } from "../../utils/arbiscan";
+import {  fetchTokenTransfers, RawTxn } from "../../utils/arbiscan";
 
 interface TransactionPopupProps {
   daoDetails?: DaoDetails;
@@ -27,15 +27,16 @@ export default function TransactionPopup({
     (async () => {
       const address = daoDetails.daoMultiSigAddr.toLowerCase();
 
-      const [rateRes, rawTxns] = await Promise.all([
+      const [rateRes, tokenTxns] = await Promise.all([
         fetchCeloToUsdRate(),
-        fetchAllTransactions(address),
+        // fetchAllTransactions(address),
+        fetchTokenTransfers(address),
       ]);
 
-      const nonZero = rawTxns.filter(tx =>
-        !tx.isInternal &&
-        tx.valueCelo !== 0 &&
-        (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
+      const nonZero = tokenTxns.filter(
+        (tx) =>
+          tx.valueCelo >= 0.1 &&
+          (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
       );
 
       const parsed: TreasuryEntry[] = nonZero.map((tx: RawTxn) => {
@@ -52,9 +53,22 @@ export default function TransactionPopup({
         };
       });
 
-      setEntries(parsed);
+      const unique = parsed
+        .filter(
+          (entry, idx, arr) =>
+            idx ===
+            arr.findIndex((e) => e.hash === entry.hash && e.type === entry.type)
+        )
+        .sort((a, b) => {
+          // parse a.date/b.date back to timestamps if you need an exact sort
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
+      setEntries(unique);
     })();
   }, [daoDetails]);
+
+  console.log(entries);
 
   if (entries.length === 0) {
     return (
