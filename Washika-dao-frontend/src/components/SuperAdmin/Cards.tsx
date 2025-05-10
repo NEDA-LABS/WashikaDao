@@ -1,4 +1,9 @@
 // Cards.tsx
+import { useSendAndConfirmTransaction } from "thirdweb/react";
+import { prepareTransaction, toWei } from "thirdweb";
+import { celoAlfajoresTestnet } from "thirdweb/chains";
+import { client } from "../../utils/thirdwebClient"; // your ThirdwebClient
+
 export interface CardType {
   id: number;
   image: string;
@@ -8,6 +13,7 @@ export interface CardType {
   status: string;
   proposalId: `0x${string}`;
   createdAt: number;
+  ownerAddress: string;
 }
 
 interface CardsProps {
@@ -39,6 +45,33 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
 
   const isApproved = card.status.toLowerCase() === "approved";
 
+  // 1️⃣ Hook to send a native-token transfer
+  const {
+    mutate: sendAndConfirm,
+    status,
+    error,
+    data: receipt,
+  } = useSendAndConfirmTransaction();
+
+  const isLoading = status === "pending";
+
+  const handleRelease = () => {
+    const tx = prepareTransaction({
+      to: card.ownerAddress,
+      value: toWei(card.amount.toString()),
+      chain: celoAlfajoresTestnet,
+      client,
+    });
+
+    sendAndConfirm(tx, {
+      onSuccess(r) {
+        console.log("Funds released in tx", r.transactionHash);
+      },
+      onError(err) {
+        console.error("Failed to release funds:", err);
+      },
+    });
+  };
   return (
     <div className="card">
       <img
@@ -50,16 +83,24 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
         }}
       />
 
-{isApproved && <button className="onee">Release Funds</button>}
+      {!isApproved && now <= expiryTs && (
+        <button onClick={handleRelease} disabled={isLoading}>
+          {isLoading ? "Releasing…" : "Release Funds"}
+        </button>
+      )}
 
-      <p>
+      <p className="name">
         {/* {card.name.slice(0, 14)}…{card.name.slice(-9)} */}
         {card.name}
       </p>
       <p>{card.date}</p>
-      <p className="cash">Tsh {card.amount.toLocaleString()}</p>
+      <p className="cash">Celo: {card.amount.toLocaleString()}</p>
 
       <p className="status">Status: {expired ? card.status : "Active"}</p>
+
+      {error && <p className="error">Error: {error.message}</p>}
+      {error && <p className="error">{error.message}</p>}
+      {receipt && <p className="success name">Tx: {receipt.transactionHash}</p>}
     </div>
   );
 };

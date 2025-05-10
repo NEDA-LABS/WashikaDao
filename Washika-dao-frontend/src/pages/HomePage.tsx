@@ -43,7 +43,7 @@ const HomePage: React.FC = () => {
       <main>
         <section className="image-container">
           <div className="inner-container">
-            <img src="images/LOGO FULL.png" alt="logo" />
+            {/* <img src="images/LOGO FULL.png" alt="logo" /> */}
             <p className="main">
               Govern and Manage <br />
               your community <br />

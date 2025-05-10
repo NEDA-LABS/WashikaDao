@@ -5,18 +5,23 @@
   background-size: cover;
   background-repeat: no-repeat;
   margin-bottom: 50px;
+  height: 84vh;
 }
 
 .inner-container {
   height: 100%;
-  padding-top: 120px;
+  padding-top: 36px;
   padding-left: 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  justify-content: center;
 }
 
-.inner-container img {
+/* .inner-container img {
   width: 200px;
   margin: 9px 24px;
-}
+} */
 
 .image-container p {
   font-size: 33px;
@@ -243,8 +248,6 @@
 }
 
 .group .left .email {
-  width: 109px;
-  height: 13px;
   color: #f8b859;
   font-weight: bold;
   font-size: 11px;
@@ -428,6 +431,7 @@
   .image-container {
     padding: 0 24px;
     margin-bottom: 20px;
+    height: 40vh;
   }
 
   .inner-container {

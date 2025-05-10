@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { useActiveAccount, useActiveWalletConnectionStatus, useReadContract, useWalletBalance } from "thirdweb/react";
 import Footer from "../components/Footer";
@@ -17,6 +17,7 @@ import {
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 import { client } from "../utils/thirdwebClient";
+import { useMemberDaos } from "../components/Navbar/useMemberDaos";
 
 interface PreloadedState {
   group: {
@@ -57,6 +58,8 @@ const DaoProfile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const connectionStatus = useActiveWalletConnectionStatus();
+  const { memberExists } = useMemberDaos(activeAccount!.address);
+
 
   // on-chain: read all DAOs
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
@@ -200,6 +203,10 @@ const DaoProfile: React.FC = () => {
         <Footer className={""} />
       </div>
     );
+  }
+
+  if (!memberExists) {
+    return <Navigate to="/MarketPlace" replace />;
   }
 
   localStorage.setItem("daoId", daoDetails.daoId!);

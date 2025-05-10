@@ -44,7 +44,10 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
   // Local state to hold the list of DAOs. Initialize with stored DAOs if available.
   const [daos, setDaos] = useState<OnchainDao[]>(storedDaos || []);
   // Local state to track whether the member exists (based on API response).
-  const [memberExists, setMemberExists] = useState<boolean>(false);
+  const storedFlag = localStorage.getItem("memberExists");
+  const [memberExists, setMemberExists] = useState<boolean>(
+    storedFlag === "true"
+  );
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const {
@@ -97,15 +100,14 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
 
         // filter only those where the member exists
         const memberDaos = checks.filter((d): d is OnchainDao => d !== null);
+        const exists = memberDaos.length > 0;
 
         // update local + redux store
         setDaos(memberDaos);
-        setMemberExists(memberDaos.length > 0);
+        setMemberExists(exists);
         dispatch(setUserDaos(memberDaos));
 
-        // here you could also fetch on-chain member metadata (if you expose it)
-        // or fall back to your backend for profile info:
-        // dispatch(setCurrentUser({ memberAddr, ... }))
+        localStorage.setItem("memberExists", exists ? "true" : "false");
       } catch (err) {
         console.error("on-chain member lookup failed", err);
       }finally {
