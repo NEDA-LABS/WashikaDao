@@ -11,7 +11,7 @@ interface Wanachama {
 
 export interface DaoDetails extends IFetchedBackendDao {
   daoId: `0x${string}`;
-  members: Wanachama[];
+  members?: Wanachama[];
 }
 
 // Pagination Component

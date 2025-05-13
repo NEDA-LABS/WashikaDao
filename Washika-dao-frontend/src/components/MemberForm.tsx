@@ -34,7 +34,7 @@ const MemberForm: React.FC<MemberFormProps> = ({
           <p> Add Members information here</p>
         </div>
         <div className="two">
-          <img src="images/Group.png" alt="profile logo" />
+          <img src="/images/Group.png" alt="profile logo" />
         </div>
       </div>
       <div className="right">

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { DaoDetails } from "./WanachamaList";
 import { fetchCeloToUsdRate } from "../../utils/priceUtils";
-import {  fetchTokenTransfers, RawTxn } from "../../utils/arbiscan";
+import { fetchTokenTransfers, RawTxn } from "../../utils/arbiscan";
 
 interface TransactionPopupProps {
   daoDetails?: DaoDetails;
@@ -29,7 +29,6 @@ export default function TransactionPopup({
 
       const [rateRes, tokenTxns] = await Promise.all([
         fetchCeloToUsdRate(),
-        // fetchAllTransactions(address),
         fetchTokenTransfers(address),
       ]);
 
@@ -47,7 +46,7 @@ export default function TransactionPopup({
           hash: tx.hash,
           type: isOut ? "Withdraw" : "Deposit",
           date: new Date(Number(tx.timestamp) * 1000).toLocaleDateString(),
-          amount: `${isOut ? "-" : ""}${tx.valueCelo.toFixed(4)} CELO`,
+          amount: `${isOut ? "-" : ""}${tx.valueCelo.toFixed(2)} CELO`,
           value: `$${usd.toFixed(2)}`,
           icon: isOut ? "/images/withdrawIcon.png" : "/images/deposit.png",
         };
@@ -60,15 +59,12 @@ export default function TransactionPopup({
             arr.findIndex((e) => e.hash === entry.hash && e.type === entry.type)
         )
         .sort((a, b) => {
-          // parse a.date/b.date back to timestamps if you need an exact sort
           return new Date(b.date).getTime() - new Date(a.date).getTime();
         });
 
       setEntries(unique);
     })();
   }, [daoDetails]);
-
-  console.log(entries);
 
   if (entries.length === 0) {
     return (
@@ -81,7 +77,11 @@ export default function TransactionPopup({
 
   return (
     <div className="treasury-history">
-      <h1>Full Statement</h1>
+      <div className="balance">
+        <h1>Treasury Balance</h1>
+        <p className="amount">3,000,000</p>
+      </div>
+      <h2>Treasury History</h2>
       <div id="treasury-history">
         {entries.map((entry) => {
           const txUrl = `https://explorer.celo.org/alfajores/tx/${entry.hash}`;

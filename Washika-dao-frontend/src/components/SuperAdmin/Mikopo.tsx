@@ -42,7 +42,7 @@ export default function Mikopo() {
         image: p.proposalUrl,
         name: p.proposalOwner,
         date: new Date(Number(p.proposalCreatedAt) * 1000).toLocaleDateString(),
-        amount: 1.2,
+        amount: 0.5,
         status: p.proposalStatus.toLowerCase(),
         proposalId: p.proposalId,
         createdAt: Number(p.proposalCreatedAt) * 1000,

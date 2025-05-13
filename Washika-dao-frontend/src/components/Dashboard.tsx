@@ -97,11 +97,11 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
     return Object.entries(weeks)
       .sort(([a], [b]) => +a - +b)
       .map(([w, vals]) => {
-        const start = +w * 7 + 1;
-        const lastDay = new Date(ym, mm + 1, 0).getDate();
-        const end = Math.min(start + 6, lastDay);
+        // const start = +w * 7 + 1;
+        // const lastDay = new Date(ym, mm + 1, 0).getDate();
+        // const end = Math.min(start + 6, lastDay);
         return {
-          label: `W${+w + 1} (${start}-${end})`,
+          label: `W${+w + 1}`,
           balances: [vals.deposits, vals.loans, 0, 0, 0],
         };
       });

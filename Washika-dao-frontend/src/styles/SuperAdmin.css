@@ -521,20 +521,93 @@ nav.SuperAdmin {
   background: rgba(0, 0, 0, 0.5);
   z-index: 50;
   display: flex;
-  align-items: center;
+  align-items: center;  
   justify-content: center;
 }
 
 .modal-content {
   background-color: #f6f6f6;
-  padding: 2rem;
+  padding: 1rem 2rem 2rem;
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-radius: 0.75rem;
+  border-radius: 1.8rem;
   max-width: 600px;
   overflow-y: auto;
   position: relative;
+}
+
+.modal-content .treasury-history .balance {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.modal-content .treasury-history h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 27px;
+}
+
+.modal-content .treasury-history h2 {
+  color: #7d7272;
+  font-size: 25px;
+  font-weight: 400;
+  margin: 16px 24px;
+}
+
+.modal-content .treasury-history .balance .amount {
+  color: #433939;
+  font-size: 24px;
+  font-weight: 100;
+  font-family: "Druk Text Wide Web", sans-serif;
+  display: inline-block;
+  transform: scaleX(1.2) scaleY(1.5);
+  margin-bottom: 24px;
+}
+
+.modal-content .treasury-history .balance::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  height: 1px;
+  width: 80%;
+  background-color: #FFBD59;
+}
+
+.modal-content #treasury-history {
+  max-height: 500px;
+}
+
+.modal-content #treasury-history .slot {
+  padding: 12px;
+}
+
+.modal-content .slot h1 {
+  font-size: 18px;
+  margin: 6px 0;
+}
+
+.modal-content .slot .right {
+  gap: 0;
+}
+
+.modal-content .slot .right div {
+  gap: 6px;
+}
+
+.modal-content .slot .left img {
+  width: 20px;
+  height: 20px;
+} 
+
+.modal-content .slot .left {
+  gap: 6px;
+} 
+
+.modal-content .slot .left div{
+  gap: 0;
 }
 
 .close-btn {
@@ -692,6 +765,18 @@ nav.SuperAdmin {
     min-width: calc(50% - 8px);
   }
 
+  .modal-content .slot h1 {
+    font-size: 14px;
+    margin: 3px 0;
+  }
+
+  .modal-content .slot .left p {
+    margin-left: 0px;
+  }
+
+  .modal-content .slot .right .topy {
+    font-size: 12px;
+  }
 
 }
 
@@ -746,14 +831,16 @@ nav.SuperAdmin {
   }
 
   .modal-content {
-    max-width: 350px;
+    max-width: 360px;
   }
 
-  .modal-content .treasury-history {
-    min-width: 100px;
+  .modal-content #treasury-history {
+    gap: 11px;
   }
-  
-  
+
+  .modal-content .slot .right div {
+    gap: 3px;
+  }
 }
 
 

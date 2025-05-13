@@ -26,7 +26,11 @@ interface CardItemProps {
 
 const Cards: React.FC<CardsProps> = ({ cards }) => {
   if (cards.length === 0) {
-    return <p>No loans to display</p>;
+    return (
+      <div className="noProposals">
+        <p>No loans to display</p>
+      </div>
+    );
   }
 
   return (
@@ -83,7 +87,7 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
         }}
       />
 
-      {!isApproved && now <= expiryTs && (
+      {isApproved && now >= expiryTs && (
         <button onClick={handleRelease} disabled={isLoading}>
           {isLoading ? "Releasing…" : "Release Funds"}
         </button>

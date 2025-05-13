@@ -538,9 +538,8 @@ body :has(.member) {
   }
 
   .button-group {
-    margin: 0 0 0 32px;
+    margin: 0 24px;
     display: flex;
-    width: 80%;
   }
 
   .dashboard .one {
