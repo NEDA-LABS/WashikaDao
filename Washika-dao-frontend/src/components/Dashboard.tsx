@@ -202,7 +202,7 @@ const Dashboard: React.FC<DashboardProps> = ({ address }) => {
         <div className="allBars">
           {displayBuckets.map((b, idx) => (
             <div key={idx} className="oneBar">
-              {filterWindow === "1y" ? (
+              {filterWindow === "1y" || filterWindow === "6m" ? (
                 // stacked months
                 b.balances.map((v, i) => (
                   <div

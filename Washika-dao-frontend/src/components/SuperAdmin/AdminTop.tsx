@@ -147,7 +147,7 @@ export default function AdminTop({
       email: t.memberEmail,
       wallet: t.memberAddress,
     }));
-    if (daoDetails?.members.length === members.length) return;
+    if (daoDetails?.members?.length === members.length) return;
 
     setDaoDetails({
       ...daoDetails,
@@ -254,7 +254,11 @@ export default function AdminTop({
               <p className="left">USD</p>
               <p className="right">Treasury Balance</p>
             </div>
-            <p className="amount">{daoDetails?.kiwango.toLocaleString()} USD</p>
+            <p className="amount">{daoDetails.kiwango.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
+                USD</p>
           </div>
           <div className="section">
             <img src="/images/profile.png" alt="idadi" />

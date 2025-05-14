@@ -12,6 +12,7 @@ import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/Proposals/ProposalGroups";
 import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
+import DaoForm from "../components/DaoForm";
 import Notification from "../components/SuperAdmin/Notification";
 import TreasuryHistory from "../components/TreasuryHistory";
 import {
@@ -72,12 +73,19 @@ const DaoProfile: React.FC = () => {
   const preloaded = (state as PreloadedState) || null;
   const dispatch = useDispatch();
   const activeAccount = useActiveAccount();
-
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const handleSendInviteClick = () => setShowForm(!showForm);;
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const connectionStatus = useActiveWalletConnectionStatus();
   const [memberExists, setMemberExists] = useState<boolean | null>(null);
+  const [, setInviteDaoId] = useState<string>("");
+const handleDaoChange = (
+  e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+) => {
+  setInviteDaoId(e.target.value);
+};
 
   // on-chain: read all DAOs
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
@@ -85,6 +93,16 @@ const DaoProfile: React.FC = () => {
     method:
       "function getDaosInPlatformArr() view returns ((string,string,string,string,address,bytes32)[])",
   });
+
+  const daos = React.useMemo(() => {
+  if (!rawDaos) return [];
+  return (rawDaos as Array<[string,string,string,string,string,string]>).map(
+    ([daoName, , , , , daoIdBytes]) => ({
+      daoName,
+      daoId: daoIdBytes,
+    })
+  );
+}, [rawDaos]);
 
   // on-chain: get treasury balance
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
@@ -276,13 +294,60 @@ const DaoProfile: React.FC = () => {
         <div className="daoRegistration error">
           <p>You are not a member of this DAO.</p>
           <div className="button-groupp">
-            <button>Send Invite</button>
+            <button onClick={handleSendInviteClick}>Send Invite</button>
             <button onClick={() => navigate("/MarketPlace")}>
               Marketplace
             </button>
           </div>
         </div>
         <Footer className={""} />
+
+        {showForm && (
+          <div className=" popupp">
+            <form>
+              <DaoForm
+                className="form"
+                title="Apply to be a Member"
+                description=""
+                fields={[
+                  {
+                    label: "email",
+                    type: "email",
+                  },
+                  {
+                    label: "Select Dao",
+                    type: "select",
+                    options: [
+                      {
+                        label: "Select Dao",
+                        value: "",
+                        disabled: true,
+                        selected: true,
+                      },
+                      ...daos.map((dao) => ({
+                        label: dao.daoName,
+                        value: dao.daoName,
+                      })),
+                    ],
+                    onChange: handleDaoChange,
+                  },
+                ]}
+              />
+              <div className="center">
+                <button className="createAccount" type="submit">
+                  Submit
+                </button>
+                <button
+                  className="closebtn"
+                  type="button"
+                  onClick={handleSendInviteClick}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
       </div>
     );
   }
@@ -393,6 +458,8 @@ const DaoProfile: React.FC = () => {
           <h1 className="main">Current Proposals</h1>
           <ProposalGroups />
         </section>
+
+        
       </main>
     </>
   );

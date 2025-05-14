@@ -79,7 +79,11 @@ export default function TransactionPopup({
     <div className="treasury-history">
       <div className="balance">
         <h1>Treasury Balance</h1>
-        <p className="amount">3,000,000</p>
+        <p className="amount">{daoDetails?.kiwango.toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}{" "}
+                USD</p>
       </div>
       <h2>Treasury History</h2>
       <div id="treasury-history">

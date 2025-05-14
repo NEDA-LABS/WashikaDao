@@ -104,7 +104,7 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
                   : group.daoCreator
                 : "N/A"}
             </p>
-          </div>
+          </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
 
           <div className="right">
             <h3>Treasury Value</h3>

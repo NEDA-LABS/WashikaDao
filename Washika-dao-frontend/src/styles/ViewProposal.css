@@ -77,6 +77,19 @@
   margin-bottom: 16px;
 }
 
+.viewProposal section .expiry {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.viewProposal section .expiry .first {
+  color: #433939;
+  font-size: 29px;
+  font-weight: bold;
+  text-align: center;
+}
+
 .viewProposal section .link {
   width: 466px;
   height: 69px;
@@ -127,7 +140,7 @@
 }
 
 .viewProposal .about h1 {
-  width: 887px;
+  max-width: 887px;
   height: 196px;
   font-size: 74px;
   display: flex;
@@ -163,7 +176,8 @@
   gap: 16px;
 }
 
-.viewProposal .buttonss button, .viewProposal .buttonss p {
+.viewProposal .buttonss button,
+.viewProposal .buttonss p {
   color: #ffffff;
   width: 190px;
   border-radius: 8px;
@@ -206,8 +220,28 @@
   }
 
   .viewProposal img {
-    width: 64px;
-    height: 64px;
+    width: 54px;
+    height: 54px;
+  }
+
+  .viewProposal article .buttons {
+    margin: 30px 12px;
+    flex-direction: row;
+    gap: 24px;
+  }
+  
+  .viewProposal article .buttons .twoo {
+    width: 50%;
+    background-color: #4e79e8;
+    color: #ffffff;
+    border-radius: 6px;
+  }
+  
+  .viewProposal article .buttons .twooo {
+    width: 50%;
+    background-color: #076d07;
+    color: #ffffff;
+    border-radius: 6px;
   }
 
   .viewProposal .one {
@@ -221,6 +255,14 @@
     padding: 0 12px;
     margin: 0;
     font-size: 18px;
+  }
+
+  .viewProposal section .link {
+    width: 306px;
+    height: 49px;
+    border-radius: 24px;
+    font-size: 24px;
+    text-decoration: underline;
   }
 
   .viewProposal article {
@@ -238,6 +280,7 @@
   .viewProposal article p {
     margin: 12px 24px;
     font-size: 24px;
+    text-align: center;
   }
 
   .viewProposal section {
@@ -259,8 +302,12 @@
     margin: 0 24px;
   }
 
+  .viewProposal section .expiry .second {
+    font-size: 14px;
+  }
+
   .viewProposal section .dooh {
-    align-items: flex-start;
+    align-items: center;
   }
 
   .viewProposal section .dooh .first {

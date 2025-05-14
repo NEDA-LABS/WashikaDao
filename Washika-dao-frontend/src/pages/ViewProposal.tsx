@@ -287,7 +287,7 @@ const ViewProposal: React.FC = () => {
         </article>
 
         <section>
-          <div className="dooh">
+          <div className="expiry">
             <p className="first">Expires at</p>
             <div className="second">
               <p>

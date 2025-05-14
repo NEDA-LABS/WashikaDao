@@ -391,6 +391,7 @@ nav.SuperAdmin {
   margin-top: 36px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  align-items: stretch;
   gap: 20px;
 }
 
@@ -401,6 +402,7 @@ nav.SuperAdmin {
   border: 1px solid #d9d9d9;
   border-radius: 9px;
   padding: 12px;
+  height: 100%;
 }
 
 .thirdy .right .cards .card img {
@@ -412,6 +414,8 @@ nav.SuperAdmin {
   overflow-wrap: break-word;
   word-break: break-word;
   white-space: normal;
+  font-size: 13px;
+  margin-right: px;
 }
 
 .thirdy .right .cards .card button {
@@ -547,6 +551,7 @@ nav.SuperAdmin {
 .modal-content .treasury-history h1 {
   text-align: center;
   margin-bottom: 20px;
+  margin-left: 0;
   font-size: 27px;
 }
 
@@ -671,6 +676,11 @@ nav.SuperAdmin {
     padding-bottom: 6px;
     gap: 0;
     display: initial;
+  }
+
+  .superAdmin .top .one button {
+    padding: 8px 12px;
+    margin-top: 9px;
   }
 
   .superAdmin .top .two .first::after {

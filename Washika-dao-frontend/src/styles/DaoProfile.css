@@ -699,7 +699,7 @@ section.second::after {
   }
 
   .second .proposal {
-    margin: 0 24px;
+    margin: 0 12px;
     padding: 12px;
   }
 
@@ -727,9 +727,9 @@ section.second::after {
 
   .proposal .three .button-group.button {
     flex-direction: row;
-    margin: 12px 0;
+    margin: 12px 6px;
     gap: 12px;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
 
   .proposal .three .button-group button {

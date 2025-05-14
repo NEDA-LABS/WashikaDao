@@ -40,7 +40,7 @@ export default function Mikopo() {
       rawProposals.map((p, idx) => ({
         id: idx + 1,
         image: p.proposalUrl,
-        name: p.proposalOwner,
+        name: p.proposalTitle,
         date: new Date(Number(p.proposalCreatedAt) * 1000).toLocaleDateString(),
         amount: 0.5,
         status: p.proposalStatus.toLowerCase(),
@@ -162,8 +162,18 @@ export default function Mikopo() {
     return filtered;
   }, [cards, searchTerm, statusFilters, maxAmount, sortOption]);
 
-  if (isLoading) return <div>Loading proposals…</div>;
-  if (error) return <div>Error loading proposals.</div>;
+  if (isLoading)
+    return (
+      <div className="noProposals">
+        <p>Loading proposals…</p>
+      </div>
+    );
+  if (error)
+    return (
+      <div className="noProposals">
+        <p>Error loading proposals.</p>
+      </div>
+    );
 
   return (
     <>

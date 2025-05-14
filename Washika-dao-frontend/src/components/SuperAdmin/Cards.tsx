@@ -3,6 +3,7 @@ import { useSendAndConfirmTransaction } from "thirdweb/react";
 import { prepareTransaction, toWei } from "thirdweb";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { client } from "../../utils/thirdwebClient"; // your ThirdwebClient
+import { Link } from "react-router-dom";
 
 export interface CardType {
   id: number;
@@ -77,35 +78,37 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
     });
   };
   return (
-    <div className="card">
-      <img
-        src={card.image || "/images/default.png"}
-        alt={card.image}
-        onError={(e) => {
-          const target = e.target as HTMLImageElement;
-          target.src = "/images/default.png";
-        }}
-      />
+    <Link to={`/ViewProposal/${card.name}`}>
+      <div className="card">
+        <img
+          src={card.image || "/images/default.png"}
+          alt={card.image}
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = "/images/default.png";
+          }}
+        />
 
-      {isApproved && now >= expiryTs && (
-        <button onClick={handleRelease} disabled={isLoading}>
-          {isLoading ? "Releasing…" : "Release Funds"}
-        </button>
-      )}
+        {isApproved && now >= expiryTs && (
+          <button onClick={handleRelease} disabled={isLoading}>
+            {isLoading ? "Releasing…" : "Release Funds"}
+          </button>
+        )}
 
-      <p className="name">
-        {/* {card.name.slice(0, 14)}…{card.name.slice(-9)} */}
-        {card.name}
-      </p>
-      <p>{card.date}</p>
-      <p className="cash">Celo: {card.amount.toLocaleString()}</p>
+        <p>{card.name}</p>
+        <p className="name">{card.ownerAddress}</p>
+        <p>{card.date}</p>
+        <p className="cash">Celo: {card.amount.toLocaleString()}</p>
 
-      <p className="status">Status: {expired ? card.status : "Active"}</p>
+        <p className="status">Status: {expired ? card.status : "Active"}</p>
 
-      {error && <p className="error">Error: {error.message}</p>}
-      {error && <p className="error">{error.message}</p>}
-      {receipt && <p className="success name">Tx: {receipt.transactionHash}</p>}
-    </div>
+        {error && <p className="error">Error: {error.message}</p>}
+        {error && <p className="error">{error.message}</p>}
+        {receipt && (
+          <p className="success name">Tx: {receipt.transactionHash}</p>
+        )}
+      </div>
+    </Link>
   );
 };
 
