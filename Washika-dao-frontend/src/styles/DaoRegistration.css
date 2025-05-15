@@ -8,15 +8,29 @@
 .daoRegistration.error {
   flex-grow: 1;
   display: flex;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  padding-bottom: 120px;
+  gap: 24px;
 }
 
 .daoRegistration.error p{
-  flex-grow: 1;
   font-size: 24px;
   color: #ffffff;
   text-align: center;
-  padding-bottom: 120px;
+}
+
+.daoRegistration.error .button-groupp {
+  display: flex;
+  gap: 16px;
+}
+
+.daoRegistration.error .button-groupp button {
+  border: 1px solid #c8954b;
+  color: #ffffff;
+  padding: 4px 9px;
+  border-radius: 4px;
 }
 
 .daoRegistration {
@@ -331,8 +345,8 @@ form {
 }
 
 .wanakikundi .top {
-  width: clamp(220px, 28vw, 535px);
   height: clamp(32px, 5vw, 124px);
+  padding: 0 24px;
   border-radius: 16px;
   color: #433939;
   background-color: #ffbd59;
@@ -523,7 +537,6 @@ button.createDao {
   /* background-color: #f2f2f2; */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  /* border: 1px solid red; */
 }
 
 .form-progress p {

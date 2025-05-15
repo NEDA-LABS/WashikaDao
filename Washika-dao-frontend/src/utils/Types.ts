@@ -26,18 +26,18 @@ export interface IFetchedBackendDao {
   targetAudience: string;
   daoTitle: string;
   daoDescription: string;
-  daoOverview: string;
-  daoImageIpfsHash: string;
-  daoRegDocs: string;
+  daoOverview?: string;
+  daoImageIpfsHash?: string;
+  daoRegDocs?: string;
   daoMultiSigAddr: string;
-  multiSigPhoneNo: string;
+  multiSigPhoneNo?: string;
   kiwango: number;
-  accountNo: string;
-  nambaZaHisa: number;
-  kiasiChaHisa: number;
-  interestOnLoans: number;
-  daoTxHash: string;
-  chairpersonAddr: string;
+  accountNo?: string;
+  nambaZaHisa?: number;
+  kiasiChaHisa?: number;
+  interestOnLoans?: number;
+  daoTxHash?: string;
+  chairpersonAddr?: string;
 }
 
 export interface IBlockchainDaoCreation {

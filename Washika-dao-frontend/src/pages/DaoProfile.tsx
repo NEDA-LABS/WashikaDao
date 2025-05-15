@@ -1,12 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Navigate, useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import { useActiveAccount, useActiveWalletConnectionStatus, useReadContract, useWalletBalance } from "thirdweb/react";
+import {
+  useActiveAccount,
+  useActiveWalletConnectionStatus,
+  useReadContract,
+  useWalletBalance,
+} from "thirdweb/react";
 import Footer from "../components/Footer";
 import NavBar from "../components/Navbar/Navbar";
 import ProposalGroups from "../components/Proposals/ProposalGroups";
 import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
+import DaoForm from "../components/DaoForm";
 import Notification from "../components/SuperAdmin/Notification";
 import TreasuryHistory from "../components/TreasuryHistory";
 import {
@@ -17,7 +23,6 @@ import {
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 import { client } from "../utils/thirdwebClient";
-import { useMemberDaos } from "../components/Navbar/useMemberDaos";
 
 interface PreloadedState {
   group: {
@@ -32,40 +37,72 @@ interface PreloadedState {
   memberCount: number;
 }
 
-interface DaoDetails {
+interface Wanachama {
+  id: number;
+  email: string;
+  wallet: string;
+}
+
+export interface DaoDetails {
   daoName: string;
   daoLocation: string;
   targetAudience: string;
   daoTitle: string;
   daoDescription: string;
-  daoOverview: string;
-  daoImageIpfsHash: string;
+  daoOverview?: string;
+  daoImageIpfsHash?: string;
   daoMultiSigAddr: string;
   kiwango: number;
   memberCount: number;
   daoId?: string; // on-chain ID
+  daoRegDocs?: string;
+  multiSigPhoneNo?: string;
+  accountNo?: string;
+  nambaZaHisa?: number;
+  kiasiChaHisa?: number;
+  interestOnLoans?: number;
+  daoTxHash?: string;
+  chairpersonAddr?: string;
+  members?: Wanachama[];
 }
 
 const DaoProfile: React.FC = () => {
   const navigate = useNavigate();
-  const { multisigAddr } = useParams<{ multisigAddr : string }>();
+  const { multisigAddr } = useParams<{ multisigAddr: string }>();
   const { state } = useLocation();
   const preloaded = (state as PreloadedState) || null;
   const dispatch = useDispatch();
   const activeAccount = useActiveAccount();
-
+  const [showForm, setShowForm] = useState<boolean>(false);
+  const handleSendInviteClick = () => setShowForm(!showForm);;
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const connectionStatus = useActiveWalletConnectionStatus();
-  const { memberExists } = useMemberDaos(activeAccount!.address);
-
+  const [memberExists, setMemberExists] = useState<boolean | null>(null);
+  const [, setInviteDaoId] = useState<string>("");
+const handleDaoChange = (
+  e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
+) => {
+  setInviteDaoId(e.target.value);
+};
 
   // on-chain: read all DAOs
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
     contract: FullDaoContract,
-    method: "function getDaosInPlatformArr() view returns ((string,string,string,string,address,bytes32)[])",
+    method:
+      "function getDaosInPlatformArr() view returns ((string,string,string,string,address,bytes32)[])",
   });
+
+  const daos = React.useMemo(() => {
+  if (!rawDaos) return [];
+  return (rawDaos as Array<[string,string,string,string,string,string]>).map(
+    ([daoName, , , , , daoIdBytes]) => ({
+      daoName,
+      daoId: daoIdBytes,
+    })
+  );
+}, [rawDaos]);
 
   // on-chain: get treasury balance
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
@@ -100,8 +137,6 @@ const DaoProfile: React.FC = () => {
           targetAudience: preloaded.group.daoTargetAudience,
           daoTitle: preloaded.group.daoName,
           daoDescription: preloaded.group.daoObjective,
-          daoOverview: "",
-          daoImageIpfsHash: "",
           daoMultiSigAddr: preloaded.group.daoCreator,
           kiwango: preloaded.kiwango,
           memberCount: preloaded.memberCount,
@@ -113,8 +148,17 @@ const DaoProfile: React.FC = () => {
 
       if (!rawDaos || loadingDaos) return;
 
-      const allDaos = (rawDaos as Array<[string,string,string,string,string,string]>).map(
-        ([daoName, daoLocation, daoObjective, daoTargetAudience, daoCreator, daoIdBytes]) => ({
+      const allDaos = (
+        rawDaos as Array<[string, string, string, string, string, string]>
+      ).map(
+        ([
+          daoName,
+          daoLocation,
+          daoObjective,
+          daoTargetAudience,
+          daoCreator,
+          daoIdBytes,
+        ]) => ({
           daoName,
           daoLocation,
           daoObjective,
@@ -154,7 +198,33 @@ const DaoProfile: React.FC = () => {
     }
 
     initDao();
-  }, [preloaded, rawDaos, loadingDaos, balanceData, balanceLoading, multisigAddr]);
+  }, [
+    preloaded,
+    rawDaos,
+    loadingDaos,
+    balanceData,
+    balanceLoading,
+    multisigAddr,
+  ]);
+
+  const { data: rawMemberCheck, isLoading: memberLoading } = useReadContract({
+    contract: FullDaoContract,
+    method:
+      "function isYMemberOfDaoX(bytes32 _daoId, address _userAddress) view returns (bool)",
+    // only call once we know which DAO and who the user is
+    params:
+      daoDetails && activeAccount?.address
+        ? [daoDetails.daoId, activeAccount.address]
+        : // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ([] as any),
+  });
+
+  // whenever the raw on-chain bool comes back, stash it in state
+  useEffect(() => {
+    if (typeof rawMemberCheck === "boolean") {
+      setMemberExists(rawMemberCheck);
+    }
+  }, [rawMemberCheck]);
 
   // update member count when on-chain members load
   useEffect(() => {
@@ -170,7 +240,7 @@ const DaoProfile: React.FC = () => {
   const fullAddress = daoDetails?.daoMultiSigAddr || "";
   const displayAddress = fullAddress
     ? isSmallScreen
-      ? `${fullAddress.slice(0,14)}…${fullAddress.slice(-9)}`
+      ? `${fullAddress.slice(0, 14)}…${fullAddress.slice(-9)}`
       : fullAddress
     : "N/A";
 
@@ -178,20 +248,32 @@ const DaoProfile: React.FC = () => {
     if (!fullAddress) return;
     navigator.clipboard.writeText(fullAddress).then(() => {
       const id = crypto.randomUUID();
-      dispatch(addNotification({ id, type: "info", message: "Address copied to clipboard!" }));
+      dispatch(
+        addNotification({
+          id,
+          type: "info",
+          message: "Address copied to clipboard!",
+        })
+      );
       dispatch(showNotificationPopup());
-      setTimeout(() => dispatch(removeNotification(id)),4000);
+      setTimeout(() => dispatch(removeNotification(id)), 4000);
     });
   };
 
   const handleClick = () => navigate("/CreateProposal");
 
-    if (loading || !daoDetails || connectionStatus === "connecting") {
-      return <LoadingPopup message="Loading wallet…" />;
-    }
+  if (
+    loading ||
+    loadingDaos ||
+    balanceLoading ||
+    loadingMembers ||
+    memberLoading ||
+    connectionStatus === "connecting"
+  ) {
+    return <LoadingPopup message="Loading…" />;
+  }
 
-    if (!daoDetails) return <div>DAO Details not available</div>;
-
+  if (!daoDetails) return <div>DAO Details not available</div>;
 
   if (!activeAccount?.address) {
     return (
@@ -205,8 +287,69 @@ const DaoProfile: React.FC = () => {
     );
   }
 
-  if (!memberExists) {
-    return <Navigate to="/MarketPlace" replace />;
+  if (memberExists === false) {
+    return (
+      <div className="fullheight">
+        <NavBar className={""} />
+        <div className="daoRegistration error">
+          <p>You are not a member of this DAO.</p>
+          <div className="button-groupp">
+            <button onClick={handleSendInviteClick}>Send Invite</button>
+            <button onClick={() => navigate("/MarketPlace")}>
+              Marketplace
+            </button>
+          </div>
+        </div>
+        <Footer className={""} />
+
+        {showForm && (
+          <div className=" popupp">
+            <form>
+              <DaoForm
+                className="form"
+                title="Apply to be a Member"
+                description=""
+                fields={[
+                  {
+                    label: "email",
+                    type: "email",
+                  },
+                  {
+                    label: "Select Dao",
+                    type: "select",
+                    options: [
+                      {
+                        label: "Select Dao",
+                        value: "",
+                        disabled: true,
+                        selected: true,
+                      },
+                      ...daos.map((dao) => ({
+                        label: dao.daoName,
+                        value: dao.daoName,
+                      })),
+                    ],
+                    onChange: handleDaoChange,
+                  },
+                ]}
+              />
+              <div className="center">
+                <button className="createAccount" type="submit">
+                  Submit
+                </button>
+                <button
+                  className="closebtn"
+                  type="button"
+                  onClick={handleSendInviteClick}
+                >
+                  Close
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+      </div>
+    );
   }
 
   localStorage.setItem("daoId", daoDetails.daoId!);
@@ -304,6 +447,7 @@ const DaoProfile: React.FC = () => {
             </div>
 
             <TreasuryHistory
+              daoDetails={daoDetails}
               daoMultiSigAddr={daoDetails.daoMultiSigAddr}
               limit={4}
             />
@@ -314,6 +458,8 @@ const DaoProfile: React.FC = () => {
           <h1 className="main">Current Proposals</h1>
           <ProposalGroups />
         </section>
+
+        
       </main>
     </>
   );

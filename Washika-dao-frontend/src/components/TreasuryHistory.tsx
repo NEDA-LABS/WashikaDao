@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan";
+import { DaoDetails } from "../pages/DaoProfile";
+import TransactionPopup from "./SuperAdmin/TransactionPopup";
 
 interface TreasuryEntry {
   hash: string;
@@ -12,16 +14,19 @@ interface TreasuryEntry {
 }
 
 interface TreasuryHistoryProps {
+  daoDetails: DaoDetails;
   daoMultiSigAddr: string;
-  limit?: number;   // how many to show in mini‐statement
+  limit?: number; // how many to show in mini‐statement
 }
 
 const TreasuryHistory: React.FC<TreasuryHistoryProps> = ({
+  daoDetails,
   daoMultiSigAddr,
   limit = 5,
 }) => {
   const [entries, setEntries] = useState<TreasuryEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showStatement, setShowStatement] = useState(false);
 
   useEffect(() => {
     if (!daoMultiSigAddr) return;
@@ -36,26 +41,36 @@ const TreasuryHistory: React.FC<TreasuryHistoryProps> = ({
       // filter out zero‐value and keep only send/receive
       const filtered = (raw as RawTxn[]).filter(
         (tx) =>
-          !tx.isInternal &&
-        tx.valueCelo !== 0 &&
-        (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
+          tx.valueCelo >= 0.1 &&
+          (tx.from.toLowerCase() === address || tx.to.toLowerCase() === address)
       );
 
       // map → UI model
       const parsed: TreasuryEntry[] = filtered.map((tx) => {
         const isOut = tx.from.toLowerCase() === address;
-        const usd   = tx.valueCelo * rate;
+        const usd = tx.valueCelo * rate;
         return {
-          hash:   tx.hash,
-          type:   isOut ? "Withdraw" : "Deposit",
-          date:   new Date(tx.timestamp * 1000).toLocaleDateString(),
-          amount: `${isOut ? "-" : ""}${tx.valueCelo.toFixed(4)} CELO`,
-          value:  `$${usd.toFixed(2)}`,
-          icon:   isOut ? "/images/withdrawIcon.png" : "/images/deposit.png",
+          hash: tx.hash,
+          type: isOut ? "Withdraw" : "Deposit",
+          date: new Date(tx.timestamp * 1000).toLocaleDateString(),
+          amount: `${isOut ? "-" : ""}${tx.valueCelo.toFixed(2)} CELO`,
+          value: `$${usd.toFixed(2)}`,
+          icon: isOut ? "/images/withdrawIcon.png" : "/images/deposit.png",
         };
       });
 
-      setEntries(parsed.slice(0, limit));
+      const unique = parsed
+        .filter(
+          (entry, idx, arr) =>
+            idx ===
+            arr.findIndex((e) => e.hash === entry.hash && e.type === entry.type)
+        )
+        .sort((a, b) => {
+          // parse a.date/b.date back to timestamps if you need an exact sort
+          return new Date(b.date).getTime() - new Date(a.date).getTime();
+        });
+
+      setEntries(unique.slice(0, limit));
       setLoading(false);
     })();
   }, [daoMultiSigAddr, limit]);
@@ -111,10 +126,29 @@ const TreasuryHistory: React.FC<TreasuryHistoryProps> = ({
         })}
       </div>
       <div className="history-button">
-        <button onClick={() => {/* TODO: open full‐statement popup or navigate */}}>
-          Full Statement
-        </button>
+        <button onClick={() => setShowStatement(true)}>Full Statement</button>
       </div>
+      {showStatement && (
+        <div className="modal-overlay" onClick={() => setShowStatement(false)}>
+          <div
+            className="modal-content"
+            onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+          >
+            <TransactionPopup
+              daoDetails={{
+                ...daoDetails,
+                daoId: daoDetails.daoId! as `0x${string}`, // assert it's there & hex
+              }}
+            />
+            <button
+              onClick={() => setShowStatement(false)}
+              className="close-btn"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

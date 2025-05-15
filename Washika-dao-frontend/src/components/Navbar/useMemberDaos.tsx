@@ -102,6 +102,8 @@ export const useMemberDaos = (memberAddr: string): UseMemberDaosResult => {
         const memberDaos = checks.filter((d): d is OnchainDao => d !== null);
         const exists = memberDaos.length > 0;
 
+
+
         // update local + redux store
         setDaos(memberDaos);
         setMemberExists(exists);

@@ -253,10 +253,10 @@ main.daoMain {
 .treasury-history #treasury-history {
   max-height: 481px;
   border-radius: 10px;
-  margin: 16px 0 24px 12px;
+  margin: 16px 12px 24px 12px;
   display: flex;
   flex-direction: column;
-  gap: 36px;
+  gap: 24px;
   overflow-y: scroll;
   scrollbar-width: none;
 }
@@ -322,7 +322,7 @@ main.daoMain {
   display: flex;
   flex-direction: column;
   align-items: end;
-  gap: 12px;
+  gap: 6px;
 }
 
 .slot .right .topy {
@@ -634,7 +634,7 @@ section.second::after {
     width: auto;
     margin: 12px;
     max-height: 320px;
-    gap: 24px;
+    gap: 20px;
   }
 
   #treasury-history .slot {
@@ -650,15 +650,13 @@ section.second::after {
   }
 
   .slot .left p {
-    width: auto;
-    height: auto;
-    margin-left: 12px;
+    margin-left: 11px;
   }
 
   .slot h1 {
     width: auto;
     height: auto;
-    font-size: 16px;
+    font-size: 14px;
   }
 
   .slot .right div {
@@ -701,7 +699,7 @@ section.second::after {
   }
 
   .second .proposal {
-    margin: 0 24px;
+    margin: 0 12px;
     padding: 12px;
   }
 
@@ -729,9 +727,9 @@ section.second::after {
 
   .proposal .three .button-group.button {
     flex-direction: row;
-    margin: 12px 0;
+    margin: 12px 6px;
     gap: 12px;
-    justify-content: space-evenly;
+    justify-content: space-between;
   }
 
   .proposal .three .button-group button {
@@ -755,6 +753,10 @@ section.second::after {
 
     .daoMain .section-2 {
       margin: 12px 0;
+    }
+
+    .slot .right .topy {
+      font-size: 12px;
     }
   }
 }
