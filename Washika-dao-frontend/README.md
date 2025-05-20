@@ -37,3 +37,16 @@ Future iterations of the frontend will integrate with the backend’s blockchain
     1. UI Improvement: Enhanced CSS responsiveness for better user experience across different screen sizes and devices.
     
     2. API Integration: Implementation of more API calls to fetch data from the backend
+
+## How to run the application: 
+<h4> I will only provide the docker version since it is the only platform independent and most reliable form of maintaing different applications with their runtimes. 
+</h4> 
+
+## Docker commands 
+<h5> First start by building the application & downloading its dependencies. 
+</h5>
+    1. <bold>docker build --build-arg VITE_THIRDWEB_CLIENT_ID="api_key_sourced_from_thirdweb" -t wd-frontend .</bold>
+<h5> Then run the application. </h5>
+    2. <italic>docker run -p 8080:80 wd-frontend</italic>
+
+## I hope you enjoy using the application as much as I enjoyed building it.
