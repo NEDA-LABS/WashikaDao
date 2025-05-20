@@ -1,23 +1,38 @@
-# Use an official Node.js runtime as a parent image
-FROM node:18-alpine
 
-# Set the working directory in the container to /app
+# Stage 1: Build the frontend application
+FROM node:18-alpine AS builder
+
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
+# Copy package files
 COPY package*.json ./
 
-# Install any dependencies
+# Install dependencies
 RUN npm install
 
-# Copy the current directory contents into the container at /app
+# Copy source code
 COPY . .
+
+# Build the app with environment variables
+ARG VITE_THIRDWEB_CLIENT_ID
+ENV VITE_THIRDWEB_CLIENT_ID=$VITE_THIRDWEB_CLIENT_ID
 
 # Build the app
 RUN npm run build
 
-# Expose a port
-EXPOSE 5173
+# Stage 2: Serve with Nginx
+FROM nginx:alpine
 
-# Define the command to run your app using serve
-CMD [ "npm", "run", "serve" ]
+# Remove default nginx configuration
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy built assets
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose port 80
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
