@@ -3,7 +3,7 @@ import { useSendAndConfirmTransaction } from "thirdweb/react";
 import { prepareTransaction, toWei } from "thirdweb";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { client } from "../../utils/thirdwebClient"; // your ThirdwebClient
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 export interface CardType {
   id: number;
@@ -78,7 +78,7 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
     });
   };
   return (
-    <Link to={`/ViewProposal/${card.name}`}>
+    <>
       <div className="card">
         <img
           src={card.image || "/images/default.png"}
@@ -108,7 +108,7 @@ const CardItem: React.FC<CardItemProps> = ({ card }) => {
           <p className="success name">Tx: {receipt.transactionHash}</p>
         )}
       </div>
-    </Link>
+    </>
   );
 };
 

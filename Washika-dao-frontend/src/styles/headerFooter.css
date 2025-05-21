@@ -50,7 +50,14 @@ nav .three {
   position: relative;
 }
 
-nav button,
+nav button {
+  color: #ffffff;
+  border-radius: 7px;
+  font-weight: bold;
+  font-size: 18px;
+  cursor: pointer;
+}
+
 .nav-links .portalButton {
   width: 164px;
   height: 41px;
