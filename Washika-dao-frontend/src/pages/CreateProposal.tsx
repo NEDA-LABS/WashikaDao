@@ -37,7 +37,7 @@ const CreateProposal: React.FC = () => {
   // const selectedDao = userDaos.find(
   // (dao) => dao.daoTxHash === selectedDaoTxHash
   // );
-  
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const daoId = (localStorage.getItem("daoId") ?? "") as `0x${string}`;
@@ -50,12 +50,13 @@ const CreateProposal: React.FC = () => {
   // 🔁 Get DAO creator address from contract
   const { data: daoCreator, isPending } = useReadContract({
     contract: FullDaoContract,
-    method: "function getDaoCreatorByDaoId(bytes32 _daoId) view returns (address)",
+    method:
+      "function getDaoCreatorByDaoId(bytes32 _daoId) view returns (address)",
     params: [daoId],
   });
 
-    // Calculate completed steps for the progress indicator.
-    const completedSteps = useProposalProgress(proposalData, daoCreator ?? "");
+  // Calculate completed steps for the progress indicator.
+  const completedSteps = useProposalProgress(proposalData, daoCreator ?? "");
   /**
    * Handles form submission for creating a proposal.
    *
@@ -83,11 +84,7 @@ const CreateProposal: React.FC = () => {
       alert("Proposal creation on blockchain failed!");
       return;
     }
-    navigate(
-      `/ViewProposal/${encodeURIComponent(
-        proposalData.proposalTitle
-      )}`
-    );
+    navigate(`/ViewProposal/${encodeURIComponent(proposalData.proposalTitle)}`);
   };
 
   const handleCancel = () => {
@@ -145,9 +142,8 @@ const CreateProposal: React.FC = () => {
               onChange={handleChange}
             />
           </div>
- {
-  /*
-  <div className="label three">
+
+          {/* <div className="label three">
             <label>Summary of project</label>
             <textarea
               name="proposalSummary"
@@ -198,10 +194,7 @@ const CreateProposal: React.FC = () => {
             >
               <option value="members">Members</option>
             </select>
-          </div>
-  */
- }
-          
+          </div> */}
 
           <div className="six">
             <div>

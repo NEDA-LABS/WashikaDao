@@ -5,6 +5,8 @@ import { useDaoNavigation } from "./useDaoNavigation";
 import { useMemberDaos } from "./useMemberDaos";
 import ReactDOM from "react-dom";
 import { useActiveAccount } from "thirdweb/react";
+import { useDispatch } from "react-redux";
+import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
 
 /**
  * Defines the expected props for the NavLinks component.
@@ -40,6 +42,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
   // Retrieve the user's address from the Redux store.
   const activeAccount = useActiveAccount();
   const address = activeAccount?.address;
+  const dispatch = useDispatch();
 
   // Fetch the DAOs associated with the current address; if none exists, an empty string is passed.
   const { daos } = useMemberDaos(address || "");
@@ -63,6 +66,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
   const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const selectedDaoId = localStorage.getItem("selectedDaoId");
+    console.log(filteredDaos);
     if (selectedDaoId) {
       const selectedDao = filteredDaos.find(
         (dao) => dao.daoId === selectedDaoId
@@ -76,7 +80,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
     if (filteredDaos.length === 1) {
       navigateToDao(filteredDaos[0]);
     }
-    
   };
 
   // Determines if the "Open Dao" link should be shown based on the current page context.
@@ -101,16 +104,25 @@ const NavLinks: React.FC<NavLinksProps> = ({
       </li>
       {className === "DaoProfile" || className === "navbarProposal" ? (
         <li className="three">
-          <Link to="/MarketPlace">MarketPlace</Link>
+          <Link to={`/MemberProfile/${address}`}>Profile</Link>
         </li>
       ) : className === "SuperAdmin" ? (
         <>
-          <li className="three">
+          {/* <li className="three">
             <Link to={"/CreateProposal"}>Create Proposal</Link>
-          </li>
+          </li> */}
           <li className="three">
-            <Link to={`/Funder/${address}`}>Funder</Link>
+            <Link to={`/MemberProfile/${address}`}>Profile</Link>
           </li>
+          <button
+              onClick={() => {
+                dispatch(toggleNotificationPopup());
+                // Toggle the mobile menu when notifications is clicked
+                if (toggleMenu) toggleMenu();
+              }}
+            >
+              Notifications
+            </button>
         </>
       ) : (
         showDaoToolKit && (
@@ -120,11 +132,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
             </Link>
           </li>
         )
-        // address && (
-        //   <li className="three">
-        //   <Link to={`/SuperAdmin/${address}`}>DAO Tool Kit</Link>
-        // </li>
-        // )
       )}
       {/* Render the authentication button with a prop to toggle the mobile menu */}
       <AuthButton className={className} toggleMenu={toggleMenu} />
@@ -153,17 +160,26 @@ const NavLinks: React.FC<NavLinksProps> = ({
         {className === "DaoProfile" || className === "navbarProposal" ? (
           // When on a DAO profile or proposal page, show the MarketPlace link.
           <li className="three">
-            <Link to={"/MarketPlace"}>MarketPlace</Link>
+            <Link to={`/MemberProfile/${address}`}>Profile</Link>
           </li>
         ) : className === "SuperAdmin" ? (
           // For SuperAdmin users, render links for creating proposals and accessing the Funder section.
           <>
-            <li className="three">
+            {/* <li className="three">
               <Link to={"/CreateProposal"}>Create Proposal</Link>
-            </li>
+            </li> */}
             <li className="three">
-              <Link to={`/Funder/${address}`}>Funder</Link>
+              <Link to={`/MemberProfile/${address}`}>Profile</Link>
             </li>
+            <button
+              onClick={() => {
+                dispatch(toggleNotificationPopup());
+                // Toggle the mobile menu when notifications is clicked
+                if (toggleMenu) toggleMenu();
+              }}
+            >
+              Notifications
+            </button>
           </>
         ) : (
           // For regular users with DAO memberships, render the DAO Tool Kit link.

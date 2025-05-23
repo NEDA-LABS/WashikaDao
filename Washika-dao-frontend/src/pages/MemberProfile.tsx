@@ -71,7 +71,6 @@ const MemberProfile: React.FC = () => {
           (p) => p.proposalOwner.toLowerCase() === memberAddr.toLowerCase()
         )
       );
-      console.log(raw);
     })();
   }, [memberAddr]);
 

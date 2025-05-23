@@ -16,6 +16,7 @@ export const useDaoNavigation = (daos: OnchainDao[]) => {
   const memberAddr = activeAccount?.address;
 
   const filteredDaos = daos.filter((dao) => dao.daoCreator);
+  
 
   const navigateToDao = (dao: OnchainDao) => {
     // Navigate to the admin dashboard for DAOs where the user holds an admin role.

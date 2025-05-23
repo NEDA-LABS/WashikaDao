@@ -2,8 +2,6 @@
 import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
 import { useMemberDaos } from "./useMemberDaos";
@@ -42,9 +40,8 @@ interface AuthButtonProps {
  * @param {AuthButtonProps} props - Component properties.
  * @returns {JSX.Element} Rendered button(s) for authentication or navigation.
  */
-const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
+const AuthButton: React.FC<AuthButtonProps> = ({ className }) => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const activeAccount = useActiveAccount();
     const address = activeAccount?.address;
     const { daos, memberExists } = useMemberDaos(address || "");
@@ -149,31 +146,20 @@ const AuthButton: React.FC<AuthButtonProps> = ({ className, toggleMenu }) => {
   }
 
   // 2. Render a "Notifications" button for SuperAdmin users.
-  if (className === "SuperAdmin") {
-    return (
-      <button
-        className="portalButton"
-        onClick={() => {
-          dispatch(toggleNotificationPopup());
-          // Toggle the mobile menu when notifications is clicked
-          if (toggleMenu) toggleMenu();
-        }}
-      >
-        Notifications
-      </button>
-    );
-  }
-
-  if (className === "DaoProfile") {
-    return (
-      <button
-        className="portalButton"
-        onClick={() => navigate(`/MemberProfile/${address}`)}
-      >
-        Profile
-      </button>
-    );
-  }
+  // if (className === "SuperAdmin") {
+  //   return (
+  //     <button
+  //       className="portalButton"
+  //       onClick={() => {
+  //         dispatch(toggleNotificationPopup());
+  //         // Toggle the mobile menu when notifications is clicked
+  //         if (toggleMenu) toggleMenu();
+  //       }}
+  //     >
+  //       Notifications
+  //     </button>
+  //   );
+  // }
 
   // 4. For navbarDaoMember, render a dropdown to select among available DAOs.
   if (className === "navbarDaoMember") {
