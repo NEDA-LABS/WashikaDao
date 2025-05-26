@@ -114,15 +114,15 @@ const NavLinks: React.FC<NavLinksProps> = ({
           <li className="three">
             <Link to={`/MemberProfile/${address}`}>Profile</Link>
           </li>
-          <button
-              onClick={() => {
-                dispatch(toggleNotificationPopup());
-                // Toggle the mobile menu when notifications is clicked
-                if (toggleMenu) toggleMenu();
-              }}
-            >
-              Notifications
-            </button>
+          <button className="notificationButton"
+            onClick={() => {
+              dispatch(toggleNotificationPopup());
+              // Toggle the mobile menu when notifications is clicked
+              if (toggleMenu) toggleMenu();
+            }}
+          >
+            Notifications
+          </button>
         </>
       ) : (
         showDaoToolKit && (
@@ -171,7 +171,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
             <li className="three">
               <Link to={`/MemberProfile/${address}`}>Profile</Link>
             </li>
-            <button
+            <button  className="notificationButton"
               onClick={() => {
                 dispatch(toggleNotificationPopup());
                 // Toggle the mobile menu when notifications is clicked

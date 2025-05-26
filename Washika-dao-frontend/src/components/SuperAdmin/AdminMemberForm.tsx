@@ -36,7 +36,7 @@ export function AdminMemberForm() {
   const { currentMember, handleMemberChange, handleAddMember } =
     useMemberManagement(rawDaoId ?? undefined, address, notify, setIsSubmitting);
   return (
-    <>
+    <div style={{position: "relative"}}>
       {/* Render form popup when Add Member is clicked */}
       {isSubmitting && (
        <LoadingPopup message="Creating Member on-chain…" onCancel={() => setIsSubmitting(false)} />
@@ -44,7 +44,6 @@ export function AdminMemberForm() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          setIsSubmitting(true);
           handleAddMember();
         }}
       >
@@ -54,6 +53,6 @@ export function AdminMemberForm() {
           onAddMember={handleAddMember}
         />
       </form>
-    </>
+    </div>
   );
 }

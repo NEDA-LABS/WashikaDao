@@ -1,34 +1,56 @@
+// components/SuperAdmin/MemberTransactionPopup.tsx
 import { useEffect, useState } from "react";
-import { DaoDetails } from "./WanachamaList";
-import { fetchTreasuryEntries, TreasuryEntry } from "../../utils/transactions";
+import { TreasuryEntry, fetchTreasuryEntries } from "../../utils/transactions";
+import { fetchCeloToUsdRate } from "../../utils/priceUtils";
+import { useWalletBalance } from "thirdweb/react";
+import { client } from "../../utils/thirdwebClient";
+import { celoAlfajoresTestnet } from "thirdweb/chains";
 
-interface TransactionPopupProps {
-  daoDetails?: DaoDetails;
+interface MemberTransactionPopupProps {
+  memberAddr: string;
 }
 
-export default function TransactionPopup({ daoDetails }: TransactionPopupProps) {
+export default function MemberTransactionPopup({
+  memberAddr,
+}: MemberTransactionPopupProps) {
   const [entries, setEntries] = useState<TreasuryEntry[]>([]);
+  const [usdBal, setUsdBal] = useState<number>();
+
+  const { data: balanceData, isLoading } = useWalletBalance({
+    address: memberAddr || "",
+    client,
+    chain: celoAlfajoresTestnet,
+  });
 
   useEffect(() => {
-    if (!daoDetails?.daoMultiSigAddr) return;
+    if (!memberAddr) return;
 
-    const fetchEntries = async () => {
-      const address = daoDetails.daoMultiSigAddr.toLowerCase();
-      try {
-        const data = await fetchTreasuryEntries(address);
-        setEntries(data);
-      } catch (error) {
-        console.error("Error fetching treasury entries:", error);
-      }
+    (async () => {
+      const address = memberAddr.toLowerCase();
+      const entries = await fetchTreasuryEntries(address);
+      setEntries(entries);
+    })();
+  }, [memberAddr]);
+
+  useEffect(() => {
+    const convertToUsd = async () => {
+      if (!balanceData) return;
+      const celoBal = parseFloat(balanceData.displayValue);
+      const rate = await fetchCeloToUsdRate();
+      setUsdBal(celoBal * rate);
     };
 
-    fetchEntries();
-  }, [daoDetails]);
+    convertToUsd();
+  }, [balanceData]);
+
+  if (!balanceData || isLoading) {
+    return <div>Loading balance...</div>;
+  }
 
   if (entries.length === 0) {
     return (
       <div className="treasury-history">
-        <h1>Full Statement</h1>
+        <h1>Transaction History</h1>
         <p style={{ padding: "1rem" }}>No transactions found.</p>
       </div>
     );
@@ -39,14 +61,14 @@ export default function TransactionPopup({ daoDetails }: TransactionPopupProps) 
       <div className="balance">
         <h1>Treasury Balance</h1>
         <p className="amount">
-          {daoDetails?.kiwango.toLocaleString(undefined, {
+          {usdBal?.toLocaleString(undefined, {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
           })}{" "}
           USD
         </p>
       </div>
-      <h2>Treasury History</h2>
+      <h2>Member Transaction History</h2>
       <div id="treasury-history">
         {entries.map((entry) => {
           const txUrl = `https://explorer.celo.org/alfajores/tx/${entry.hash}`;
