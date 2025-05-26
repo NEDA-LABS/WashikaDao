@@ -37,17 +37,16 @@ export const useMemberManagement = ( daoId: `0x${string}` | undefined,
   const handleAddMember = () => {
     // 1) validate
     if (!currentMember.email) {
-      setIsSubmitting(false);
       return notify("error", "Please fill in email.");
     }
     if (!daoId) {
-      setIsSubmitting(false);
       return notify("error", "DAO ID not available.");
     }
     if (!adminAddress) {
-      setIsSubmitting(false);
       return notify("error", "Your wallet must be connected.");
     }
+
+    setIsSubmitting(true);
 
     // 2) fire the on-chain tx
     const tx = prepareContractCall({
@@ -86,6 +85,7 @@ export const useMemberManagement = ( daoId: `0x${string}` | undefined,
       },
       onError: (err) => {
         console.error(err);
+        setIsSubmitting(false);
         notify("error", "On-chain addMemberToDao failed");
       },
     });

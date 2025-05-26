@@ -50,15 +50,7 @@ nav .three {
   position: relative;
 }
 
-nav button {
-  color: #ffffff;
-  border-radius: 7px;
-  font-weight: bold;
-  font-size: 18px;
-  cursor: pointer;
-}
-
-.nav-links .portalButton {
+nav button, .nav-links .portalButton {
   width: 164px;
   height: 41px;
   color: #ffffff;
@@ -67,6 +59,12 @@ nav button {
   font-weight: bold;
   font-size: 18px;
   cursor: pointer;
+}
+
+.notificationButton {
+  background-color: transparent;
+  width: auto;
+  height: auto;
 }
 
 .portalButton.select {
@@ -225,7 +223,7 @@ footer img {
     position: absolute;
   }
 
-  .nav-links a {
+  .nav-links a,  .notificationButton {
     color: #ffffff;
   }
 
@@ -293,10 +291,12 @@ footer img {
     z-index: 9999;
   }
 
-  .nav-links li {
+  .nav-links li, .notificationButton {
     padding: 10px 0;
     width: 100%;
     text-align: left;
+    font-weight: bold;
+    font-size: 16px;
   }
 
   nav .wordLogo {

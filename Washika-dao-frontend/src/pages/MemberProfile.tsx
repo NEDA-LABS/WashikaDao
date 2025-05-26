@@ -13,6 +13,7 @@ import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { OnChainProposal } from "../utils/Types";
 import { client } from "../utils/thirdwebClient";
 import { FullDaoContract } from "../utils/handlers/Handlers";
+import MemberTransactionPopup from "../components/SuperAdmin/MemberTransactionPopup";
 
 /**
  * @Auth policy: Should definitely be authenticated to make sense
@@ -37,9 +38,14 @@ const MemberProfile: React.FC = () => {
   const [memberProposals, setMemberProposals] = useState<OnChainProposal[]>([]);
   const [selectedProposalId, setSelectedProposalId] = useState<`0x${string}`>();
   const [repayAmount, setRepayAmount] = useState<number>(0.1);
+  const [showStatement, setShowStatement] = useState(false);
 
   const params = useParams<{ address: string }>();
   const memberAddr = params.address ?? "";
+
+  const [activeButton, setActiveButton] = useState<string>(
+    "Account Information"
+  );
 
   const { daos } = useMemberDaos(memberAddr);
 
@@ -177,12 +183,42 @@ const MemberProfile: React.FC = () => {
         </section>
 
         <div className="button-group buttons">
-          <button>Account Information</button>
-          <button onClick={() => setShowPaymentModal(true)}>
+          <button
+            className={activeButton === "Account Information" ? "active" : ""}
+            onClick={() => {
+              setActiveButton("Account Information");
+              setShowStatement(true);
+            }}
+          >
+            Account Information
+          </button>
+          <button
+            className={activeButton === "Make Payments" ? "active" : ""}
+            onClick={() => {
+              setActiveButton("Make Payments");
+              setShowPaymentModal(true);
+            }}
+          >
             Make Payments
           </button>
-          <button onClick={handleClick}>Apply for Loan</button>
-          <button onClick={handleAddMemberClick}>Request Invite</button>
+          <button
+            className={activeButton === "Apply for Loan" ? "active" : ""}
+            onClick={() => {
+              setActiveButton("Apply for Loan");
+              handleClick();
+            }}
+          >
+            Apply for Loan
+          </button>
+          <button
+            className={activeButton === "Request Invite" ? "active" : ""}
+            onClick={() => {
+              setActiveButton("Request Invite");
+              handleAddMemberClick();
+            }}
+          >
+            Request Invite
+          </button>
         </div>
 
         <div className="dashboard-wrapper">
@@ -243,6 +279,26 @@ const MemberProfile: React.FC = () => {
                 </button>
               </div>
             </form>
+          </div>
+        )}
+
+        {showStatement && (
+          <div
+            className="modal-overlay"
+            onClick={() => setShowStatement(false)}
+          >
+            <div
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()} // prevent closing when clicking inside
+            >
+              <MemberTransactionPopup memberAddr={memberAddr} />
+              <button
+                onClick={() => setShowStatement(false)}
+                className="close-btn"
+              >
+                Close
+              </button>
+            </div>
           </div>
         )}
 

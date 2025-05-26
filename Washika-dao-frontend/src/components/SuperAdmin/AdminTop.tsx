@@ -18,8 +18,6 @@ import {
 } from "../../redux/notifications/notificationSlice";
 import { OnchainDao } from "../../utils/Types";
 
-
-
 interface AdminTopProps {
   daoDetails?: DaoDetails;
   setActiveSection: (section: string) => void;
@@ -76,12 +74,13 @@ export default function AdminTop({
         } as OnchainDao)
     );
 
-    const DaoId = localStorage.getItem("selectedDaoId")
+    const DaoId = localStorage.getItem("selectedDaoId");
 
     // 4️⃣ Find the one matching our route param
     const found = allDaos.find(
-      (d) => d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase() &&
-      d.daoId === DaoId
+      (d) =>
+        d.daoCreator.toLowerCase() === multiSigAddr!.toLowerCase() &&
+        d.daoId === DaoId
     );
     if (!found) return;
 
@@ -254,11 +253,13 @@ export default function AdminTop({
               <p className="left">USD</p>
               <p className="right">Treasury Balance</p>
             </div>
-            <p className="amount">{daoDetails.kiwango.toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}{" "}
-                USD</p>
+            <p className="amount">
+              {daoDetails.kiwango.toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}{" "}
+              USD
+            </p>
           </div>
           <div className="section">
             <img src="/images/profile.png" alt="idadi" />
