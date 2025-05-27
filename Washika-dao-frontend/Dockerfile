@@ -14,8 +14,8 @@ RUN npm install
 COPY . .
 
 # Build the app with environment variables
-ARG VITE_THIRDWEB_CLIENT_ID
-ENV VITE_THIRDWEB_CLIENT_ID=$VITE_THIRDWEB_CLIENT_ID
+#ARG VITE_THIRDWEB_CLIENT_ID
+#ENV VITE_THIRDWEB_CLIENT_ID=$VITE_THIRDWEB_CLIENT_ID -- Coolify should inject this at build time 
 
 # Build the app
 RUN npm run build
