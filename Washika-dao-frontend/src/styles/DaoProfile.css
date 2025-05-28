@@ -81,14 +81,14 @@ main.daoMain {
 .daoMain .section-21 {
   margin: clamp(12px,1vw,18px) 0;
   padding: 0 clamp(12px,5vw,24px) 0 0;
-  font-size: clamp(20px,4vw,31px);
+  font-size: clamp(18px,4vw,30px);
   color: #433939;
 }
 
 .daoMain .section-22 {
   margin: clamp(12px,1vw,18px) 0;
   padding: 0 clamp(12px,5vw,24px) 0 0;
-  font-size: clamp(24px,3vw,48px);
+  font-size: clamp(20px,3vw,36px);
   font-weight: bold;
 }
 

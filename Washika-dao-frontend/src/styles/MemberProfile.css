@@ -567,6 +567,7 @@ body :has(.member) {
 
   .member .create {
     padding: 6px 12px;
+    font-size: 14px;
   }
 
   .member .sec img {
