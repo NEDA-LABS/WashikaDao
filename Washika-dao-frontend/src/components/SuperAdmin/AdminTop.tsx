@@ -30,6 +30,8 @@ export default function AdminTop({
   setDaoDetails,
 }: AdminTopProps) {
   const [memberCount, setMemberCount] = useState(0);
+  const [showMemberPopup, setShowMemberPopup] = useState(false);
+  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
   const active = useActiveAccount();
@@ -218,7 +220,9 @@ export default function AdminTop({
           </div>
           <div>
             {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
-              <button>Generate MultiSigAddress</button>
+              <button onClick={() => setShowMemberPopup(true)}>
+                Generate MultiSigAddress
+              </button>
             ) : (
               <div className="address">
                 <p className="email">{displayAddress}</p>
@@ -278,6 +282,61 @@ export default function AdminTop({
           </button>
         </div>
       </div>
+      {showMemberPopup && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>Select Members for MultiSig</h2>
+            <div className="overflow">
+              {daoDetails?.members?.length ? (
+              <ul className="member-list">
+                {daoDetails.members.map((member) => (
+                  <li key={member.id}>
+                    <label>
+                      <input
+                        type="checkbox"
+                        value={member.wallet}
+                        checked={selectedMembers.includes(member.wallet)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (e.target.checked) {
+                            setSelectedMembers((prev) => [...prev, value]);
+                          } else {
+                            setSelectedMembers((prev) =>
+                              prev.filter((addr) => addr !== value)
+                            );
+                          }
+                        }}
+                      />
+                      <span>{member.email}</span>
+                      <small>{member.wallet}</small>
+                    </label>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p>No members found.</p>
+            )}
+            </div>
+            
+            <div className="modal-actions">
+              <button
+                onClick={() => {
+                  console.log("Selected addresses:", selectedMembers);
+                  setShowMemberPopup(false);
+                }}
+              >
+                Generate MultiSig
+              </button>
+              <button
+                className="cancel"
+                onClick={() => setShowMemberPopup(false)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

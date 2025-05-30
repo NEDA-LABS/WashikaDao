@@ -220,8 +220,8 @@
   }
 
   .viewProposal img {
-    width: 54px;
-    height: 54px;
+    width: 34px;
+    height:34px;
   }
 
   .viewProposal article .buttons {
@@ -232,16 +232,10 @@
 
   .viewProposal article .buttons .twoo {
     width: 50%;
-    background-color: #4e79e8;
-    color: #ffffff;
-    border-radius: 6px;
   }
 
   .viewProposal article .buttons .twooo {
     width: 50%;
-    background-color: #076d07;
-    color: #ffffff;
-    border-radius: 6px;
   }
 
   .viewProposal .one {

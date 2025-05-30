@@ -250,8 +250,8 @@ const ViewProposal: React.FC = () => {
           <img
             src="/images/arrow-back-black.png"
             alt="back"
-            width={32}
-            height={32}
+            width={48}
+            height={48}
             onClick={() => navigate(-1)}
             style={{ cursor: "pointer" }}
           />
@@ -306,7 +306,7 @@ const ViewProposal: React.FC = () => {
         </div>
 
         {loadingHasVoted || userHasVoted === null ? (
-          <div>Checking vote status…</div>
+          <div className="votedParagraph">Checking vote status…</div>
         ) : userHasVoted ? (
           <div className="alreadyVoted">
             <div className="votedParagraph">✅ You have voted for this proposal.</div>

@@ -625,6 +625,94 @@ nav.SuperAdmin {
   cursor: pointer;
 }
 
+.modal {
+  background-color: #ffffff;
+  padding: 32px;
+  border-radius: 20px;
+  width: 90%;
+  height: 60%;
+  max-width: 600px;
+  margin: 5% auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  color: #1e1e1e;
+}
+
+.modal h2 {
+  font-size: clamp(16px, 2vw, 24px);
+  font-weight: bold;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.overflow {
+  height: 74%;
+  overflow: auto;
+}
+
+.modal .member-list {
+  list-style: none;
+  padding: 0;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal .member-list label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  background-color: #f9f9f9;
+  padding: 1rem;
+  border-radius: 10px;
+  font-size: clamp(11px, 2vw, 16px);
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.member-list li label:hover {
+  background-color: #f0f0f0;
+}
+
+.member-list input[type="checkbox"] {
+  margin-right: 0.5rem;
+  transform: scale(1.1);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.modal-actions button {
+  background-color: #c8954b;
+  color: #ffffff;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 7px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.3s ease;
+}
+
+.modal-actions button:hover {
+  background-color: #b07e38;
+}
+
+.modal-actions button.cancel {
+  background-color: #f44336;
+}
+
+.modal-actions button.cancel:hover {
+  background-color: #c0392b;
+}
+
+
 @media only screen and (max-width: 1274px) {
   .thirdy .right .cards {
     grid-template-columns: repeat(2, 1fr);
