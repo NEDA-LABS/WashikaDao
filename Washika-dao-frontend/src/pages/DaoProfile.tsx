@@ -403,8 +403,9 @@ const handleDaoChange = (
               </div>
             </div>
 
-            <p className="section-21">{daoDetails.daoDescription}</p>
-            <p className="section-22">{daoDetails.daoOverview}</p>
+            <p className="section-21">{daoDetails.daoDescription} Lorem ipsum, dolor sit amet consectetur adipisicing elit. Unde sit illo amet expedita explicabo et provident. Iste dolor, ducimus consequuntur exercitationem quidem minus nam quia ad error animi.
+            </p>
+            <p className="section-22">{daoDetails.daoOverview} Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, quasi suscipit perferendis dignissimos accusamus obcaecati quas id minus asperiores sint numquam fuga odio. Maiores eum placeat harum repellendus repellat non expedita unde.</p>
 
             <div className="DaoOperations">
               <h1>DAO operations</h1>

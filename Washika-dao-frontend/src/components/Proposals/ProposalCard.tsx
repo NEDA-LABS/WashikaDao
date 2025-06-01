@@ -41,7 +41,7 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
           <h1>{p.proposalTitle}</h1>
           <div className="inProgress">{displayStatus}</div>
         </div>
-        <p className="two">proposal description</p>
+        <p className="two">proposal description  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Reprehenderit commodi amet quae omnis voluptates, culpa quam eveniet dignissimos.</p>
         <div className="three">
           <div className="button-group button">
             <button

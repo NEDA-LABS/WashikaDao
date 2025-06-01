@@ -66,7 +66,6 @@ const NavLinks: React.FC<NavLinksProps> = ({
   const handleDaoToolKitClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const selectedDaoId = localStorage.getItem("selectedDaoId");
-    console.log(filteredDaos);
     if (selectedDaoId) {
       const selectedDao = filteredDaos.find(
         (dao) => dao.daoId === selectedDaoId

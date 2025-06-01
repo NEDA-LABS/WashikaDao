@@ -12,6 +12,7 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import NavBar from "../components/Navbar/Navbar";
 import Footer from "../components/Footer";
 import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
+import VoteCounts from "../components/Proposals/VoteCounts";
 
 interface PreloadedState {
   proposal: {
@@ -38,7 +39,9 @@ const ViewProposal: React.FC = () => {
   const { state } = useLocation();
   const preloaded = (state as PreloadedState) || null;
 
-  const { proposalTitle: paramProposalTitle } = useParams<{ proposalTitle: string }>();
+  const { proposalTitle: paramProposalTitle } = useParams<{
+    proposalTitle: string;
+  }>();
   const [proposalDetails, setProposalDetails] =
     useState<OnChainProposal | null>(
       preloaded
@@ -62,11 +65,10 @@ const ViewProposal: React.FC = () => {
   const activeAccount = useActiveAccount();
   const connectionStatus = useActiveWalletConnectionStatus();
 
-  const { 
-    data: fetchedProposalId, 
-  } = useReadContract({
+  const { data: fetchedProposalId } = useReadContract({
     contract: FullDaoContract,
-    method: "function getProposalIdByTitle(string _proposalTitle) view returns (bytes32)",
+    method:
+      "function getProposalIdByTitle(string _proposalTitle) view returns (bytes32)",
     params: [paramProposalTitle!],
   });
 
@@ -78,8 +80,8 @@ const ViewProposal: React.FC = () => {
     contract: FullDaoContract,
     method:
       "function getProposalXById(bytes32 _proposalId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt))",
-      params: [fetchedProposalId as `0x${string}`],
-  })
+    params: [fetchedProposalId as `0x${string}`],
+  });
 
   useEffect(() => {
     if (!preloaded) {
@@ -95,22 +97,11 @@ const ViewProposal: React.FC = () => {
   }, [preloaded, loadingFetched, fetchedProposal, fetchError]);
 
   // Check if the user has already voted
-  const proposalIdFinal: `0x${string}` = proposalDetails?.proposalId ?? "0x0000000000000000000000000000000000000000"; 
+  const proposalIdFinal: `0x${string}` =
+    proposalDetails?.proposalId ?? "0x0000000000000000000000000000000000000000";
 
   const createdTs = Number(proposalDetails?.proposalCreatedAt) * 1000;
   const expiryTs = createdTs + 24 * 3600 * 1000;
-
-  const { data: upVotes, isLoading: loadingUp } = useReadContract({
-    contract: FullDaoContract,
-    method: "function getUpVotes(bytes32 _proposalId) view returns (uint256)",
-    params: [proposalIdFinal],
-  });
-
-  const { data: downVotes, isLoading: loadingDown } = useReadContract({
-    contract: FullDaoContract,
-    method: "function getDownVotes(bytes32 _proposalId) view returns (uint256)",
-    params: [proposalIdFinal],
-  });
 
   const { data: onChainOutcome, isLoading: loadingOutcome } = useReadContract({
     contract: FullDaoContract,
@@ -253,18 +244,14 @@ const ViewProposal: React.FC = () => {
   return (
     <>
       <NavBar className="navbarProposal" />
-      {isVoting && (
-        <LoadingPopup
-          message="Submitting your vote…"
-        />
-      )}
+      {isVoting && <LoadingPopup message="Submitting your vote…" />}
       <main className="viewProposal">
         <div className="one">
           <img
             src="/images/arrow-back-black.png"
             alt="back"
-            width={32}
-            height={32}
+            width={48}
+            height={48}
             onClick={() => navigate(-1)}
             style={{ cursor: "pointer" }}
           />
@@ -283,16 +270,16 @@ const ViewProposal: React.FC = () => {
               View Statement
             </button>
           </div>
-          <p>Proposal Summary</p>
+          <p>Proposal Summary will be included here, providing a brief summary about the proposal.</p>
         </article>
 
         <section>
           <div className="expiry">
-            <p className="first">Expires at</p>
+            <p className="first">Voting expires at</p>
             <div className="second">
               <p>
                 {new Date(expiryTs).toLocaleString()}
-                {expired && " (voting closed)"}
+                {expired && " [voting closed]"}
               </p>
             </div>
           </div>
@@ -319,18 +306,13 @@ const ViewProposal: React.FC = () => {
         </div>
 
         {loadingHasVoted || userHasVoted === null ? (
-          <div>Checking vote status…</div>
+          <div className="votedParagraph">Checking vote status…</div>
         ) : userHasVoted ? (
           <div className="alreadyVoted">
-            <div className="">✅ You have voted for this proposal.</div>
-            <div className="buttons buttonss">
-              <p className="onee">
-                👍 Yes: {loadingUp ? "…" : upVotes?.toString() ?? "0"}
-              </p>
-              <p className="twoe">
-                👎 No: {loadingDown ? "…" : downVotes?.toString() ?? "0"}
-              </p>
-            </div>
+            <div className="votedParagraph">✅ You have voted for this proposal.</div>
+            {proposalDetails?.proposalId && (
+              <VoteCounts proposalId={proposalDetails.proposalId} />
+            )}
           </div>
         ) : expired ? (
           <div className="closed">Voting period has ended.</div>
