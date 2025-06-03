@@ -38,6 +38,7 @@
 
 .buttons {
   display: flex;
+  flex-wrap: wrap;
   gap: 68px;
   font-size: clamp(16px,3vw,31px);
   margin-left: 84px;
@@ -51,6 +52,8 @@
   border-radius: clamp(16px,1vw,24px);
   cursor: pointer;
   font-family: "Tajawal", sans-serif;
+  transition: all 0.3s ease;
+  box-shadow: 4 4px 0px rgba(0, 0, 0, 0.9);
 }
 
 .button-1 {
@@ -58,9 +61,24 @@
   color: #837e7f;
 }
 
+
+.button-1:hover,
+.button-1:focus {
+  background-color: #37352f;
+  color: #ffffff;
+  transform: translateY(2px);
+}
+
 .button-2 {
   background-color: #ffffff;
   color: #131111;
+}
+
+.button-2:hover,
+.button-2:focus {
+  background-color: #dfdfdf;
+  color: #131111;
+  transform: translateY(2px);
 }
 
 .parag-container {

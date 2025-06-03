@@ -2,10 +2,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import {
-  useReadContract,
-  useWalletBalance,
-} from "thirdweb/react";
+import { useReadContract, useWalletBalance } from "thirdweb/react";
 import { FullDaoContract } from "../utils/handlers/Handlers";
 import { fetchCeloToUsdRate } from "../utils/priceUtils";
 import { client } from "../utils/thirdwebClient";
@@ -15,8 +12,8 @@ export interface Dao {
   daoLocation: string;
   daoObjective: string;
   daoTargetAudience: string;
-  daoCreator: string;  // multisig address
-  daoId: `0x${string}`;       // bytes32 id
+  daoCreator: string; // multisig address
+  daoId: `0x${string}`; // bytes32 id
 }
 
 interface GroupCardProps {
@@ -29,20 +26,14 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
   const [memberCount, setMemberCount] = useState<number | null>(null);
 
   // 1️⃣ on-chain CELO balance
-  const {
-    data: balanceData,
-    isLoading: balLoading,
-  } = useWalletBalance({
+  const { data: balanceData, isLoading: balLoading } = useWalletBalance({
     address: group.daoCreator,
     client,
     chain: celoAlfajoresTestnet,
   });
 
   // 2️⃣ on-chain member list
-  const {
-    data: onchainMembers,
-    isLoading: membersLoading,
-  } = useReadContract({
+  const { data: onchainMembers, isLoading: membersLoading } = useReadContract({
     contract: FullDaoContract,
     method:
       "function getDaoMembers(bytes32 _daoId) view returns ((string memberEmail, address memberAddress)[])",
@@ -53,9 +44,7 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
   useEffect(() => {
     if (!balanceData) return;
     const celoBal = parseFloat(balanceData.displayValue);
-    fetchCeloToUsdRate().then((rate) =>
-      setTreasuryUsd(celoBal * rate)
-    );
+    fetchCeloToUsdRate().then((rate) => setTreasuryUsd(celoBal * rate));
   }, [balanceData]);
 
   // count members once fetched
@@ -66,7 +55,12 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
   }, [onchainMembers]);
 
   // loading state
-  if (balLoading || membersLoading || treasuryUsd == null || memberCount == null) {
+  if (
+    balLoading ||
+    membersLoading ||
+    treasuryUsd == null ||
+    memberCount == null
+  ) {
     return <div className="group">Loading...</div>;
   }
 
@@ -75,10 +69,10 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
       <Link
         to={`/DaoProfile/${group.daoCreator}`}
         state={{
-            group,
-            kiwango: treasuryUsd,
-            memberCount,
-          }}
+          group,
+          kiwango: treasuryUsd,
+          memberCount,
+        }}
       >
         <div className="image">
           <img
@@ -100,11 +94,13 @@ export default function GroupCard({ group, isSmallScreen }: GroupCardProps) {
             <p className="email">
               {group.daoCreator
                 ? isSmallScreen
-                  ? `${group.daoCreator.slice(0, 14)}…${group.daoCreator.slice(-9)}`
+                  ? `${group.daoCreator.slice(0, 14)}…${group.daoCreator.slice(
+                      -9
+                    )}`
                   : group.daoCreator
                 : "N/A"}
             </p>
-          </div>                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      
+          </div>
 
           <div className="right">
             <h3>Treasury Value</h3>

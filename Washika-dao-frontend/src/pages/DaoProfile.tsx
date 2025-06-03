@@ -74,18 +74,20 @@ const DaoProfile: React.FC = () => {
   const dispatch = useDispatch();
   const activeAccount = useActiveAccount();
   const [showForm, setShowForm] = useState<boolean>(false);
-  const handleSendInviteClick = () => setShowForm(!showForm);;
+  const handleSendInviteClick = () => setShowForm(!showForm);
   const [daoDetails, setDaoDetails] = useState<DaoDetails | null>(null);
   const [loading, setLoading] = useState(true);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const connectionStatus = useActiveWalletConnectionStatus();
   const [memberExists, setMemberExists] = useState<boolean | null>(null);
   const [, setInviteDaoId] = useState<string>("");
-const handleDaoChange = (
-  e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>
-) => {
-  setInviteDaoId(e.target.value);
-};
+  const handleDaoChange = (
+    e: React.ChangeEvent<
+      HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement
+    >
+  ) => {
+    setInviteDaoId(e.target.value);
+  };
 
   // on-chain: read all DAOs
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
@@ -95,14 +97,14 @@ const handleDaoChange = (
   });
 
   const daos = React.useMemo(() => {
-  if (!rawDaos) return [];
-  return (rawDaos as Array<[string,string,string,string,string,string]>).map(
-    ([daoName, , , , , daoIdBytes]) => ({
+    if (!rawDaos) return [];
+    return (
+      rawDaos as Array<[string, string, string, string, string, string]>
+    ).map(([daoName, , , , , daoIdBytes]) => ({
       daoName,
       daoId: daoIdBytes,
-    })
-  );
-}, [rawDaos]);
+    }));
+  }, [rawDaos]);
 
   // on-chain: get treasury balance
   const { data: balanceData, isLoading: balanceLoading } = useWalletBalance({
@@ -403,9 +405,19 @@ const handleDaoChange = (
               </div>
             </div>
 
-            <p className="section-21">{daoDetails.daoDescription} Lorem ipsum, dolor sit amet consectetur adipisicing elit. Unde sit illo amet expedita explicabo et provident. Iste dolor, ducimus consequuntur exercitationem quidem minus nam quia ad error animi.
+            <p className="section-21">
+              {daoDetails.daoDescription} Lorem ipsum, dolor sit amet
+              consectetur adipisicing elit. Unde sit illo amet expedita
+              explicabo et provident. Iste dolor, ducimus consequuntur
+              exercitationem quidem minus nam quia ad error animi.
             </p>
-            <p className="section-22">{daoDetails.daoOverview} Lorem ipsum dolor sit amet consectetur adipisicing elit. Enim, quasi suscipit perferendis dignissimos accusamus obcaecati quas id minus asperiores sint numquam fuga odio. Maiores eum placeat harum repellendus repellat non expedita unde.</p>
+            <p className="section-22">
+              {daoDetails.daoOverview} Lorem ipsum dolor sit amet consectetur
+              adipisicing elit. Enim, quasi suscipit perferendis dignissimos
+              accusamus obcaecati quas id minus asperiores sint numquam fuga
+              odio. Maiores eum placeat harum repellendus repellat non expedita
+              unde.
+            </p>
 
             <div className="DaoOperations">
               <h1>DAO operations</h1>
@@ -459,8 +471,6 @@ const handleDaoChange = (
           <h1 className="main">Current Proposals</h1>
           <ProposalGroups />
         </section>
-
-        
       </main>
     </>
   );
