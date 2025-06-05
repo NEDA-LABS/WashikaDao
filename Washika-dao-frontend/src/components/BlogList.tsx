@@ -110,19 +110,20 @@ const BlogList: React.FC = () => {
             setCurrentPage(1); // Reset to first page on search change.
           }}
         />
-        <select
-          className="search"
-          value={category}
-          onChange={(e) => {
-            setCategory(e.target.value);
-            setCurrentPage(1); // Reset to first page on category change.
-          }}
-        >
-          <option value="All">All Categories</option>
-          <option value="DAO">DAO</option>
-          <option value="Education">Education</option>
-          <option value="Toolkit">Toolkit</option>
-        </select>
+        <div className="category-buttons">
+          {["All", "DAO", "Education", "Toolkit"].map((cat) => (
+            <button
+              key={cat}
+              className={`category-button ${category === cat ? "active" : ""}`}
+              onClick={() => {
+                setCategory(cat);
+                setCurrentPage(1);
+              }}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Render blog previews */}
@@ -146,13 +147,15 @@ const BlogList: React.FC = () => {
       {/* Pagination controls */}
       <div className="pagination">
         <button onClick={handlePrevPage} disabled={currentPage === 1}>
-          Previous
+          ← Prev
         </button>
+
         <span>
           Page {currentPage} of {totalPages}
         </span>
+
         <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-          Next
+          Next →
         </button>
       </div>
     </div>

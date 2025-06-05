@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   useReadContract,
@@ -10,11 +10,11 @@ import { client } from "../../utils/thirdwebClient";
 import { DaoDetails } from "./WanachamaList";
 import { fetchCeloToUsdRate } from "../../utils/priceUtils";
 import { useDispatch } from "react-redux";
-import Safe, {
-  PredictedSafeProps,
-  SafeAccountConfig,
-} from "@safe-global/protocol-kit";
-import EthersAdapter from '@safe-global/safe-ethers-lib';
+// import Safe, {
+//   PredictedSafeProps,
+//   SafeAccountConfig,
+// } from "@safe-global/protocol-kit";
+// import EthersAdapter from '@safe-global/safe-ethers-lib';
 import {
   addNotification,
   removeNotification,
@@ -22,7 +22,7 @@ import {
 } from "../../redux/notifications/notificationSlice";
 import { OnchainDao } from "../../utils/Types";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import { ethers } from "ethers";
+// import { ethers } from "ethers";
 
 interface AdminTopProps {
   daoDetails?: DaoDetails;
@@ -31,7 +31,7 @@ interface AdminTopProps {
 }
 
 // const SAFE_RPC = "https://alfajores-forno.celo-testnet.org";
-const SAFE_THRESHOLD = 2;
+// const SAFE_THRESHOLD = 2;
 
 export default function AdminTop({
   daoDetails,
@@ -42,14 +42,14 @@ export default function AdminTop({
   const [showMemberPopup, setShowMemberPopup] = useState(false);
   const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [isDeploying, setIsDeploying] = useState(false);
+  // const [isDeploying, setIsDeploying] = useState(false);
 
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
   const active = useActiveAccount();
   const dispatch = useDispatch();
 
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  const signer = provider.getSigner();
+  // const provider = new ethers.providers.Web3Provider(window.ethereum);
+  // const signer = provider.getSigner();
 
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
     contract: FullDaoContract,
@@ -169,85 +169,85 @@ export default function AdminTop({
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  const deploySafe = useCallback(async () => {
-    if (isDeploying) return;
-    setIsDeploying(true);
+  // const deploySafe = useCallback(async () => {
+  //   if (isDeploying) return;
+  //   setIsDeploying(true);
 
-    if (selectedMembers.length < SAFE_THRESHOLD) {
-      alert(`Please select at least ${SAFE_THRESHOLD} members.`);
-      setIsDeploying(false);
-      return;
-    }
+  //   if (selectedMembers.length < SAFE_THRESHOLD) {
+  //     alert(`Please select at least ${SAFE_THRESHOLD} members.`);
+  //     setIsDeploying(false);
+  //     return;
+  //   }
 
-    try {
-      const ethAdapter = new EthersAdapter({
-        ethers,
-        signerOrProvider: signer,
-      });
-      const safeAccountConfig: SafeAccountConfig = {
-        owners: selectedMembers,
-        threshold: SAFE_THRESHOLD,
-      };
+  //   try {
+  //     const ethAdapter = new EthersAdapter({
+  //       ethers,
+  //       signerOrProvider: signer,
+  //     });
+  //     const safeAccountConfig: SafeAccountConfig = {
+  //       owners: selectedMembers,
+  //       threshold: SAFE_THRESHOLD,
+  //     };
 
-      if (!signer) {
-        alert("Connect your wallet first");
-        return;
-      }
+  //     if (!signer) {
+  //       alert("Connect your wallet first");
+  //       return;
+  //     }
 
-      const protocolKit = await Safe.init({
-        ethAdapter,
-        predictedSafe: { safeAccountConfig } as PredictedSafeProps,
-      });
+  //     const protocolKit = await Safe.init({
+  //       ethAdapter,
+  //       predictedSafe: { safeAccountConfig } as PredictedSafeProps,
+  //     });
 
-      const predictedAddress = await protocolKit.getAddress();
-      const deploymentTx = await protocolKit.createSafeDeploymentTransaction();
+  //     const predictedAddress = await protocolKit.getAddress();
+  //     const deploymentTx = await protocolKit.createSafeDeploymentTransaction();
 
-      if (!signer) {
-        alert("Connect your wallet first");
-        return;
-      }
+  //     if (!signer) {
+  //       alert("Connect your wallet first");
+  //       return;
+  //     }
 
-      const txResponse = await signer.sendTransaction({
-        to: deploymentTx.to,
-        value: deploymentTx.value,
-        data: deploymentTx.data,
-      });
+  //     const txResponse = await signer.sendTransaction({
+  //       to: deploymentTx.to,
+  //       value: deploymentTx.value,
+  //       data: deploymentTx.data,
+  //     });
 
-      const receipt = await txResponse.wait();
-      console.log(receipt);
+  //     const receipt = await txResponse.wait();
+  //     console.log(receipt);
 
-      const id = crypto.randomUUID();
-      dispatch(
-        addNotification({
-          id,
-          type: "success",
-          message: `Safe deployed at ${predictedAddress}`,
-        })
-      );
-      dispatch(showNotificationPopup());
-      setTimeout(() => dispatch(removeNotification(id)), 5000);
+  //     const id = crypto.randomUUID();
+  //     dispatch(
+  //       addNotification({
+  //         id,
+  //         type: "success",
+  //         message: `Safe deployed at ${predictedAddress}`,
+  //       })
+  //     );
+  //     dispatch(showNotificationPopup());
+  //     setTimeout(() => dispatch(removeNotification(id)), 5000);
 
-      setDaoDetails({
-        ...daoDetails!,
-        daoMultiSigAddr: predictedAddress,
-      });
+  //     setDaoDetails({
+  //       ...daoDetails!,
+  //       daoMultiSigAddr: predictedAddress,
+  //     });
 
-      setShowMemberPopup(false);
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (e: any) {
-      console.error("❌ Safe deploy failed", e);
-      alert(`Deployment failed: ${e.message}`);
-    } finally {
-      setIsDeploying(false);
-    }
-  }, [
-    isDeploying,
-    selectedMembers,
-    signer,
-    dispatch,
-    daoDetails,
-    setDaoDetails,
-  ]);
+  //     setShowMemberPopup(false);
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   } catch (e: any) {
+  //     console.error("❌ Safe deploy failed", e);
+  //     alert(`Deployment failed: ${e.message}`);
+  //   } finally {
+  //     setIsDeploying(false);
+  //   }
+  // }, [
+  //   isDeploying,
+  //   selectedMembers,
+  //   signer,
+  //   dispatch,
+  //   daoDetails,
+  //   setDaoDetails,
+  // ]);
 
   const fullAddress = daoDetails?.chairpersonAddr || "";
   const displayAddress = fullAddress
@@ -401,8 +401,11 @@ export default function AdminTop({
             </div>
 
             <div className="modal-actions">
-              <button disabled={isDeploying} onClick={deploySafe}>
+              {/* <button disabled={isDeploying} onClick={deploySafe}>
                 {isDeploying ? "Deploying…" : "Generate MultiSig"}
+              </button> */}
+              <button>
+                Generate MultiSig
               </button>
               <button
                 className="cancel"

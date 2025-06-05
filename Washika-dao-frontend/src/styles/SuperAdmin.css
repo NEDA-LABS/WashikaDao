@@ -20,54 +20,83 @@ nav.SuperAdmin {
   align-items: start;
   border-radius: 40px;
 }
-
-.notification {
-  width: clamp(235px, 20vw, 300px);
-  min-height: clamp(100px, 9vw, 130px);
-  border: 1px solid #757575;
+.notification-popup {
+  width: clamp(260px, 22vw, 320px);
+  border: 1px solid #ccc;
   position: fixed;
-  right: 48px;
-  top: clamp(48px, 8vw, 120px);
-  z-index: 20;
-  border-radius: 10px;
-  display: grid;
-  grid-template-columns: 1fr 6fr 1fr;
-  padding: 16px;
-  background-color: #ffffff;
-  gap: 6px;
-}
-
-.notifications {
+  top: 140px;
+  right: 40px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow: hidden;
+  animation: slideIn 0.3s ease;
   display: flex;
   flex-direction: column;
+}
+
+.notification-header {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 4px;
+  justify-content: space-between;
+  padding: 12px 16px;
+  background-color: #f6f8fa;
+  border-bottom: 1px solid #eee;
 }
 
-.notification-content {
+.notification-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 8px;
+}
+
+.notification-title {
+  font-weight: 600;
+  font-size: 16px;
+  flex-grow: 1;
+  margin-left: 8px;
+  color: #333;
+}
+
+.notification-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.notification-close img {
+  width: 16px;
+  height: 16px;
+}
+
+.notification-body {
+  padding: 12px 16px;
   display: flex;
   flex-direction: column;
-  align-items: start;
-  gap: 6px;
-  max-width: 100%;
-  word-wrap: break-word;
-  word-break: break-word;
+  gap: 8px;
 }
 
-.notifications p {
+.notification-item {
+  background-color: #f0fdf4;
+  border-left: 4px solid #14ae56;
+  padding: 8px 12px;
+  border-radius: 6px;
   font-size: 14px;
-  margin: 0;
-  white-space: normal;
-  overflow-wrap: break-word;
+  color: #333;
 }
 
-.notifications button {
-  border-radius: 10px;
-  background-color: #14ae56;
-  padding: 6px;
-  color: #f5f5f5;
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 
 .superAdmin .top {
   display: flex;
@@ -938,6 +967,10 @@ nav.SuperAdmin {
 
   .modal-content .slot .right div {
     gap: 3px;
+  }
+
+  .modal-actions button {
+    padding: 9px 18px;
   }
 }
 

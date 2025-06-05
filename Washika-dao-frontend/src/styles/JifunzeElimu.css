@@ -48,11 +48,11 @@ div.onee::before {
   gap: 1rem;
   padding: 1rem;
   border-radius: 8px;
-  margin: 2rem 5rem;
+  margin: 2rem 10rem;
 }
 
 .search-filter .search {
-  flex: 1;
+  width: 60%;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   background-color: #f7f7f7;
@@ -62,41 +62,78 @@ div.onee::before {
 }
 
 .search-filter .search:focus {
-  border-color: #007bff;
   outline: none;
+}
+
+
+.category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.category-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid #ccc;
+  background-color: #ffffff;
+  color: #333;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.category-button:hover {
+  background-color: #f0f0f0;
+}
+
+.category-button.active {
+  background-color: #c8954b;
+  color: white;
+  border-color: #c8954b;
 }
 
 .pagination {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  margin: 0 0 5rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 2rem 0 5rem;
 }
 
 .pagination button {
-  padding: 0.75rem 1.5rem;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  border: 1px solid #c8954b;
+  background-color: #c8954b;
+  color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
-.pagination button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+  transition: all 0.2s ease;
 }
 
 .pagination button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: #c8954b;
+  color: white;
+}
+
+.pagination button:disabled {
+  border-color: #ccc;
+  color: #aaa;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+}
+
+.pagination .page-button.active {
+  background-color: #c8954b;
+  color: white;
+  font-weight: bold;
 }
 
 .pagination span {
-  font-size: 1rem;
-  color: #333;
+  font-size: 0.95rem;
+  color: #b8b8b8;
 }
 
 /* Responsive design */
@@ -112,6 +149,7 @@ div.onee::before {
 
   .search-filter .search {
     padding: 6px 12px;
+    width: 90%;
   }
 
   .pagination {
@@ -122,7 +160,6 @@ div.onee::before {
   .pagination button {
     padding: 7px 0;
     width: 72px;
-    background-color: #007bff;
     font-size: 12px;
   }
 }

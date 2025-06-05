@@ -51,28 +51,29 @@ export default function Notification() {
   return (
     <>
       {isVisible && (
-        <div className="notification">
-          <div>
-            <img src="/images/Info.png" alt="info icon" />
+        <div className="notification-popup">
+          <div className="notification-header">
+            <img src="/images/Info.png" alt="Notification Icon" className="notification-icon" />
+            <span className="notification-title">Notifications</span>
+            <button
+              className="notification-close"
+              onClick={() => dispatch(hideNotificationPopup())}
+              aria-label="Close notification"
+            >
+              <img src="/images/X.png" alt="Close" />
+            </button>
           </div>
-          <div className="notifications">
+
+          <div className="notification-body">
             {notifications.length > 0 ? (
               notifications.map((note) => (
                 <div className="notification-item" key={note.id}>
-                  <div className="notification-content">
-                    <p>{note.message}</p>
-                    {/* <button onClick={() => handleView(note)}>View</button> */}
-                  </div>
+                  <p>{note.message}</p>
                 </div>
               ))
             ) : (
               <p>No new notifications</p>
             )}
-          </div>
-          <div>
-          <button onClick={() => dispatch(hideNotificationPopup())}>
-              <img src="/images/X.png" alt="cancel icon" />
-            </button>
           </div>
         </div>
       )}
