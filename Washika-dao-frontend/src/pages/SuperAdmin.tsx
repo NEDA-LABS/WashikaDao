@@ -104,21 +104,16 @@ const SuperAdmin: React.FC = () => {
           daoDetails={daoDetails}
         />
 
-        <div className="DaoOperations">
-          <h1>DAO operations</h1>
-        </div>
-
         <AdminButtons
           activeSection={activeSection}
           setActiveSection={setActiveSection}
         />
 
-        {activeSection === "daoOverview" && <DaoOverview daoDetails={daoDetails} />}
-
-        {activeSection === "addMember" && (
-          <AdminMemberForm
-          />
+        {activeSection === "daoOverview" && (
+          <DaoOverview daoDetails={daoDetails} />
         )}
+
+        {activeSection === "addMember" && <AdminMemberForm />}
         {activeSection === "mikopo" && <Mikopo />}
         {activeSection === "wanachama" && <Wanachama daoDetails={daoDetails} />}
       </main>

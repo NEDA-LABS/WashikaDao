@@ -19,7 +19,7 @@
     "@fortawesome/free-solid-svg-icons": "^6.7.1",
     "@fortawesome/react-fontawesome": "^0.2.2",
     "@reduxjs/toolkit": "^2.3.0",
-    "@safe-global/protocol-kit": "^6.0.4",
+    "@safe-global/protocol-kit": "^4.1.7",
     "@safe-global/safe-ethers-lib": "^1.9.4",
     "@thirdweb-dev/react": "^4.9.4",
     "abitype": "^1.0.8",
