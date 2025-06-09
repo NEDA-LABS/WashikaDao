@@ -10,11 +10,6 @@ import { client } from "../../utils/thirdwebClient";
 import { DaoDetails } from "./WanachamaList";
 import { fetchCeloToUsdRate } from "../../utils/priceUtils";
 import { useDispatch } from "react-redux";
-// import Safe, {
-//   PredictedSafeProps,
-//   SafeAccountConfig,
-// } from "@safe-global/protocol-kit";
-// import EthersAdapter from '@safe-global/safe-ethers-lib';
 import {
   addNotification,
   removeNotification,
@@ -22,7 +17,7 @@ import {
 } from "../../redux/notifications/notificationSlice";
 import { OnchainDao } from "../../utils/Types";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-// import { ethers } from "ethers";
+import GenerateMultiSig from "./GenerateMultisig";
 
 interface AdminTopProps {
   daoDetails?: DaoDetails;
@@ -30,26 +25,16 @@ interface AdminTopProps {
   setDaoDetails: (d: DaoDetails) => void;
 }
 
-// const SAFE_RPC = "https://alfajores-forno.celo-testnet.org";
-// const SAFE_THRESHOLD = 2;
-
 export default function AdminTop({
   daoDetails,
   setActiveSection,
   setDaoDetails,
 }: AdminTopProps) {
   const [memberCount, setMemberCount] = useState(0);
-  const [showMemberPopup, setShowMemberPopup] = useState(false);
-  const [selectedMembers, setSelectedMembers] = useState<string[]>([]);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  // const [isDeploying, setIsDeploying] = useState(false);
-
   const { multiSigAddr } = useParams<{ multiSigAddr: string }>();
   const active = useActiveAccount();
   const dispatch = useDispatch();
-
-  // const provider = new ethers.providers.Web3Provider(window.ethereum);
-  // const signer = provider.getSigner();
 
   const { data: rawDaos, isPending: loadingDaos } = useReadContract({
     contract: FullDaoContract,
@@ -169,86 +154,6 @@ export default function AdminTop({
     return () => window.removeEventListener("resize", onResize);
   }, []);
 
-  // const deploySafe = useCallback(async () => {
-  //   if (isDeploying) return;
-  //   setIsDeploying(true);
-
-  //   if (selectedMembers.length < SAFE_THRESHOLD) {
-  //     alert(`Please select at least ${SAFE_THRESHOLD} members.`);
-  //     setIsDeploying(false);
-  //     return;
-  //   }
-
-  //   try {
-  //     const ethAdapter = new EthersAdapter({
-  //       ethers,
-  //       signerOrProvider: signer,
-  //     });
-  //     const safeAccountConfig: SafeAccountConfig = {
-  //       owners: selectedMembers,
-  //       threshold: SAFE_THRESHOLD,
-  //     };
-
-  //     if (!signer) {
-  //       alert("Connect your wallet first");
-  //       return;
-  //     }
-
-  //     const protocolKit = await Safe.init({
-  //       ethAdapter,
-  //       predictedSafe: { safeAccountConfig } as PredictedSafeProps,
-  //     });
-
-  //     const predictedAddress = await protocolKit.getAddress();
-  //     const deploymentTx = await protocolKit.createSafeDeploymentTransaction();
-
-  //     if (!signer) {
-  //       alert("Connect your wallet first");
-  //       return;
-  //     }
-
-  //     const txResponse = await signer.sendTransaction({
-  //       to: deploymentTx.to,
-  //       value: deploymentTx.value,
-  //       data: deploymentTx.data,
-  //     });
-
-  //     const receipt = await txResponse.wait();
-  //     console.log(receipt);
-
-  //     const id = crypto.randomUUID();
-  //     dispatch(
-  //       addNotification({
-  //         id,
-  //         type: "success",
-  //         message: `Safe deployed at ${predictedAddress}`,
-  //       })
-  //     );
-  //     dispatch(showNotificationPopup());
-  //     setTimeout(() => dispatch(removeNotification(id)), 5000);
-
-  //     setDaoDetails({
-  //       ...daoDetails!,
-  //       daoMultiSigAddr: predictedAddress,
-  //     });
-
-  //     setShowMemberPopup(false);
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   } catch (e: any) {
-  //     console.error("❌ Safe deploy failed", e);
-  //     alert(`Deployment failed: ${e.message}`);
-  //   } finally {
-  //     setIsDeploying(false);
-  //   }
-  // }, [
-  //   isDeploying,
-  //   selectedMembers,
-  //   signer,
-  //   dispatch,
-  //   daoDetails,
-  //   setDaoDetails,
-  // ]);
-
   const fullAddress = daoDetails?.chairpersonAddr || "";
   const displayAddress = fullAddress
     ? isSmallScreen
@@ -302,9 +207,10 @@ export default function AdminTop({
           </div>
           <div>
             {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
-              <button onClick={() => setShowMemberPopup(true)}>
-                Generate MultiSigAddress
-              </button>
+              <GenerateMultiSig
+                daoDetails={daoDetails}
+                setDaoDetails={setDaoDetails}
+              />
             ) : (
               <div className="address">
                 <p className="email">{displayAddress}</p>
@@ -364,59 +270,6 @@ export default function AdminTop({
           </button>
         </div>
       </div>
-      {showMemberPopup && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>Select Members for MultiSig</h2>
-            <div className="overflow">
-              {daoDetails?.members?.length ? (
-                <ul className="member-list">
-                  {daoDetails.members.map((member) => (
-                    <li key={member.id}>
-                      <label>
-                        <input
-                          type="checkbox"
-                          value={member.wallet}
-                          checked={selectedMembers.includes(member.wallet)}
-                          onChange={(e) => {
-                            const value = e.target.value;
-                            if (e.target.checked) {
-                              setSelectedMembers((prev) => [...prev, value]);
-                            } else {
-                              setSelectedMembers((prev) =>
-                                prev.filter((addr) => addr !== value)
-                              );
-                            }
-                          }}
-                        />
-                        <span>{member.email}</span>
-                        <small>{member.wallet}</small>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p>No members found.</p>
-              )}
-            </div>
-
-            <div className="modal-actions">
-              {/* <button disabled={isDeploying} onClick={deploySafe}>
-                {isDeploying ? "Deploying…" : "Generate MultiSig"}
-              </button> */}
-              <button>
-                Generate MultiSig
-              </button>
-              <button
-                className="cancel"
-                onClick={() => setShowMemberPopup(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </>
   );
 }
