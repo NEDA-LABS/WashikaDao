@@ -10,6 +10,7 @@ interface UserState {
   nationalIdNo: string;
 }
 
+
 const initialState: UserState = {
   memberAddr: null,
   firstName: '',

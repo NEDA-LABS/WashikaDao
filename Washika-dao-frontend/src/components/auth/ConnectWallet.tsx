@@ -9,6 +9,7 @@ import { createWallet, inAppWallet } from "thirdweb/wallets";
  *
  * Connect Wallet Component is from thirdweb & is responsible for the modal for plugging in in app wallet functionality
  */
+// NOTICE: This component is used in the app to connect wallets and is not meant to be modified. it handles  the applications smart wallet functionality. 
 //WARN!!:DO NOT TOUCH COMPONENT IN USE
 
 export default function ConnectWallet() {

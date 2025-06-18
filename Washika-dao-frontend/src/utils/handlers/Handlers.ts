@@ -16,3 +16,5 @@ export const FullDaoContract = getContract({
   chain: celoAlfajoresTestnet,
   abi: WashikaDaoAbi,
 });
+
+export const MSIG_RPC_URL = 'https://rpc.ankr.com/eth_sepolia'; 

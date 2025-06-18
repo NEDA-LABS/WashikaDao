@@ -3,6 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import userReducer from './users/userSlice';
 import notificationReducer from './notifications/notificationSlice';
 import userDaosReducer from './users/userDaosSlice';
+import multiSignersReducer from './multisigners/multisigners'; 
 
 // Configure store with the persisted reducer
 export const store = configureStore({
@@ -10,6 +11,7 @@ export const store = configureStore({
     user: userReducer,
     notification: notificationReducer,
     userDaos: userDaosReducer,
+    'multisigners': multiSignersReducer,
   },
 });
 
