@@ -1,0 +1,3 @@
+Reached Creating frontend form components for the multisig address members
+Next: Split into its own page once done with simple implementation to easen testing
+
