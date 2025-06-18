@@ -1,3 +1,5 @@
+// Component for Documentation, informational & illustrational purpose only, do not uncomment or try to reuse in production without relevant adjustments.
+/**
 import { ethers } from "ethers";
 import { useState } from "react";
 import { abi } from "../contractAbis/HoleskyFullDaoAbis";
@@ -74,10 +76,11 @@ export default function TestHoleskyAddMember() {
       <h1>Basic Connect</h1>
       <button onClick={connect}>LegacyConnect</button>
       <h2>CurrentConnectedAddress: {userAddr}</h2>
-      <h2>CurrentBalance: {/**usrBal*/}</h2>
+      <h2>CurrentBalance: {usrBal}</h2>
       <h1> Creating Dao Using the following Details </h1>
       <button onClick={handleAddMemberToDao}>AddMember</button>
       <h1>Transaction hash is: {txHash}</h1>
       </div>
   )
 }
+*/

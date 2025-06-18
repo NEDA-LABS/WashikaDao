@@ -3,3 +3,5 @@
 *dist
 *.wake
 .qodo
+package-lock.json
+
