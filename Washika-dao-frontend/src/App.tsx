@@ -18,11 +18,7 @@ import MemberProfile from "./pages/MemberProfile";
 
 //Testing functionality components
 import BlogPage from "./pages/BlogPage.tsx";
-import TestHoleskyCreateDao from "./pages/TestHoleskyCreateDao.tsx";
-import TestHoleskyAddMember from "./pages/TestHoleskyAddMember.tsx";
-import TestHoleskyCreateProposal from "./pages/TestHoleskyCreateProposal.tsx";
 import TestConnection from "./pages/TestConnection.tsx";
-import TestH3WebCreateDao from "./pages/TestH3WebCreateDao.tsx";
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation.
 /**
@@ -74,23 +70,7 @@ const App: React.FC = () => {
             <Route path="/MemberProfile/:address" element={<MemberProfile />} />
             <Route path="/Owner/:address" element={<Owner />} />
             <Route path="/blog/:slug" element={<BlogPage />} />
-            <Route
-              path="/TestHoleskyCreateDao"
-              element={<TestHoleskyCreateDao />}
-            />
-            <Route
-              path="/TestHoleskyAddMember"
-              element={<TestHoleskyAddMember />}
-            />
-            <Route
-              path="/TestHoleskyCreateProposal"
-              element={<TestHoleskyCreateProposal />}
-            />
-            <Route
-              path="/TestH3WebCreateDao"
-              element={<TestH3WebCreateDao />}
-            />
-          </Routes>
+         </Routes>
         </Router>
       </HelmetProvider>
     </ThirdwebProvider>

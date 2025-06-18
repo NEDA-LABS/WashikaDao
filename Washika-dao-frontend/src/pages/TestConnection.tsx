@@ -31,6 +31,7 @@ import {arbitrumSepolia } from "thirdweb/chains";
  * <TestConnection />
  * ```
  */
+// TODO: Rename & Refactor to a route containing test smart wallet connection, so you have an additional route to check whenever the route is working or not
 export default function TestConnection(){
     const [currActiveAcc, setCurrActiveAcc] = useState<Account | undefined>(undefined);
     const [currActiveWall, setCurrActiveWall] = useState<Wallet | undefined>(undefined);
