@@ -1,3 +1,5 @@
+// Component for Documentation, informational & illustrational purpose only, do not uncomment or try to reuse in production without relevant adjustments.
+/**
 import { ethers } from "ethers";
 import { useState } from "react";
 import { abi } from "../contractAbis/HoleskyFullDaoAbis";
@@ -75,3 +77,4 @@ export default function TestHoleskyCreateProposal() {
 
 
 }
+**/
