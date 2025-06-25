@@ -2,7 +2,7 @@ import NavBar from "../components/Navbar/Navbar";
 
 import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
 
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import {
   useActiveAccount,
   useActiveWalletConnectionStatus,
@@ -12,10 +12,10 @@ import Mikopo from "../components/SuperAdmin/Mikopo";
 import Notification from "../components/SuperAdmin/Notification";
 import AdminButtons from "../components/SuperAdmin/AdminButtons";
 import { AdminMemberForm } from "../components/SuperAdmin/AdminMemberForm";
-import AdminTop from "../components/SuperAdmin/AdminTop";
 import DaoOverview from "../components/SuperAdmin/DaoOverview";
 import Wanachama from "../components/SuperAdmin/Wanachama";
 import { DaoDetails } from "../components/SuperAdmin/WanachamaList";
+import {BASE_BACKEND_ENDPOINT_URL} from "../utils/backendComm.ts";
 
 /**
  * Renders the SuperAdmin component, which serves as the main dashboard interface
@@ -52,29 +52,34 @@ const SuperAdmin: React.FC = () => {
   //   return () => clearInterval(intervalId);
   // }, []);
 
-  // const fetchDaoDetails = async () => {
-  //   try {
-  //     const response = await fetch(
-  //       `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash?daoTxHash=${daoTxHash}`,
-  //       {
-  //         headers: {
-  //           Authorization: token,
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
-  //     );
-  //     const data = await response.json();
+    useEffect(() => {
+         getDaoDetails();
+    }, []);
 
-  //     if (response.ok) {
-  //       setDaoDetails(data.daoDetails);
-  //       setMemberCount(data.daoDetails.members.length);
-  //     } else {
-  //       console.error("Error fetching daoDetails:", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
+  const getDaoDetails = async () => {
+    try {
+      const response = await fetch(
+          // Replace it with Blockchain Query or better
+        `${BASE_BACKEND_ENDPOINT_URL}/Daokit/DaoDetails/GetDaoDetailsByDaoTxHash`,
+        {
+          headers: {
+            Authorization: "token",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const data = await response.json();
+
+      if (response.ok) {
+        setDaoDetails(data.daoDetails);
+       // setMemberCount(data.daoDetails.members.length);
+      } else {
+        console.error("Error fetching daoDetails:", data.message);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   if (connectionStatus === "connecting") {
     return <LoadingPopup message="Loading wallet…" />;
@@ -97,12 +102,6 @@ const SuperAdmin: React.FC = () => {
       <NavBar className={"SuperAdmin"} />
       <main className="member superAdmin">
         <Notification />
-
-        <AdminTop
-          setActiveSection={setActiveSection}
-          setDaoDetails={setDaoDetails}
-          daoDetails={daoDetails}
-        />
 
         <AdminButtons
           activeSection={activeSection}
