@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 const router = express.Router();
-import { GetAllDaoFunds } from "../controller/DaoController";
-import { FundDao } from "../controller/DaoController";
+import { GetAllDaoFunds } from "../controllers/DaoController";
+import { FundDao } from "../controllers/DaoController";
 
 
 

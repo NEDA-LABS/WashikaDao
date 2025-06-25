@@ -16,8 +16,8 @@ export interface IProposal {
     amountRequested: number;
     profitSharePercent: number;
     daoMultiSigAddr: string;
-    votes?: IVote[];  // Relationship with Vote entity
-    dao?: IDao;  // Relationship with Dao entity
+    votes?: IVote[];  // Relationship with Vote entities
+    dao?: IDao;  // Relationship with Dao entities
 }
 
 export interface IDao {
@@ -38,8 +38,8 @@ export interface IDao {
     interestOnLoans: number;
     daoTxHash: string;
     daoRegDocs: string;
-    proposals?: IProposal[];  // Relationship with Proposal entity
-    members?: IMemberDetails[];  // Relationship with MemberDetails entity
+    proposals?: IProposal[];  // Relationship with Proposal entities
+    members?: IMemberDetails[];  // Relationship with MemberDetails entities
 }
 
 export interface IMemberDetails {
@@ -50,5 +50,5 @@ export interface IMemberDetails {
     phoneNumber?: string;
     email?: string;
     nationalIdNo?: string;
-    memberAddr?: string; // Relationship with DaoRole entity
+    memberAddr?: string; // Relationship with DaoRole entities
 }

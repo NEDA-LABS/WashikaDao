@@ -9,7 +9,7 @@ import {ERC1155Holder} from "../token/ERC1155/utils/ERC1155Holder.sol";
 import {Address} from "../utils/Address.sol";
 
 /**
- * @dev Contract module which acts as a timelocked controller. When set as the
+ * @dev Contract module which acts as a timelocked controllers. When set as the
  * owner of an `Ownable` smart contract, it enforces a timelock on all
  * `onlyOwner` maintenance operations. This gives time for users of the
  * controlled contract to exit before a potentially dangerous maintenance

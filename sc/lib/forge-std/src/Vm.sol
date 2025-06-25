@@ -520,7 +520,7 @@ interface VmSafe {
     /// `path` is relative to the project root.
     function createDir(string calldata path, bool recursive) external;
 
-    /// Returns true if the given path points to an existing entity, else returns false.
+    /// Returns true if the given path points to an existing entities, else returns false.
     function exists(string calldata path) external returns (bool result);
 
     /// Performs a foreign function call via the terminal.

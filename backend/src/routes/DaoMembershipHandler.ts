@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 const router = express.Router();
 
 
-import { handleSendInviteSMS } from "../controller/SMSController";
+import { handleSendInviteSMS } from "../controllers/SMSController";
 
 /**
 /**

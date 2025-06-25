@@ -76,7 +76,7 @@ interface IERC721 is IERC165 {
     /// @dev The zero address indicates there is no approved address.
     /// Throws unless `msg.sender` is the current NFT owner, or an authorized
     /// operator of the current owner.
-    /// @param _approved The new approved NFT controller
+    /// @param _approved The new approved NFT controllers
     /// @param _tokenId The NFT to approve
     function approve(address _approved, uint256 _tokenId) external payable;
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { Dao } from "../entity/Dao";
-import { Proposal } from "../entity/Proposal";
-import { Vote } from "../entity/Vote";
+import { Dao } from "../entities/Dao";
+import { Proposal } from "../entities/Proposal";
+import { Vote } from "../entities/Vote";
 import { IVote } from "../Interfaces/EntityTypes";
 import AppDataSource from "../data-source";
 const proposalRepository = AppDataSource.getRepository(Proposal);

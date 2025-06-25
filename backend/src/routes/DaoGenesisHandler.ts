@@ -1,6 +1,6 @@
 import express, { Express } from 'express';
 import { Request, Response } from "express";
-import { CreateDao, GetAllDaosInPlatform } from '../controller/DaoController';
+import { CreateDao, GetAllDaosInPlatform } from '../controllers/DaoController';
 const router = express.Router();
 
 

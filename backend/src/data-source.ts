@@ -1,9 +1,9 @@
 // import "reflect-metadata"
 // import { DataSource } from "typeorm"
-// import { Dao } from "./entity/Dao";
-// import { MemberDetails } from "./entity/MemberDetails";
-// import { Proposal } from "./entity/Proposal";
-// import { Vote } from "./entity/Vote";
+// import { Dao } from "./entities/Dao";
+// import { MemberDetails } from "./entities/MemberDetails";
+// import { Proposal } from "./entities/Proposal";
+// import { Vote } from "./entities/Vote";
 // import path from "path";
 
 // const AppDataSource = new DataSource({
@@ -23,12 +23,12 @@
 
 import "reflect-metadata";
 import { DataSource } from "typeorm";
-import { Dao } from "./entity/Dao";
-import { MemberDetails } from "./entity/MemberDetails";
-import { Proposal } from "./entity/Proposal";
-import { Vote } from "./entity/Vote";
+import { Dao } from "./entities/Dao";
+import { MemberDetails } from "./entities/MemberDetails";
+import { Proposal } from "./entities/Proposal";
+import { Vote } from "./entities/Vote";
 import path from "path";
-// import { DaoJoinDate, DaoRole, DaoStatus } from "./entity/DaoMembershipRelations";
+// import { DaoJoinDate, DaoRole, DaoStatus } from "./entities/DaoMembershipRelations";
 
 
 const AppDataSource = new DataSource({
