@@ -1,6 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
 const router = express.Router();
-import { GetDaoDetailsByDaoTxHash,  UpdateDaoDetails } from "../controller/DaoController";
+import { GetDaoDetailsByDaoTxHash,  UpdateDaoDetails } from "../controllers/DaoController";
 
 //INFO:Handlers in Dao activities such as get dao info by multisig & updating Dao Details
 router.get('/GetDaoDetailsByDaoTxHash',  async (req: Request, res: Response) => {GetDaoDetailsByDaoTxHash(req, res)}); // Provides all information about a particular Dao

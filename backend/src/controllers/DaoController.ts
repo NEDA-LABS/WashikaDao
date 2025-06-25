@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { Dao } from "../entity/Dao";
-import { MemberDetails } from "../entity/MemberDetails";
+import { Dao } from "../entities/Dao";
+import { MemberDetails } from "../entities/MemberDetails";
 import AppDataSource from "../data-source";
 
 export async function CreateDao(req: Request, res: Response) {

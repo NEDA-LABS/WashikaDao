@@ -1,7 +1,7 @@
 import express from "express";
 const router = express.Router()
 
-import { GetProposalDetails, GetAllProposalsInDao, CreateProposal, VoteProposal } from "../controller/ProposalController";
+import { GetProposalDetails, GetAllProposalsInDao, CreateProposal, VoteProposal } from "../controllers/ProposalController";
 
 import { Request, Response } from "express";
 

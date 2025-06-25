@@ -2,8 +2,8 @@ import nodemailer from "nodemailer";
 import { Request, Response } from "express";
 import { QueryFailedError } from "typeorm"; // Import QueryFailedError for catching unique constraint violations
 import AppDataSource from "../data-source";
-import { Dao } from "../entity/Dao";
-import { MemberDetails } from "../entity/MemberDetails";
+import { Dao } from "../entities/Dao";
+import { MemberDetails } from "../entities/MemberDetails";
 
 // Repositories for accessing various entities in the database
 const memberDetailsRepository = AppDataSource.getRepository(MemberDetails);

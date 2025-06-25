@@ -17,12 +17,21 @@ import {
 } from "../../redux/notifications/notificationSlice";
 import { OnchainDao } from "../../utils/Types";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import GenerateMultiSig from "./GenerateMultisig";
+
 
 interface AdminTopProps {
   daoDetails?: DaoDetails;
   setActiveSection: (section: string) => void;
   setDaoDetails: (d: DaoDetails) => void;
+}
+
+
+interface GenerateMultisigParams {
+  props: { daoDetails: DaoDetails; setDaoDetails: (d: DaoDetails) => void };
+}
+
+function GenerateMultisig({props}: GenerateMultisigParams) {
+  return null;
 }
 
 export default function AdminTop({
@@ -207,7 +216,7 @@ export default function AdminTop({
           </div>
           <div>
             {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
-              <GenerateMultiSig
+              <GenerateMultisig
                 daoDetails={daoDetails}
                 setDaoDetails={setDaoDetails}
               />

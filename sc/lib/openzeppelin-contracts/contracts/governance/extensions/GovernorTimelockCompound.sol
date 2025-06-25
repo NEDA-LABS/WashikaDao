@@ -22,7 +22,7 @@ abstract contract GovernorTimelockCompound is Governor {
     ICompoundTimelock private _timelock;
 
     /**
-     * @dev Emitted when the timelock controller used for proposal execution is modified.
+     * @dev Emitted when the timelock controllers used for proposal execution is modified.
      */
     event TimelockChange(address oldTimelock, address newTimelock);
 
