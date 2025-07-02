@@ -78,3 +78,4 @@ describe("useDaoTransaction", () => {
     expect(mockSendTransaction).toHaveBeenCalled();
   });
 });
+
