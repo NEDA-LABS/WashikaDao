@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { DaoDetails } from "./WanachamaList";
-import { fetchTreasuryEntries, TreasuryEntry } from "../../utils/transactions";
+import { DaoDetails } from "./WanachamaList.js";
+import { fetchTreasuryEntries, TreasuryEntry } from "../../utils/transactions.js";
 
 interface TransactionPopupProps {
   daoDetails?: DaoDetails;

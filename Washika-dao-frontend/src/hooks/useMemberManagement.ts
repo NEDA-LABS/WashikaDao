@@ -1,8 +1,8 @@
 import { useState } from "react";
-import {  IBackendDaoMember } from "../utils/Types.ts";
+import {  IBackendDaoMember } from "../utils/Types.js";
 import { prepareContractCall, PreparedTransaction } from "thirdweb";
 import { useSendTransaction } from "thirdweb/react";
-import { FullDaoContract } from "../utils/handlers/Handlers";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
 
 
 

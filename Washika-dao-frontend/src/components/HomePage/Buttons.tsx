@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 const Buttons: React.FC = () => {
     const navigate = useNavigate();

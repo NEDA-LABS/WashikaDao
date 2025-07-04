@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import {
   useActiveAccount,
@@ -8,21 +8,23 @@ import {
   useReadContract,
   useWalletBalance,
 } from "thirdweb/react";
-import Footer from "../components/Footer";
-import NavBar from "../components/Navbar/Navbar";
-import ProposalGroups from "../components/Proposals/ProposalGroups";
-import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
-import DaoForm from "../components/DaoForm";
-import Notification from "../components/SuperAdmin/Notification";
-import TreasuryHistory from "../components/TreasuryHistory";
+import Footer from "../components/Footer.js";
+import NavBar from "../components/Navbar/Navbar.js";
+import ProposalGroups from "../components/Proposals/ProposalGroups.js";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup.js";
+import DaoForm from "../components/DaoForm.js";
+import Notification from "../components/SuperAdmin/Notification.js";
+import TreasuryHistory from "../components/TreasuryHistory.js";
 import {
   addNotification,
   removeNotification,
   showNotificationPopup,
-} from "../redux/notifications/notificationSlice";
-import { FullDaoContract } from "../utils/handlers/Handlers";
-import { fetchCeloToUsdRate } from "../utils/priceUtils";
-import { client } from "../utils/thirdwebClient";
+} from "../redux/notifications/notificationSlice.js";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
+import { fetchCeloToUsdRate } from "../utils/priceUtils.js";
+import { client } from "../utils/thirdwebClient.js";
+//@ts-expect-error unused variable
+import { setNotification } from "../redux/notifications/notificationSlice.js";
 
 interface PreloadedState {
   group: {
@@ -477,3 +479,12 @@ const DaoProfile: React.FC = () => {
 };
 
 export default DaoProfile;
+
+export function ErrorBoundary({ error }: { error: Error }) {
+  console.error("DaoProfile Error:", error);
+  return <div className="text-red-600 p-8">An error occurred: {error.message}</div>;
+}
+
+export function HydrateFallback() {
+  return <div className="p-8">Loading DAO profile...</div>;
+}

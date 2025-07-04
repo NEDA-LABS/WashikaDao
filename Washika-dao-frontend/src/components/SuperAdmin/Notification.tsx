@@ -1,10 +1,9 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "../../redux/store";
+import { RootState } from "../../redux/store.js";
 import {
   showNotificationPopup,
   hideNotificationPopup,
-  // removeNotification,
-} from "../../redux/notifications/notificationSlice";
+} from "../../redux/notifications/notificationSlice.js";
 // import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 

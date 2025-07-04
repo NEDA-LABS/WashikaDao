@@ -1,5 +1,5 @@
-import { useNavigate } from "react-router-dom";
-import { OnchainDao } from "../../utils/Types";
+import { useNavigate } from "react-router";
+import { OnchainDao } from "../../utils/Types.js";
 import { useActiveAccount } from "thirdweb/react";
 
 /**

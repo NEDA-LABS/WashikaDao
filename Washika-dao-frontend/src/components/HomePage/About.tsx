@@ -1,4 +1,4 @@
-import GroupInfo from "../GroupInfo";
+import GroupInfo from "../GroupInfo.js";
 
 const About: React.FC = () => {
   return (

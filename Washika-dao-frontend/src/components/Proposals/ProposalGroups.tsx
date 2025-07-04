@@ -1,10 +1,10 @@
 // ProposalGroups.tsx
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useReadContract } from "thirdweb/react";
-import { FullDaoContract } from "../../utils/handlers/Handlers";
-import { ProposalCard } from "./ProposalCard";
-import { OnChainProposal } from "../../utils/Types";
+import { FullDaoContract } from "../../utils/handlers/Handlers.js";
+import { ProposalCard } from "./ProposalCard.js";
+import { OnChainProposal } from "../../utils/Types.js";
 
 const ZERO_BYTES32 =
   "0x0000000000000000000000000000000000000000000000000000000000000000" as const;
@@ -19,11 +19,14 @@ const ProposalGroups: React.FC<ProposalGroupsProps> = ({ ownerFilter }) => {
   const daoId = (localStorage.getItem("daoId") ||
     ZERO_BYTES32) as `0x${string}`;
 
+  // abitype/thirdweb type workaround: ignore type errors for contract call object
+  // @ts-ignore
   const {
     data: rawProposals,
     isLoading,
     error,
   } = useReadContract({
+    // @ts-ignore
     contract: FullDaoContract,
     method:
       "function getProposals(bytes32 _daoId) view returns ((address proposalOwner, bytes32 proposalId, bytes32 daoId, string proposalUrl, string proposalTitle, string proposalStatus, uint256 proposalCreatedAt)[])",

@@ -1,4 +1,4 @@
-import { IBackendDaoMember } from "../utils/Types";
+import { IBackendDaoMember } from "../utils/Types.js";
 
 interface MemberFormProps {
   currentMember: IBackendDaoMember;

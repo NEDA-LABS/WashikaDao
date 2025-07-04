@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
-import Balance from "./Balance";
+import Balance from "./Balance.tsx";
 import {
   computeMonthlyUsdHistory,
   MonthBucket,
-} from "../utils/monthlyBalances";
-import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan";
-import { fetchCeloToUsdRate } from "../utils/priceUtils";
+} from "../utils/monthlyBalances.js";
+import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan.js";
+import { fetchCeloToUsdRate } from "../utils/priceUtils.js";
 
 type WindowKey = "1y" | "6m" | "3m" | "1m";
 const WINDOW_LABELS: Record<WindowKey, string> = {

@@ -1,6 +1,6 @@
 // BlogList.tsx
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 /**
  * Interface representing the structure of a blog object.

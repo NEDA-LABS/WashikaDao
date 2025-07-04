@@ -12,5 +12,8 @@ export default defineConfig({
   },
     define: {
       'process.env.VITE_THIRDWEB_CLIENT_ID': JSON.stringify(process.env.VITE_THIRDWEB_CLIENT_ID)
-    }
+    },
+  ssr: {
+    noExternal: ["react-router"]
+  }
 });

@@ -1,12 +1,12 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import Footer from "../components/Footer";
-import NavBar from "../components/Navbar/Navbar";
-import DaoForm from "../components/DaoForm";
+import { useNavigate, useParams } from "react-router";
+import Footer from "../components/Footer.js";
+import NavBar from "../components/Navbar/Navbar.js";
+import DaoForm from "../components/DaoForm.js";
 import { useDispatch } from "react-redux";
-import { setCurrentUser } from "../redux/users/userSlice";
-import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm";
-import { IBackendDaoMember } from "../utils/Types";
+import { setCurrentUser } from "../redux/users/userSlice.js";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.js";
+import { IBackendDaoMember } from "../utils/Types.js";
 import { useActiveAccount } from "thirdweb/react";
 
 /**

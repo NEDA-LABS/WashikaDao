@@ -1,0 +1,3 @@
+import "../styles/index.css";
+import "../styles/BlogPage.css";
+// ... existing code from BlogPage.tsx ... 

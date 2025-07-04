@@ -1,6 +1,6 @@
 // useProposalForm.ts
 import { useState } from "react";
-import { useCloudinaryUpload } from "./useCloudinaryUpload";
+import { useCloudinaryUpload } from "./useCloudinaryUpload.ts";
 
 export interface ProposalData {
   // proposalCustomIdentifier: string;

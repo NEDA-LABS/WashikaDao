@@ -1,12 +1,12 @@
 // Import dependencies for routing, authentication, state management, and rendering.
-import { Link } from "react-router-dom";
-import AuthButton from "./AuthButton";
-import { useDaoNavigation } from "./useDaoNavigation";
-import { useMemberDaos } from "./useMemberDaos";
+import { Link } from "react-router";
+import AuthButton from "./AuthButton.js";
+import { useDaoNavigation } from "./useDaoNavigation.js";
+import { useMemberDaos } from "./useMemberDaos.js";
 import ReactDOM from "react-dom";
 import { useActiveAccount } from "thirdweb/react";
 import { useDispatch } from "react-redux";
-import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice";
+import { toggleNotificationPopup } from "../../redux/notifications/notificationSlice.js";
 
 /**
  * Defines the expected props for the NavLinks component.
@@ -27,7 +27,7 @@ interface NavLinksProps {
  * NavLinks component renders the navigation menu with dynamic links based on user roles and the current page.
  *
  * It conditionally displays links such as "Open Dao", "EducationHUB", "MarketPlace", "Create Proposal", "Funder", and "DAO Tool Kit"
- * based on the provided className and the user’s DAO membership.
+ * based on the provided className and the user's DAO membership.
  *
  * @param {NavLinksProps} props - Component properties.
  * @returns {JSX.Element} The rendered navigation menu.
@@ -93,13 +93,13 @@ const NavLinks: React.FC<NavLinksProps> = ({
     <ul className="nav-links open">
       {shouldShowRegisterDao && (
         <li>
-          <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>
+          <Link to="/daos/create" onClick={handleRegisterDaoLink}>
             Open Dao
           </Link>
         </li>
       )}
       <li>
-        <Link to="/Blogs">EducationHUB</Link>
+        <Link to="/blog">EducationHUB</Link>
       </li>
       {className === "DaoProfile" || className === "navbarProposal" ? (
         <li className="three">
@@ -144,7 +144,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
         {/* Render the "Open Dao" link if allowed by the current page context */}
         {shouldShowRegisterDao && (
           <li>
-            <Link to="/DaoRegistration" onClick={handleRegisterDaoLink}>
+            <Link to="/daos/create" onClick={handleRegisterDaoLink}>
               Open Dao
             </Link>
           </li>
@@ -152,7 +152,7 @@ const NavLinks: React.FC<NavLinksProps> = ({
 
         {/* Static link to the Education Hub */}
         <li>
-          <Link to="/Blogs">EducationHUB</Link>
+          <Link to="/blog">EducationHUB</Link>
         </li>
 
         {/* Conditionally render additional links based on the page's context */}

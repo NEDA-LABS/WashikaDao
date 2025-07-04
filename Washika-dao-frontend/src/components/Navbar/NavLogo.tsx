@@ -1,5 +1,5 @@
 // Import the Link component from React Router for in-app client-side navigation.
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 /**
  * NavLogo Component

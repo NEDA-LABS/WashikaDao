@@ -1,5 +1,5 @@
 // utils/fetchDaos.ts
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.js";
 
 export interface Dao {
   daoName: string;

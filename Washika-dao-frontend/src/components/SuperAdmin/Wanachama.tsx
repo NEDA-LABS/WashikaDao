@@ -1,4 +1,4 @@
-import WanachamaList, { DaoDetails } from "./WanachamaList";
+import WanachamaList, { DaoDetails } from "./WanachamaList.js";
 
 interface WanachamaProps {
   daoDetails?: DaoDetails;

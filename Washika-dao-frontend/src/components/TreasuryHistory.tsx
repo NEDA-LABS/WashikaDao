@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { fetchCeloToUsdRate } from "../utils/priceUtils";
-import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan";
-import { DaoDetails } from "../pages/DaoProfile";
-import TransactionPopup from "./SuperAdmin/TransactionPopup";
+import { fetchCeloToUsdRate } from "../utils/priceUtils.js";
+import { fetchTokenTransfers, RawTxn } from "../utils/arbiscan.js";
+import { DaoDetails } from "../pages/DaoProfile.js";
+import TransactionPopup from "./SuperAdmin/TransactionPopup.js";
 
 interface TreasuryEntry {
   hash: string;

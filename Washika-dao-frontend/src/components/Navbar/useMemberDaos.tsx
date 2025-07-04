@@ -4,10 +4,10 @@
 
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
-import { setUserDaos } from "../../redux/users/userDaosSlice";
-import { OnchainDao } from "../../utils/Types";
-import { FullDaoContract } from "../../utils/handlers/Handlers";
+import { RootState } from "../../redux/store.js";
+import { setUserDaos } from "../../redux/users/userDaosSlice.js";
+import { OnchainDao } from "../../utils/Types.js";
+import { FullDaoContract } from "../../utils/handlers/Handlers.js";
 import { useReadContract } from "thirdweb/react";
 import { readContract } from "thirdweb";
 

@@ -1,30 +1,17 @@
-import { useNavigate } from "react-router-dom";
-import Dashboard from "../Dashboard";
-import ProposalGroups from "../Proposals/ProposalGroups";
+import React from "react";
+import Dashboard from "../Dashboard.js";
+import ProposalGroups from "../Proposals/ProposalGroups.js";
 
 interface MemberBodyProps {
-    memberAddr: string;
+  memberAddr: string;
 }
 
-const MemberBody: React.FC<MemberBodyProps> = ({memberAddr}) => {
-  const navigate = useNavigate();
+const MemberBody: React.FC<MemberBodyProps> = ({ memberAddr }) => {
   return (
-    <>
-      <div className="dashboard-wrapper">
-        <h2>This is your account information</h2>
-        <Dashboard address={memberAddr} />
-      </div>
-      <button className="create" onClick={() => navigate("/CreateProposal")}>
-        Create a Proposal
-      </button>
-      <section className="second">
-        <div className="sec">
-          <img src="/images/Vector4.png" alt="logo" />
-          <h1>My Proposals</h1>
-        </div>
-        <ProposalGroups ownerFilter={memberAddr} />
-      </section>
-    </>
+    <div className="member-body">
+      <Dashboard address={memberAddr} />
+      <ProposalGroups ownerFilter={memberAddr} />
+    </div>
   );
 };
 

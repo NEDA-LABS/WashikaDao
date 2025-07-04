@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { IBackendDaoCreation } from "../utils/Types"; 
+import { IBackendDaoCreation } from "../utils/Types.js"; 
 
 export const useCompletedSteps = (
   formData: IBackendDaoCreation,

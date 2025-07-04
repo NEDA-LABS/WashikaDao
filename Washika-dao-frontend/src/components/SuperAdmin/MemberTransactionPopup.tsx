@@ -1,9 +1,9 @@
 // components/SuperAdmin/MemberTransactionPopup.tsx
 import { useEffect, useState } from "react";
-import { TreasuryEntry, fetchTreasuryEntries } from "../../utils/transactions";
-import { fetchCeloToUsdRate } from "../../utils/priceUtils";
+import { TreasuryEntry, fetchTreasuryEntries } from "../../utils/transactions.js";
+import { fetchCeloToUsdRate } from "../../utils/priceUtils.js";
 import { useWalletBalance } from "thirdweb/react";
-import { client } from "../../utils/thirdwebClient";
+import { client } from "../../utils/thirdwebClient.js";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 
 interface MemberTransactionPopupProps {

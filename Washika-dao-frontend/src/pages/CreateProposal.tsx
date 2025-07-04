@@ -1,13 +1,13 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import React, { useState } from "react";
-import LoadingPopup from "../components/DaoRegistration/LoadingPopup";
-import Footer from "../components/Footer";
-import NavBar from "../components/Navbar/Navbar";
-import { useProposalForm } from "../hooks/useProposalForm";
-import { useProposalProgress } from "../hooks/useProposalProgress";
-import { useProposalTransaction } from "../hooks/useProposalTransaction";
+import LoadingPopup from "../components/DaoRegistration/LoadingPopup.js";
+import Footer from "../components/Footer.js";
+import NavBar from "../components/Navbar/Navbar.js";
+import { useProposalForm } from "../hooks/useProposalForm.js";
+import { useProposalProgress } from "../hooks/useProposalProgress.js";
+import { useProposalTransaction } from "../hooks/useProposalTransaction.js";
 import { useReadContract } from "thirdweb/react";
-import { FullDaoContract } from "../utils/handlers/Handlers";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
 
 const CreateProposal: React.FC = () => {
   const navigate = useNavigate();

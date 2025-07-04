@@ -1,0 +1,24 @@
+How We’ll Proceed
+DAO Creation Flow (First Step)
+Implement the DAO creation flow in Remix:
+Form UI (Remix route/component)
+On-chain transaction (using thirdweb or ethers, in the frontend)
+On success, POST to a Remix action (backend route) to store off-chain data
+Store in DB (or mock for now)
+Redirect to dashboard
+Subsequent Features
+Proposals, voting, member management, etc., one by one.
+Deployment
+nginx config, certbot, domain, etc.
+Next Step: DAO Creation Flow in Remix
+Let’s start with the DAO creation flow, the Remix way:
+1. Remix Route for DAO Creation
+Create a file: Washika-dao-frontend/app/routes/dao.create.tsx
+This will export a loader (if needed), an action (for POST), and a default component (the form).
+2. Form UI
+Use Remix <Form method="post"> for the DAO creation form.
+3. On-Chain Transaction
+In the form’s submit handler (client-side), trigger the blockchain transaction (using thirdweb/ethers).
+On success, call fetch("/dao/create", { method: "post", ... }) with all form data + tx hash.
+4. Remix Action
+The action receives the POST, validates, and (for now) logs or stores the data.

@@ -4,12 +4,12 @@ import {
   addNotification,
   removeNotification,
   showNotificationPopup,
-} from "../../redux/notifications/notificationSlice";
+} from "../../redux/notifications/notificationSlice.js";
 import { useActiveAccount } from "thirdweb/react";
 import { useState } from "react";
-import MemberForm from "../MemberForm";
-import { useMemberManagement } from "../../hooks/useMemberManagement";
-import LoadingPopup from "../DaoRegistration/LoadingPopup";
+import MemberForm from "../MemberForm.js";
+import { useMemberManagement } from "../../hooks/useMemberManagement.js";
+import LoadingPopup from "../DaoRegistration/LoadingPopup.js";
 
 export function AdminMemberForm() {
   const activeAccount = useActiveAccount();

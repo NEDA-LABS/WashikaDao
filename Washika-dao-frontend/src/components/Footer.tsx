@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faFacebookF,
@@ -36,13 +36,13 @@ const Footer: React.FC<FooterProps> = ({ className }) => {
             <Link to="/">Home</Link>
           </li>
           <li>
-            <Link to="/washika-dao">WashikaDAO</Link>
+            <Link to="/daos">WashikaDAO</Link>
           </li>
           <li>
-            <Link to="/explore">Explore</Link>
+            <Link to="/marketplace">Explore</Link>
           </li>
           <li>
-            <Link to="/karibu">Welcome</Link>
+            <Link to="/blog">Welcome</Link>
           </li>
         </ul>
       </div>

@@ -1,11 +1,11 @@
 // components/GroupInfo/GroupCard.tsx
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { useReadContract, useWalletBalance } from "thirdweb/react";
-import { FullDaoContract } from "../utils/handlers/Handlers";
-import { fetchCeloToUsdRate } from "../utils/priceUtils";
-import { client } from "../utils/thirdwebClient";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
+import { fetchCeloToUsdRate } from "../utils/priceUtils.js";
+import { client } from "../utils/thirdwebClient.js";
 
 export interface Dao {
   daoName: string;

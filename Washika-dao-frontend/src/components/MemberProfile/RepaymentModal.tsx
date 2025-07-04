@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { OnChainProposal } from "../../utils/Types";
+import { OnChainProposal } from "../../utils/Types.js";
 import { prepareTransaction, readContract, toWei } from "thirdweb";
-import { client, FullDaoContract } from "../../utils/handlers/Handlers";
+import { client, FullDaoContract } from "../../utils/handlers/Handlers.js";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
 import { useSendAndConfirmTransaction, useReadContract } from "thirdweb/react";
 
@@ -55,7 +55,7 @@ const RepaymentModal: React.FC<RepaymentModalProps> = ({memberAddr, showPaymentM
     params: [localStorage.getItem("selectedDaoId") as `0x${string}`],
   });
 
-  // 3️⃣ “Pay” handler
+  // 3️⃣ "Pay" handler
   const handlePayment = () => {
     if (!daoCreatorAddr || !selectedProposalId) return;
 
