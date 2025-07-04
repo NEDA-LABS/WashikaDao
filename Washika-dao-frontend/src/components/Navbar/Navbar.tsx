@@ -1,12 +1,12 @@
 // Import React hooks for managing state and side effects.
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { useActiveAccount } from "thirdweb/react";
 
 // Import custom components for the navigation bar.
-import NavLogo from "./NavLogo";
-import MobileMenuButton from "./MobileMenuButton";
-import NavLinks from "./NavLinks";
+import NavLogo from "./NavLogo.js";
+import MobileMenuButton from "./MobileMenuButton.js";
+import NavLinks from "./NavLinks.js";
 
 // Import actions for authentication state.
 

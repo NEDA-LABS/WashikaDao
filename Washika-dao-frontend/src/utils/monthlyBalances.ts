@@ -1,5 +1,5 @@
 // utils/monthlyBalances.ts
-import { RawTxn } from "./arbiscan";
+import { RawTxn } from "./arbiscan.ts";
 
 const MONTH_LABELS = [
   "Jan",

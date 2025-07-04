@@ -2,7 +2,7 @@
 import { useSendAndConfirmTransaction } from "thirdweb/react";
 import { prepareTransaction, toWei } from "thirdweb";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import { client } from "../../utils/thirdwebClient"; // your ThirdwebClient
+import { client } from "../../utils/thirdwebClient.js"; // your ThirdwebClient
 // import { Link } from "react-router-dom";
 
 export interface CardType {

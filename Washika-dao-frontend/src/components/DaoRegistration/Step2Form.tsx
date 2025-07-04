@@ -1,6 +1,6 @@
 import React from "react";
-import DaoForm, { Field } from "../DaoForm";
-import { IBackendDaoCreation } from "../../utils/Types";
+import DaoForm, { Field } from "../DaoForm.js";
+import { IBackendDaoCreation } from "../../utils/Types.js";
 
 export interface Step2FormProps {
   formData: IBackendDaoCreation;

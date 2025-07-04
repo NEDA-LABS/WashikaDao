@@ -1,4 +1,4 @@
-import MemberTransactionPopup from "../SuperAdmin/MemberTransactionPopup";
+import MemberTransactionPopup from "../SuperAdmin/MemberTransactionPopup.js";
 
 interface MemberTransactionProps {
     setShowStatement: (value: boolean) => void;

@@ -1,24 +1,24 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router";
 import { ThirdwebProvider } from "thirdweb/react";
 import { HelmetProvider } from "react-helmet-async";
 
 // Importing page components
-import Owner from "./pages/Owner";
-import HomePage from "./pages/HomePage";
-import JifunzeElimu from "./pages/JifunzeElimu";
-import DaoRegistration from "./pages/DaoRegistration";
-import CreateProposal from "./pages/CreateProposal";
-import JoinPlatform from "./pages/JoinPlatform";
-import MarketPlace from "./pages/MarketPlace.tsx";
-import DaoProfile from "./pages/DaoProfile";
-import UpdateDao from "./pages/UpdateDao";
-import SuperAdmin from "./pages/SuperAdmin";
-import ViewProposal from "./pages/ViewProposal";
-import MemberProfile from "./pages/MemberProfile";
+import Owner from "./pages/Owner.js";
+import HomePage from "./pages/HomePage.js";
+import JifunzeElimu from "./pages/JifunzeElimu.js";
+import DaoRegistration from "./pages/DaoRegistration.js";
+import CreateProposal from "./pages/CreateProposal.js";
+import JoinPlatform from "./pages/JoinPlatform.js";
+import MarketPlace from "./pages/MarketPlace.js";
+import DaoProfile from "./pages/DaoProfile.js";
+import UpdateDao from "./pages/UpdateDao.js";
+import SuperAdmin from "./pages/SuperAdmin.js";
+import ViewProposal from "./pages/ViewProposal.js";
+import MemberProfile from "./pages/MemberProfile.js";
 
 //Testing functionality components
-import BlogPage from "./pages/BlogPage.tsx";
-import TestConnection from "./pages/TestConnection.tsx";
+import BlogPage from "./pages/BlogPage.js";
+import TestConnection from "./pages/TestConnection.js";
 // App component serves as the root of the React application.
 // It sets up the Router to manage client-side navigation.
 /**

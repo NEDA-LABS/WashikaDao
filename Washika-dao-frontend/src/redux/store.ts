@@ -1,9 +1,9 @@
 // src/redux/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './users/userSlice';
-import notificationReducer from './notifications/notificationSlice';
-import userDaosReducer from './users/userDaosSlice';
-import multiSignersReducer from './multisigners/multisigners'; 
+import userReducer from './users/userSlice.ts';
+import notificationReducer from './notifications/notificationSlice.ts';
+import userDaosReducer from './users/userDaosSlice.ts';
+import multiSignersReducer from './multisigners/multisigners.ts'; 
 
 // Configure store with the persisted reducer
 export const store = configureStore({

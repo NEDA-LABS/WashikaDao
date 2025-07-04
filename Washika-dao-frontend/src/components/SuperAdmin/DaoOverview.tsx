@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Dashboard from "../Dashboard";
-import ProposalGroups from "../Proposals/ProposalGroups";
-import TransactionPopup from "./TransactionPopup";
-import { DaoDetails } from "./WanachamaList";
+import Dashboard from "../Dashboard.js";
+import ProposalGroups from "../Proposals/ProposalGroups.js";
+import TransactionPopup from "./TransactionPopup.js";
+import { DaoDetails } from "./WanachamaList.js";
 
 interface DaoOverviewProps {
   daoDetails?: DaoDetails;

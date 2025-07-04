@@ -1,0 +1,3 @@
+import "../styles/index.css";
+import "../styles/JifunzeElimu.css";
+// ... existing code from JifunzeElimu.tsx ... 

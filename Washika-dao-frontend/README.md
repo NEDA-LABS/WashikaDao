@@ -72,6 +72,9 @@ Future iterations of the frontend will integrate with the backend's blockchain-b
 - Community proposals and voting
 - Educational blog section
 - Mobile-friendly interface
+- **React Router v7**: Latest version, with all routing handled via `react-router`. SSR (Server-Side Rendering) is enabled by default in the framework and Vite config.
+- **Tailwind CSS**: Utility-first CSS framework, with [framework mode](https://tailwindcss.com/docs/framework-mode) enabled for optimal performance and DX. See `tailwind.config.js` for customization.
+- **Vite**: Fast build tool and dev server.
 
 ---
 
@@ -82,6 +85,9 @@ Future iterations of the frontend will integrate with the backend's blockchain-b
 - `public/` — Static assets (images, blog data)
 - `Dockerfile` — Multi-stage build for production
 - `nginx.conf` — SPA routing and static file serving
+- `src/styles/index.css` — Tailwind CSS entrypoint (starts with `@import "tailwindcss";`)
+- `tailwind.config.js` — Tailwind config, framework mode enabled
+- `vite.config.ts` — Vite config, SSR enabled
 
 ## Local Development
 1. `npm i` — Install dependencies
@@ -918,3 +924,36 @@ This runbook guides new administrators and operations team members through their
 - [ ] Document the process and any findings
 
 ---
+
+## Tailwind CSS Usage
+
+- Tailwind is enabled globally. Use utility classes in your JSX/TSX files.
+- To customize Tailwind (colors, themes, etc.), edit `tailwind.config.js`.
+- [Tailwind Docs](https://tailwindcss.com/docs/installation)
+
+## React Router v7 & SSR
+
+- Routing is handled via `react-router` (see `src/App.tsx`).
+- SSR is enabled in `vite.config.ts` via the `ssr` option.
+- [React Router Docs](https://reactrouter.com/en/main)
+
+## Migration Notes
+
+- Upgraded from React Router v6 to v7, with all imports and code updated.
+- Tailwind framework mode and SSR are now enabled by default.
+
+## Scripts
+
+- `npm run start` — Start dev server
+- `npm run build` — Build for production
+- `npm run preview` — Preview production build
+
+## Customization
+
+- **Tailwind**: Edit `tailwind.config.js` for theme, plugins, etc.
+- **SSR**: See `vite.config.ts` for SSR settings.
+- **Routing**: Edit `src/App.tsx` for routes.
+
+---
+
+For more, see the official docs for [Tailwind](https://tailwindcss.com/docs/installation), [React Router](https://reactrouter.com/en/main), and [Vite](https://vitejs.dev/).

@@ -1,4 +1,4 @@
-import BlogList from "../BlogList";
+import BlogList from "../BlogList.js";
 
 const Info = () => {
     return (

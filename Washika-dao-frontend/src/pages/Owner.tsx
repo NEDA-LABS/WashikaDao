@@ -1,11 +1,11 @@
 // import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import Dashboard from "../components/Dashboard";
-import Footer from "../components/Footer";
-import NavBar from "../components/Navbar/Navbar";
-import ProposalGroups from "../components/Proposals/ProposalGroups";
-import Strip from "../components/Strip";
-import { RootState } from "../redux/store";
+import Dashboard from "../components/Dashboard.tsx";
+import Footer from "../components/Footer.tsx";
+import NavBar from "../components/Navbar/Navbar.tsx";
+import ProposalGroups from "../components/Proposals/ProposalGroups.tsx";
+import Strip from "../components/Strip.tsx";
+import { RootState } from "../redux/store.ts";
 /**
  * @Auth Policy: Requires auth in order to be able to fetch data concerning the owner 
  * @returns 

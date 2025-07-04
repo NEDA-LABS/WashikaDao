@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useCloudinaryUpload } from "./useCloudinaryUpload.ts";
-import { IBackendDaoCreation } from "../utils/Types.ts";
+import { IBackendDaoCreation } from "../utils/Types.js";
 import { useActiveAccount } from "thirdweb/react";
 
 export const useDaoForm = () => {

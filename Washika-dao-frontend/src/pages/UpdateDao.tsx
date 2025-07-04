@@ -1,12 +1,12 @@
-import Footer from "../components/Footer";
-import DaoForm from "../components/DaoForm";
-import NavBar from "../components/Navbar/Navbar";
-import { useNavigate, useParams } from "react-router-dom";
+import Footer from "../components/Footer.js";
+import DaoForm from "../components/DaoForm.js";
+import NavBar from "../components/Navbar/Navbar.js";
+import { useNavigate, useParams } from "react-router";
 import React, { useState } from "react";
 import { useEffect } from "react";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.ts";
+import { RootState } from "../redux/store.js";
+import { BASE_BACKEND_ENDPOINT_URL, ROUTE_PROTECTOR_KEY } from "../utils/backendComm.js";
 import { useActiveAccount } from "thirdweb/react";
 // import Step2Form from "../components/DaoRegistration/Step2Form";
 // import Step3Members from "../components/DaoRegistration/Step3Members";

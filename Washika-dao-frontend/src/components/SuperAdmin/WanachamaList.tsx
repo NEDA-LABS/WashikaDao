@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { IFetchedBackendDao } from "../../utils/Types";
+import { IFetchedBackendDao } from "../../utils/Types.js";
 import { useDispatch } from "react-redux";
-import { addNotification, showNotificationPopup, removeNotification } from "../../redux/notifications/notificationSlice";
+import { addNotification, showNotificationPopup, removeNotification } from "../../redux/notifications/notificationSlice.js";
 
 interface Wanachama {
   id: number;

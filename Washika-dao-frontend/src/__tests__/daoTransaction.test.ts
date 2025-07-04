@@ -1,9 +1,9 @@
 import { renderHook, act } from "@testing-library/react";
 import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from "vitest";
-import { useDaoTransaction } from "../hooks/useDaoTransaction";
+import { useDaoTransaction } from "../hooks/useDaoTransaction.js";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
-import { FullDaoContract } from "../utils/handlers/Handlers";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
 
 globalThis.alert = vi.fn();
 

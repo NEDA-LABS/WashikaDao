@@ -1,14 +1,14 @@
 // src/hooks/useAddMemberOnchain.ts
 import { useSendTransaction } from "thirdweb/react";
 import { prepareContractCall, PreparedTransaction } from "thirdweb";
-import { FullDaoContract } from "../utils/handlers/Handlers";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
 
 export function useAddMemberOnchain() {
   const { mutateAsync: sendTransaction } = useSendTransaction();
 
   /**
    * Calls the addMemberToDao function on-chain.
-   * @param memberEmail user’s email
+   * @param memberEmail user's email
    * @param memberAddress on-chain address to add
    * @param daoId the bytes32 DAO id
    */

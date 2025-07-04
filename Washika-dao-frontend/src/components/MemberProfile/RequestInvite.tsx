@@ -1,7 +1,7 @@
 import { useState } from "react";
-import DaoForm from "../DaoForm";
+import DaoForm from "../DaoForm.js";
 import { useReadContract } from "thirdweb/react";
-import { FullDaoContract } from "../../utils/handlers/Handlers";
+import { FullDaoContract } from "../../utils/handlers/Handlers.js";
 import React from "react";
 
 interface RequestInviteProps {
@@ -43,7 +43,7 @@ const RequestInvite: React.FC<RequestInviteProps> = ({
     const chosenDao = daos.find((dao) => dao.daoName === selectedDaoName);
 
     if (chosenDao) {
-      setDaoToJoinId(chosenDao.daoId); // Save selected DAO’s address
+      setDaoToJoinId(chosenDao.daoId); // Save selected DAO's address
     }
   };
 

@@ -1,20 +1,23 @@
 import { createThirdwebClient, getContract } from "thirdweb";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import WashikaDaoArtifact from "../abi/WashikaDao.json";
-import type { Abi } from "abitype";
+import WashikaDaoArtifact from "../abi/WashikaDao.json" with { type: "json" };
 
 /**Reusable Blockchain Action Handlers */
-//FullDao Contract Object
+// Full ABI type
+export const WashikaDaoAbi = WashikaDaoArtifact.abi;
+
+// FullDao Contract Object, correctly typed
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 const _clientId = import.meta.env.VITE_THIRDWEB_CLIENT_ID;
 export const client = createThirdwebClient({ clientId: _clientId });
-const WashikaDaoAbi = WashikaDaoArtifact.abi as unknown as Abi;
+
+// Create contract instance with proper Celo Alfajores address
 export const FullDaoContract = getContract({
   client,
-  address: "0x52992bf84D4cEdae1d5b69155802dB107b2Ee8dD",
   chain: celoAlfajoresTestnet,
-  abi: WashikaDaoAbi,
+  address: "0x8EC4eE1A1aEccE5Df1a630ea50Aa9716549cE9Ff", // Celo Alfajores contract address
+  abi: WashikaDaoArtifact.abi as any,
 });
 
 export const MSIG_RPC_URL = 'https://rpc.ankr.com/eth_sepolia'; 

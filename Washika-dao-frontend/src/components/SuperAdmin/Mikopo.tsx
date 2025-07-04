@@ -1,8 +1,8 @@
 import { useState, useMemo, useEffect } from "react";
-import Cards, { CardType } from "./Cards";
+import Cards, { CardType } from "./Cards.js";
 import { useReadContract } from "thirdweb/react";
-import { FullDaoContract } from "../../utils/handlers/Handlers";
-import { OnChainProposal } from "../../utils/Types";
+import { FullDaoContract } from "../../utils/handlers/Handlers.js";
+import { OnChainProposal } from "../../utils/Types.js";
 import { readContract } from "thirdweb";
 
 const statusOptions = [

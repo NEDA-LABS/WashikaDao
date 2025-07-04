@@ -1,6 +1,6 @@
 // utils/transactions.ts
-import { fetchCeloToUsdRate } from "./priceUtils";
-import { fetchTokenTransfers, RawTxn } from "./arbiscan";
+import { fetchCeloToUsdRate } from "./priceUtils.ts";
+import { fetchTokenTransfers, RawTxn } from "./arbiscan.ts";
 
 export interface TreasuryEntry {
   hash: string;

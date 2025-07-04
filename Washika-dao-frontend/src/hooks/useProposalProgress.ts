@@ -1,6 +1,6 @@
 // useProposalProgress.ts
 import { useEffect, useState } from "react";
-import { ProposalData } from "./useProposalForm";
+import { ProposalData } from "./useProposalForm.ts";
 
 export const useProposalProgress = (proposalData: ProposalData, daoCreator: string) => {
   const [completedSteps, setCompletedSteps] = useState<number>(0);

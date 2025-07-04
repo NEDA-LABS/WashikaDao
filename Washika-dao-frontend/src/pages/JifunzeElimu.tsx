@@ -1,9 +1,9 @@
 // Import necessary dependencies from React and third-party libraries for building the blog page.
 import React from "react";
 import { Helmet } from "react-helmet-async";
-import Footer from "../components/Footer";
-import NavBar from "../components/Navbar/Navbar";
-import BlogList from "../components/BlogList"; 
+import Footer from "../components/Footer.js";
+import NavBar from "../components/Navbar/Navbar.js";
+import BlogList from "../components/BlogList.js"; 
 
 /**
  * JifunzeElimu is a React functional component that renders an educational blog page.

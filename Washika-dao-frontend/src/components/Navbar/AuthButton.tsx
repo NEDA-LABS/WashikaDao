@@ -1,12 +1,12 @@
 // Import dependencies for blockchain authentication, theming, routing, and state management.
 import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { createWallet, inAppWallet } from "thirdweb/wallets";
 import { useEffect, useState } from "react";
-import { useMemberDaos } from "./useMemberDaos";
-import { useDaoNavigation } from "./useDaoNavigation";
-import { client } from "../../utils/thirdwebClient";
+import { useMemberDaos } from "./useMemberDaos.js";
+import { useDaoNavigation } from "./useDaoNavigation.js";
+import { client } from "../../utils/thirdwebClient.js";
 
 /**
  * Creates a Thirdweb client instance used for blockchain interactions and authentication.

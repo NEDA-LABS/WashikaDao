@@ -1,7 +1,7 @@
 // src/components/VoteCounts.tsx
 import React from "react";
 import { useReadContract } from "thirdweb/react";
-import { FullDaoContract } from "../../utils/handlers/Handlers";
+import { FullDaoContract } from "../../utils/handlers/Handlers.js";
 
 interface VoteCountsProps {
   proposalId: `0x${string}`;

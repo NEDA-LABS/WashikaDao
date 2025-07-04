@@ -1,15 +1,15 @@
 import React, { ChangeEvent, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm";
-import DaoForm from "./DaoForm";
-import { IBackendDaoMember } from "../utils/Types";
-import { setCurrentUser } from "../redux/users/userSlice";
+import { useNavigate } from "react-router";
+import { BASE_BACKEND_ENDPOINT_URL } from "../utils/backendComm.js";
+import DaoForm from "./DaoForm.tsx";
+import { IBackendDaoMember } from "../utils/Types.js";
+import { setCurrentUser } from "../redux/users/userSlice.js";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../redux/store";
+import { RootState } from "../redux/store.js";
 import { useActiveAccount } from "thirdweb/react";
 import { useReadContract } from "thirdweb/react";
-import { FullDaoContract } from "../utils/handlers/Handlers";
-import GroupCard from "./GroupCard";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
+import GroupCard from "./GroupCard.tsx";
 
 interface Dao {
   // daoName: string;

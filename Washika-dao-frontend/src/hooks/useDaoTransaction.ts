@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useActiveAccount, useSendTransaction } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
-import { FullDaoContract } from "../utils/handlers/Handlers";
-import { IBackendDaoCreation } from "../utils/Types";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
+import { IBackendDaoCreation } from "../utils/Types.js";
 
 export const useDaoTransaction = () => {
   const [daoTxHash, setDaoTxHash] = useState<string>("");

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import NavBar from "../components/Navbar/Navbar";
-import Footer from "../components/Footer";
+import { useParams } from "react-router";
+import NavBar from "../components/Navbar/Navbar.js";
+import Footer from "../components/Footer.js";
 import { Helmet } from "react-helmet-async";
 import ReactMarkdown from "react-markdown";
 

@@ -1,6 +1,6 @@
 // src/redux/userDaosSlice.ts
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { OnchainDao } from "../../utils/Types";
+import { OnchainDao } from "../../utils/Types.js";
 
 // Import the Dao type from your hook (or define it here if preferred)
 export type DaoRoleEnum =

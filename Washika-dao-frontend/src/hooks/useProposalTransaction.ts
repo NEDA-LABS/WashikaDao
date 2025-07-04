@@ -1,7 +1,7 @@
 // useProposalTransaction.ts
 import { useSendTransaction, useActiveAccount } from "thirdweb/react";
 import { prepareContractCall, PreparedTransaction } from "thirdweb";
-import { FullDaoContract } from "../utils/handlers/Handlers";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const useProposalTransaction = (proposalData: any) => {

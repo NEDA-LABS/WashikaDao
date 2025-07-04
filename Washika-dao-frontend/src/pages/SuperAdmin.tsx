@@ -1,20 +1,20 @@
-import NavBar from "../components/Navbar/Navbar";
+import NavBar from "../components/Navbar/Navbar.tsx";
 
-import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup.tsx";
 
 import {useEffect, useState} from "react";
 import {
   useActiveAccount,
   useActiveWalletConnectionStatus,
 } from "thirdweb/react";
-import Footer from "../components/Footer";
-import Mikopo from "../components/SuperAdmin/Mikopo";
-import Notification from "../components/SuperAdmin/Notification";
-import AdminButtons from "../components/SuperAdmin/AdminButtons";
-import { AdminMemberForm } from "../components/SuperAdmin/AdminMemberForm";
-import DaoOverview from "../components/SuperAdmin/DaoOverview";
-import Wanachama from "../components/SuperAdmin/Wanachama";
-import { DaoDetails } from "../components/SuperAdmin/WanachamaList";
+import Footer from "../components/Footer.tsx";
+import Mikopo from "../components/SuperAdmin/Mikopo.tsx";
+import Notification from "../components/SuperAdmin/Notification.tsx";
+import AdminButtons from "../components/SuperAdmin/AdminButtons.tsx";
+import { AdminMemberForm } from "../components/SuperAdmin/AdminMemberForm.tsx";
+import DaoOverview from "../components/SuperAdmin/DaoOverview.tsx";
+import Wanachama from "../components/SuperAdmin/Wanachama.tsx";
+import { DaoDetails } from "../components/SuperAdmin/WanachamaList.tsx";
 import {BASE_BACKEND_ENDPOINT_URL} from "../utils/backendComm.ts";
 
 /**

@@ -7,12 +7,12 @@ import {
   useActiveAccount,
   useActiveWalletConnectionStatus,
 } from "thirdweb/react";
-import { FullDaoContract } from "../utils/handlers/Handlers";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import NavBar from "../components/Navbar/Navbar";
-import Footer from "../components/Footer";
-import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup";
-import VoteCounts from "../components/Proposals/VoteCounts";
+import { FullDaoContract } from "../utils/handlers/Handlers.js";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
+import NavBar from "../components/Navbar/Navbar.js";
+import Footer from "../components/Footer.js";
+import { LoadingPopup } from "../components/SuperAdmin/LoadingPopup.js";
+import VoteCounts from "../components/Proposals/VoteCounts.js";
 
 interface PreloadedState {
   proposal: {

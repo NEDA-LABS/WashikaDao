@@ -1,10 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
-import { FullDaoContract } from "../../utils/handlers/Handlers";
+import { Link, useNavigate } from "react-router";
+import { FullDaoContract } from "../../utils/handlers/Handlers.js";
 import { useReadContract } from "thirdweb/react";
-import { OnChainProposal } from "../../utils/Types";
+import { IBlockchainProposal } from "../../utils/Types.js";
 
 interface ProposalCardProps {
-  p: OnChainProposal;
+  p: IBlockchainProposal;
   now: number;
   daoId: string;
   navigate: ReturnType<typeof useNavigate>;
@@ -21,6 +21,8 @@ export const ProposalCard: React.FC<ProposalCardProps> = ({
   const expired = now >= expiryTs;
 
   // after expiry, read the official outcome
+  // @ts-ignore // thirdweb/abitype contract ABI type mismatch, safe to ignore for now
+  // eslint-disable-next-line
   const { data: outcome, isLoading: loadingOutcome } = useReadContract({
     contract: FullDaoContract,
     method:

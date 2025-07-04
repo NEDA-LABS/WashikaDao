@@ -1,6 +1,6 @@
 import React from "react";
-import MemberForm from "../MemberForm";
-import { IBackendDaoMember } from "../../utils/Types";
+import MemberForm from "../MemberForm.js";
+import { IBackendDaoMember } from "../../utils/Types.js";
 
 export interface Step3MembersProps {
   currentMember: IBackendDaoMember;
