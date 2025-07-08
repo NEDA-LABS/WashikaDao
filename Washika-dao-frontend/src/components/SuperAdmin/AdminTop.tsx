@@ -17,7 +17,6 @@ import {
 } from "../../redux/notifications/notificationSlice";
 import { OnchainDao } from "../../utils/Types";
 import { celoAlfajoresTestnet } from "thirdweb/chains";
-import GenerateMultiSig from "./GenerateMultisig";
 
 interface AdminTopProps {
   daoDetails?: DaoDetails;
@@ -206,37 +205,30 @@ export default function AdminTop({
             <img src="/images/locationIcon.png" width="27" height="31" />
           </div>
           <div>
-            {daoDetails?.daoMultiSigAddr === daoDetails?.chairpersonAddr ? (
-              <GenerateMultiSig
-                daoDetails={daoDetails}
-                setDaoDetails={setDaoDetails}
-              />
-            ) : (
-              <div className="address">
-                <p className="email">{displayAddress}</p>
-                {fullAddress && (
-                  <button
-                    onClick={handleCopy}
-                    aria-label="Copy address"
-                    style={{
-                      background: "none",
-                      border: "none",
-                      cursor: "pointer",
-                      padding: 0,
-                      color: "#555",
-                      display: "flex",
-                    }}
-                  >
-                    <img
-                      src="/images/copy.png"
-                      alt="copy"
-                      width={20}
-                      style={{ opacity: 0.4 }}
-                    />
-                  </button>
-                )}
-              </div>
-            )}
+            <div className="address">
+              <p className="email">{displayAddress}</p>
+              {fullAddress && (
+                <button
+                  onClick={handleCopy}
+                  aria-label="Copy address"
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    color: "#555",
+                    display: "flex",
+                  }}
+                >
+                  <img
+                    src="/images/copy.png"
+                    alt="copy"
+                    width={20}
+                    style={{ opacity: 0.4 }}
+                  />
+                </button>
+              )}
+            </div>
           </div>
         </div>
         <div className="two">

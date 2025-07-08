@@ -1,3 +1,4 @@
+/*
 import { createSafeClient } from '@safe-global/sdk-starter-kit'; 
 
 
@@ -10,3 +11,4 @@ const safeClient = await createSafeClient ({
        // saltNonce: 123n
     }
 })
+*/
