@@ -24,11 +24,11 @@ jobs:
           SSH_HOST: ${{ secrets.SERVER_HOST }}
         run: |
           BRANCH=${GITHUB_REF##*/}
-          ssh -o StrictHostKeyChecking=no $SSH_USER@$SSH_HOST '
+          ssh -o StrictHostKeyChecking=no -o ServerAliveInterval=60 $SSH_USER@$SSH_HOST '
             cd /root/server-space/deployed-applications/wadao/WashikaDao &&
             git fetch origin $BRANCH &&
             git checkout $BRANCH &&
             git pull origin $BRANCH &&
             cd Washika-dao-frontend &&
-            docker compose -f docker-compose.yml up -d --build
+            nohup docker compose -f docker-compose.yml up -d --build > deploy.log 2>&1 &
           ' 
