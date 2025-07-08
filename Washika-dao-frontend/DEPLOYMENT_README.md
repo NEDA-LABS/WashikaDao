@@ -4,6 +4,29 @@ This guide will help you deploy the WashikaDao frontend using Docker, GitHub Act
 
 ---
 
+## 0. Monorepo Server Setup (Recommended & Simple)
+
+**For monorepos, just clone the whole repo and deploy from the frontend subdirectory.**
+
+```sh
+cd /root/server-space/deployed-applications/wadao
+# Clone the repo if not already present
+# (This will create /root/server-space/deployed-applications/wadao/WashikaDao)
+git clone https://github.com/NEDA-LABS/WashikaDao.git
+cd WashikaDao
+# Set up both branches (prod and staging)
+git checkout prod && git pull origin prod
+git checkout staging && git pull origin staging
+git checkout prod  # leave on prod by default
+```
+
+- Your deployment directory for the frontend will be:
+  `/root/server-space/deployed-applications/wadao/WashikaDao/Washika-dao-frontend`
+- All workflow and Docker Compose commands will run from this subdirectory.
+- **No need to move or copy directories!**
+
+---
+
 ## 1. Docker Commands (Local & Server)
 
 ### Build the Docker Image Locally
