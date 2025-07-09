@@ -18,10 +18,8 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "types": [
-      "vitest",
-          "vitest/globals",
-          "@testing-library/jest-dom"
-        ]
+      "@testing-library/jest-dom"
+    ]
   },
   "include": ["vite.config.ts"]
 }

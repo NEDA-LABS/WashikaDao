@@ -12,7 +12,7 @@ RUN npm cache clean --force && \
     rm -f package-lock.json && \
     npm ci --only=production
 COPY . .
-RUN npm run build
+RUN npm run build:prod
 
 # Stage 2: Serve with http-server
 FROM node:20-alpine

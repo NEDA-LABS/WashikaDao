@@ -10,8 +10,6 @@
             "dom"
         ],
         "types": [
-          "vitest",
-          "vitest/globals",
           "@testing-library/jest-dom"
         ]
     }

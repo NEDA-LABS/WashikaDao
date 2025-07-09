@@ -19,4 +19,13 @@ build
 .env.local
 .env.development.local
 .env.test.local
-.env.production.local 
+.env.production.local
+
+# Test files
+vitest.config.ts
+setupTests.ts
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+tsconfig.node.json 

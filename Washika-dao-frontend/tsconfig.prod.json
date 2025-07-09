@@ -1,0 +1,13 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./tsconfig.app.json" }
+  ],
+  "compilerOptions": {
+    "lib": [
+      "esnext",
+      "dom"
+    ],
+    "types": []
+  }
+} 
