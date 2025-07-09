@@ -21,12 +21,27 @@ jobs:
             # Clean up old containers
             docker compose rm -f -s -v || true
 
+            # Check if .env file exists and has required variables
+            if [ ! -f .env ]; then
+              echo "ERROR: .env file not found! Please create .env file with required variables."
+              echo "Required variables: VITE_THIRDWEB_CLIENT_ID"
+              exit 1
+            fi
+
+            # Validate required environment variables
+            if ! grep -q "VITE_THIRDWEB_CLIENT_ID=" .env; then
+              echo "ERROR: VITE_THIRDWEB_CLIENT_ID not found in .env file!"
+              exit 1
+            fi
+
             # Determine which branch triggered the workflow
             if [ "${GITHUB_REF##*/}" = "prod" ]; then
               git fetch origin prod
               git checkout prod
               git pull origin prod
+              echo "Building frontend with environment variables..."
               docker compose build frontend
+              echo "Starting frontend container..."
               docker compose up -d frontend
 
               # Check status and logs
@@ -35,12 +50,15 @@ jobs:
                 docker logs washika-frontend || true
                 exit 1
               fi
+              echo "Frontend container is running successfully!"
 
             elif [ "${GITHUB_REF##*/}" = "staging" ]; then
               git fetch origin staging
               git checkout staging
               git pull origin staging
+              echo "Building frontend-staging with environment variables..."
               docker compose build frontend-staging
+              echo "Starting frontend-staging container..."
               docker compose up -d frontend-staging
 
               # Check status and logs
@@ -49,6 +67,7 @@ jobs:
                 docker logs washika-frontend-staging || true
                 exit 1
               fi
+              echo "Staging container is running successfully!"
 
             else
               echo "Not a deploy branch. Skipping."

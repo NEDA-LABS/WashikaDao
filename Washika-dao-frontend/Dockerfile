@@ -1,6 +1,11 @@
 # Stage 1: Build
 FROM node:20-alpine AS builder
 WORKDIR /app
+
+# Add build argument for Vite environment variable
+ARG VITE_THIRDWEB_CLIENT_ID
+ENV VITE_THIRDWEB_CLIENT_ID=$VITE_THIRDWEB_CLIENT_ID
+
 COPY package*.json ./
 RUN npm ci --only=production
 COPY . .

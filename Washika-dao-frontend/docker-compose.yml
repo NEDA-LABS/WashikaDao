@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - VITE_THIRDWEB_CLIENT_ID=${VITE_THIRDWEB_CLIENT_ID}
     container_name: washika-frontend
     restart: always
     environment:
@@ -13,13 +15,13 @@ services:
       - "80"
     networks:
       - proxy-tier
-    depends_on:
-      - nginx-proxy
 
   frontend-staging:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - VITE_THIRDWEB_CLIENT_ID=${VITE_THIRDWEB_CLIENT_ID}
     container_name: washika-frontend-staging
     restart: always
     environment:
@@ -30,8 +32,6 @@ services:
       - "80"
     networks:
       - proxy-tier
-    depends_on:
-      - nginx-proxy
 
   # If you add a backend that needs the shared Postgres, add it here and connect to db-tier as well:
   # backend:
