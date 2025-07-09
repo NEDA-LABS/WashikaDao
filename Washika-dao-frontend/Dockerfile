@@ -7,7 +7,10 @@ ARG VITE_THIRDWEB_CLIENT_ID
 ENV VITE_THIRDWEB_CLIENT_ID=$VITE_THIRDWEB_CLIENT_ID
 
 COPY package*.json ./
-RUN npm ci --only=production
+# Clean npm cache and remove package-lock.json for fresh install
+RUN npm cache clean --force && \
+    rm -f package-lock.json && \
+    npm ci --only=production
 COPY . .
 RUN npm run build
 
