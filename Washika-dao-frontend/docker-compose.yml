@@ -1,34 +1,4 @@
-version: '3.8'
-
 services:
-  nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
-    container_name: nginx-proxy
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs:ro
-      - ./vhost.d:/etc/nginx/vhost.d
-      - ./html:/usr/share/nginx/html
-    environment:
-      - DEFAULT_HOST=washikadao.xyz
-
-  letsencrypt:
-    image: jrcs/letsencrypt-nginx-proxy-companion
-    container_name: nginx-proxy-le
-    restart: always
-    environment:
-      - NGINX_PROXY_CONTAINER=nginx-proxy
-      - DEFAULT_EMAIL=clingyking007@gmail.com
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ./certs:/etc/nginx/certs
-      - ./vhost.d:/etc/nginx/vhost.d
-      - ./html:/usr/share/nginx/html
-
   frontend:
     build:
       context: .
@@ -36,15 +6,16 @@ services:
     container_name: washika-frontend
     restart: always
     environment:
-      - VIRTUAL_HOST=washikadao.xyz
-      - LETSENCRYPT_HOST=washikadao.xyz
-      - LETSENCRYPT_EMAIL=clingyking007@gmail.com
+      - VIRTUAL_HOST=${VIRTUAL_HOST:-washikadao.xyz}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST:-washikadao.xyz}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-clingyking007@gmail.com}
     expose:
       - "80"
+    networks:
+      - proxy-tier
     depends_on:
       - nginx-proxy
 
-  # Staging frontend service for preview (staging.washikadao.xyz)
   frontend-staging:
     build:
       context: .
@@ -52,10 +23,28 @@ services:
     container_name: washika-frontend-staging
     restart: always
     environment:
-      - VIRTUAL_HOST=staging.washikadao.xyz
-      - LETSENCRYPT_HOST=staging.washikadao.xyz
-      - LETSENCRYPT_EMAIL=clingyking007@gmail.com
+      - VIRTUAL_HOST=${VIRTUAL_HOST_STAGING:-staging.washikadao.xyz}
+      - LETSENCRYPT_HOST=${LETSENCRYPT_HOST_STAGING:-staging.washikadao.xyz}
+      - LETSENCRYPT_EMAIL=${LETSENCRYPT_EMAIL:-clingyking007@gmail.com}
     expose:
       - "80"
+    networks:
+      - proxy-tier
     depends_on:
-      - nginx-proxy 
+      - nginx-proxy
+
+  # If you add a backend that needs the shared Postgres, add it here and connect to db-tier as well:
+  # backend:
+  #   image: your-backend-image
+  #   environment:
+  #     - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@shared-postgres:5432/${POSTGRES_DB}
+  #   networks:
+  #     - proxy-tier
+  #     - db-tier
+
+networks:
+  proxy-tier:
+    external: true
+  # Uncomment if you add a backend that needs the shared db
+  # db-tier:
+  #   external: true 

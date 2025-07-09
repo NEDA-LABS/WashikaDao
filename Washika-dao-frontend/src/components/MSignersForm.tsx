@@ -16,47 +16,47 @@ interface MsignersFormProps {
 
 const MsignersForm: React.FC<MsignersFormProps> = (
     {
-        currentMember,
-        onMemberChange,
-        onAddMember,
-        isSubmitting,
-        onCancel,
+    currentMember,
+    onMemberChange,
+    onAddMember,
+    isSubmitting,
+    onCancel,
     }
 ) => {
     return (
         <div className="m-signers-form">
-            <div className="form-header">
-                <h2>Add Multisig Members</h2>
-                <button type="button" onClick={onCancel} disabled={isSubmitting}>
-                    Cancel
-                </button>
-            </div>
-            <div className="form-body">
-                <input
-                    type="text"
-                    value={currentMember.firstName}
-                    onChange={(e) => onMemberChange("firstName", e.target.value)}
-                    placeholder="First Name"
-                    disabled={isSubmitting}
-                />
-                <input
-                    type="text"
-                    value={currentMember.lastName}
-                    onChange={(e) => onMemberChange("lastName", e.target.value)}
-                    placeholder="Last Name"
-                    disabled={isSubmitting}
-                />
-                <input
-                    type="text"
-                    value={currentMember.memberRole}
-                    onChange={(e) => onMemberChange("memberRole", e.target.value)}
-                    placeholder="Role"
-                    disabled={isSubmitting}
-                />
-                <button type="submit" onClick={onAddMember} disabled={isSubmitting}>
-                    Add Member
-                </button>
-            </div>
+        <div className="form-header">
+            <h2>Add Multisig Members</h2>
+            <button type="button" onClick={onCancel} disabled={isSubmitting}>
+            Cancel
+            </button>
+        </div>
+        <div className="form-body">
+            <input
+            type="text"
+            value={currentMember.firstName}
+            onChange={(e) => onMemberChange("firstName", e.target.value)}
+            placeholder="First Name"
+            disabled={isSubmitting}
+            />
+            <input
+            type="text"
+            value={currentMember.lastName}
+            onChange={(e) => onMemberChange("lastName", e.target.value)}
+            placeholder="Last Name"
+            disabled={isSubmitting}
+            />
+            <input
+            type="text"
+            value={currentMember.memberRole}
+            onChange={(e) => onMemberChange("memberRole", e.target.value)}
+            placeholder="Role"
+            disabled={isSubmitting}
+            />
+            <button type="submit" onClick={onAddMember} disabled={isSubmitting}>
+            Add Member
+            </button>
+        </div>
         </div>
     );
 };
