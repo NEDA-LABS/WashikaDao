@@ -17,6 +17,10 @@ jobs:
           script: |
             set -e
             cd /root/server-space/deployed-applications/wadao/WashikaDao/Washika-dao-frontend
+
+            # Clean up old containers
+            docker compose rm -f -s -v || true
+
             # Determine which branch triggered the workflow
             if [ "${GITHUB_REF##*/}" = "prod" ]; then
               git fetch origin prod
@@ -24,12 +28,28 @@ jobs:
               git pull origin prod
               docker compose build frontend
               docker compose up -d frontend
+
+              # Check status and logs
+              if ! docker ps | grep washika-frontend; then
+                echo "Frontend container is not running! Printing logs:"
+                docker logs washika-frontend || true
+                exit 1
+              fi
+
             elif [ "${GITHUB_REF##*/}" = "staging" ]; then
               git fetch origin staging
               git checkout staging
               git pull origin staging
               docker compose build frontend-staging
               docker compose up -d frontend-staging
+
+              # Check status and logs
+              if ! docker ps | grep washika-frontend-staging; then
+                echo "Staging container is not running! Printing logs:"
+                docker logs washika-frontend-staging || true
+                exit 1
+              fi
+
             else
               echo "Not a deploy branch. Skipping."
             fi
