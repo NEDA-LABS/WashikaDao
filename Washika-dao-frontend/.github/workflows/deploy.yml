@@ -14,37 +14,56 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_SSH_KEY }}
+          timeout: 30m
+          command_timeout: 25m
           script: |
             set -e
+            echo "=== Starting deployment process ==="
+            echo "Current directory: $(pwd)"
+            echo "GitHub ref: ${GITHUB_REF}"
+            echo "Branch: ${GITHUB_REF##*/}"
+            
             cd /root/server-space/deployed-applications/wadao/WashikaDao/Washika-dao-frontend
-
+            echo "Changed to deployment directory: $(pwd)"
+            
             # Clean up old containers
+            echo "Cleaning up old containers..."
             docker compose rm -f -s -v || true
 
             # Check if .env file exists and has required variables
+            echo "Checking .env file..."
             if [ ! -f .env ]; then
               echo "ERROR: .env file not found! Please create .env file with required variables."
               echo "Required variables: VITE_THIRDWEB_CLIENT_ID"
               exit 1
             fi
+            echo ".env file found"
 
             # Validate required environment variables
+            echo "Validating environment variables..."
             if ! grep -q "VITE_THIRDWEB_CLIENT_ID=" .env; then
               echo "ERROR: VITE_THIRDWEB_CLIENT_ID not found in .env file!"
               exit 1
             fi
+            echo "Environment variables validated"
 
             # Determine which branch triggered the workflow
+            echo "Determining deployment branch..."
             if [ "${GITHUB_REF##*/}" = "prod" ]; then
+              echo "Deploying to PRODUCTION..."
               git fetch origin prod
               git checkout prod
               git pull origin prod
+              echo "Code updated for production"
               echo "Building frontend with environment variables..."
               docker compose build frontend
+              echo "Build completed"
               echo "Starting frontend container..."
               docker compose up -d frontend
+              echo "Container started"
 
               # Check status and logs
+              echo "Checking container status..."
               if ! docker ps | grep washika-frontend; then
                 echo "Frontend container is not running! Printing logs:"
                 docker logs washika-frontend || true
@@ -53,15 +72,20 @@ jobs:
               echo "Frontend container is running successfully!"
 
             elif [ "${GITHUB_REF##*/}" = "staging" ]; then
+              echo "Deploying to STAGING..."
               git fetch origin staging
               git checkout staging
               git pull origin staging
+              echo "Code updated for staging"
               echo "Building frontend-staging with environment variables..."
               docker compose build frontend-staging
+              echo "Build completed"
               echo "Starting frontend-staging container..."
               docker compose up -d frontend-staging
+              echo "Container started"
 
               # Check status and logs
+              echo "Checking container status..."
               if ! docker ps | grep washika-frontend-staging; then
                 echo "Staging container is not running! Printing logs:"
                 docker logs washika-frontend-staging || true
@@ -71,4 +95,10 @@ jobs:
 
             else
               echo "Not a deploy branch. Skipping."
+              echo "Current branch: ${GITHUB_REF##*/}"
+              echo "Expected branches: prod, staging"
             fi
+            
+            echo "=== Deployment process completed ==="
+
+            
