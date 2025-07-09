@@ -7,9 +7,9 @@ ARG VITE_THIRDWEB_CLIENT_ID
 ENV VITE_THIRDWEB_CLIENT_ID=$VITE_THIRDWEB_CLIENT_ID
 
 COPY package*.json ./
-# Clean npm cache and use npm ci for reliable install
+# Install all dependencies (including dev dependencies needed for build)
 RUN npm cache clean --force && \
-    npm ci --omit=dev
+    npm ci
 COPY . .
 RUN npm run build:prod
 
